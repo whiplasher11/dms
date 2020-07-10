@@ -1,0 +1,120 @@
+       <el-form v-if="this.taggle==0"
+                :rules="rulesp"
+                ref="registerFormp"
+                v-loading="loading"
+                element-loading-text="注册中..."
+                element-loading-spinner="el-icon-loading"
+                element-loading-background="rgba(0, 0, 0, 0.8)"
+                :model="registerForm"
+                class="loginContainer">
+            <h3 class="loginTitle">病人注册</h3>
+
+            <div class="toggle" @click="changeToggle()">{{this.taggle==0?"医生注册":"病人注册"}}</div>
+            <el-form-item prop="username" label="账号：">
+                <el-input size="normal" type="text" v-model="registerFormp.username" auto-complete="off"
+                          placeholder="请输入用户名"></el-input>
+            </el-form-item>
+            <el-form-item prop="password" label="密码：">
+                <el-input size="normal"  type="password" v-model="registerFormp.password" auto-complete="off"
+                          placeholder="请输入密码"></el-input>
+            </el-form-item>
+
+            <el-form-item prop="age"  label="年龄：">
+                <el-input size="normal" type="text" v-model="registerFormp.age" auto-complete="off"
+                          placeholder="请输入年龄"></el-input>
+            </el-form-item>
+
+                <el-form-item prop="phone" label="电话：" >
+                <el-input size="normal"  type="text" v-model="registerFormp.phone" auto-complete="off"
+                          placeholder="电话号码"></el-input>
+            </el-form-item>
+
+                    <el-form-item prop="nameZh" label="姓名：" >
+                <el-input size="normal" type="text" v-model="registerFormp.nameZh" auto-complete="off"
+                          placeholder="请输入真实姓名"></el-input>
+            </el-form-item>
+            <el-form-item prop="sex"  label="性别：" >
+               <el-checkbox v-model="registerFormp.sex" false-label="0" true-label="1">男</el-checkbox>
+                <el-checkbox v-model="registerFormp.sex" false-label="1" true-label="0">女</el-checkbox>
+            </el-form-item>
+
+
+            <!-- <el-form-item prop="code">
+                <el-input size="normal" type="text" v-model="loginForm.code" auto-complete="off"
+                          placeholder="点击图片更换验证码" @keydown.enter.native="submitLogin" style="width: 250px"></el-input>
+                <img :src="vcUrl" @click="updateVerifyCode" alt="" style="cursor: pointer">
+            </el-form-item> -->
+            <!-- <el-checkbox size="normal" class="loginRemember" v-model="checked"></el-checkbox> -->
+            <div class="goRegister" @click="goRegister">已有账号？去登录</div>
+            <el-row :gutter="24">
+                <el-col :span="6">&nbsp;</el-col>
+            <el-col :span="12">
+                  <el-button  class="loginBtn" size="normal" type="primary" style="width: 100%;" @click="pRegister">注册</el-button>
+            </el-col>
+            </el-row>
+          
+        </el-form>
+                <el-form v-if="this.taggle==1"
+                :rules="rules"
+                ref="registerForm"
+                v-loading="loading"
+                element-loading-text="提交中..."
+                element-loading-spinner="el-icon-loading"
+                element-loading-background="rgba(0, 0, 0, 0.8)"
+                :model="registerForm"
+                class="loginContainer">
+            <h3 class="loginTitle">医生注册</h3>
+
+            <div class="toggle" @click="changeToggle()">{{this.taggle==0?"切换医生注册":"切换病人注册"}}</div>
+            <el-form-item prop="username" label="账号：">
+                <el-input size="normal" type="text" v-model="registerForm.username" auto-complete="off"
+                          placeholder="请输入用户名"></el-input>
+            </el-form-item>
+            <el-form-item prop="password" label="密码：">
+                <el-input size="normal"  type="password" v-model="registerForm.password" auto-complete="off"
+                          placeholder="请输入密码"></el-input>
+            </el-form-item>
+
+            <el-form-item prop="age"  label="年龄：">
+                <el-input size="normal" type="text" v-model="registerForm.age" auto-complete="off"
+                          placeholder="请输入年龄"></el-input>
+            </el-form-item>
+
+                <el-form-item prop="phone" label="电话：" >
+                <el-input size="normal"  type="text" v-model="registerForm.phone" auto-complete="off"
+                          placeholder="电话号码"></el-input>
+            </el-form-item>
+
+                    <el-form-item prop="nameZh" label="姓名：" >
+                <el-input size="normal" type="text" v-model="registerForm.nameZh" auto-complete="off"
+                          placeholder="请输入真实姓名"></el-input>
+            </el-form-item>
+            <el-form-item prop="sex"  label="性别：" >
+               <el-checkbox v-model="registerForm.sex" false-label="0" true-label="1">男</el-checkbox>
+                <el-checkbox v-model="registerForm.sex" false-label="1" true-label="0">女</el-checkbox>
+            </el-form-item>
+            <el-form-item prop="hospital"  label="医院：" v-if="this.taggle==1">
+                <el-input size="normal" type="text" v-model="registerForm.hospital" auto-complete="off"
+                          placeholder="请输入医院"></el-input>
+            </el-form-item>
+                        <el-form-item prop="department"  label="科室：" v-if="this.taggle==1">
+            <el-input size="normal" type="text" v-model="registerForm.department" auto-complete="off"
+                          placeholder="请输入科室"></el-input>
+            </el-form-item>
+            
+
+            <!-- <el-form-item prop="code">
+                <el-input size="normal" type="text" v-model="loginForm.code" auto-complete="off"
+                          placeholder="点击图片更换验证码" @keydown.enter.native="submitLogin" style="width: 250px"></el-input>
+                <img :src="vcUrl" @click="updateVerifyCode" alt="" style="cursor: pointer">
+            </el-form-item> -->
+            <!-- <el-checkbox size="normal" class="loginRemember" v-model="checked"></el-checkbox> -->
+            <div class="goRegister" @click="goRegister">已有账号？去登录</div>
+            <el-row :gutter="24">
+                <el-col :span="6">&nbsp;</el-col>
+            <el-col :span="12">
+                  <el-button  class="loginBtn" size="normal" type="primary" style="width: 100%;" @click="dRegister">提交注册申请</el-button>
+            </el-col>
+            </el-row>
+          
+        </el-form>

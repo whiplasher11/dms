@@ -1,0 +1,25 @@
+.el-input__inner {
+    &::placeholder {
+        color: rgba(116, 86, 86, 0.507);
+    }
+
+    &::-webkit-input-placeholder {
+        /* WebKit browsers 适配谷歌 */
+        color: rgba(116, 86, 86, 0.507);
+    }
+
+    &:-moz-placeholder {
+        /* Mozilla Firefox 4 to 18 适配火狐 */
+        color: rgba(116, 86, 86, 0.507);
+    }
+
+    &::-moz-placeholder {
+        /* Mozilla Firefox 19+ 适配火狐 */
+        color: rgba(116, 86, 86, 0.507);
+    }
+
+    &:-ms-input-placeholder {
+        /* Internet Explorer 10+  适配ie*/
+        color: rgba(116, 86, 86, 0.507);
+    }
+}

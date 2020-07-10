@@ -1,0 +1,131 @@
+<template>
+  <div class="left_history_batches">
+        <vue-scroll :ops="ops">
+      <div style="height:150vh;margin-top:4.6rem" >
+      <div style="height:8vh"> 
+        <!-- 搜索 -->
+        <el-input class="leftInput"></el-input>
+         <el-button type="primary" icon="el-icon-search" @click="search" style="background-color:rgb(134, 151, 197);border:none;margin-top:2vh;">搜索</el-button>
+      </div>
+
+      
+        <div v-for="item in this.$store.state.alreadyDocs" :key="item" @click="checkThisDoc(item.docSeq)" class="leftItem animated fadeInLeft" style="width:65%;height:4.2rem;float:left;background-color: rgb(92, 96, 160);
+    box-shadow: 0 0 0.5rem #909399;
+    border-radius: .8rem;
+    cursor: pointer;
+    position:relative;
+    padding-left:35%;
+    font-size:0.8rem;
+    padding-top:0.8rem;
+    
+    "
+    
+    >
+          <div class="leftPic"></div>
+          <div class="leftKeyWord">{{item.docAbout}} </div>
+          <div class="leftSeq">识别号： {{item.docSeq}}</div>
+          <div class="leftState">件号： {{item.docNumber==''?'未排':item.docNumber}}</div>
+        </div>
+        </div>
+   
+        </vue-scroll>
+
+  </div>
+</template>
+
+<script>
+import 'vuescroll/dist/vuescroll.css';
+
+export default {
+  data(){
+    return{
+        ops: {
+                    vuescroll: {},
+                    scrollPanel: {},
+                    rail: {
+                      background: '#01a99a',
+                      opacity: 0,
+                      size: '1rem',
+                      specifyBorderRadius: false,
+                      gutterOfEnds: null,    //轨道距 x 和 y 轴两端的距离
+                      gutterOfSide: '0',   //距离容器的距离
+                      keepShow: false,   //是否即使 bar 不存在的情况下也保持显示
+                      border:'none'    //边框
+                    },
+                    bar: {
+                        hoverStyle: true,    
+                        onlyShowBarOnScroll: true, //是否只有滚动的时候才显示滚动条
+                        background: 'rgb(72,91,169)',   //颜色
+                    }
+                },
+    }
+  },
+  methods:{
+    checkThisDoc(docSeq){
+      // /document/list/page/{type}
+      var path='/document/list/page/'+sessionStorage.getItem('docType')
+      var obj={"docSequence":docSeq}
+      console.log(obj)
+      obj=JSON.stringify(obj)
+      console.log(obj)
+
+      console.log(path)
+      
+    },
+  }
+
+}
+</script>
+<style lang="scss" >
+.leftInput .el-input__inner {
+    background: rgba(255, 255, 255, 0.15) !important;
+    border: 0.08rem solid rgba(33, 57, 94, 0.74);
+
+}
+
+</style>
+
+<style lang="scss" scoped>
+
+.leftKeyWord{
+
+}
+.leftInput{
+  float: left;
+  width:65%;
+  margin-left: 2%;
+  margin-top: 2vh;
+}
+
+.leftPic{
+  position: absolute;
+  height: 5rem;
+  width: 5rem;
+  left: 0%;
+  top:-0.2rem;
+  background:url('../../assets/leftPic.png');
+  // background-color: #ddd;
+  z-index: 5;
+    background-repeat: no-repeat;
+    background-size: 100%;
+
+}
+
+.leftItem:hover{
+    background-color:rgb(124, 142, 189) !important;
+}
+
+
+.left_history_batches{
+    // float:left;
+    
+    height: 100vh;
+    width: 15rem;
+    background-color:rgb(134, 151, 197);
+    position: absolute;
+    top:0;
+    // top:4.5rem;
+    overflow-y: auto;
+    
+}
+</style>

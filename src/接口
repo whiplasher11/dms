@@ -1,0 +1,227 @@
+新建工作批次相关:
+
+0、获取历史单位： "/user/getHistoryAuths",
+入：userid
+出： 
+responsbean{
+    status:200
+    msg:"成功"
+    obj: historyAuths: [
+        {
+          id：2
+          authId: 00322,
+          authName: "尚无历史记录，请新建"
+        },
+        {
+          id:123
+          authId: 00523,
+          authName: "如输入慈利县档案局"
+        }
+      ]
+}
+
+    
+
+1、是否有这个单位:"/user/hasThisAuth"
+入：{authname:xx,userId:xx}
+返回：responsbean{
+    status:200
+    msg:"没有"
+    obj:{
+    id:-1
+    authId:-1
+    authName:无
+    }
+}
+
+priority数值表示含义：
+
+      priorityDic: [
+        { name: "主题词", key: "1" },
+        { name: "级别", key: "2" },
+        { name: "责任者", key: "3" },
+        { name: "文号中的序号", key: "4" },
+        { name: "发文日期", key: "5" }
+      ],
+
+doctype表示含义：
+1：文书类
+2：科技类
+3: 人事类
+4：业务类
+
+
+2、work/newBatch  
+新建一批档案工作，其中的authId 不是单位的主键id，是全宗号，如果不存在则新建，单位主键id自增。
+入：{
+
+    userId:xx,
+    BatchForm:{
+        batchName: "2020-04-28-22-43-45归档批"
+        authId: 00226
+        authName: "新的单位"
+        docType: 2
+        docTypeCode:WS    //(文书的缩写，也可能自定义)
+        lastBox: Object
+                yongjiu: "34"
+                changqi: "4"
+                beicha: "4"
+                y100: "4"
+                y30: "4"
+                y10: 0
+        },
+        priority: []
+}
+
+返回：responsbean{
+status:200
+msg:"成功"
+obj:{
+  authId:00547  //批次所在单位的单位全宗号，五位不足补0那个
+  id:23  //批次所关联单位的主键id
+}
+}
+
+
+文件录入相关：
+
+1、根据标题内容分词返回关键字数组：/work/splitDocTitle
+入：{
+ docTitle:"中共慈利县新城区建设管理委员会党组意识形态工作资料汇编"
+
+}
+出：{
+  ['意识','建设','汇编']
+}
+
+2、关键字-问题对应项查询
+入：{
+  userId：44
+  authKeyId:22  //单位主键id
+  docType:1 //文书类
+  key：'资料'
+}
+
+出：已有/没有
+
+3、关键字-问题对应项增加  /work/addKeyWordDocAbout
+入：{
+  userId：44
+  authKeyId:22  //单位主键id
+  docType:1 //文书类
+  kv:{
+    '资料':'行政类'   //这里最好遍历一下，可能数组
+  }
+}
+
+
+出：{
+  成功
+  失败：已含有关键字
+
+}
+
+
+4、关键字-问题对应项修改  /work/changeKeyWordDocAbout
+入：{
+  userId：44
+  authKeyId:22  //单位主键id
+  docType:1 //文书类
+  kv:{
+    '资料':'行政类'   //这里最好遍历一下，可能数组
+  }
+}
+
+
+出：{
+  成功
+  失败：已含有关键字
+
+}
+
+5、责任者增加
+{
+  /user/addDutyAuthor
+
+  入：userid，单位id，责任者（但是暂无权重）
+
+}
+            级别和值对应表：
+                docLevels:[
+                  {
+                    name:'部级',
+                    value:6
+                  },
+                          {
+                    name:'省级',
+                    value:5
+                  },
+                          {
+                    name:'市级',
+                    value:4
+                  },
+                          {
+                    name:'县级',
+                    value:3
+                  },
+                          {
+                    name:'本级',
+                    value:2
+                  },
+                          {
+                    name:'乡级',
+                    value:1
+                  },
+                ],
+            期限和值的对应表：
+                  docTimeDues:[
+                    {
+                      name:'永久',
+                      value:6
+                    },
+                            {
+                      name:'备查',
+                      value:5
+                    },
+                            {
+                      name:'长期',
+                      value:4
+                    },
+                            {
+                      name:'100年',
+                      value:3
+                    },
+                            {
+                      name:'30年',
+                      value:2
+                    },
+                            {
+                      name:'10年',
+                      value:1
+                    },
+                  ],
+
+6、增加文件
+
+      docForm: {
+        docSeq:'',//序列号，标识文件
+        docTitle: "", //标题
+        docAbout: "",
+        keyWord: "", //关键字
+        docDesc: "", //文号  责任者简称+[文件日期的年份]+{件号}号  //提交为空
+        sortYear: "",
+        docDate: "",
+        docTypeCode: "",
+        docLevel: "",
+        docDescAbbr: "", //责任者简称
+        docDutyAuthor:'',  //责任者
+        docTimeDue:'',  //文件期限
+        docSecret:'',//文件密级
+        docPages:'',
+        docRemark:'',  //备注
+        docNumber:'', //件号
+        boxNumber:'', //盒号
+      },
+
+7、查询某批文件列表
+
