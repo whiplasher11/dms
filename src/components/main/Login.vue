@@ -104,11 +104,11 @@
         ></el-input>
       </el-form-item>
 
-      <el-form-item prop="danwei" label="单位：">
+      <el-form-item prop="workplace" label="单位：">
         <el-input
           size="normal"
           type="text"
-          v-model="regiForm.danwei"
+          v-model="regiForm.workplace"
           auto-complete="off"
           placeholder="输入所在的单位"
         ></el-input>
@@ -144,7 +144,7 @@ export default {
         username: "",
         password: "",
         phone:"",
-        danwei:"",
+        workplace:"",
         repassword:""
       },
       checked: true,
@@ -175,13 +175,55 @@ export default {
 
         ],
 
-        danwei: [{ required: true, message: "请输入单位名称", trigger: "blur" }],
+        workplace: [{ required: true, message: "请输入单位名称", trigger: "blur" }],
 
         // code: [{required: true, message: '请输入验证码', trigger: 'blur'}]
       },
     };
   },
   methods: {
+    submitRegi(){
+            this.$refs.regiForm.validate(valid => {
+        if (valid) {
+          this.loading = true;
+          var regiData=JSON.stringify(this.regiForm)
+          console.log(regiData)
+          this.postKeyValueRequest("/register", regiData)
+            .then(resp => {
+              if (resp) {
+                console.log(resp)
+                if(resp.code==0){
+                
+                        this.$message({
+                        type: "success",
+                        message: "注册成功!"
+
+                      });
+
+                      this.flag2=false;
+                        setTimeout(() => {
+                        this.flag=true;
+                      }, 850);
+                }
+                  // this.$store.commit("INIT_CURRENTHR", resp.obj);
+                  // window.sessionStorage.setItem("user", JSON.stringify(resp.obj));
+                  // let path = this.$route.query.redirect;
+                  // console.log(resp.obj);
+                  // this.$router.replace(
+                  //   path == "/" || path == undefined ? "/" : path
+                // );
+              } else {
+                alert('服务器错误')
+              }
+            })
+            .then(() => {
+              this.loading = false;
+            });
+        } else {
+          return false;
+        }
+      });
+    },
     goRegister() {
       this.flag=false;
       setTimeout(() => {
@@ -201,40 +243,32 @@ export default {
       this.$refs.loginForm.validate(valid => {
         if (valid) {
           this.loading = true;
-          this.postKeyValueRequest("/doLogin", this.loginForm)
+          var logindata=JSON.stringify(this.loginForm)
+          console.log(logindata)
+          this.postKeyValueRequest("/login", logindata)
             .then(resp => {
-              this.postKeyValueRequest("/isDoctor", { id: resp.obj.userId })
-                .then(res => {
-                  // alert("fachu"+resp.obj.userId)
-                  // console.log(res)
 
-                  if (res && res.msg == "是医生") {
-                    this.$store.state.kind = 3;
-                  }
-                })
-                .then(() => {
-                  this.postKeyValueRequest("/isPatient", {
-                    id: resp.obj.userId
-                  }).then(res => {
-                    if (res && res.msg == "是病人") {
-                      this.$store.state.kind = 2;
-                      console.log(res);
-                    }
-                    // alert(this.$store.state.kind)
-                  });
-                });
 
-              // alert(this.$store.state.kind)
               if (resp) {
-                this.$store.commit("INIT_CURRENTHR", resp.obj);
-                window.sessionStorage.setItem("user", JSON.stringify(resp.obj));
-                let path = this.$route.query.redirect;
-                console.log(resp.obj);
-                this.$router.replace(
-                  path == "/" || path == undefined ? "/" : path
-                );
+                console.log(resp)
+                if(resp.code==0){
+                  window.sessionStorage.setItem("token",resp.data.token)
+                            this.$message({
+                        type: "success",
+                        message: "登录成功!"
+                      });
+
+                      this.$router.push('/work/newBatch')
+                }
+                  // this.$store.commit("INIT_CURRENTHR", resp.obj);
+                  // window.sessionStorage.setItem("user", JSON.stringify(resp.obj));
+                  // let path = this.$route.query.redirect;
+                  // console.log(resp.obj);
+                  // this.$router.replace(
+                  //   path == "/" || path == undefined ? "/" : path
+                // );
               } else {
-                this.vcUrl = "/verifyCode?time=" + new Date();
+                alert('服务器错误')
               }
             })
             .then(() => {

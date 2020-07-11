@@ -33,7 +33,7 @@ axios.interceptors.response.use(success => {
     return;
 })
 
-let base = '';
+let base = 'http://gdm.vipgz1.idcfengye.com';
 
 
 export const postKeyValueRequest = (url, params) => {
@@ -41,15 +41,15 @@ export const postKeyValueRequest = (url, params) => {
         method: 'post',
         url: `${base}${url}`,
         data: params,
-        transformRequest: [function (data) {
-            let ret = '';
-            for (let i in data) {
-                ret += encodeURIComponent(i) + '=' + encodeURIComponent(data[i]) + '&'
-            }
-            return ret;
-        }],
+        // transformRequest: [function (data) {
+        //     let ret = '';
+        //     for (let i in data) {
+        //         ret += encodeURIComponent(i) + '=' + encodeURIComponent(data[i]) + '&'
+        //     }
+        //     return ret;
+        // }],
         headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
+            'Content-Type': 'application/json'
         }
     });
 }
@@ -59,7 +59,7 @@ export const postRequest = (url, params) => {   // tlq1
         url: `${base}${url}`,
         data: params,
         headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
+            'Content-Type': 'application/json',
             token:sessionStorage.getItem('token')
         }
     })
@@ -70,7 +70,8 @@ export const putRequest = (url, params) => {
         url: `${base}${url}`,
         data: params,
         headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
+            'Content-Type': 'application/json',
+
             token:sessionStorage.getItem('token')
         }
     })
@@ -81,8 +82,8 @@ export const getRequest = (url, params) => {
         url: `${base}${url}`,
         data: params,
         headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-            token:sessionStorage.getItem('token')
+            'Content-Type': 'application/json',
+            token:sessionStorage.getItem('token').split('"')[1]||sessionStorage.getItem('token')
         }
     })
 }
@@ -92,7 +93,8 @@ export const deleteRequest = (url, params) => {
         url: `${base}${url}`,
         data: params,
         headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
+            'Content-Type': 'application/json',
+            // 'Content-Type': 'application/x-www-form-urlencoded',
             token:sessionStorage.getItem('token')
         }
     })

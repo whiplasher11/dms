@@ -4,7 +4,7 @@
       <div class="newTip">新建一批档案工作</div>
 
       <el-form v-if="true" ref="BatchForm" :model="BatchForm" label-width="30%" class="batchForm">
-        <el-form-item prop="historyAuth" label="选择整档单位：">
+        <el-form-item  prop="historyAuth" label="选择或填写单位：">
           <el-select
             @blur="selectBlur"
             @change="selectAuthChange"
@@ -323,6 +323,11 @@ export default {
     };
   },
   created() {
+       this.getRequest("/organs")  .then(resp => {
+     var organs=resp.data;
+     this.historyAuths=organs;
+   })
+
     if (
       sessionStorage.getItem("user") &&
       sessionStorage.getItem("user").level == 1
@@ -348,12 +353,7 @@ export default {
       this.conver(month) +
       "-" +
       this.conver(date) +
-      "-" +
-      this.conver(h) +
-      "-" +
-      this.conver(m) +
-      "-" +
-      this.conver(s) +
+      
       "归档批";
 
     this.BatchForm.batchName = now;
@@ -374,11 +374,15 @@ export default {
     }
   },
 
-  computed: {},
+  computed: {
+
+  },
 
   methods: {
 
-
+    huiche(){
+      alert(1)
+    },
     newBatch(){
       // console.log(this.BatchForm)
 
@@ -414,8 +418,26 @@ b=JSON.stringify(b)
 
 
       sessionStorage.setItem("Batch",this.BatchForm);
-      sessionStorage.setItem("token","12355")
-      var docTypetemp='official'
+      // sessionStorage.setItem("token","12355")
+
+//新建单位
+      var code=this.BatchForm.authCode;
+      var organObj={
+        authName:this.BatchForm.authName,
+        authCode:this.BatchForm.authCode
+      }
+
+      this.postKeyValueRequest("/organ", JSON.stringify(organObj))
+            .then(resp => {
+              console.log(resp)
+            })
+
+//新建单位
+
+
+
+
+         var docTypetemp='official'
       if(this.BatchForm.docType==2){
         docTypetemp='science'
       }else if(this.BatchForm.docType==3){
@@ -425,13 +447,14 @@ b=JSON.stringify(b)
       }
       sessionStorage.setItem("docType",docTypetemp)
 
- this.postRequest(
-        "/work/newBatch",
-        {
-          // userId:sessionStorage.getItem("user").userId,
-          // BatchForm:this.BatchForm
-          userId:2
+       var batchobj= {
+          authId:x,
+          batchName:this.BatchForm.batchName
         }
+
+ this.postRequest(   //注意防止重复提交
+        "/work",JSON.stringify(batchobj)
+
         )
     },
 
@@ -448,9 +471,19 @@ b=JSON.stringify(b)
       //   else this.BatchForm.authId = res.obj.authId;
       // })
       // if (this.BatchForm.authId == "") this.BatchForm.authId = -1;
-      this.BatchForm.priority = this.uploadpriority;
-      console.log(this.BatchForm);
+      // var token=sessionStorage.getItem("token");
+    
+     
+
+ 
       if(this.validateForm1()){
+
+   
+
+      this.BatchForm.priority = this.uploadpriority;
+
+
+
          if(this.step==1) this.step++
       }
       //
