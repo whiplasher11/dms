@@ -8,6 +8,8 @@ import Recovery from './components/main/Recover.vue'
 import Login from './components/main/Login.vue'
 import newBatch from './components/main/NewBatch.vue'
 import DocIn from './components/main/DocIn.vue'
+import ModifyOrgan from './components/main/ModifyOrgan.vue'
+import KeyWordManage from './components/main/KeyWordManage.vue'
 Vue.use(Router)
 
 export default new Router({
@@ -15,9 +17,15 @@ export default new Router({
     routes: [
 
         {
-            path: '/',
+            path: '/login',
             name: 'loginAndRegi',
             component: Login,
+            hidden: true
+        }, 
+        {
+            path: '/work/modifyOrgan',
+            name: 'modifyOrgan',
+            component: ModifyOrgan,
             hidden: true
         }, 
         {
@@ -26,12 +34,18 @@ export default new Router({
             component: newBatch,
  
         },
+
         {
             path: '/work/docInput',
             name: 'ma',
             component: DocIn,
         },
-
+        {
+            path: '/work/keyWM',
+            name: 'ma',
+            component: KeyWordManage,
+ 
+        },
 
         {
             path: '/recovery',

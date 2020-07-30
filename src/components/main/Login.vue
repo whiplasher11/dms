@@ -247,12 +247,14 @@ export default {
           console.log(logindata)
           this.postKeyValueRequest("/login", logindata)
             .then(resp => {
-
-
               if (resp) {
                 console.log(resp)
                 if(resp.code==0){
-                  window.sessionStorage.setItem("token",resp.data.token)
+                  var thistoken=resp.data.token.split('"')[1];
+                  if(thistoken==null) thistoken=resp.data.token; 
+                  window.sessionStorage.setItem("token",thistoken)
+                  window.sessionStorage.setItem("userId",this.loginForm.username)
+
                             this.$message({
                         type: "success",
                         message: "登录成功!"

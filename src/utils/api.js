@@ -6,22 +6,33 @@ import router from '../router'
 
 axios.interceptors.response.use(success => {
     
-    if (success.status && success.status == 200 && success.data.code == 1000) {   //第一个status是http响应码
+    if (success.status && success.status == 500) {   //第一个status是http响应码
         Message.error({message: success.data.message})
         return;
     }
-    if (success.data.code==200) {
+    else if (success.data.code==200) {
         Message.success({message: success.data.message})
+    }
+    else if(success.data.code==1102){
+        Message.error({message: '用户名或手机号已被注册'})
+    }
+    else if(success.data.code==1107){
+        Message.error({message: '未获得授权，请重新登录或联系管理员购买'})
     }
     return success.data;
 }, error => {
     if(error.response.status==100){return error.response}
+    if(error.response.status==500){
+        // console.log(error)
+        // Message.error({message:"身份过期，请重新登录"})
+       
+        return error.response}
     if (error.response.status == 504 || error.response.status == 404) {
         Message.error({message: '服务器被吃了( ╯□╰ )'})
     } else if (error.response.status == 403) {
         Message.error({message: '权限不足，请联系管理员'})
     } else if (error.response.status == 401) {
-        Message.error({message: '尚未登录，请登录'})
+        Message.error({message: '尚未登录，请登录!!'})
         router.replace('/');
     } else {
         if (error.response.data.massage) {
@@ -60,7 +71,8 @@ export const postRequest = (url, params) => {   // tlq1
         data: params,
         headers: {
             'Content-Type': 'application/json',
-            token:sessionStorage.getItem('token')
+            token:sessionStorage.getItem('token')?(sessionStorage.getItem('token').split('"')[1]||sessionStorage.getItem('token')):null,
+            authId:sessionStorage.getItem('authId')||''
         }
     })
 }
@@ -83,7 +95,7 @@ export const getRequest = (url, params) => {
         data: params,
         headers: {
             'Content-Type': 'application/json',
-            token:sessionStorage.getItem('token').split('"')[1]||sessionStorage.getItem('token')
+            token:sessionStorage.getItem('token')?(sessionStorage.getItem('token').split('"')[1]||sessionStorage.getItem('token')):null
         }
     })
 }

@@ -17,13 +17,13 @@ const store = new Vuex.Store({
         alreadyDocs:[
             {
                 docAbout:'关键字',
-                docSeq:'序列号' ,
+                docSeq:'222' ,
                 docNumber:'未排件号盒号'
 
             },
             {
                 docAbout:'关键字',
-                docSeq:'序列号' ,
+                docSeq:'2223' ,
                 docNumber:'未排件号盒号'
 
             },

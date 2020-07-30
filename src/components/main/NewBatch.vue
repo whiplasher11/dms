@@ -3,6 +3,8 @@
     <div class="Card" v-show="step==1">
       <div class="newTip">新建一批档案工作</div>
 
+      <div class="organModify" @click="modifyOrgan">管理</div>
+
       <el-form v-if="true" ref="BatchForm" :model="BatchForm" label-width="30%" class="batchForm">
         <el-form-item  prop="historyAuth" label="选择或填写单位：">
           <el-select
@@ -248,12 +250,12 @@ export default {
         docType: "",
         docTypeCode:'',
         lastBox: {
-          yongjiu: 0,
-          changqi: 0,
-          beicha: 0,
-          y100: 0,
-          y30: 0,
-          y10: 0
+          yongjiu: "0",
+          changqi: "0",
+          beicha: "0",
+          y100: "0",
+          y30: "0",
+          y10: "0"
         },
         priority: [],
         rule:'',
@@ -264,7 +266,7 @@ export default {
       historyAuths: [
         {
           authCode: 22,
-          authName: "尚无历史记录，请新建"
+          authName: "尚无历史记录，请输入"
         },
         {
           authCode: 23,
@@ -323,9 +325,32 @@ export default {
     };
   },
   created() {
-       this.getRequest("/organs")  .then(resp => {
+       this.getRequest("/organs").then(resp => {
+         if(resp.data.status==500){
+                              this.$message({
+                            type: 'error',
+                            message: resp.data.message
+                        });
+           this.$router.push("/login")
+
+         }
+       
+        console.log(resp)
      var organs=resp.data;
+     if(organs==null){
+       this.historyAuths= [
+        {
+          authCode: 22222,
+          authName: "尚无历史记录，请输入"
+        },
+        {
+          authCode: 33333,
+          authName: "如输入慈利县档案局"
+        }
+      ]
+     }else{
      this.historyAuths=organs;
+     }
    })
 
     if (
@@ -333,10 +358,11 @@ export default {
       sessionStorage.getItem("user").level == 1
     ) {
       this.getRequest(
-        "/organs",
-        sessionStorage.getItem(user).userId
+        "/organs"
       ).then(res => {
-        this.historyAuths = res.data;
+        if(res.data){
+          this.historyAuths = res.data;
+        }
       });
     } //加载用户的历史整档单位
 
@@ -352,8 +378,9 @@ export default {
       "-" +
       this.conver(month) +
       "-" +
-      this.conver(date) +
-      
+      this.conver(date) +"-" +
+      this.conver(h) +
+      "-" +this.conver(m) +
       "归档批";
 
     this.BatchForm.batchName = now;
@@ -379,6 +406,10 @@ export default {
   },
 
   methods: {
+    modifyOrgan(){
+        this.$router.push("/work/modifyOrgan");
+        
+    },
 
     huiche(){
       alert(1)
@@ -391,25 +422,17 @@ let b = this.BatchForm.priority;
 
 
 for(var key in b){
-  // console.log(key)
-    // var newKey=a
-
     var newKey=a[key]
-    // console.log("a['"+key+"']")
-    // console.log(a['first'])
-    // var newKey= eval("a['"+key+"']");
-    // console.log(newKey)
-
-    // console.log("111"+a['level'])
     b[newKey] = b[key];
     delete b[key];
 }
 
 // console.log("aaa");
 // console.log(b)
-b=JSON.stringify(b)
+// b=JSON.stringify(b)
 // console.log("after")
 // console.log(b)
+
       this.BatchForm.rule=b;
 
 
@@ -427,9 +450,52 @@ b=JSON.stringify(b)
         authCode:this.BatchForm.authCode
       }
 
-      this.postKeyValueRequest("/organ", JSON.stringify(organObj))
+      this.postRequest("/organ", JSON.stringify(organObj))
             .then(resp => {
-              console.log(resp)
+              if(resp){ //新建单位后拿到单位id存入session  （已存在的时候 code=1202 ,data 有问题）
+              if(resp.code==1107){
+                this.$router.push("/home");
+                
+              }
+              if(resp.code==0){
+                                window.sessionStorage.setItem("authId",resp.data.id)
+                window.sessionStorage.setItem("authCode",resp.data.authCode)
+                window.sessionStorage.setItem("docTypeCode",this.BatchForm.docTypeCode)
+              }
+
+              }
+              
+            }).then(r=>{
+
+               var docTypetemp='official'
+      if(this.BatchForm.docType==2){
+        docTypetemp='science'
+      }else if(this.BatchForm.docType==3){
+        docTypetemp='personnel'
+      }else if(this.BatchForm.docType==4){
+        docTypetemp='business'
+      }
+      sessionStorage.setItem("docType",docTypetemp)
+
+       var batchobj= {
+          authId:sessionStorage.getItem("authId"),
+          batchName:this.BatchForm.batchName,
+          // rule:JSON.stringify(this.BatchForm.rule),
+          rule:this.BatchForm.rule,
+          // lastBox:JSON.stringify(this.BatchForm.lastBox)
+          lastBox:this.BatchForm.lastBox
+        }
+  console.log("提交了organ后提交的批次信息")
+  console.log(batchobj)
+  this.postRequest(   //注意防止重复提交
+        "/work",JSON.stringify(batchobj)
+        ).then(resp => {
+              if(resp.data&&resp.code==0){
+                window.sessionStorage.setItem("batchId",resp.data.id)
+                this.$router.push("/work/docInput");
+                
+              }
+            })
             })
 
 //新建单位
@@ -437,25 +503,7 @@ b=JSON.stringify(b)
 
 
 
-         var docTypetemp='official'
-      if(this.BatchForm.docType==2){
-        docTypetemp='science'
-      }else if(this.BatchForm.docType==3){
-        docTypetemp='personnel'
-      }else{
-        docTypetemp='business'
-      }
-      sessionStorage.setItem("docType",docTypetemp)
-
-       var batchobj= {
-          authId:x,
-          batchName:this.BatchForm.batchName
-        }
-
- this.postRequest(   //注意防止重复提交
-        "/work",JSON.stringify(batchobj)
-
-        )
+        
     },
 
     nextStep() {
@@ -531,7 +579,11 @@ b=JSON.stringify(b)
       })
       name=name.authName  //obj的lable
       this.BatchForm.authName=name
-      this.BatchForm.authCode=id;
+      var tempId=JSON.stringify(id)
+      while(tempId.length!=5){
+        tempId='0'+tempId
+      }
+      this.BatchForm.authCode=tempId;
     },
 
     selectBlur(e) {  
@@ -624,5 +676,27 @@ b=JSON.stringify(b)
     top: 0.5rem;
     text-align: center;
   }
+
+  .organModify{
+    position: absolute;
+    width: 10%;
+    top: 3.6rem;
+    right: 3.8rem;
+    text-align: center;
+    border: solid 0.1rem;
+    z-index: 999;
+
+  }
+
+  
+ 
 }
+
+ .organModify:hover {
+    cursor: pointer;
+    color: #476bb3d8;
+    z-index: 999;
+    border: solid 0.1rem;
+    border-color: rgb(33, 63, 163);
+  }
 </style>

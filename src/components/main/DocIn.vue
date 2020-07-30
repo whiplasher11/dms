@@ -13,7 +13,7 @@
       
     </div>
 
-    <el-form class="docInForm" label-width="10rem">
+    <el-form class="docInForm" ref="docForm" :model="docForm" label-width="10rem">
       <!-- <div class="docTypeTitle">sessionStorage批次</div> -->
       <div class="docSeqTip">本份文件唯一序列号：{{this.docForm.docSeq}}</div>
 
@@ -220,7 +220,7 @@
             添加档案
         </el-button>
 
-        <el-button type="primary" size="big" style="margin-left:10%"> 
+        <el-button type="primary" size="big" style="margin-left:10%" @click="resetDocIn"> 
             清空列表
         </el-button>
 
@@ -239,81 +239,106 @@ export default {
 
   data() {
     return {
+      manageKeyWordTime:1,
       keyWordEdit: false,
 
       docLevels:[
         {
           name:'部级',
-          value:6
+          value:'部级'
         },
                 {
           name:'省级',
-          value:5
+          value:'省级'
         },
                 {
           name:'市级',
-          value:4
+          value:'市级'
         },
                 {
           name:'县级',
-          value:3
+          value:'县级'
         },
                 {
           name:'本级',
-          value:2
+          value:'本级'
         },
                 {
           name:'乡级',
-          value:1
+          value:'乡级'
         },
       ],
   
       docTimeDues:[
         {
           name:'永久',
-          value:6
+          value:'永久'
         },
                 {
           name:'备查',
-          value:5
+          value:'备查'
         },
                 {
           name:'长期',
-          value:4
+          value:'长期'
         },
                 {
           name:'100年',
-          value:3
+          value:'100年'
         },
                 {
           name:'30年',
-          value:2
+          value:'30年'
         },
                 {
           name:'10年',
-          value:1
+          value:'10年'
         },
       ],
  docSecrets:[
         {
           name:'无',
-          value:4
+          value:''
         },
                 {
           name:'秘密',
-          value:3
+          value:'秘密'
         },
                 {
           name:'机密',
-          value:2
+          value:'机密'
         },
                 {
           name:'绝密',
-          value:1
+          value:'绝密'
         },
       ],
       docForm: {
         docSeq:'',//序列号，标识文件
+        docType:'', 
+        docTitle: "今天的猪肉12元", //标题
+        docAbout: "民生",
+        keyWord: "猪肉", //关键字
+        docDesc: "", //文号
+        sortYear: "2019",
+        docDate: "20190808",
+        docTypeCode: "",
+        docLevel: "",
+        docDescAbbr: "", //责任者简称
+        docDutyAuthor:'',  //责任者
+        docTimeDue:'yongjiu',  //文件期限
+        docSecret:'',//文件密级
+        docPages:'',
+        docRemark:'',  //备注
+        docNumber:'', //件号
+        boxNumber:'', //盒号
+        docDescNum:'',//文号中的序号
+      },
+
+            docFormKong: {
+        docSeq:'',//序列号，标识文件
+      docSeq:'',//序列号，标识文件
+        docType:'', 
         docTitle: "", //标题
         docAbout: "",
         keyWord: "", //关键字
@@ -330,26 +355,7 @@ export default {
         docRemark:'',  //备注
         docNumber:'', //件号
         boxNumber:'', //盒号
-      },
-
-            docFormKong: {
-        docSeq:'',//序列号，标识文件
-        docTitle: "", //标题
-        docAbout: "",
-        keyWord: "", //关键字
-        docDesc: "", //文号  责任者简称+[文件日期的年份]+{件号}号  //提交为空
-        sortYear: "",
-        docDate: "",
-        docTypeCode: "",
-        docLevel: "",
-        docDescAbbr: "", //责任者简称
-        docDutyAuthor:'',  //责任者
-        docTimeDue:'',  //文件期限
-        docSecret:'',//文件密级
-        docPages:'',
-        docRemark:'',  //备注
-        docNumber:'', //件号
-        boxNumber:'', //盒号
+        docDescNum:'',//文号中的序号
       
       },
       aiInput:false,
@@ -361,6 +367,10 @@ export default {
     };
   },
   methods: {
+    resetDocIn(){
+      this.docForm=Object.assign({}, this.docFormKong);
+      console.log(this.docFormKong)
+    },
     checkAdd(){
       if(this.docForm.docTitle==""||this.docForm.keyWord==""||this.docForm.sortYear==""||this.docForm.docAbout==""
       ||this.docForm.docDate==""||this.docForm.docLevel==""||this.docForm.docDutyAuthor==""||this.docForm.docPages==""||this.docForm.docTimeDue=="")
@@ -374,15 +384,56 @@ export default {
               //   docSeq:this.docForm.docSeq ,
               //   docNumber:''})
               this.$store.state.alreadyDocs.unshift(this.docForm)
+      var docObj={
+        // userId:JSON.stringify(sessionStorage.getItem("userId")),
+        userId:7,
+
+        authId:sessionStorage.getItem("authId"),
+        batchId:sessionStorage.getItem("batchId"),
+        docDate:this.docForm.docDate,
+        docNum:100, //????
+        docPage:this.docForm.docPages,
+        docSequence:this.docForm.docSequence,
+        docTitle:this.docForm.docTitle,
+        docType:sessionStorage.getItem("docType"),
+        keyword:this.docForm.keyWord,
+        remark:this.docForm.remark,
+        deadline:this.docForm.docTimeDue, 
+        docAbout:this.docForm.docAbout,
+        docDesc:this.docForm.docDescAbbr+'['+this.docForm.docDate.substring(0,4)+']'+this.docForm.docDescNum+'号',//文号
+        docPage:this.docForm.docPages,
+        docDescAuthor:this.docForm.docDutyAuthor,
+        docDescNum:this.docForm.docDescNum,
+        docLevel:this.docForm.docLevel,
+        docSecret:this.docForm.docSecret,
+        docTypeCode:sessionStorage.getItem("docTypeCode"),
+        dutyAuthor:this.docForm.docDutyAuthor,
+        sortYear:this.docForm.sortYear
+      }
+        var pathToDoc="/document/"+sessionStorage.getItem("docType")
+        this.postRequest(   //注意防止重复提交
+        pathToDoc,JSON.stringify(docObj)
+        ).then(resp => {
+              console.log("tijiao文件")
+
+              console.log(docObj)
+              console.log("tijiao文件的结果")
+              console.log(resp)
+
+
+
+            })
+       
+
 
       this.keyWordEdit=false;
       this.docForm.keyWord=''
-
       this.docForm.docSeq=this.genId(6,62);
       this.docForm.docDate.replace('-','')
       console.log(this.docForm)
       this.docForm.docTitle='';
       this.docPages=''
+
 
 
 
@@ -404,23 +455,34 @@ export default {
         //todo1  查询是否有关键字
 
         var tip = "";
-        this.$confirm(
-          "检测到新的关键字和对应分类，是否添加入库，以便更快录入",
+        if(true){
+          manageKeyWordTime++;
+          if(manageKeyWordTime%10==0){
+          this.$confirm(
+          "检测到10个新的关键字："+this.docForm.keyWord+" , 和对应分类"+ this.docForm.docAbout+"，是否添加入库，以便更快录入",
           "提示",
           {
             cancelButtonClass: "btn-custom-cancel",
-            confirmButtonText: "确定",
-            cancelButtonText: "取消",
+            confirmButtonText: "前往管理",
+            cancelButtonText: "我稍后前往",
             type: "warning"
           }
         )
           .then(() => {
-            this.$message({
-              type: "success",
-              message: "已添加"
-            });
+           this.$router.push("/work/keyWM")
+            
+            // this.$message({
+            //   type: "success",
+            //   message: "已添加"
+            // });
           })
-          .catch(() => {});
+          .catch(() => {
+
+          });
+          }
+
+        }
+
       }
     },
     titleComplete() {
@@ -665,7 +727,7 @@ export default {
 .docInForm {
   position: relative;
   padding-top: 4rem;
-  top: 8rem;
+  top: 5rem;
   left: 20%;
   // height: 20rem;
   padding-bottom: 2rem;

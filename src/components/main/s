@@ -1,25 +1,23 @@
-.el-input__inner {
-    &::placeholder {
-        color: rgba(116, 86, 86, 0.507);
-    }
 
-    &::-webkit-input-placeholder {
-        /* WebKit browsers 适配谷歌 */
-        color: rgba(116, 86, 86, 0.507);
-    }
 
-    &:-moz-placeholder {
-        /* Mozilla Firefox 4 to 18 适配火狐 */
-        color: rgba(116, 86, 86, 0.507);
-    }
 
-    &::-moz-placeholder {
-        /* Mozilla Firefox 19+ 适配火狐 */
-        color: rgba(116, 86, 86, 0.507);
-    }
 
-    &:-ms-input-placeholder {
-        /* Internet Explorer 10+  适配ie*/
-        color: rgba(116, 86, 86, 0.507);
-    }
+
+
+1、新建单位 /organ 的时候还需要添加一个根据authCode是否已存在的判断，都不重复则新建，重复不重复都返回单位id(自增的)
+现在返回是这样
+{
+    "code": 1201,
+    "message": "单位已存在",
+    "data": null
 }
+
+2、管理员接口
+  /admin/users  判断管理员身份、查询出所有用户、有分页功能
+  结果包括 是否过期isOverTime ，到期时间  和其他基本信息
+
+  /admin/user/{username} 给某用户的过期时间从今天+1年
+
+  /admin/userBan/{username} 某用户变回游客权限()
+
+

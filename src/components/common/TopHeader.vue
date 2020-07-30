@@ -24,7 +24,7 @@
 
         <li class="a" @click="goHome()" v-if="true">首页</li>
 
-        <li class="a" v-if="true" @click="goPatient()">档案录入</li>
+        <li class="a" v-if="true" @click="goDocIn()">档案录入</li>
 
         <li class="a" v-if="kind==3">
           <div
@@ -229,8 +229,8 @@ export default {
 
       this.$router.push("/user");
     },
-    goPatient() {
-      this.$router.push("/mypatient");
+    goDocIn() {
+      this.$router.push("/work/docInput");
     },
     goHistory() {
       this.$router.push("/history");

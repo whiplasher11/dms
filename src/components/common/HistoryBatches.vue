@@ -9,7 +9,7 @@
       </div>
 
       
-        <div v-for="item in this.$store.state.alreadyDocs" :key="item" @click="checkThisDoc(item.docSeq)" class="leftItem animated fadeInLeft" style="width:65%;height:4.2rem;float:left;background-color: rgb(92, 96, 160);
+        <div v-for="item in this.$store.state.alreadyDocs" v-on:mouseover="fixShow()" v-on:mouseleave="fixHide()" :key="item"  class="leftItem animated fadeInLeft" style="width:65%;height:4.2rem;float:left;background-color: rgb(92, 96, 160);
     box-shadow: 0 0 0.5rem #909399;
     border-radius: .8rem;
     cursor: pointer;
@@ -21,6 +21,7 @@
     "
     
     >
+          <div class="leftMask" @click="checkThisDoc(item.docSeq)">修改</div>
           <div class="leftPic"></div>
           <div class="leftKeyWord">{{item.docAbout}} </div>
           <div class="leftSeq">识别号： {{item.docSeq}}</div>
@@ -39,6 +40,8 @@ import 'vuescroll/dist/vuescroll.css';
 export default {
   data(){
     return{
+      showFixFlag:false,
+
         ops: {
                     vuescroll: {},
                     scrollPanel: {},
@@ -61,6 +64,12 @@ export default {
     }
   },
   methods:{
+    fixShow(){
+      this.showFixFlag=true;
+    },
+        fixHide(){
+      this.showFixFlag=false;
+    },
     checkThisDoc(docSeq){
       // /document/list/page/{type}
       var path='/document/list/page/'+sessionStorage.getItem('docType')
@@ -86,6 +95,25 @@ export default {
 </style>
 
 <style lang="scss" scoped>
+
+.leftMask{
+  position: absolute;
+  right:- 6.1rem;
+    width: 10rem;
+    height: 3rem;
+    text-align: center;
+    line-height: 3rem;
+  background-color: rgba(180, 84, 116, 0.041)
+}
+
+.leftMask:hover{
+  background-color: rgba(253, 4, 58, 0.774);
+    right: 0.1rem;
+    color:white;
+    width: 3rem;
+
+}
+
 
 .leftKeyWord{
 

@@ -28,6 +28,15 @@ import vuescroll from 'vuescroll';
 import 'vuescroll/dist/vuescroll.css';
 Vue.use(vuescroll);
 Vue.use(animate)
+
+Vue.filter('formatKeyWordKey',function(value){
+    return Object.keys(value)[0]||"暂无"
+    
+});
+Vue.filter('formatKeyWordValue',function(value){
+    return Object.values(value)[0]||"暂无"
+    
+});
 // router.beforeEach((to, from, next) => {
 //     if (to.path == '/') {
 //         next();
