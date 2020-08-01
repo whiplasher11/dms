@@ -10,6 +10,7 @@ import newBatch from './components/main/NewBatch.vue'
 import DocIn from './components/main/DocIn.vue'
 import ModifyOrgan from './components/main/ModifyOrgan.vue'
 import KeyWordManage from './components/main/KeyWordManage.vue'
+import DocInputDetail from './components/main/docInputDetail.vue'
 Vue.use(Router)
 
 export default new Router({
@@ -20,6 +21,12 @@ export default new Router({
             path: '/login',
             name: 'loginAndRegi',
             component: Login,
+            hidden: true
+        }, 
+        {
+            path: '/work/docInputd',
+            name: 'docInputd',
+            component: DocInputDetail,
             hidden: true
         }, 
         {

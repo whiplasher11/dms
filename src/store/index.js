@@ -16,15 +16,79 @@ const store = new Vuex.Store({
 
         alreadyDocs:[
             {
-                docAbout:'关键字',
-                docSeq:'222' ,
-                docNumber:'未排件号盒号'
+                userId:7,
+        authId:12,
+        batchId:22,
+        docDate:20181221,
+        docNum:100, //????
+        docPage:12,
+        docSequence:'df2kia',
+        docTitle:'今天的猪肉12元每斤',
+        docType:'official',
+        keyword:'猪肉',
+        remark:'',
+        deadline:'永久', 
+        docAbout:'综合类',
+        docDesc:'慈办'+'[2010]2号',
+        docPage:2,
+        docDescAuthor:'磁力公安局发文',
+        docDescNum:2,
+        docLevel:'部级',
+        docSecret:'',
+        docTypeCode:'WS',
+        dutyAuthor:'磁力公安局发文',
+        sortYear:2018
 
             },
             {
-                docAbout:'关键字',
-                docSeq:'2223' ,
-                docNumber:'未排件号盒号'
+                userId:7,
+        authId:12,
+        batchId:22,
+        docDate:20181221,
+        docNum:100, //????
+        docPage:12,
+        docSequence:'df2kia',
+        docTitle:'今天的猪肉12元每斤',
+        docType:'official',
+        keyword:'猪肉',
+        remark:'',
+        deadline:'永久', 
+        docAbout:'综合类',
+        docDesc:'慈办'+'[2010]2号',
+        docPage:2,
+        docDescAuthor:'磁力公安局发文',
+        docDescNum:2,
+        docLevel:'部级',
+        docSecret:'',
+        docTypeCode:'WS',
+        dutyAuthor:'磁力公安局发文',
+        sortYear:2018
+
+            },           {
+                userId:7,
+        authId:12,
+        batchId:22,
+        docDate:20181221,
+        docNum:100, //????
+        docPage:12,
+        docSequence:'df2kia',
+        docTitle:'今天的猪肉12元每斤',
+        docType:'official',
+        keyword:'猪肉',
+        remark:'',
+        deadline:'永久', 
+        docAbout:'综合类',
+        docDesc:'慈办'+'[2010]2号',
+        docPage:2,
+        docDescAuthor:'磁力公安局发文',
+        docDescNum:2,
+        docLevel:'部级',
+        docSecret:'',
+        docDescAuthor:'慈办发',
+        // dutyAuthor:'',
+        docTypeCode:'WS',
+        dutyAuthor:'磁力公安局发文',
+        sortYear:2018
 
             },
         ],

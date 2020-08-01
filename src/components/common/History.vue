@@ -2,14 +2,17 @@
   <div class="left_history_batches">
         <vue-scroll :ops="ops">
       <div style="height:150vh;margin-top:4.6rem" >
-      <div style="height:8vh"> 
+      <div style="height:4.5rem" > 
         <!-- 搜索 -->
         <el-input class="leftInput"></el-input>
-         <el-button type="primary" icon="el-icon-search" @click="search" style="background-color:rgb(134, 151, 197);border:none;margin-top:2vh;">搜索</el-button>
+         <el-button type="primary" icon="el-icon-search"  style="background-color:rgb(134, 151, 197);border:none;margin-top:2vh;">搜索</el-button>
       </div>
 
-      
-        <div v-for="item in this.$store.state.alreadyDocs" v-on:mouseover="fixShow()" v-on:mouseleave="fixHide()" :key="item"  class="leftItem animated fadeInLeft" style="width:65%;height:4.2rem;float:left;background-color: rgb(92, 96, 160);
+      <div style="height:2rem;position:relative;">
+        <div class="detailList" style="margin-left:0.5rem;font-size:0.9rem;" @click="goDetail">点击查看本批详细列表</div>
+      </div>
+        <div v-for="item in this.$store.state.alreadyDocs" @click="checkThisDoc(item)" v-on:mouseover="fixShow()" 
+        v-on:mouseleave="fixHide()" :key="item.docSequence"  class="leftItem animated fadeInLeft" style="width:65%;height:4.2rem;float:left;background-color: rgb(92, 96, 160);
     box-shadow: 0 0 0.5rem #909399;
     border-radius: .8rem;
     cursor: pointer;
@@ -21,11 +24,11 @@
     "
     
     >
-          <div class="leftMask" @click="checkThisDoc(item.docSeq)">修改</div>
+          <div class="leftMask" @click="checkThisDoc(item)">修改</div>
           <div class="leftPic"></div>
           <div class="leftKeyWord">{{item.docAbout}} </div>
-          <div class="leftSeq">识别号： {{item.docSeq}}</div>
-          <div class="leftState">件号： {{item.docNumber==''?'未排':item.docNumber}}</div>
+          <div class="leftSeq">识别号： {{item.docSequence}}</div>
+          <div class="leftState">时间 {{item.docNumber==''?'未排':item.docNumber}}</div>
         </div>
         </div>
    
@@ -36,6 +39,7 @@
 
 <script>
 import 'vuescroll/dist/vuescroll.css';
+import Utils from '../../utils/doc.js'
 
 export default {
   data(){
@@ -64,22 +68,31 @@ export default {
     }
   },
   methods:{
+    goDetail(){
+           this.$router.push("/work/docInputd")
+      
+    },
+    emitThisDoc(doc) {
+      // console.log(doc)
+        Utils.$emit('changeThisDoc',doc);
+    },
+
     fixShow(){
       this.showFixFlag=true;
     },
         fixHide(){
       this.showFixFlag=false;
     },
-    checkThisDoc(docSeq){
+    checkThisDoc(doc){
       // /document/list/page/{type}
-      var path='/document/list/page/'+sessionStorage.getItem('docType')
-      var obj={"docSequence":docSeq}
-      console.log(obj)
-      obj=JSON.stringify(obj)
-      console.log(obj)
+      // var path='/document/list/page/'+sessionStorage.getItem('docType')
+      // var obj={"docSequenceuence":docSequence}
+      // console.log(obj)
+      // obj=JSON.stringify(obj)
+      // console.log(obj)
 
-      console.log(path)
-      
+      // console.log(path)
+      this.emitThisDoc(doc)
     },
   }
 
@@ -98,8 +111,8 @@ export default {
 
 .leftMask{
   position: absolute;
-  right:- 6.1rem;
-    width: 10rem;
+  right:- 20.1rem;
+    width: 36rem;
     height: 3rem;
     text-align: center;
     line-height: 3rem;
@@ -114,7 +127,10 @@ export default {
 
 }
 
-
+.detailList:hover{
+  cursor: pointer;
+  color: #ddd;
+}
 .leftKeyWord{
 
 }
@@ -154,6 +170,7 @@ export default {
     top:0;
     // top:4.5rem;
     overflow-y: auto;
+     overflow-x: hidden;
     
 }
 </style>

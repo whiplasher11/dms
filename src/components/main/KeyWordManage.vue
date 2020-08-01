@@ -216,11 +216,11 @@ export default {
       keyWordTemp:[
         {
           id:1,
-          tables:{'key1':""}  //可能
+          tables:{'问题':""}  //可能
         },
         {
           id:2,
-          tables:  {'key2':"4"},
+          tables:  {'责任者1':"4"},
         },
         {
           id:3,
@@ -228,11 +228,11 @@ export default {
         },
         {
           id:4,
-          tables:{'key4':"2"}
+          tables:{'财经类':"2"}
         },
         {
           id:5,
-          tables:{'key5':"1"}
+          tables:{'关键字22':"1"}
         },
       ],
     };
