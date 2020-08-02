@@ -17,6 +17,7 @@
                     <div class="itemInfo">件号</div>
                     <div class="itemInfo">盒号</div>
 
+                        <div style="clear:both"></div>
 
 
                     <!-- <div style="clear:both"></div> -->
@@ -40,6 +41,7 @@
                         <div style="float:left;margin-left=1rem" class="optionDiv">修改</div>
                         <div style="float:left" class="optionDiv">删除</div>
                     </div>
+                    <div style="clear:both"></div>
                     <!-- <div style="clear:both"></div> -->
                 </div>
             </div>

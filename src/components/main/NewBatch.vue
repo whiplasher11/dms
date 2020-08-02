@@ -461,6 +461,9 @@ for(var key in b){
                                 window.sessionStorage.setItem("authId",resp.data.id)
                 window.sessionStorage.setItem("authCode",resp.data.authCode)
                 window.sessionStorage.setItem("docTypeCode",this.BatchForm.docTypeCode)
+                // window.sessionStorage.setItem("authId",this.BatchForm.authId)
+
+
               }
 
               }
@@ -577,10 +580,13 @@ for(var key in b){
       name=this.historyAuths.find((item)=>{   //在历史记录里有这项选中的话就返回obj
         return item.authCode==id;
       })
+      window.sessionStorage.setItem('authId',name.id)
+      console.log(name)
+
       name=name.authName  //obj的lable
       this.BatchForm.authName=name
       var tempId=JSON.stringify(id)
-      while(tempId.length!=5){
+      while(tempId.length<5){
         tempId='0'+tempId
       }
       this.BatchForm.authCode=tempId;

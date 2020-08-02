@@ -30,8 +30,10 @@ axios.interceptors.response.use(success => {
     if (error.response.status == 504 || error.response.status == 404) {
         Message.error({message: '服务器被吃了( ╯□╰ )'})
     } else if (error.response.status == 403) {
+        window.sessionStorage.clear('userId')
         Message.error({message: '权限不足，请联系管理员'})
     } else if (error.response.status == 401) {
+        window.sessionStorage.clear('userId')
         Message.error({message: '尚未登录，请登录!!'})
         router.replace('/');
     } else {

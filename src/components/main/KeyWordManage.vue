@@ -3,20 +3,20 @@
     <div style="position:relative" class="wrapper">
       <div style="height:4.5rem;"></div>
       
-      <div style="position:absolute;top:6rem;font-size:1.5rem;width:100%;text-align:center">权重表管理</div>
+      <div style="position:absolute;top:6rem;font-size:1.5rem;width:100%;text-align:center">排件号规则管理</div>
 
       <div class="typeSelect" v-if="selectShow">
         <div style="width:3rem;height:2rem"></div>
 
-        <div class="selectItem">文书类档案问题(机构)权重表</div>
-        <div class="selectItem">文书类档案责任者权重表</div>
-        <div class="selectItem">文书类档案关键词权重表</div>
-        <div class="selectItem">科技类档案项目权重表</div>
-        <div class="selectItem">科技类档案责任者权重表</div>
-        <div class="selectItem">科技类档案关键词权重表</div>
-        <div class="selectItem">业务类档案问题权重表</div>
-        <div class="selectItem">业务类档案责任者权重表</div>
-        <div class="selectItem">业务类档案关键词权重表</div>
+        <div class="selectItem">文书类档案问题(机构)优先级设置</div>
+        <div class="selectItem">文书类档案责任者优先级设置</div>
+        <div class="selectItem">文书类档案关键词优先级设置</div>
+        <div class="selectItem">科技类档案项目优先级设置</div>
+        <div class="selectItem">科技类档案责任者优先级设置</div>
+        <div class="selectItem">科技类档案关键词优先级设置</div>
+        <div class="selectItem">业务类档案问题优先级设置</div>
+        <div class="selectItem">业务类档案责任者优先级设置</div>
+        <div class="selectItem">业务类档案关键词优先级设置</div>
 
 
 
@@ -26,7 +26,7 @@
       </div>
       <!-- 选择类型 -->
 
-      <div class="keyValueBox" @click="boxClick" >
+      <div class="keyValueBox" @click="boxClick" v-if="!selectShow">
         <div class="keyValueItem">
                     <div class="keyValueInfo" style="border:none;position:relative">优先级(越大越靠前）
           <el-button @click="saveKeyValue" type="success" class="kvButton" style="  position: absolute; right: 2rem;" v-if="saveBtnShow">保存修改</el-button>
@@ -211,7 +211,7 @@ export default {
       submitMap:new Map(),
       valueShow:true,
       timer: '',
-      selectShow:false,
+      selectShow:true,
 
       keyWordTemp:[
         {

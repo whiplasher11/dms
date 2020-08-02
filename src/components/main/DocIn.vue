@@ -121,7 +121,7 @@
             <el-input
               size="normal"
               type="text"
-              v-model="docForm.docDutyAuthor"
+              v-model="docForm.dutyAuthor"
               auto-complete="off"
               placeholder="输入档案责任者"
             ></el-input>
@@ -135,7 +135,7 @@
             <el-input
               size="normal"
               type="text"
-              v-model="docForm.docDescAbbr"
+              v-model="docForm.docDescAuthor"
               auto-complete="off"
               placeholder="文号中的责任者简称"
             ></el-input>
@@ -346,8 +346,8 @@ export default {
         docDate: "20190808",
         docTypeCode: "",
         docLevel: "",
-        docDescAbbr: "", //责任者简称
-        docDutyAuthor:'',  //责任者
+        docDescAuthor: "", //责任者简称
+        dutyAuthor:'',  //责任者
         docTimeDue:'yongjiu',  //文件期限
         docSecret:'',//文件密级
         docPages:'',
@@ -369,8 +369,8 @@ export default {
         docDate: "",
         docTypeCode: "",
         docLevel: "",
-        docDescAbbr: "", //责任者简称
-        docDutyAuthor:'',  //责任者
+        docDescAuthor: "", //责任者简称
+        dutyAuthor:'',  //责任者
         docTimeDue:'',  //文件期限
         docSecret:'',//文件密级
         docPages:'',
@@ -398,7 +398,7 @@ export default {
     },
     checkAdd(){
       if(this.docForm.docTitle==""||this.docForm.keyWord==""||this.docForm.sortYear==""||this.docForm.docAbout==""
-      ||this.docForm.docDate==""||this.docForm.docLevel==""||this.docForm.docDutyAuthor==""||this.docForm.docPages==""||this.docForm.docTimeDue=="")
+      ||this.docForm.docDate==""||this.docForm.docLevel==""||this.docForm.dutyAuthor==""||this.docForm.docPages==""||this.docForm.docTimeDue=="")
       return false;
       else return true;
     },
@@ -425,6 +425,9 @@ export default {
               //   docSequence:this.docForm.docSequence ,
               //   docNumber:''})
               this.$store.state.alreadyDocs.unshift(Object.assign({},this.docForm))
+              console.log(this.docForm.docDate)
+              console.log(typeof((this.docForm.docDate)))
+
       var docObj={
         // userId:JSON.stringify(sessionStorage.getItem("userId")),
         userId:7,
@@ -441,14 +444,14 @@ export default {
         remark:this.docForm.remark,
         deadline:this.docForm.docTimeDue, 
         docAbout:this.docForm.docAbout,
-        docDesc:this.docForm.docDescAbbr+'['+this.docForm.docDate.substring(0,4)+']'+this.docForm.docDescNum+'号',//文号
+        docDesc:this.docForm.docDescAuthor+'['+this.docForm.docDate.substring(0,4)+']'+this.docForm.docDescNum+'号',//文号
         docPage:this.docForm.docPages,
-        docDescAuthor:this.docForm.docDutyAuthor,
+        docDescAuthor:this.docForm.dutyAuthor,
         docDescNum:this.docForm.docDescNum,
         docLevel:this.docForm.docLevel,
         docSecret:this.docForm.docSecret,
         docTypeCode:sessionStorage.getItem("docTypeCode"),
-        dutyAuthor:this.docForm.docDutyAuthor,
+        dutyAuthor:this.docForm.dutyAuthor,
         sortYear:this.docForm.sortYear
       }
         var pathToDoc="/document/"+sessionStorage.getItem("docType")
@@ -502,14 +505,14 @@ export default {
         remark:this.docForm.remark,
         deadline:this.docForm.docTimeDue, 
         docAbout:this.docForm.docAbout,
-        docDesc:this.docForm.docDescAbbr+'['+this.docForm.docDate.substring(0,4)+']'+this.docForm.docDescNum+'号',//文号
+        docDesc:this.docForm.docDescAuthor+'['+this.docForm.docDate.substring(0,4)+']'+this.docForm.docDescNum+'号',//文号
         docPage:this.docForm.docPages,
-        docDescAuthor:this.docForm.docDutyAuthor,
+        docDescAuthor:this.docForm.dutyAuthor,
         docDescNum:this.docForm.docDescNum,
         docLevel:this.docForm.docLevel,
         docSecret:this.docForm.docSecret,
         docTypeCode:sessionStorage.getItem("docTypeCode"),
-        dutyAuthor:this.docForm.docDutyAuthor,
+        dutyAuthor:this.docForm.dutyAuthor,
         sortYear:this.docForm.sortYear
       }
         var pathToDoc="/document/"+sessionStorage.getItem("docType")

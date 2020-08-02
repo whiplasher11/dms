@@ -53,7 +53,8 @@
 
         <!-- <li @click="toHistory()">历史记录</li> -->
 
-        <li v-if="true" class="product a wrjlb" @click="goRecovery">历史批次</li>
+        <li v-if="true" class="product a wrjlb" @click="goCheckHistoryBat">查看</li>
+        <li v-if="true" class="product a wrjlb" @click="goKWM">设置</li>
 
         <li class="a" @click="goAboutUs()" v-if="kind==2">我的医生</li>
         <li>
@@ -64,22 +65,26 @@
             v-bind:class="[{malestyle:user.sex==1}, {femalestyle:user.sex==0}]"
           ></div>
         </li>
-        <li class="m_right user_controll a" @click="gologin" v-if="!(user)">登录</li>
+        <li class="m_right user_controll a" @click="gologin" v-if="!user">登录</li>
         <!-- 
         <li class="user_controll" v-if="$store.state.userInfo">
           <router-link to="/user" class="a user_controll" tag="span">
             您好：{{$store.state.userInfo.userName}}
           </router-link>
         </li>-->
-
         <li
+          @click="goUser(1)"
+          class="user_controll a"
+          v-if="user"
+        >{{user}}</li>
+        <!-- <li
           @click="goUser(1)"
           class="user_controll a"
           v-if="user"
           v-on:mouseover="changeUserShow()"
           v-on:mouseleave="resetUserShow()"
-        >{{user.nameZh}}</li>
-        <li @click="unLogin()" class="reLogin user_controll a" v-if="user">退出</li>
+        >{{user}}</li> -->
+        <!-- <li @click="unLogin()" class="reLogin user_controll a" v-if="user">退出</li> -->
       </ul>
     </div>
 
@@ -169,7 +174,7 @@ export default {
 
   computed: {
     user() {
-      return this.$store.state.user;
+      return sessionStorage.getItem("userId")||''
     },
     classObject: function() {
       return {
@@ -206,6 +211,14 @@ export default {
   },
 
   methods: {
+    goKWM(){
+            this.$router.push('/work/keyWM');
+
+    },
+    goCheckHistoryBat(){
+            this.$router.push('/work/modifyOrgan');
+
+    },
     fixTheTopHeader() {
       this.topHeaderFix = !this.topHeaderFix;
       this.switchColorflag = !this.switchColorflag;
@@ -216,25 +229,12 @@ export default {
     topHeaderHide() {
       this.showTopHeader = false;
     },
-    goAboutUs() {
-      this.$router.push("/aboutus");
-    },
-    goUser(num) {
-      if (num == 1) {
-        this.$store.info_state = 1;
-      }
-      if (num == 2) {
-        this.$store.info_state = 2;
-      }
 
-      this.$router.push("/user");
-    },
+
     goDocIn() {
-      this.$router.push("/work/docInput");
+      this.$router.push("/work/newBatch");
     },
-    goHistory() {
-      this.$router.push("/history");
-    },
+
     goRecovery() {
       this.$router.push("/recovery");
     },

@@ -37,6 +37,18 @@ Vue.filter('formatKeyWordValue',function(value){
     return Object.values(value)[0]||"暂无"
     
 });
+
+Vue.filter('formatAuthCode',function(value){
+    if(!value){
+        return '暂2无'
+    }
+    var h=JSON.stringify(value)
+    while(h.length<5){
+        h='0'+h
+    }
+    return h
+    
+});
 // router.beforeEach((to, from, next) => {
 //     if (to.path == '/') {
 //         next();

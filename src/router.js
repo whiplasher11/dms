@@ -11,16 +11,24 @@ import DocIn from './components/main/DocIn.vue'
 import ModifyOrgan from './components/main/ModifyOrgan.vue'
 import KeyWordManage from './components/main/KeyWordManage.vue'
 import DocInputDetail from './components/main/docInputDetail.vue'
+import Check from './components/main/HistoryBatches.vue'
 Vue.use(Router)
 
 export default new Router({
     // mode:'history',
     routes: [
 
+        
         {
             path: '/login',
             name: 'loginAndRegi',
             component: Login,
+            hidden: true
+        }, 
+        {
+            path: '/work/historyBatches',
+            name: 'hsit',
+            component: Check,
             hidden: true
         }, 
         {
