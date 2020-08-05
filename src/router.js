@@ -4,14 +4,14 @@ import Home from './views/Home.vue'
 import FriendChat from './views/chat/FriendChat.vue'
 import HrInfo from './views/HrInfo.vue'
 import Register from './views/Register.vue'
-import Recovery from './components/main/Recover.vue'
+import Main from './components/main/Main.vue'
 import Login from './components/main/Login.vue'
 import newBatch from './components/main/NewBatch.vue'
 import DocIn from './components/main/DocIn.vue'
 import ModifyOrgan from './components/main/ModifyOrgan.vue'
 import KeyWordManage from './components/main/KeyWordManage.vue'
 import DocInputDetail from './components/main/docInputDetail.vue'
-import Check from './components/main/HistoryBatches.vue'
+import Check from './components/main/CheckHistoryBatch.vue'
 Vue.use(Router)
 
 export default new Router({
@@ -26,7 +26,7 @@ export default new Router({
             hidden: true
         }, 
         {
-            path: '/work/historyBatches',
+            path: '/work/ssss',
             name: 'hsit',
             component: Check,
             hidden: true
@@ -52,7 +52,7 @@ export default new Router({
 
         {
             path: '/work/docInput',
-            name: 'ma',
+            name: 'docInput',
             component: DocIn,
         },
         {
@@ -63,9 +63,9 @@ export default new Router({
         },
 
         {
-            path: '/recovery',
-            name: 're',
-            component: Recovery,
+            path: '/home',
+            name: 'm',
+            component: Main,
             hidden: true
         },
         {
@@ -104,7 +104,7 @@ export default new Router({
         },
          {
             path: '*',
-            redirect: '/'
+            redirect: '/login'
         }
     ]
 })

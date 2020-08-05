@@ -68,23 +68,41 @@ export default {
       }
     },
     methods:{
-        batchDocs(item){
-            console.log(item)
-            // // /document/page/{type}/{batchId}
-            // var path='/document/page/{type}/{batchId}'
-            //               axios.get('/work/list', {
-            //       headers:{
-            // 'Content-Type': 'application/json',
-            // 'authId':item.id,
-            // token:sessionStorage.getItem('token')?(sessionStorage.getItem('token').split('"')[1]||sessionStorage.getItem('token')):null,
+        batchDocs(item){ //查看某批
+            // console.log(item)
+            // /document/page/{type}/{batchId}
+            window.sessionStorage.setItem('docType',item.docType)
+            window.sessionStorage.setItem('docTypeCode',item.docTypeCode)
 
-            //       }
-            //   })
+
+            var path='/document/page/'+item.docType+'/'+item.id+'?pageNow=0&pageSize=1000'
+                          axios.get(path, {
+                  headers:{
+            'Content-Type': 'application/json',
+            'authId':sessionStorage.getItem('checkAuthId'),
+            token:sessionStorage.getItem('token')?(sessionStorage.getItem('token').split('"')[1]||sessionStorage.getItem('token')):null,
+
+                  }
+              }).then(resp=>{
+                  console.log(resp)
+
+                  this.$store.state.alreadyDocs=resp.data.content
+            this.$router.push('/work/docInputD')
+
+              })
+
+               
         },
         backOrgans(){
             this.organsShow=true
         },
         checkThisOrganBat(item){
+            // console.log("item")
+
+            // console.log(item)
+            window.sessionStorage.setItem('authId',item.authId)
+
+            window.sessionStorage.setItem('checkAuthId',item.id)
               axios.get('/work/list', {
                   headers:{
             'Content-Type': 'application/json',

@@ -41,6 +41,9 @@ export default {
 },
 mounted(){
 	this.runInv()
+			
+	       this.getRequest("/organ/5").then(resp => {
+      console.log(resp)})
 },
 methods: {
 		runInv() {

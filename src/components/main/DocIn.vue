@@ -177,7 +177,7 @@
         <el-col :span="12">
           <el-form-item prop="batchName" label="文件期限：">
             <el-select
-              v-model="docForm.docTimeDue"
+              v-model="docForm.deadline"
               placeholder="选择文件期限"
             >
               <el-option
@@ -243,6 +243,7 @@ import Utils from '../../utils/doc.js'
 import Left from "../common/History";
 
 export default {
+  name: 'docInput',
   components: {
     Left: Left
   },
@@ -344,11 +345,11 @@ export default {
         docDesc: "", //文号
         sortYear: "2019",
         docDate: "20190808",
-        docTypeCode: "",
+        docTypeCode: sessionStorage.getItem('docTypeCode'),
         docLevel: "",
         docDescAuthor: "", //责任者简称
         dutyAuthor:'',  //责任者
-        docTimeDue:'yongjiu',  //文件期限
+        deadline:'',  //文件期限
         docSecret:'',//文件密级
         docPages:'',
         docRemark:'',  //备注
@@ -371,7 +372,7 @@ export default {
         docLevel: "",
         docDescAuthor: "", //责任者简称
         dutyAuthor:'',  //责任者
-        docTimeDue:'',  //文件期限
+        deadline:'',  //文件期限
         docSecret:'',//文件密级
         docPages:'',
         docRemark:'',  //备注
@@ -398,7 +399,7 @@ export default {
     },
     checkAdd(){
       if(this.docForm.docTitle==""||this.docForm.keyWord==""||this.docForm.sortYear==""||this.docForm.docAbout==""
-      ||this.docForm.docDate==""||this.docForm.docLevel==""||this.docForm.dutyAuthor==""||this.docForm.docPages==""||this.docForm.docTimeDue=="")
+      ||this.docForm.docDate==""||this.docForm.docLevel==""||this.docForm.dutyAuthor==""||this.docForm.docPages==""||this.docForm.deadline=="")
       return false;
       else return true;
     },
@@ -442,11 +443,11 @@ export default {
         docType:sessionStorage.getItem("docType"),
         keyword:this.docForm.keyWord,
         remark:this.docForm.remark,
-        deadline:this.docForm.docTimeDue, 
+        deadline:this.docForm.deadline, 
         docAbout:this.docForm.docAbout,
         docDesc:this.docForm.docDescAuthor+'['+this.docForm.docDate.substring(0,4)+']'+this.docForm.docDescNum+'号',//文号
         docPage:this.docForm.docPages,
-        docDescAuthor:this.docForm.dutyAuthor,
+        docDescAuthor:this.docForm.docDescAuthor,
         docDescNum:this.docForm.docDescNum,
         docLevel:this.docForm.docLevel,
         docSecret:this.docForm.docSecret,
@@ -503,7 +504,7 @@ export default {
         docType:sessionStorage.getItem("docType"),
         keyword:this.docForm.keyWord,
         remark:this.docForm.remark,
-        deadline:this.docForm.docTimeDue, 
+        deadline:this.docForm.deadline, 
         docAbout:this.docForm.docAbout,
         docDesc:this.docForm.docDescAuthor+'['+this.docForm.docDate.substring(0,4)+']'+this.docForm.docDescNum+'号',//文号
         docPage:this.docForm.docPages,
@@ -643,6 +644,13 @@ export default {
   },
   created() {
       this.docForm.docSequence=this.genId(6,62);
+      if(this.$store.state.tempDoc){
+        this.fixDocFlag=true;
+        console.log(this.$store.state.tempDoc)
+        this.docForm=Object.assign({},this.$store.state.tempDoc)
+        this.$store.state.tempDoc=''
+      }    
+
   }
 };
 </script>

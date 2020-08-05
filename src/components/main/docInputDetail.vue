@@ -26,20 +26,20 @@
                  <div class="detailItem"  v-for="item in this.$store.state.alreadyDocs" :key="item.docSequence">
                     <div class="itemInfo" >{{item.docSequence}}</div>
                     
-                    <div class="itemInfo">{{authCode+'-'+item.docTypeCode+'·'+item.sortYear+'-'+item.deadline+'-'+item.docAbout+item.docNum}}</div>
+                    <div class="itemInfo">{{authCode+'-'+item.docTypeCode+'·'+item.sortYear+'-'+item.deadline+'-'+item.docAbout+(item.docNum?item.docNum:'暂无')}}</div>
                     <!-- 档号 -->
-                    <div class="itemInfo">{{item.docDescAuthor+'['+item.sortYear+']'+item.docNum+"号"}}</div>
+                    <div class="itemInfo">{{item.docDescAuthor+'['+item.sortYear+']'+(item.docNum?item.docNum:'暂无')+"号"}}</div>
                     <div class="itemInfo">{{item.dutyAuthor}}</div>
-                    <div class="itemInfo" style="font-size:0.6rem;width:10%">股阿奴啊实打阿大为降低哦按文件袋大江网IDOA我我我的就爱我的基督教爱我家傲娇吊我</div>
-                    <div class="itemInfo">20100808</div>
-                    <div class="itemInfo">机密</div>
-                    <div class="itemInfo">55</div>
-                    <div class="itemInfo" style="font-size:0.6rem;width:10%">奥迪jaw我我的就爱我激动我安慰奖地哦啊为奇偶ID叫我</div>
-                    <div class="itemInfo">2</div>
-                    <div class="itemInfo">5</div>
+                    <div class="itemInfo" style="font-size:0.6rem;width:10%">{{item.docTitle}}</div>
+                    <div class="itemInfo">{{item.docDate}}</div>
+                    <div class="itemInfo">{{item.docSecret?item.docSecret:'&nbsp;'}}</div>
+                    <div class="itemInfo">{{item.docPage}}</div>
+                    <div class="itemInfo" style="font-size:0.6rem;width:10%">{{item.remark?item.remark:'&nbsp;'}}</div>
+                    <div class="itemInfo">{{(item.docNum?item.docNum:'暂无')}}</div>
+                    <div class="itemInfo">{{(item.boxSeq?item.boxSeq:'暂无')}}</div>
                     <div class="itemInfo" style="width:10%">
-                        <div style="float:left;margin-left=1rem" class="optionDiv">修改</div>
-                        <div style="float:left" class="optionDiv">删除</div>
+                        <div style="float:left;margin-left=1rem" class="optionDiv" @click="fixThisItem(item)">修改</div>
+                        <div style="float:left" class="optionDiv" @click="deleteThisItem(item)">删除</div>
                     </div>
                     <div style="clear:both"></div>
                     <!-- <div style="clear:both"></div> -->
@@ -50,6 +50,8 @@
 </template>
 
 <script>
+import Utils from '../../utils/doc.js'
+
 export default {
       computed: {
     authCode() {
@@ -67,6 +69,17 @@ export default {
         focusOnThis(e){
 
         },
+
+        fixThisItem(item){
+      this.$store.state.tempDoc=item
+        item.sortYear=JSON.stringify(item.sortYear)
+            this.$router.push('/work/docInput')
+        },
+
+        deleteThisItem(){},
+    },
+    created(){
+        this
     },
     mounted(){
         // this.authCode=sessionStorage.getItem('authCode')||'错误'

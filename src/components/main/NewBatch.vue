@@ -6,11 +6,10 @@
       <div class="organModify" @click="modifyOrgan">管理</div>
 
       <el-form v-if="true" ref="BatchForm" :model="BatchForm" label-width="30%" class="batchForm">
-        <el-form-item  prop="historyAuth" label="选择或填写单位：">
+        <el-form-item prop="historyAuth" label="选择或填写单位：">
           <el-select
             @blur="selectBlur"
             @change="selectAuthChange"
-            
             ref="authSelectref"
             id="selectAuth"
             filterable
@@ -26,7 +25,6 @@
           </el-select>
         </el-form-item>
 
-        
         <el-form-item prop="batchName" label="单位全宗号：">
           <el-input
             size="normal"
@@ -49,7 +47,7 @@
           </el-select>
         </el-form-item>
 
-          <el-form-item prop="batchName" label="档案类型代码：">
+        <el-form-item prop="batchName" label="档案类型代码：">
           <el-input
             size="normal"
             type="text"
@@ -65,14 +63,11 @@
             size="normal"
             type="text"
             class="textInput"
-
             v-model="BatchForm.batchName"
             auto-complete="off"
             placeholder="给本批次命名"
           ></el-input>
         </el-form-item>
-
-    
 
         <el-form-item label="自定义排件号优先级：">
           <el-checkbox
@@ -164,8 +159,8 @@
 
     <div class="Card" v-if="step==2">
       <div class="newTip">设置本单位档案盒</div>
-  <el-form v-if="true" ref="BatchForm" :model="BatchForm" label-width="30%" class="batchForm">
-          <el-form-item label="本单位盒号：">填写需要用到的盒子类型的上一盒盒号即可</el-form-item>
+      <el-form v-if="true" ref="BatchForm" :model="BatchForm" label-width="30%" class="batchForm">
+        <el-form-item label="本单位盒号：">填写需要用到的盒子类型的上一盒盒号即可</el-form-item>
         <el-form-item prop="lastBox" label="永久盒：">
           <el-input
             size="normal"
@@ -229,8 +224,7 @@
         <el-button type="primary" class="midBtn" @click="preStep">上一步</el-button>
 
         <el-button type="primary" class="midBtn" @click="newBatch">下一步</el-button>
-
-  </el-form>
+      </el-form>
     </div>
   </div>
 </template>
@@ -239,7 +233,8 @@
 export default {
   data() {
     return {
-      step:1,
+      can:true,
+      step: 1,
       showTwo: true,
       showPriority: false,
 
@@ -248,48 +243,48 @@ export default {
         authCode: "",
         authName: "",
         docType: "",
-        docTypeCode:'',
+        docTypeCode: "",
         lastBox: {
           yongjiu: "0",
           changqi: "0",
           beicha: "0",
           y100: "0",
           y30: "0",
-          y10: "0"
+          y10: "0",
         },
         priority: [],
-        rule:'',
-        to_box:{},
-        end:0,
+        rule: "",
+        to_box: {},
+        end: 0,
       },
 
       historyAuths: [
         {
           authCode: 22,
-          authName: "尚无历史记录，请输入"
+          authName: "尚无历史记录，请输入",
         },
         {
           authCode: 23,
-          authName: "如输入慈利县档案局"
-        }
+          authName: "如输入慈利县档案局",
+        },
       ],
       uploadpriority: {
         first: "keyword",
         second: "level",
         third: "author",
         forth: "docDescNum",
-        fifth: "docDate"
+        fifth: "docDate",
       },
       priority: {
         first: "keyword",
         second: "level",
         third: "author",
         forth: "docDescNum",
-        fifth: "docDate"
+        fifth: "docDate",
       },
       renshipriority: {
         first: "keyword",
-        second: "docDate"
+        second: "docDate",
       },
       priorityForm: [{ first: "主题词", key: "1" }],
       priorityDic: [
@@ -297,70 +292,69 @@ export default {
         { name: "级别", key: "level" },
         { name: "责任者", key: "author" },
         { name: "文号中的序号", key: "docDescNum" },
-        { name: "发文日期", key: "docDate" }
+        { name: "发文日期", key: "docDate" },
       ],
       priorityDic2: [
         { name: "主题词", key: "keyword" },
-        { name: "发文日期", key: "docDate" }
+        { name: "发文日期", key: "docDate" },
       ],
 
       docType: [
         {
           typeId: 1,
-          typeName: "文书类"
+          typeName: "文书类",
         },
         {
           typeId: 2,
-          typeName: "科技类"
+          typeName: "科技类",
         },
         {
           typeId: 3,
-          typeName: "人事类"
+          typeName: "人事类",
         },
         {
           typeId: 4,
-          typeName: "业务类"
-        }
-      ]
+          typeName: "业务类",
+        },
+      ],
     };
   },
   created() {
-       this.getRequest("/organs").then(resp => {
-         if(resp.data.status==500){
-                              this.$message({
-                            type: 'error',
-                            message: resp.data.message
-                        });
-           this.$router.push("/login")
+    this.$store.state.username = sessionStorage.getItem("userId");
+    this.$store.state.alreadyDocs = [];
+    this.getRequest("/organs").then((resp) => {
+      if (resp.data.status == 500) {
+        this.$message({
+          type: "error",
+          message: resp.data.message,
+        });
+        this.$router.push("/login");
+      }
 
-         }
-       
-        console.log(resp)
-     var organs=resp.data;
-     if(organs==null){
-       this.historyAuths= [
-        {
-          authCode: 22222,
-          authName: "尚无历史记录，请输入"
-        },
-        {
-          authCode: 33333,
-          authName: "如输入慈利县档案局"
-        }
-      ]
-     }else{
-     this.historyAuths=organs;
-     }
-   })
+      console.log(resp);
+      var organs = resp.data;
+      if (organs == null) {
+        this.historyAuths = [
+          {
+            authCode: 22222,
+            authName: "尚无历史记录，请输入",
+          },
+          {
+            authCode: 33333,
+            authName: "如输入慈利县档案局",
+          },
+        ];
+      } else {
+        this.historyAuths = organs;
+      }
+    });
 
     if (
       sessionStorage.getItem("user") &&
       sessionStorage.getItem("user").level == 1
     ) {
-      this.getRequest(
-        "/organs"
-      ).then(res => {
-        if(res.data){
+      this.getRequest("/organs").then((res) => {
+        if (res.data) {
           this.historyAuths = res.data;
         }
       });
@@ -378,9 +372,11 @@ export default {
       "-" +
       this.conver(month) +
       "-" +
-      this.conver(date) +"-" +
+      this.conver(date) +
+      "-" +
       this.conver(h) +
-      "-" +this.conver(m) +
+      "-" +
+      this.conver(m) +
       "归档批";
 
     this.BatchForm.batchName = now;
@@ -397,116 +393,108 @@ export default {
           this.uploadpriority = this.priority;
         }
       },
-      deep: true
-    }
+      deep: true,
+    },
   },
 
-  computed: {
-
-  },
+  computed: {},
 
   methods: {
-    modifyOrgan(){
-        this.$router.push("/work/modifyOrgan");
-        
+    modifyOrgan() {
+      this.$router.push("/work/modifyOrgan");
     },
 
-    huiche(){
-      alert(1)
+    huiche() {
+      alert(1);
     },
-    newBatch(){
+    newBatch() {
       // console.log(this.BatchForm)
 
-var a = {"first":"1","second":"2","third":"3","forth":"4","fifth":"5"}
-let b = this.BatchForm.priority;
+      var a = { first: "1", second: "2", third: "3", forth: "4", fifth: "5" };
+      let b = this.BatchForm.priority;
 
+      for (var key in b) {
+        var newKey = a[key];
+        b[newKey] = b[key];
+        delete b[key];
+      }
 
-for(var key in b){
-    var newKey=a[key]
-    b[newKey] = b[key];
-    delete b[key];
-}
+      // console.log("aaa");
+      // console.log(b)
+      // b=JSON.stringify(b)
+      // console.log("after")
+      // console.log(b)
 
-// console.log("aaa");
-// console.log(b)
-// b=JSON.stringify(b)
-// console.log("after")
-// console.log(b)
-
-      this.BatchForm.rule=b;
-
+      this.BatchForm.rule = b;
 
       console.log("batchForm");
-      console.log(this.BatchForm)
+      console.log(this.BatchForm);
 
-
-      sessionStorage.setItem("Batch",this.BatchForm);
+      sessionStorage.setItem("Batch", this.BatchForm);
       // sessionStorage.setItem("token","12355")
 
-//新建单位
-      var code=this.BatchForm.authCode;
-      var organObj={
-        authName:this.BatchForm.authName,
-        authCode:this.BatchForm.authCode
+      //新建单位
+      // var code = this.BatchForm.authCode;
+      // var organObj = {
+      //   authName: this.BatchForm.authName,
+      //   authCode: this.BatchForm.authCode,
+      // };
+
+      // this.postRequest("/organ", JSON.stringify(organObj))
+      //   .then((resp) => {
+      //     if (resp) {
+      //       //新建单位后拿到单位id存入session  （已存在的时候 code=1202 ,data 有问题）
+      //       if (resp.code == 1107) {
+      //         this.$router.push("/home");
+      //       }
+      //       if (resp.code == 0) {
+      //         window.sessionStorage.setItem("authId", resp.data.id);
+      //         window.sessionStorage.setItem("authCode", resp.data.authCode);
+      //         window.sessionStorage.setItem(
+      //           "docTypeCode",
+      //           this.BatchForm.docTypeCode
+      //         );
+      //         // window.sessionStorage.setItem("authId",this.BatchForm.authId)
+      //       }
+      //     }
+      //   })
+      // .then((r) =>
+
+      var docTypetemp = "official";
+      if (this.BatchForm.docType == 2) {
+        docTypetemp = "science";
+      } else if (this.BatchForm.docType == 3) {
+        docTypetemp = "personnel";
+      } else if (this.BatchForm.docType == 4) {
+        docTypetemp = "business";
       }
+      sessionStorage.setItem("docType", docTypetemp);
 
-      this.postRequest("/organ", JSON.stringify(organObj))
-            .then(resp => {
-              if(resp){ //新建单位后拿到单位id存入session  （已存在的时候 code=1202 ,data 有问题）
-              if(resp.code==1107){
-                this.$router.push("/home");
-                
-              }
-              if(resp.code==0){
-                                window.sessionStorage.setItem("authId",resp.data.id)
-                window.sessionStorage.setItem("authCode",resp.data.authCode)
-                window.sessionStorage.setItem("docTypeCode",this.BatchForm.docTypeCode)
-                // window.sessionStorage.setItem("authId",this.BatchForm.authId)
-
-
-              }
-
-              }
-              
-            }).then(r=>{
-
-               var docTypetemp='official'
-      if(this.BatchForm.docType==2){
-        docTypetemp='science'
-      }else if(this.BatchForm.docType==3){
-        docTypetemp='personnel'
-      }else if(this.BatchForm.docType==4){
-        docTypetemp='business'
-      }
-      sessionStorage.setItem("docType",docTypetemp)
-
-       var batchobj= {
-          authId:sessionStorage.getItem("authId"),
-          batchName:this.BatchForm.batchName,
-          // rule:JSON.stringify(this.BatchForm.rule),
-          rule:this.BatchForm.rule,
-          // lastBox:JSON.stringify(this.BatchForm.lastBox)
-          lastBox:this.BatchForm.lastBox
+      var batchobj = {
+        authId: sessionStorage.getItem("authId"),
+        batchName: this.BatchForm.batchName,
+        // rule:JSON.stringify(this.BatchForm.rule),
+        // authName:sessionStorage.getItem('authName'),
+        docType: docTypetemp,
+        docTypeCode: this.BatchForm.docTypeCode,
+        rule: this.BatchForm.rule,
+        // lastBox:JSON.stringify(this.BatchForm.lastBox)
+        lastBox: this.BatchForm.lastBox,
+      };
+      console.log("提交了organ后提交的批次信息");
+      console.log(batchobj);
+      this.postRequest(
+        //注意防止重复提交
+        "/work",
+        JSON.stringify(batchobj)
+      ).then((resp) => {
+        if (resp.data && resp.code == 0) {
+          window.sessionStorage.setItem("batchId", resp.data.id);
+          this.$router.push("/work/docInput");
         }
-  console.log("提交了organ后提交的批次信息")
-  console.log(batchobj)
-  this.postRequest(   //注意防止重复提交
-        "/work",JSON.stringify(batchobj)
-        ).then(resp => {
-              if(resp.data&&resp.code==0){
-                window.sessionStorage.setItem("batchId",resp.data.id)
-                this.$router.push("/work/docInput");
-                
-              }
-            })
-            })
+      });
 
-//新建单位
-
-
-
-
-        
+      //新建单位
     },
 
     nextStep() {
@@ -523,80 +511,169 @@ for(var key in b){
       // })
       // if (this.BatchForm.authId == "") this.BatchForm.authId = -1;
       // var token=sessionStorage.getItem("token");
-    
-     
-
  
-      if(this.validateForm1()){
-
-   
-
-      this.BatchForm.priority = this.uploadpriority;
-
-
-
-         if(this.step==1) this.step++
+this.validateForm1();
+setTimeout(() => {
+  // alert(this.can)
+        if (this.can) {
+        this.BatchForm.priority = this.uploadpriority;
+        if (this.step == 1) this.step++;
       }
-      //
+}, 3000);  //怎样等一个带有异步请求的函数全部执行完了再往下执行
 
+    
+      //
     },
     // inputSelect(){
     //   alert(1)
     // },
-    validateForm1(){
-      var can=true;
-      if(this.BatchForm.authName=="") {
-        can=false;
+    validateForm1() {
+      // return false
+      this.can = true;
+      if (this.BatchForm.authName == "") {
+        this.can = false;
         this.$message({
-                            type: 'error',
-                            message: '请填写完整'
-                        });
+          type: "error",
+          message: "请填写完整",
+        });
+        return false;
       }
-      if(this.BatchForm.docType=="")
-      {
-        can=false
-                this.$message({
-                            type: 'error',
-                            message: '请填写完整'
-                        });
+      if (this.BatchForm.docType == "") {
+        this.can = false;
+        this.$message({
+          type: "error",
+          message: "请填写完整",
+        });
+        return false;
       }
 
-      return can;  //校验能否跳往下一页
+      var code = this.BatchForm.authCode;
+      var organObj = {
+        authName: this.BatchForm.authName,
+        authCode: this.BatchForm.authCode,
+      };
+
+      this.postRequest("/organ", JSON.stringify(organObj)).then((resp) => {
+        if (resp) {
+          //新建单位后拿到单位id存入session  （已存在的时候 code=1202 ,data 有问题）
+          if (resp.code == 1201) {
+            this.getRequest("/organ/" + resp.data).then((resp) => {
+              console.log("单位名重复后")
+              console.log(resp);
+              if (
+                resp.code == 0 &&
+                resp.data.authName == this.BatchForm.authName &&
+                resp.data.authCode == this.BatchForm.authCode
+              ) {
+                // alert('ok')
+                window.sessionStorage.setItem("authId",resp.data.id);
+                window.sessionStorage.setItem(
+                  "authCode",
+                  this.BatchForm.authCode
+                );
+                window.sessionStorage.setItem(
+                  "docTypeCode",
+                  this.BatchForm.docTypeCode
+                );
+                // alert("zq")
+                // can=true
+                // alert(1)
+                // return 
+              } else {
+                this.$message({
+                  type: "error",
+                  message: "单位名已存在，若重复请前往管理",
+                });
+                // alert(this.BatchForm.authCode);
+
+                this.can=false
+              }
+            });
+          } //1201
+          else if (resp.code == 1202) {
+            this.getRequest("/organ/" + resp.data).then((resp) => {
+              console.log(resp);
+              if (
+                resp.code == 0 &&
+                resp.data.authName == this.BatchForm.authName &&
+                resp.data.authCode == this.BatchForm.authCode
+              ) {
+                this.can=true
+                window.sessionStorage.setItem("authId", resp.data.id);
+                window.sessionStorage.setItem(
+                  "authCode",
+                  this.BatchForm.authCode
+                );
+                window.sessionStorage.setItem(
+                  "docTypeCode",
+                  this.BatchForm.docTypeCode
+                );
+                // alert
+                // return true;
+              } else {
+                this.$message({
+                  type: "error",
+                  message: "单位代码已存在，若重复请前往管理",
+                });
+                // return false
+                this.can=false
+              }
+            });
+          }
+          else if (resp.code == 0) {
+            // alert('code=0')
+            window.sessionStorage.setItem("authId", resp.data.id);
+            window.sessionStorage.setItem("authCode", resp.data.authCode);
+            window.sessionStorage.setItem(
+              "docTypeCode",
+              this.BatchForm.docTypeCode
+            );
+            // return true
+            // window.sessionStorage.setItem("authId",this.BatchForm.authId)
+          }
+        }
+      }).then(()=>{
+              setTimeout(function () {
+        // alert(this.can+'632')
+        return this.can
+      },1000)
+      })
+
     },
 
-     preStep(){
-      if(this.step==2){
+    preStep() {
+      if (this.step == 2) {
         this.step--;
       }
     },
-
 
     conver(s) {
       return s < 10 ? "0" + s : s;
     },
 
-    selectAuthChange(id){
-      var name={}
-      name=this.historyAuths.find((item)=>{   //在历史记录里有这项选中的话就返回obj
-        return item.authCode==id;
-      })
-      window.sessionStorage.setItem('authId',name.id)
-      console.log(name)
+    selectAuthChange(id) {
+      var name = {};
+      name = this.historyAuths.find((item) => {
+        //在历史记录里有这项选中的话就返回obj
+        return item.authCode == id;
+      });
+      window.sessionStorage.setItem("authId", name.id);
+      console.log(name);
 
-      name=name.authName  //obj的lable
-      this.BatchForm.authName=name
-      var tempId=JSON.stringify(id)
-      while(tempId.length<5){
-        tempId='0'+tempId
+      name = name.authName; //obj的lable
+      this.BatchForm.authName = name;
+      var tempId = JSON.stringify(id);
+      while (tempId.length < 5) {
+        tempId = "0" + tempId;
       }
-      this.BatchForm.authCode=tempId;
+      this.BatchForm.authCode = tempId;
     },
 
-    selectBlur(e) {  
+    selectBlur(e) {
       var context = this.$refs["authSelectref"];
       // console.log(text)
       // console.log(this);
-      console.log('发出blur的e');
+      console.log("发出blur的e");
       console.log(e);
       // if(e.target.id=="selectAuth"){
       // alert(e.target.value)
@@ -609,8 +686,8 @@ for(var key in b){
     priorityChange() {
       //自定义优先级
       this.showPriority = !this.showPriority;
-    }
-  }
+    },
+  },
 };
 </script>
 
@@ -683,7 +760,7 @@ for(var key in b){
     text-align: center;
   }
 
-  .organModify{
+  .organModify {
     position: absolute;
     width: 10%;
     top: 3.6rem;
@@ -691,18 +768,14 @@ for(var key in b){
     text-align: center;
     border: solid 0.1rem;
     z-index: 999;
-
   }
-
-  
- 
 }
 
- .organModify:hover {
-    cursor: pointer;
-    color: #476bb3d8;
-    z-index: 999;
-    border: solid 0.1rem;
-    border-color: rgb(33, 63, 163);
-  }
+.organModify:hover {
+  cursor: pointer;
+  color: #476bb3d8;
+  z-index: 999;
+  border: solid 0.1rem;
+  border-color: rgb(33, 63, 163);
+}
 </style>

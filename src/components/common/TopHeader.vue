@@ -174,7 +174,7 @@ export default {
 
   computed: {
     user() {
-      return sessionStorage.getItem("userId")||''
+      return this.$store.state.username
     },
     classObject: function() {
       return {
@@ -203,6 +203,8 @@ export default {
   created() {
     this.getUserInfo();
     this.$store.info_state = 1; //个人信息页面的哪个模块
+    this.$store.state.username=sessionStorage.getItem('userId')
+    // alert(this.user)
   },
 
   mounted() {

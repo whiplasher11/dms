@@ -19,6 +19,9 @@ axios.interceptors.response.use(success => {
     else if(success.data.code==1107){
         Message.error({message: '未获得授权，请重新登录或联系管理员购买'})
     }
+    else if(success.data.code==1103){
+        Message.error({message: '用户不存在，请注册'})
+    }
     return success.data;
 }, error => {
     if(error.response.status==100){return error.response}

@@ -13,7 +13,8 @@ const store = new Vuex.Store({
 
     state: {
         hi:2,
-
+        username:'',
+        tempDoc:'',
         alreadyDocs:[
             {
                 userId:7,
