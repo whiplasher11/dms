@@ -69,10 +69,16 @@ export default {
     },
     methods:{
         batchDocs(item){ //查看某批
-            // console.log(item)
+            console.log(item)
+            console.log('查看某批')
+
             // /document/page/{type}/{batchId}
             window.sessionStorage.setItem('docType',item.docType)
             window.sessionStorage.setItem('docTypeCode',item.docTypeCode)
+            window.sessionStorage.setItem('batchId',item.id)
+
+
+            // batchId
 
 
             var path='/document/page/'+item.docType+'/'+item.id+'?pageNow=0&pageSize=1000'
@@ -97,12 +103,14 @@ export default {
             this.organsShow=true
         },
         checkThisOrganBat(item){
-            // console.log("item")
+            console.log("查看批次item")
 
-            // console.log(item)
-            window.sessionStorage.setItem('authId',item.authId)
-
+            console.log(item) //打印单位
+            window.sessionStorage.setItem('authId',item.id)
+            window.sessionStorage.setItem('authCode',item.authCode)
             window.sessionStorage.setItem('checkAuthId',item.id)
+            // window.sessionStorage.setItem('batchId',item.id)
+
               axios.get('/work/list', {
                   headers:{
             'Content-Type': 'application/json',

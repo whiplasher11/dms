@@ -69,6 +69,7 @@ export default {
   },
   methods:{
     goDetail(){
+
            this.$router.push("/work/docInputd")
       
     },
@@ -91,7 +92,9 @@ export default {
       // obj=JSON.stringify(obj)
       // console.log(obj)
 
-      // console.log(path)
+      console.log('侧边点开的item')
+      console.log(doc)
+
       this.emitThisDoc(doc)
     },
   }

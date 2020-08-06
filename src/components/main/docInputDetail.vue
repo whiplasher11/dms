@@ -3,6 +3,18 @@
       <div class="wrapper">
           <div style="height:6.5rem"></div>
             <div class="docDetailBox">
+                <div style="    position: absolute;
+    right: 12rem;
+    top: -2.5rem;
+    font-size: 1.2rem;" class="hoverStyle" @click="backToOrgans">返回</div>
+
+                    <div style="position: absolute;
+    width: 16rem;
+    top: -2.5rem;
+    font-size: 1.2rem;
+    margin-left: -8rem;
+    left: 50%;">本批所有已录入文档</div>
+
                 <div class="detailItem">
                     <div class="itemInfo">识别号</div>
                     
@@ -26,9 +38,9 @@
                  <div class="detailItem"  v-for="item in this.$store.state.alreadyDocs" :key="item.docSequence">
                     <div class="itemInfo" >{{item.docSequence}}</div>
                     
-                    <div class="itemInfo">{{authCode+'-'+item.docTypeCode+'·'+item.sortYear+'-'+item.deadline+'-'+item.docAbout+(item.docNum?item.docNum:'暂无')}}</div>
+                    <div class="itemInfo">{{authCode+'-'+item.docTypeCode+'·'}}{{item.sortYear|formatSortYear}}{{'-'+item.deadline+'-'+item.docAbout+(item.docNum?item.docNum:'暂无')}}</div>
                     <!-- 档号 -->
-                    <div class="itemInfo">{{item.docDescAuthor+'['+item.sortYear+']'+(item.docNum?item.docNum:'暂无')+"号"}}</div>
+                    <div class="itemInfo">{{item.docDescAuthor+'['}}{{item.sortYear|formatSortYear}}{{']'+(item.docNum?item.docNum:'暂无')+"号"}}</div>
                     <div class="itemInfo">{{item.dutyAuthor}}</div>
                     <div class="itemInfo" style="font-size:0.6rem;width:10%">{{item.docTitle}}</div>
                     <div class="itemInfo">{{item.docDate}}</div>
@@ -66,17 +78,30 @@ export default {
       }
     },
     methods:{
+        backToOrgans(){
+                        this.$router.push('/work/modifyOrgan');
+
+        },
         focusOnThis(e){
 
         },
 
         fixThisItem(item){
-      this.$store.state.tempDoc=item
-        item.sortYear=JSON.stringify(item.sortYear)
+      this.$store.state.tempDoc=Object.assign({},item)
+      alert(item.id)
+    //   this.$store.state.tempDoc.sortYear=JSON.stringify(item.sortYear)
+        // item.sortYear=JSON.stringify(item.sortYear)
+    //   this.$store.state.tempDoc.sortYear=JSON.stringify(item.sortYear)
+      this.$store.state.tempDocId=item.id
+
+      this.$store.state.tempDocSeq=item.docSequence
+
             this.$router.push('/work/docInput')
         },
 
-        deleteThisItem(){},
+        deleteThisItem(){
+
+        },
     },
     created(){
         this
@@ -89,6 +114,11 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+
+.hoverStyle:hover{
+    cursor: pointer;
+}
+
 .optionDiv{
     // color:rgb(170, 138, 51);
     font-weight: 600;

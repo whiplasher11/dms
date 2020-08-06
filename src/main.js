@@ -38,9 +38,24 @@ Vue.filter('formatKeyWordValue',function(value){
     
 });
 
+Vue.filter('formatSortYear',function(value){
+    var t=value
+    // t=t+""
+    // t=eval(t)
+    // // t=t.replace(/\"/g, "");.
+    // console.log(t)
+    // console.log(typeof(t))
+    
+    // t=t.replace("\"","").replace("\"","")
+
+    // t=parseInt(t)
+    return t
+    
+});
+
 Vue.filter('formatAuthCode',function(value){
     if(!value){
-        return '暂2无'
+        return '暂无'
     }
     var h=JSON.stringify(value)
     while(h.length<5){

@@ -22,6 +22,10 @@ axios.interceptors.response.use(success => {
     else if(success.data.code==1103){
         Message.error({message: '用户不存在，请注册'})
     }
+    else if(success.data.code==1105){
+        Message.error({message: '密码有误'})
+
+    }
     return success.data;
 }, error => {
     if(error.response.status==100){return error.response}
@@ -89,7 +93,9 @@ export const putRequest = (url, params) => {
         headers: {
             'Content-Type': 'application/json',
 
-            token:sessionStorage.getItem('token')
+            token:sessionStorage.getItem('token'),
+            authId:sessionStorage.getItem('authId')||''
+
         }
     })
 }
