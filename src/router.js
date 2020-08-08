@@ -11,7 +11,7 @@ import DocIn from './components/main/DocIn.vue'
 import ModifyOrgan from './components/main/ModifyOrgan.vue'
 import KeyWordManage from './components/main/KeyWordManage.vue'
 import DocInputDetail from './components/main/docInputDetail.vue'
-import Check from './components/main/CheckHistoryBatch.vue'
+import Manage from './components/main/UserManage.vue'
 Vue.use(Router)
 
 export default new Router({
@@ -26,9 +26,15 @@ export default new Router({
             hidden: true
         }, 
         {
-            path: '/work/ssss',
+            path: '/login',
+            name: 'loginAndRegi',
+            component: Login,
+            hidden: true
+        }, 
+        {
+            path: '/manage/userManage',
             name: 'hsit',
-            component: Check,
+            component: Manage,
             hidden: true
         }, 
         {

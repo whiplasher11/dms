@@ -184,6 +184,21 @@ export default {
     created(){
         // alert(this.tempOrganName)
 
+    var json2 = {
+        'k1':'v1',
+        'k2':'v2',
+
+    };
+    var kk='k3'
+    json2[kk] = '0';
+        var ss='2'
+    if(json2[kk]=='0') json2[kk]='2'
+    if(json2[ss]==null){
+        console.log(1)
+    }
+    console.log(json2)
+
+
          this.getRequest("/organs").then(resp => {
              if(resp.code==0){
              console.log('加载时请求单位列表')

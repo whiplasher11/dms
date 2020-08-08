@@ -31,7 +31,8 @@ axios.interceptors.response.use(success => {
     if(error.response.status==100){return error.response}
     if(error.response.status==500){
         // console.log(error)
-        // Message.error({message:"身份过期，请重新登录"})
+        Message.error({message:"未知错误"})
+        router.replace('/login')
        
         return error.response}
     if (error.response.status == 504 || error.response.status == 404) {

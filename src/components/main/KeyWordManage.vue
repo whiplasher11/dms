@@ -8,7 +8,7 @@
       <div class="typeSelect" v-if="selectShow">
         <div style="width:3rem;height:2rem"></div>
 
-        <div class="selectItem">文书类档案问题(机构)优先级设置</div>
+        <div class="selectItem" @click="WSWT">文书类档案问题(机构)优先级设置</div>
         <div class="selectItem">文书类档案责任者优先级设置</div>
         <div class="selectItem">文书类档案关键词优先级设置</div>
         <div class="selectItem">科技类档案项目优先级设置</div>
@@ -78,6 +78,9 @@ export default {
 
   },
     methods:{
+      WSWT(){
+        this.selectShow=false
+      },
       saveKeyValue(){
         this.saveBtnShow=false;
         // console.log(this.keyWordTemp)

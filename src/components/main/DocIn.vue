@@ -47,7 +47,7 @@
               @click="checkTitle"
               size="normal"
               type="text"
-              v-model="docForm.keyWord"
+              v-model="docForm.keyword"
               auto-complete="off"
               placeholder="系统识别或手动填写"
             ></el-input>
@@ -239,13 +239,14 @@ export default {
       that.docForm = Object.assign({}, doc);
       that.fixDocFlag = true;
       that.$store.state.tempDocSeq = doc.docSequence;
-      that.$store.state.tempDocId=doc.id
+      that.$store.state.tempDocId = doc.id;
       // alert(that.TempdocSequence)
     });
   },
 
   data() {
     return {
+      weightForm: {},
       manageKeyWordTime: 1,
       keyWordEdit: false,
       fixDocFlag: false,
@@ -321,12 +322,12 @@ export default {
         },
       ],
       docForm: {
-        id:'',
+        id: "",
         docSequence: "", //序列号，标识文件
         docType: "",
         docTitle: "今天的猪肉12元", //标题
         docAbout: "民生",
-        keyWord: "猪肉", //关键字
+        keyword: "猪肉", //关键字
         docDesc: "", //文号
         sortYear: "2019",
         docDate: "20190808",
@@ -344,13 +345,13 @@ export default {
       },
 
       docFormKong: {
-        id:'',
+        id: "",
         docSequence: "", //序列号，标识文件
         // docSequence:'',//序列号，标识文件
         docType: "",
         docTitle: "", //标题
         docAbout: "",
-        keyWord: "", //关键字
+        keyword: "", //关键字
         docDesc: "", //文号
         sortYear: "",
         docDate: "",
@@ -385,7 +386,7 @@ export default {
     checkAdd() {
       if (
         this.docForm.docTitle == "" ||
-        this.docForm.keyWord == "" ||
+        this.docForm.keyword == "" ||
         this.docForm.sortYear == "" ||
         this.docForm.docAbout == "" ||
         this.docForm.docDate == "" ||
@@ -419,21 +420,20 @@ export default {
         //   docNumber:''})
         this.$store.state.alreadyDocs.unshift(Object.assign({}, this.docForm));
 
-
         var docObj = {
           // userId:JSON.stringify(sessionStorage.getItem("userId")),
           // userId: sessionStorage.getItem('userId'),
-          userId:7,
+          userId: sessionStorage.getItem("userIdNum"),
 
           authId: sessionStorage.getItem("authId"),
           batchId: sessionStorage.getItem("batchId"),
           docDate: this.docForm.docDate,
-          docNum: 100, //????
+          docNum: "", //????
           docPage: this.docForm.docPage,
           docSequence: this.docForm.docSequence,
           docTitle: this.docForm.docTitle,
           docType: sessionStorage.getItem("docType"),
-          keyword: this.docForm.keyWord,
+          keyword: this.docForm.keyword,
           remark: this.docForm.remark,
           deadline: this.docForm.deadline,
           docAbout: this.docForm.docAbout,
@@ -453,7 +453,11 @@ export default {
           dutyAuthor: this.docForm.dutyAuthor,
           sortYear: this.docForm.sortYear,
         };
-        var pathToDoc = "/document/" + sessionStorage.getItem("docType")+'/'+this.$store.state.tempDocId;
+        var pathToDoc =
+          "/document/" +
+          sessionStorage.getItem("docType") +
+          "/" +
+          this.$store.state.tempDocId;
         this.putRequest(
           //注意防止重复提交
           pathToDoc,
@@ -467,12 +471,11 @@ export default {
         });
 
         this.keyWordEdit = false;
-        this.docForm.keyWord = "";
+        this.docForm.keyword = "";
         this.docForm.docSequence = this.genId(6, 62);
         this.docForm.docDate.replace("-", "");
         this.docForm.docTitle = "";
         this.docForm.docPage = "";
-       
       } else {
         this.$message({
           type: "error",
@@ -482,6 +485,8 @@ export default {
     },
 
     addDoc() {
+      // var
+
       if (this.checkAdd()) {
         // this.$store.state.alreadyDocs.unshift({  docKeyWord:this.docForm.docAbout||'无文件信息',
         //   docSequence:this.docForm.docSequence ,
@@ -489,16 +494,16 @@ export default {
         var docObj = {
           // userId:JSON.stringify(sessionStorage.getItem("userId")),
           // userId: sessionStorage.getItem('userId'),
-          userId:7,
+          userId: sessionStorage.getItem("userIdNum"),
           authId: sessionStorage.getItem("authId"),
           batchId: sessionStorage.getItem("batchId"),
           docDate: this.docForm.docDate,
-          docNum: 100, //????
+          docNum: "", //????
           docPage: this.docForm.docPage,
           docSequence: this.docForm.docSequence,
           docTitle: this.docForm.docTitle,
           docType: sessionStorage.getItem("docType"),
-          keyword: this.docForm.keyWord,
+          keyword: this.docForm.keyword,
           remark: this.docForm.remark,
           deadline: this.docForm.deadline,
           docAbout: this.docForm.docAbout,
@@ -523,26 +528,200 @@ export default {
           //注意防止重复提交
           pathToDoc,
           JSON.stringify(docObj)
-        ).then((resp) => {
-          console.log("tijiao文件");
+        )
+          .then((resp) => {
+            console.log("tijiao文件");
 
-          console.log(docObj);
-          console.log("tijiao文件的结果");
-          console.log(resp);
-          this.docForm.id=resp.data.id;
-          // alert( this.docForm.id)
-        }).then(r=>{
-        this.$store.state.alreadyDocs.unshift(Object.assign({}, this.docForm));
-                  this.keyWordEdit = false;
-        this.docForm.keyWord = "";
-        this.docForm.docSequence = this.genId(6, 62);
-        this.docForm.docDate.replace("-", "");
-        console.log(this.docForm);
-        this.docForm.docTitle = "";
-        this.docForm.docPage = "";
-        });
+            console.log(docObj);
+            console.log("tijiao文件的结果");
+            console.log(resp);
+            this.docForm.id = resp.data.id;
+            // alert( this.docForm.id)
+          })
+          .then((r) => {
+            //保证提交完返回id后再执行后续操作
+
+            var weightType1;
+            var weightType2;
+            var weightType3;
+
+            if (sessionStorage.getItem("docType") == "official") {
+              weightType1 = 11; //文书问题
+              weightType2 = 12;
+              weightType3 = 13;
+              var table;
+              if (this.weightForm.docIssueWig) {
+                //已有权重表
+                this.getRequest("/weight/sort/" + this.weightForm.docIssueWig)
+                  .then((resp) => {
+                    //查询对应的权重表得到json
+                    table = resp.data.tables;
+                    var key1 = this.docForm.docAbout;
+                    // var json1 = table;
+                    if (table[key1] == null) {
+                      table[key1] = "0";
+                    }
+                  })
+                  .then((r) => {
+                    var docAboutObj = {
+                      authId: sessionStorage.getItem("authId"),
+                      type: weightType1,
+                      tables: table,
+                    };
+
+                    this.putRequest(
+                      "/weight/" + this.weightForm.docIssueWig,
+                      docAboutObj
+                    ).then((resp) => {
+                      console.log("更新文书问题权重表");
+                      console.log(resp);
+                    });
+                  });
+
+                /**责任者
+                 *
+                 */
+                var table2;
+                this.getRequest("/weight/sort/" + this.weightForm.docAuthorWig)
+                  .then((resp) => {
+                    //查询对应的权重表得到json
+                    table2 = resp.data.tables;
+                    var key2 = this.docForm.dutyAuthor;
+                    // var json1 = table;
+                    if (table2[key2] == null) {
+                      table2[key2] = "0";
+                    }
+                  })
+                  .then((r) => {
+                    var dutyAuthorObj = {
+                      authId: sessionStorage.getItem("authId"),
+                      type: weightType2,
+                      tables: table2,
+                    };
+
+                    this.putRequest(
+                      "/weight/" + this.weightForm.docAuthorWig,
+                      dutyAuthorObj
+                    ).then((resp) => {
+                      console.log("更新文书责任者权重表");
+                      console.log(resp);
+                    });
+                  });
+
+                var table3;
+                this.getRequest("/weight/sort/" + this.weightForm.docKeywordWig)
+                  .then((resp) => {
+                    //查询对应的权重表得到json
+                    table3 = resp.data.tables;
+                    var key3 = this.docForm.keyword;
+                    // var json1 = table;
+                    if (table3[key3] == null) {
+                      table3[key3] = "0";
+                    }
+                    console.log(this.docForm);
+
+                    console.log(this.docForm.keyword);
+                    console.log(key3);
+
+                    console.log(table3);
+                    if (table3[""] == "0") {
+                      table3[""] == "2";
+                    }
+                  })
+                  .then((r) => {
+                    var keyWordObj = {
+                      authId: sessionStorage.getItem("authId"),
+                      type: weightType3,
+                      tables: table3,
+                    };
+
+                    this.putRequest(
+                      "/weight/" + this.weightForm.docKeywordWig,
+                      keyWordObj
+                    ).then((resp) => {
+                      console.log("更新文书关键词权重表");
+                      console.log(resp);
+                    });
+                  });
+              } else {
+                //第一次录入
+                var key1 = this.docForm.docAbout;
+                var json1 = {};
+                json1[key1] = "0";
+
+                var key2 = this.docForm.dutyAuthor;
+                var json2 = {};
+                json2[key2] = "0";
+
+                var key3 = this.docForm.keyword;
+                var json3 = {};
+                json3[key3] = "0";
+
+                var docAboutObj = {
+                  authId: sessionStorage.getItem("authId"),
+                  type: weightType1,
+                  tables: json1,
+                };
+
+                var dutyAuthorObj = {
+                  authId: sessionStorage.getItem("authId"),
+                  type: weightType2,
+                  tables: json2,
+                };
+
+                var keyWordObj = {
+                  authId: sessionStorage.getItem("authId"),
+                  type: weightType3,
+                  tables: json3,
+                };
+
+                this.postRequest(
+                  //注意防止重复提交
+                  "/weight",
+                  JSON.stringify(docAboutObj)
+                )
+                  .then((resp) => {
+                    console.log("提交问题权重表");
+                    console.log(resp);
+                  })
+                  .then((r) => {
+                    this.postRequest(
+                      //注意防止重复提交
+                      "/weight",
+                      JSON.stringify(dutyAuthorObj)
+                    )
+                      .then((resp) => {
+                        console.log("提交责任者权重表");
+                        console.log(resp);
+                      })
+                      .then((r) => {
+                        this.postRequest(
+                          //注意防止重复提交
+                          "/weight",
+                          JSON.stringify(keyWordObj)
+                        ).then((resp) => {
+                          console.log("提交关键词权重表");
+                          console.log(resp);
+                          this.weightForm = resp.data;
+                        });
+                      });
+                  });
+              }
+
+            } //doctype==official if
 
 
+            this.$store.state.alreadyDocs.unshift(
+              Object.assign({}, this.docForm)
+            );
+            this.keyWordEdit = false;
+            this.docForm.keyword = "";
+            this.docForm.docSequence = this.genId(6, 62);
+            this.docForm.docDate.replace("-", "");
+            console.log(this.docForm);
+            this.docForm.docTitle = "";
+            this.docForm.docPage = "";
+          });
       } else {
         this.$message({
           type: "error",
@@ -552,7 +731,7 @@ export default {
     },
 
     docAboutBlur() {
-      if (this.docForm.keyWord != "" && this.docForm.docAbout != "") {
+      if (this.docForm.keyword != "" && this.docForm.docAbout != "") {
         //todo1  查询是否有关键字
 
         var tip = "";
@@ -561,7 +740,7 @@ export default {
           if (this.manageKeyWordTime % 10 == 0) {
             this.$confirm(
               "检测到10个新的关键字：" +
-                this.docForm.keyWord +
+                this.docForm.keyword +
                 " , 和对应分类" +
                 this.docForm.docAbout +
                 "，是否添加入库，以便更快录入",
@@ -635,6 +814,12 @@ export default {
     },
   },
   created() {
+    this.getRequest("/organ/" + sessionStorage.getItem("authId")).then(
+      (resp) => {
+        this.weightForm = resp.data;
+      }
+    );
+
     this.docForm.docSequence = this.genId(6, 62);
     if (this.$store.state.tempDoc) {
       this.fixDocFlag = true;

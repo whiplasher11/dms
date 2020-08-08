@@ -254,6 +254,8 @@ export default {
                   if(thistoken==null) thistoken=resp.data.token; 
                   window.sessionStorage.setItem("token",thistoken)
                   window.sessionStorage.setItem("userId",this.loginForm.username)
+                  window.sessionStorage.setItem("userIdNum",resp.data.userId)
+
                   
 
                             this.$message({
@@ -263,6 +265,7 @@ export default {
 
                       this.$router.push('/work/newBatch')
                 }
+                
                 // else if(){}
                   // this.$store.commit("INIT_CURRENTHR", resp.obj);
                   // window.sessionStorage.setItem("user", JSON.stringify(resp.obj));

@@ -8,6 +8,12 @@
     top: -2.5rem;
     font-size: 1.2rem;" class="hoverStyle" @click="backToOrgans">返回</div>
 
+                <div style="    position: absolute;
+    right: 17rem;
+    top: -2.5rem;
+    font-size: 1.2rem;" class="hoverStyle" @click="goDocIn">继续录入</div>
+
+
                     <div style="position: absolute;
     width: 16rem;
     top: -2.5rem;
@@ -63,6 +69,7 @@
 
 <script>
 import Utils from '../../utils/doc.js'
+import axios from 'axios'
 
 export default {
       computed: {
@@ -78,6 +85,10 @@ export default {
       }
     },
     methods:{
+        goDocIn(){
+                        this.$router.push('/work/docInput');
+
+        },
         backToOrgans(){
                         this.$router.push('/work/modifyOrgan');
 
@@ -88,7 +99,7 @@ export default {
 
         fixThisItem(item){
       this.$store.state.tempDoc=Object.assign({},item)
-      alert(item.id)
+    //   alert(item.id)
     //   this.$store.state.tempDoc.sortYear=JSON.stringify(item.sortYear)
         // item.sortYear=JSON.stringify(item.sortYear)
     //   this.$store.state.tempDoc.sortYear=JSON.stringify(item.sortYear)
@@ -99,8 +110,43 @@ export default {
             this.$router.push('/work/docInput')
         },
 
-        deleteThisItem(){
+        deleteThisItem(item){
+        var pathToDel='/document/'+sessionStorage.getItem('docType')+'/'+item.id
 
+                axios.delete(pathToDel, {
+                  headers:{
+            'Content-Type': 'application/json',
+            'authId':sessionStorage.getItem('authId'),
+            token:sessionStorage.getItem('token')?(sessionStorage.getItem('token').split('"')[1]||sessionStorage.getItem('token')):null,
+
+                  }
+              }).then(resp=>{
+                  if(resp.code==0){
+                      
+                    var length = this.$store.state.alreadyDocs.length || 0;
+                    var _arr = this.$store.state.alreadyDocs;
+                    for (var i = 0; i < length; i++) {
+                    if (_arr[i].docSequence == item.docSequence) {
+                    _arr.splice(i, 1); //删除下标为i的元素
+                    break;
+                    }
+                    }
+
+                  }
+              })
+// '/document/{type}/{id}'
+        // var pathToDel='/document'
+        //  this.deleteRequest(
+        //   //注意防止重复提交
+        //   pathToDoc,
+        //   JSON.stringify(docObj)
+        // ).then((resp) => {
+        //   console.log("修改文件");
+
+        //   console.log(docObj);
+        //   console.log("修改文件的结果");
+        //   console.log(resp);
+        // });
         },
     },
     created(){
