@@ -29,12 +29,46 @@ import 'vuescroll/dist/vuescroll.css';
 Vue.use(vuescroll);
 Vue.use(animate)
 
+Vue.filter('formatFourNum',function(value){
+    var tvalue=value+""
+    if(tvalue=='null'||!tvalue||tvalue==""){return '暂无'}
+    else {
+        var h=tvalue
+        while(h.length<4){
+            h='0'+h
+        }
+        // console.log(h)
+        return h
+    }
+});
+Vue.filter('deadlineFormat',function(value){
+    if(value=='永久'||value=='备查'||value=='长期') return value
+    else return (value+'年')
+    
+});
 Vue.filter('formatKeyWordKey',function(value){
     return Object.keys(value)[0]||"暂无"
     
 });
 Vue.filter('formatKeyWordValue',function(value){
     return Object.values(value)[0]||"暂无"
+    
+});
+Vue.filter('formatTime',function(value){
+    console.log(value)
+    console.log(typeof(value))
+    var tvalue=value+""
+    if(tvalue=='null'||!tvalue){return ''}
+ 
+    return tvalue.substring(0,10)
+    
+});
+Vue.filter('formatEndTime',function(value){
+    console.log(value)
+    console.log(typeof(value))
+    var tvalue=value+""
+    if(!tvalue||tvalue=='null'){return '未购'}
+    return tvalue.substring(0,10)
     
 });
 

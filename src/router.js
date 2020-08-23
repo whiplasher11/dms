@@ -11,7 +11,7 @@ import DocIn from './components/main/DocIn.vue'
 import ModifyOrgan from './components/main/ModifyOrgan.vue'
 import KeyWordManage from './components/main/KeyWordManage.vue'
 import DocInputDetail from './components/main/docInputDetail.vue'
-import Manage from './components/main/UserManage.vue'
+import Manage from './components/main/Manage.vue'
 Vue.use(Router)
 
 export default new Router({
@@ -32,7 +32,7 @@ export default new Router({
             hidden: true
         }, 
         {
-            path: '/manage/userManage',
+            path: '/admin/userManage',
             name: 'hsit',
             component: Manage,
             hidden: true

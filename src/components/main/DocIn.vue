@@ -3,6 +3,9 @@
     <Left></Left>
 
     <div class="detailBox"></div>
+ 
+ <div style="position:absolute;width:20rem;height:10rem;top:10rem;left:50%;margin-left:-10rem;line-height:10rem;
+    background-color:rgba(25,55,163,0.8);font-size:1.3rem;color:white;text-align:center;z-index:1000" v-if="showWaitingFlag">提交中，请稍候...</div>
 
     <div class="keyWordSelect" v-if="false">
       <div class="keywords">农村</div>
@@ -163,13 +166,13 @@
 
       <el-row :gutter="24">
         <el-col :span="12">
-          <el-form-item prop="batchName" label="文件期限：">
+          <el-form-item prop="batchName" label="文件期限(年)：">
             <el-select v-model="docForm.deadline" placeholder="选择文件期限">
               <el-option
                 v-for="item in docTimeDues"
-                :key="item.value"
-                :label="item.name"
-                :value="item.value"
+                :key="item"
+                :label="item"
+                :value="item"
               ></el-option>
             </el-select>
           </el-form-item>
@@ -216,7 +219,8 @@
           @click="addDoc"
         >添加档案</el-button>
 
-        <el-button type="primary" size="big" style="margin-left:10%" @click="resetDocIn">清空列表</el-button>
+        <el-button type="primary" size="big" style="margin-left:10%" @click="resetDocIn" v-if="!fixDocFlag">清空列表</el-button>
+        <el-button type="primary" size="big" style="margin-left:10%" @click="cancelFix" v-if="fixDocFlag">取消修改</el-button>
       </div>
     </el-form>
   </div>
@@ -246,6 +250,7 @@ export default {
 
   data() {
     return {
+      showWaitingFlag:false,
       weightForm: {},
       manageKeyWordTime: 1,
       keyWordEdit: false,
@@ -304,9 +309,9 @@ export default {
         },
       ],
       docSecrets: [
-        {
+        { 
           name: "无",
-          value: "",
+          value: "无",
         },
         {
           name: "秘密",
@@ -393,7 +398,8 @@ export default {
         this.docForm.docLevel == "" ||
         this.docForm.dutyAuthor == "" ||
         this.docForm.docPage == "" ||
-        this.docForm.deadline == ""
+        this.docForm.deadline == ""||
+        this.docForm.docSecret==""
       )
         return false;
       else return true;
@@ -428,7 +434,7 @@ export default {
           authId: sessionStorage.getItem("authId"),
           batchId: sessionStorage.getItem("batchId"),
           docDate: this.docForm.docDate,
-          docNum: "", //????
+          docNum: "", //件号
           docPage: this.docForm.docPage,
           docSequence: this.docForm.docSequence,
           docTitle: this.docForm.docTitle,
@@ -483,11 +489,23 @@ export default {
         });
       }
     },
+    cancelFix(){
+                  this.keyWordEdit = false;
+            this.docForm.keyword = "";
+            this.docForm.docDescNum="";
+            this.docForm.docSequence = this.genId(6, 62);
+            this.docForm.docDate.replace("-", "");
+            console.log(this.docForm);
+            this.docForm.docTitle = "";
+            this.docForm.docPage = "";
+            this.fixDocFlag=false
+    },
 
     addDoc() {
       // var
-
+      
       if (this.checkAdd()) {
+        this.showWaitingFlag=true;
         // this.$store.state.alreadyDocs.unshift({  docKeyWord:this.docForm.docAbout||'无文件信息',
         //   docSequence:this.docForm.docSequence ,
         //   docNumber:''})
@@ -515,7 +533,7 @@ export default {
             this.docForm.docDescNum +
             "号", //文号
           docPage: this.docForm.docPage,
-          docDescAuthor: this.docForm.dutyAuthor,
+          docDescAuthor: this.docForm.docDescAuthor,
           docDescNum: this.docForm.docDescNum,
           docLevel: this.docForm.docLevel,
           docSecret: this.docForm.docSecret,
@@ -544,6 +562,8 @@ export default {
             var weightType1;
             var weightType2;
             var weightType3;
+
+            var kwTemp=this.docForm.keyword
 
             if (sessionStorage.getItem("docType") == "official") {
               weightType1 = 11; //文书问题
@@ -613,20 +633,15 @@ export default {
                   .then((resp) => {
                     //查询对应的权重表得到json
                     table3 = resp.data.tables;
-                    var key3 = this.docForm.keyword;
+                    var key3 = kwTemp
                     // var json1 = table;
                     if (table3[key3] == null) {
                       table3[key3] = "0";
                     }
-                    console.log(this.docForm);
 
-                    console.log(this.docForm.keyword);
                     console.log(key3);
 
                     console.log(table3);
-                    if (table3[""] == "0") {
-                      table3[""] == "2";
-                    }
                   })
                   .then((r) => {
                     var keyWordObj = {
@@ -642,6 +657,8 @@ export default {
                       console.log("更新文书关键词权重表");
                       console.log(resp);
                     });
+                  }).then(r=>{
+                    this.showWaitingFlag=false;
                   });
               } else {
                 //第一次录入
@@ -703,19 +720,20 @@ export default {
                           console.log("提交关键词权重表");
                           console.log(resp);
                           this.weightForm = resp.data;
+                        }).then(r=>{
+                          this.showWaitingFlag=false;
                         });
                       });
                   });
               }
-
             } //doctype==official if
-
 
             this.$store.state.alreadyDocs.unshift(
               Object.assign({}, this.docForm)
             );
             this.keyWordEdit = false;
             this.docForm.keyword = "";
+            this.docForm.docDescNum="";
             this.docForm.docSequence = this.genId(6, 62);
             this.docForm.docDate.replace("-", "");
             console.log(this.docForm);
@@ -814,11 +832,27 @@ export default {
     },
   },
   created() {
+    this.docTimeDues=[]
+    var deadlineJson=JSON.parse(sessionStorage.getItem("lastBox"))
+    // console.log(JSON.parse(deadlineJson))
+    let attr;
+    
+     for (attr in deadlineJson) {
+      this.docTimeDues.push(attr);
+    }
+
+    console.log(this.docTimeDues)
+
+    // return
+
     this.getRequest("/organ/" + sessionStorage.getItem("authId")).then(
       (resp) => {
         this.weightForm = resp.data;
+        console.log(resp.data)
       }
     );
+
+
 
     this.docForm.docSequence = this.genId(6, 62);
     if (this.$store.state.tempDoc) {

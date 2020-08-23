@@ -24,7 +24,8 @@
 
         <li class="a" @click="goHome()" v-if="true">首页</li>
 
-        <li class="a" v-if="true" @click="goDocIn()">档案录入</li>
+        <li class="a" @click="goDocIn()">档案录入</li>
+        <!-- <li class="a" v-if="admin==1" ></li> -->
 
         <li class="a" v-if="kind==3">
           <div
@@ -43,18 +44,12 @@
           >3</div>消息列表
         </li>
 
-        <li
-          @click="toIllManage()"
-          class="a"
-          v-if="kind==2"
-          v-on:mouseover="changeIllShow()"
-          v-on:mouseleave="resetIllShow()"
-        >我的慢病管理</li>
+
 
         <!-- <li @click="toHistory()">历史记录</li> -->
 
-        <li v-if="true" class="product a wrjlb" @click="goCheckHistoryBat">查看</li>
-        <li v-if="true" class="product a wrjlb" @click="goKWM">设置</li>
+        <li class="product a wrjlb" @click="goCheckHistoryBat">查看与设置</li>
+        <li v-if="admin==1" class="product a wrjlb"   >管理用户 </li>
 
         <li class="a" @click="goAboutUs()" v-if="kind==2">我的医生</li>
         <li>
@@ -77,6 +72,8 @@
           class="user_controll a"
           v-if="user"
         >{{user}}</li>
+        <li class="m_right user_controll a" @click="exit" v-if="user">退出</li>
+
         <!-- <li
           @click="goUser(1)"
           class="user_controll a"
@@ -176,6 +173,9 @@ export default {
     user() {
       return this.$store.state.username
     },
+    admin(){
+      return this.$store.state.admin
+    },
     classObject: function() {
       return {
         top_header_b: this.topHeaderState,
@@ -204,6 +204,8 @@ export default {
     this.getUserInfo();
     this.$store.info_state = 1; //个人信息页面的哪个模块
     this.$store.state.username=sessionStorage.getItem('userId')
+    this.$store.state.admin=sessionStorage.getItem('admin')
+
     // alert(this.user)
   },
 
@@ -213,6 +215,23 @@ export default {
   },
 
   methods: {
+    exit(){
+            this.$confirm("是否退出", "提示", {
+        cancelButtonClass: "btn-custom-cancel",
+        confirmButtonText: "是",
+        cancelButtonText: "否",
+        type: "warning",
+      }).then(()=>{
+              window.sessionStorage.setItem('userId','')
+              window.sessionStorage.setItem('token','')
+            window.sessionStorage.setItem('admin','')
+      this.$store.state.username=''
+      this.$store.state.admin='0'
+      this.$router.replace('/login')
+      })
+
+
+    },
     goKWM(){
             this.$router.push('/work/keyWM');
 

@@ -1,6 +1,9 @@
 <template>
   <div style="position:relative" class="Loginwrapper">
     <div class="bgpic"></div>
+
+   
+
       <transition
         enter-active-class="animated fadeInLeft"
         leave-active-class="animated fadeOutRight"
@@ -255,8 +258,11 @@ export default {
                   window.sessionStorage.setItem("token",thistoken)
                   window.sessionStorage.setItem("userId",this.loginForm.username)
                   window.sessionStorage.setItem("userIdNum",resp.data.userId)
+                  window.sessionStorage.setItem("admin",'')
+                  if(resp.data.role=='管理员'){
+                  window.sessionStorage.setItem("admin",'1')
 
-                  
+                  }
 
                             this.$message({
                         type: "success",

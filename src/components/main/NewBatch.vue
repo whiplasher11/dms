@@ -1,9 +1,36 @@
 <template>
   <div class="wrapper">
+      <div style="position:absolute;width:20rem;height:10rem;top:10rem;left:50%;margin-left:-10rem;line-height:10rem;
+    background-color:rgba(25,55,163,0.8);font-size:1.3rem;color:white;text-align:center;z-index:1000" v-if="showWaitingFlag">请求中，请稍候...</div>
+       <!-- <el-form v-if="true" ref="searchForm" label-width="30%" class="searchForm">
+
+        <el-form-item prop="historyAuth" label="">
+          <el-select
+
+            ref="authSelectref"
+            id="selectAuth"
+            filterable
+            v-model="BatchForm.authName"
+            placeholder="输入"
+          >
+            <el-option
+              v-for="item in historyAuths"
+              :key="item.authCode"
+              :label="item.authName"
+              :value="item.authCode"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+
+
+     </el-form> -->
+
     <div class="Card" v-show="step==1">
       <div class="newTip">新建一批档案工作</div>
 
       <div class="organModify" @click="modifyOrgan">管理</div>
+
+
 
       <el-form v-if="true" ref="BatchForm" :model="BatchForm" label-width="30%" class="batchForm">
         <el-form-item prop="historyAuth" label="选择或填写单位：">
@@ -153,20 +180,40 @@
           </el-select>
         </el-form-item>
 
-        <el-button type="primary" class="midBtn" @click="nextStep">下一步</el-button>
+        <el-button type="primary" class="midBtn" style="margin-left:40%" @click="nextStep">下一步</el-button>
       </el-form>
     </div>
-
+<!-- step==2 -->
     <div class="Card" v-if="step==2">
-      <div class="newTip">设置本单位档案盒</div>
+      <div class="newTip">设置本单位档案盒号</div>
       <el-form v-if="true" ref="BatchForm" :model="BatchForm" label-width="30%" class="batchForm">
-        <el-form-item label="本单位盒号：">填写需要用到的盒子类型的上一盒盒号即可</el-form-item>
-        <el-form-item prop="lastBox" label="永久盒：">
+       <div style="font-size=0.7rem;margin-bottom:1rem;width:80%;margin-left:10%;text-align:center"> 提示：填写需要用到的盒子类型的上一盒盒号即可,如长期盒前一批整档工作排到了39盒，本批将使用第40盒那么填写(长期：39)</div>
+        <div v-for="(item,index) in this.jsonArray" :key="index" style="position:relative">
+          <input v-model="item[0]" type="text" style="width: 25%; 
+    height: 2.2rem;
+    font-size: 1.1rem;
+    border: 0.08rem solid #274596c5;
+    background: rgba(255, 255, 255, 0.15) !important;
+    border-radius: 0.48rem;
+    padding-left: 2rem;margin-left:2rem;margin-bottom:1rem"
+    >
+
+        （年）盒型：
+          <input type="text" v-model="item[1]" style="width: 25%; 
+    height: 2.2rem;
+    font-size: 1.1rem;
+    border: 0.08rem solid #274596c5;
+    background: rgba(255, 255, 255, 0.15) !important;
+    border-radius: 0.48rem;
+    padding-left: 2rem;">（盒）
+    <div style="position:absolute;right:2rem;top:0.4rem;font-weight:600;cursor:pointer" @click="deleteThis(index)">删除</div>
+        </div>
+        <!-- <el-form-item prop="lastBox" label="永久盒：">
           <el-input
             size="normal"
             type="text"
             class="textInput"
-            v-model="BatchForm.lastBox.yongjiu"
+            v-model="BatchForm.lastBox.永久"
             auto-complete="off"
             placeholder="输入本单位该类型上盒盒号"
           ></el-input>
@@ -220,10 +267,16 @@
             auto-complete="off"
             placeholder="输入本单位该类型上盒盒号"
           ></el-input>
-        </el-form-item>
-        <el-button type="primary" class="midBtn" @click="preStep">上一步</el-button>
+        </el-form-item> -->
+      <div style="position:relative">
+      <div style="height:1rem"></div>
 
-        <el-button type="primary" class="midBtn" @click="newBatch">下一步</el-button>
+        <el-button type="primary" class="midBtn" style="width:12%;position:absolute;left:25%" @click="preStep">上一步</el-button>
+        <el-button type="primary" class="midBtn" style="width:12%;position:absolute;left:45%" @click="newBoxType">新增盒型</el-button>
+
+        <el-button type="primary" class="midBtn" style="width:12%;position:absolute;left:65%" @click="newBatch">下一步</el-button>
+      </div>
+      <div style="height:1rem"></div>
       </el-form>
     </div>
   </div>
@@ -233,6 +286,7 @@
 export default {
   data() {
     return {
+      showWaitingFlag:false,
       can:true,
       step: 1,
       showTwo: true,
@@ -245,12 +299,10 @@ export default {
         docType: "",
         docTypeCode: "",
         lastBox: {
-          yongjiu: "0",
-          changqi: "0",
-          beicha: "0",
-          y100: "0",
-          y30: "0",
-          y10: "0",
+          '永久': "0",
+          '长期': "39",
+          '备查': "0",
+ 
         },
         priority: [],
         rule: "",
@@ -317,9 +369,19 @@ export default {
           typeName: "业务类",
         },
       ],
+      jsonArray:[],
     };
   },
   created() {
+      let attr;
+    for (attr in this.BatchForm.lastBox) {
+      this.jsonArray.push([attr, this.BatchForm.lastBox[attr]]);
+    }
+    console.log('jsonArr');
+
+    console.log(this.jsonArray);
+
+
     this.$store.state.username = sessionStorage.getItem("userId");
     this.$store.state.alreadyDocs = [];
     this.getRequest("/organs").then((resp) => {
@@ -400,6 +462,22 @@ export default {
   computed: {},
 
   methods: {
+    deleteThis(index){
+      this.jsonArray.splice(index,1)
+    },
+    newBoxType(){
+      this.jsonArray.push([
+        '',''
+      ])
+
+      // {
+      //   this.BatchForm.lastBox['22']="2"
+      //   // console.log(typeof(this.lastBox))
+      //   console.log(this.BatchForm)
+      //   return
+      // }
+
+    },
     modifyOrgan() {
       this.$router.push("/work/modifyOrgan");
     },
@@ -407,8 +485,72 @@ export default {
     huiche() {
       alert(1);
     },
+isNumber(val){
+
+    var regPos = /^\d+(\.\d+)?$/; //非负浮点数
+    var regNeg = /^(-(([0-9]+\.[0-9]*[1-9][0-9]*)|([0-9]*[1-9][0-9]*\.[0-9]+)|([0-9]*[1-9][0-9]*)))$/; //负浮点数
+    if(regPos.test(val) && regNeg.test(val)){
+        return true;
+    }else{
+        return false;
+    }
+
+},
+isStringNum(val){
+  // console.log(val+':'+typeof(val)+Number(val)+JSON.stringify(val))
+
+  if(val=="") return false
+  var n=Number(val)
+  // console.log('转换')
+
+  // console.log(n)
+  if(!isNaN(n)) return true
+  else return false
+},
     newBatch() {
       // console.log(this.BatchForm)
+      // {
+      //   this.BatchForm.lastBox['22']="2"
+      //   // console.log(typeof(this.lastBox))
+      //   console.log(this.BatchForm)
+      //   return
+      // }
+      var newBFlag=true
+      //       for(var i=0;i<3;i++){
+      //   // console.log(this.isStringNum(this.jsonArray[i][1]))
+      //   if(!this.isStringNum(this.jsonArray[i][1])){
+      //     newBFlag=false
+          
+      //   }
+      // }
+
+    
+      // for(  var i=3;i<this.jsonArray.length;i++){
+      //   // console.log()
+      //   // alert(this.isStringNum(this.jsonArray[i][0]+this.jsonArray[i][0]))
+      //   if(!this.isStringNum(this.jsonArray[i][0])) newBFlag=false
+      //   if(!this.isStringNum(this.jsonArray[i][1])) newBFlag=false
+      // }
+for(  var i=0;i<this.jsonArray.length;i++){
+  if(!this.isStringNum(this.jsonArray[i][0])&&(!(this.jsonArray[i][0]=='永久'||this.jsonArray[i][0]=='长期'||this.jsonArray[i][0]=='备查'))) newBFlag=false
+  if(!this.isStringNum(this.jsonArray[i][1])) newBFlag=false
+}
+      if(!newBFlag){
+                this.$message({
+          type: "error",
+          message: "除初始三种盒型外只允许填入数字",
+        });
+        return
+      }
+                     var jsonToCommit={}   /**将修改提交 jsonArray是数组*/
+        for (var i = 0; i < this.jsonArray.length; i++) {
+        console.log(this.jsonArray[i][0]);
+        jsonToCommit[this.jsonArray[i][0]] = this.jsonArray[i][1];
+      }
+        console.log(jsonToCommit);
+
+      this.BatchForm.lastBox=jsonToCommit
+      window.sessionStorage.setItem("lastBox",JSON.stringify(jsonToCommit))
 
       var a = { first: "1", second: "2", third: "3", forth: "4", fifth: "5" };
       let b = this.BatchForm.priority;
@@ -513,12 +655,17 @@ export default {
       // var token=sessionStorage.getItem("token");
  
 this.validateForm1();
+if(this.can){
+this.showWaitingFlag=true
+
+}
 setTimeout(() => {
   // alert(this.can)
         if (this.can) {
         this.BatchForm.priority = this.uploadpriority;
         if (this.step == 1) this.step++;
       }
+      this.showWaitingFlag=false
 }, 3000);  //怎样等一个带有异步请求的函数全部执行完了再往下执行
 
     
@@ -692,6 +839,38 @@ setTimeout(() => {
 </script>
 
 <style lang="scss">
+
+
+.searchForm{
+   position: relative;
+  /* padding: 15px 35px 15px 35px; */
+  top: 4rem;
+  background: rgba(255, 255, 255, 0) !important;
+
+  .el-input__inner {
+    background: rgba(255, 255, 255, 0.15) !important;
+    border-radius: 0.48rem;
+    border: 0.08rem solid #274596c5;
+    height: 2.5rem !important;
+    color: #333;
+    font-size: 1.1rem;
+    padding-left: 3.3vw;
+  }
+
+  .el-form-item__label {
+    line-height: 3rem !important;
+  }
+  .el-form-item__content {
+    height: 3rem !important;
+  }
+  .textInput {
+    width: 70%;
+  }
+
+}
+
+
+
 .batchForm {
   .el-input__inner {
     background: rgba(255, 255, 255, 0.15) !important;
@@ -716,12 +895,12 @@ setTimeout(() => {
 </style>
 
 <style lang="scss" scoped>
-.midBtn {
-  width: 6rem;
-  left: 50%;
-  margin-left: -3rem;
-  position: relative;
-}
+// .midBtn {
+//   width: 6rem;
+//   left: 50%;
+//   margin-left: -3rem;
+//   position: relative;
+// }
 .batchForm {
   position: relative;
   /* padding: 15px 35px 15px 35px; */

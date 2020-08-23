@@ -1,8 +1,9 @@
 import axios from 'axios'
 import {Message} from 'element-ui';
-import router from '../router'
 
+import router from '../router';
 
+import store from '../store/index.js'
 
 axios.interceptors.response.use(success => {
     
@@ -18,6 +19,8 @@ axios.interceptors.response.use(success => {
     }
     else if(success.data.code==1107){
         Message.error({message: '未获得授权，请重新登录或联系管理员购买'})
+        window.sessionStorage.setItem('userId','')
+        store.state.username=''
     }
     else if(success.data.code==1103){
         Message.error({message: '用户不存在，请注册'})
@@ -31,8 +34,9 @@ axios.interceptors.response.use(success => {
     if(error.response.status==100){return error.response}
     if(error.response.status==500){
         // console.log(error)
-        Message.error({message:"未知错误"})
-        router.replace('/login')
+        // Message.error({message:"未知错误"})
+        return error.response
+        // router.replace('/login')
        
         return error.response}
     if (error.response.status == 504 || error.response.status == 404) {
@@ -94,7 +98,7 @@ export const putRequest = (url, params) => {
         headers: {
             'Content-Type': 'application/json',
 
-            token:sessionStorage.getItem('token'),
+            token:sessionStorage.getItem('token')?(sessionStorage.getItem('token').split('"')[1]||sessionStorage.getItem('token')):null,
             authId:sessionStorage.getItem('authId')||''
 
         }
@@ -106,6 +110,8 @@ export const getRequest = (url, params) => {
         url: `${base}${url}`,
         data: params,
         headers: {
+            authId:sessionStorage.getItem('authId')||'',
+            
             'Content-Type': 'application/json',
             token:sessionStorage.getItem('token')?(sessionStorage.getItem('token').split('"')[1]||sessionStorage.getItem('token')):null
         }
