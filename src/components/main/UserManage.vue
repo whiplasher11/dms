@@ -63,7 +63,7 @@ export default {
   },
   methods: {},
   created() {
-    var path = "/admin/users?pageNow=0&pageSize=100";
+    var path = "/admin/users?pageNow=0&pageSize=20";
     this.getRequest(path).then((resp) => {
       if (resp.code == 0) {
         console.log("加载时请求单位列表");

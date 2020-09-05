@@ -142,13 +142,13 @@ export default {
       });
       },
     banUser(e, item) {
-      this.$confirm("禁用此用户使用权限吗", "提示", {
-        cancelButtonClass: "btn-custom-cancel",
-        confirmButtonText: "是",
-        cancelButtonText: "否",
-        type: "warning",
-      }).then(() => {
-        var path = "/admin/user/" + item.user.username + "/1";
+        this.$confirm("禁用此用户使用权限吗", "提示", {
+            cancelButtonClass: "btn-custom-cancel",
+            confirmButtonText: "是",
+            cancelButtonText: "否",
+            type: "warning",
+        }).then(() => {
+        var path = "/admin/user/" + item.user.username + "/103";
         this.postRequest(
           //注意防止重复提交
           path

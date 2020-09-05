@@ -11,6 +11,8 @@
 
       <div style="position:absolute;top:6rem;font-size:1.5rem;width:100%;text-align:center">排件号规则管理</div>
 
+ 
+ 
  <div v-if="showKVFix"
  style="position:absolute;top:40vh;left:50%;margin-left:-15rem;z-index:122;padding-top:1rem;
  font-size:1.5rem;width:30rem;height:10rem;background-color:#666">

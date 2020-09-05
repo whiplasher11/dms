@@ -148,7 +148,7 @@
           </el-select>
         </el-form-item>
 
-        <el-form-item v-if="showPriority&&!showTwo" prop="priority.first" label="选择第四优先级：">
+        <el-form-item v-if="false&&showPriority&&!showTwo" prop="priority.first" label="选择第四优先级：">
           <el-select filterable v-model="priority.forth" placeholder="选择优先级">
             <el-option
               v-for="item in priorityDic"
@@ -158,7 +158,7 @@
             ></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item v-if="showPriority&&!showTwo" prop="priority.first" label="选择第五优先级：">
+        <el-form-item v-if="false&&showPriority&&!showTwo" prop="priority.first" label="选择第五优先级：">
           <el-select filterable v-model="priority.fifth" placeholder="选择优先级">
             <el-option
               v-for="item in priorityDic"
@@ -343,8 +343,8 @@ export default {
         { name: "主题词", key: "keyword" },
         { name: "级别", key: "level" },
         { name: "责任者", key: "author" },
-        { name: "文号中的序号", key: "docDescNum" },
-        { name: "发文日期", key: "docDate" },
+        // { name: "是否有文号", key: "docDescNum" },
+        // { name: "发文日期", key: "docDate" },
       ],
       priorityDic2: [
         { name: "主题词", key: "keyword" },
@@ -554,6 +554,7 @@ for(  var i=0;i<this.jsonArray.length;i++){
 
       var a = { first: "1", second: "2", third: "3", forth: "4", fifth: "5" };
       let b = this.BatchForm.priority;
+      console.log(b)
 
       for (var key in b) {
         var newKey = a[key];

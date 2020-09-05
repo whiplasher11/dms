@@ -14,6 +14,7 @@ const store = new Vuex.Store({
     state: {
         hi:2,
         username:'',
+        admin:"",
         tempDocSeq:'',
         tempDocId:'',
         tempDoc:'',

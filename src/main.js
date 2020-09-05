@@ -29,9 +29,35 @@ import 'vuescroll/dist/vuescroll.css';
 Vue.use(vuescroll);
 Vue.use(animate)
 
+Vue.filter('formatFiveKJ',function(value){
+    var tvalue=value+""
+    if(tvalue==undefined||tvalue=='null'||!tvalue||tvalue==""){return '暂无'}
+    else {
+        var h=tvalue
+        while(h.length<5){
+            h='0'+h
+        }
+        // console.log(h)
+        return h
+    }
+});
+
+Vue.filter('formatThreeKJ',function(value){
+    var tvalue=value+""
+    if(tvalue==undefined||tvalue=='null'||!tvalue||tvalue==""){return '暂无'}
+    else {
+        var h=tvalue
+        while(h.length<3){
+            h='0'+h
+        }
+        // console.log(h)
+        return h
+    }
+});
+
 Vue.filter('formatFourNum',function(value){
     var tvalue=value+""
-    if(tvalue=='null'||!tvalue||tvalue==""){return '暂无'}
+    if(tvalue==undefined||tvalue=='null'||!tvalue||tvalue==""){return '暂无'}
     else {
         var h=tvalue
         while(h.length<4){

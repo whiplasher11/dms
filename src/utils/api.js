@@ -14,6 +14,9 @@ axios.interceptors.response.use(success => {
     else if (success.data.code==200) {
         Message.success({message: success.data.message})
     }
+    else if(success.data.code==401){
+        Message.error({message: '请登录或退出重新登录'})
+    }
     else if(success.data.code==1102){
         Message.error({message: '用户名或手机号已被注册'})
     }

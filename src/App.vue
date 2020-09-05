@@ -8,12 +8,17 @@
 <script>
 import TopHeader from "./components/common/TopHeader.vue";
 
+import Left from "./components/common/History.vue";
+
 export default {
   components: {
     TopHeader: TopHeader,
      
   },
   methods:{
+    // leftOption:function(bool) {
+    //     this.header_show = bool;
+    //   },
 
     setRootFontSize() {
         // let rem, rootWidth;

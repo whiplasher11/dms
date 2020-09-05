@@ -2,10 +2,10 @@
   <div class="left_history_batches">
         <vue-scroll :ops="ops">
       <div style="height:150vh;margin-top:4.6rem" >
-      <div style="height:4.5rem" > 
+      <div style="height:2.5rem" > 
         <!-- 搜索 -->
-        <el-input class="leftInput"></el-input>
-         <el-button type="primary" icon="el-icon-search"  style="background-color:rgb(134, 151, 197);border:none;margin-top:2vh;">搜索</el-button>
+        <!-- <el-input class="leftInput" v-model="searchContent" ></el-input> -->
+         <!-- <el-button type="primary" icon="el-icon-search"  style="background-color:rgb(134, 151, 197);border:none;margin-top:2vh;" @click="searchTheDoc">搜索</el-button> -->
       </div>
 
       <div style="height:2rem;position:relative;">
@@ -28,7 +28,7 @@
           <div class="leftPic"></div>
           <div class="leftKeyWord">{{item.docAbout}} </div>
           <div class="leftSeq">识别号： {{item.docSequence}}</div>
-          <div class="leftState">时间 {{item.docNumber==''?'未排':item.docNumber}}</div>
+          <div class="leftState">日期: {{item.docDate}}</div>
         </div>
         </div>
    
@@ -44,6 +44,7 @@ import Utils from '../../utils/doc.js'
 export default {
   data(){
     return{
+      searchContent:'输入识别号',
       showFixFlag:false,
 
         ops: {
@@ -68,6 +69,28 @@ export default {
     }
   },
   methods:{
+    searchTheDoc(){
+      var searchPath="/document/list/page/"+sessionStorage.getItem('docType')+'?pageNow=0&pageSize=100'
+         var docObj = {
+          // userId:JSON.stringify(sessionStorage.getItem("userId")),
+          // userId: sessionStorage.getItem('userId'),
+          docSequence:this.searchContent,
+          docType:sessionStorage.getItem('docType')
+        };
+          this.postRequest(
+          //注意防止重复提交
+          searchPath,
+          JSON.stringify(docObj)
+        )
+          .then((resp) => {
+            // console.log(resp)
+            // this.
+                    this.$store.state.alreadyDocs=resp.data.content
+           this.$router.replace("/work/docInputd")
+
+
+          })
+    },
     goDetail(){
 
            this.$router.push("/work/docInputd")
@@ -166,7 +189,7 @@ export default {
 .left_history_batches{
     // float:left;
     
-    height: 100vh;
+    height: 150vh;
     width: 15rem;
     background-color:rgb(134, 151, 197);
     position: absolute;

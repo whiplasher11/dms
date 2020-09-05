@@ -17,7 +17,7 @@
       <div class="keyWordsTimer">3秒后消失</div>
     </div>
 
-    <el-form class="docInForm" ref="docForm" :model="docForm" label-width="10rem">
+    <el-form v-if="!isRS" class="docInForm" ref="docForm" :model="docForm" label-width="10rem" >
       <!-- <div class="docTypeTitle">sessionStorage批次</div> -->
       <div class="docSequenceTip">本份文件唯一序列号：{{this.docForm.docSequence}}</div>
 
@@ -57,7 +57,7 @@
           </el-form-item>
         </el-col>
 
-        <el-col :span="12">
+        <el-col :span="12" v-if="false">
           <el-form-item prop="batchName" label="机构/问题：">
             <el-input
               @blur="docAboutBlur"
@@ -69,6 +69,19 @@
             ></el-input>
           </el-form-item>
         </el-col>
+                <el-col :span="12" v-if="true">
+          <el-form-item prop="batchName" label="项目:">
+            <el-input
+              @blur="docAboutBlur"
+              size="normal"
+              type="text"
+              v-model="docForm.docAbout"
+              auto-complete="off"
+              placeholder="根据文件填写"
+            ></el-input>
+          </el-form-item>
+        </el-col>
+
       </el-row>
 
       <el-row :gutter="24">
@@ -126,7 +139,7 @@
 
       <el-row :gutter="24">
         <el-col :span="12">
-          <el-form-item prop="batchName" label="责任者简称：">
+          <el-form-item v-show="false" prop="batchName" label="责任者简称：">
             <el-input
               size="normal"
               type="text"
@@ -151,14 +164,28 @@
       </el-row>
 
       <el-row :gutter="24">
+             <el-col :span="12">
+          <el-form-item prop="batchName" label="有无文号:">
+                  <el-checkbox
+        style="position:absolute;left:2rem;top:0.5rem;"
+        v-if="true"
+        @change="docDescChange"
+        false-label="0"
+        true-label="1"
+        :checked="false"
+      ></el-checkbox>
+
+          </el-form-item>
+        </el-col>
+        
         <el-col :span="12">
-          <el-form-item prop="batchName" label="责任者发文序号：">
+          <el-form-item prop="batchName" v-if="docForm.docDescNum==1" label="文号">
             <el-input
               size="normal"
               type="text"
-              v-model="docForm.docDescNum "
+              v-model="docForm.docDesc "
               auto-complete="off"
-              placeholder="文号中序号，没有则不填"
+              placeholder="文号"
             ></el-input>
           </el-form-item>
         </el-col>
@@ -223,6 +250,143 @@
         <el-button type="primary" size="big" style="margin-left:10%" @click="cancelFix" v-if="fixDocFlag">取消修改</el-button>
       </div>
     </el-form>
+
+    
+
+
+
+        <el-form v-if="isRS" class="docInForm" ref="docForm" :model="docFormRS" label-width="10rem">
+      <!-- <div class="docTypeTitle">sessionStorage批次</div> -->
+      <div class="docSequenceTip">本份文件唯一序列号：{{this.docFormRS.docSequence}}</div>
+ 
+
+ 
+
+      <el-row :gutter="24">
+        <el-col :span="12">
+          <el-form-item prop="batchName" label="姓名：">
+            <el-input
+              
+ 
+              size="normal"
+              type="text"
+              v-model="docFormRS.personName"
+              auto-complete="off"
+              placeholder="填写姓名"
+            ></el-input>
+          </el-form-item>
+        </el-col>
+
+          <el-col :span="12">
+          <el-form-item prop="batchName" label="材料类别：">
+            <el-select v-model="docFormRS.docAbout" placeholder="选择材料类别">
+              <el-option
+                v-for="item in RSTypes"
+                :key="item.value"
+                :label="item.name"
+                :value="item.value"
+              ></el-option>
+            </el-select>
+          </el-form-item>
+        </el-col>
+    
+      </el-row>
+
+<!-- erhang -->
+      <el-row :gutter="24">
+
+
+        <el-col :span="12">
+          <el-form-item prop="batchName" label="材料形成时间：">
+            <el-date-picker
+              type="date"
+              placeholder="选择日期"
+              v-model="docFormRS.docDate"
+              value-format="yyyyMMdd"
+              :picker-options="pickerOptions"
+            ></el-date-picker>
+          </el-form-item>
+        </el-col>
+      </el-row>
+
+      <el-row :gutter="24">
+       
+
+        <el-col :span="12">
+          <el-form-item prop="batchName" label="材料名：">
+            <el-input
+              size="normal"
+              type="text"
+              v-model="docFormRS.docAboutSub"
+              auto-complete="off"
+              placeholder="输入"
+            ></el-input>
+          </el-form-item>
+        </el-col>
+      </el-row>
+
+      <el-row :gutter="24">
+
+
+        <el-col :span="12">
+          <el-form-item prop="batchName" label="文件页数：">
+            <el-input
+              size="normal"
+              type="text"
+              v-model="docForm.docPage"
+              auto-complete="off"
+              placeholder="根据文件填写"
+            ></el-input>
+          </el-form-item>
+        </el-col>
+      </el-row>
+ 
+
+   
+
+      <el-form-item class="textArea" prop="batchName" label="备注信息：">
+        <el-input
+          type="textarea"
+          :rows="2"
+          class="textAreaInput"
+          v-model="docForm.docRemark"
+          auto-complete="off"
+          placeholder="输入备注"
+        ></el-input>
+      </el-form-item>
+
+      <div class="buttonGroup">
+        <el-button
+          type="warning"
+          v-if="fixDocFlag"
+          size="big"
+          style="margin-left:30%"
+          @click="fixDoc"
+        >修改档案</el-button>
+        <el-button
+          type="success"
+          v-if="!fixDocFlag"
+          size="big"
+          style="margin-left:20%"
+          @click="addDoc"
+        >添加档案</el-button>
+
+
+        <el-button type="primary" size="big" style="margin-left:20%" @click="resetDocIn" v-if="!fixDocFlag">清空列表</el-button>
+
+                        <el-button
+          type="warning"
+          v-if="!fixDocFlag"
+          size="big"
+          style="margin-left:20%"
+          @click="addDoc"
+        >结束录入</el-button>
+
+
+        <el-button type="primary" size="big" style="margin-left:10%" @click="cancelFix" v-if="fixDocFlag">取消修改</el-button>
+      </div>
+    </el-form>
+
   </div>
 </template>
 
@@ -247,14 +411,83 @@ export default {
       // alert(that.TempdocSequence)
     });
   },
+  computed:{
+    isRS(){
+      return sessionStorage.getItem('docType')=='personnel'
+    }
+  },
 
   data() {
     return {
+      docFormRS:{
+         id: "",
+        docSequence: "", //序列号，标识文件
+        docType: "",
+        // docTitle: "今天的猪肉12元", //标题
+        docAbout: "",
+        docAboutSub:'',
+        // keyword: "猪肉", //关键字
+        // docDesc: "", //文号
+        // sortYear: "2019",
+        docDate: "20190808",
+        docTypeCode: sessionStorage.getItem("docTypeCode"),
+ 
+        docSecret: "", //文件密级
+        docPage: "",
+        docRemark: "", //备注
+        docNumber: "", //件号
+        personName:'',
+        docDescNum: "0", //文号中的序号
+
+      },
       showWaitingFlag:false,
       weightForm: {},
       manageKeyWordTime: 1,
       keyWordEdit: false,
       fixDocFlag: false,
+      RSTypes:[
+                {
+          name: "履历材料",
+          value: "履历材料",
+        },
+                {
+          name: "自传材料",
+          value: "自传材料",
+        },
+                {
+          name: "鉴定、考核、考察材料",
+          value: "鉴定、考核、考察材料",
+        },
+                {
+          name: "学历和评聘专业职务材料",
+          value: "学历和评聘专业职务材料",
+        },
+                {
+          name: "政治历史情况审查材料",
+          value: "政治历史情况审查材料",
+        },
+                {
+          name: "入党入团材料子材料",
+          value: "入党入团材料子材料",
+        },
+                        {
+          name: "奖励材料子材料",
+          value: "奖励材料子材料",
+        },
+                        {
+          name: "处分材料",
+          value: "处分材料",
+        },
+                                {
+          name: "工资、任免、退休材料",
+          value: "工资、任免、退休材料",
+        },
+                                {
+          name: "其他可供参考的材料",
+          value: "其他可供参考的材料",
+        },
+ 
+      ],
       docLevels: [
         {
           name: "部级",
@@ -346,7 +579,7 @@ export default {
         docRemark: "", //备注
         docNumber: "", //件号
         boxNumber: "", //盒号
-        docDescNum: "", //文号中的序号
+        docDescNum: "0", //文号中的序号
       },
 
       docFormKong: {
@@ -370,7 +603,7 @@ export default {
         docRemark: "", //备注
         docNumber: "", //件号
         boxNumber: "", //盒号
-        docDescNum: "", //文号中的序号
+        docDescNum: "0", //文号中的序号
       },
 
       TempdocSequence: "",
@@ -443,13 +676,14 @@ export default {
           remark: this.docForm.remark,
           deadline: this.docForm.deadline,
           docAbout: this.docForm.docAbout,
-          docDesc:
-            this.docForm.docDescAuthor +
-            "[" +
-            this.docForm.docDate.substring(0, 4) +
-            "]" +
-            this.docForm.docDescNum +
-            "号", //文号
+          docDesc:this.docForm.docDesc,
+          // docDesc:
+          //   this.docForm.docDescAuthor +
+          //   "[" +
+          //   this.docForm.docDate.substring(0, 4) +
+          //   "]" +
+          //   this.docForm.docDescNum +
+          //   "号", //文号
           docPage: this.docForm.docPage,
           docDescAuthor: this.docForm.docDescAuthor,
           docDescNum: this.docForm.docDescNum,
@@ -489,10 +723,20 @@ export default {
         });
       }
     },
+    docDescChange(e){
+      // console.log(e)
+      if(e==1){
+        this.docForm.docDescNum=1
+      }
+      else if(e==0){
+        this.docForm.docDescNum=0
+        this.docForm.docDesc=''
+      }
+    },
     cancelFix(){
                   this.keyWordEdit = false;
             this.docForm.keyword = "";
-            this.docForm.docDescNum="";
+            this.docForm.docDescNum="0";
             this.docForm.docSequence = this.genId(6, 62);
             this.docForm.docDate.replace("-", "");
             console.log(this.docForm);
@@ -525,13 +769,7 @@ export default {
           remark: this.docForm.remark,
           deadline: this.docForm.deadline,
           docAbout: this.docForm.docAbout,
-          docDesc:
-            this.docForm.docDescAuthor +
-            "[" +
-            this.docForm.docDate.substring(0, 4) +
-            "]" +
-            this.docForm.docDescNum +
-            "号", //文号
+          docDesc:this.docForm.docDesc,
           docPage: this.docForm.docPage,
           docDescAuthor: this.docForm.docDescAuthor,
           docDescNum: this.docForm.docDescNum,
@@ -565,10 +803,27 @@ export default {
 
             var kwTemp=this.docForm.keyword
 
-            if (sessionStorage.getItem("docType") == "official") {
-              weightType1 = 11; //文书问题
+            // if (sessionStorage.getItem("docType") == "official") {
+            // if (true) {
+if (sessionStorage.getItem("docType") == "official"){
+                weightType1 = 11; //文书问题
               weightType2 = 12;
               weightType3 = 13;
+}
+if(sessionStorage.getItem("docType") == "science"){
+                weightType1 = 21; 
+              weightType2 = 22;
+              weightType3 = 23;
+}
+
+if(sessionStorage.getItem("docType") == "business"){
+                weightType1 = 31; 
+              weightType2 = 32;
+              weightType3 = 33;
+}
+
+            if (sessionStorage.getItem("docType") == "official") {
+
               var table;
               if (this.weightForm.docIssueWig) {
                 //已有权重表
@@ -728,12 +983,341 @@ export default {
               }
             } //doctype==official if
 
+            if (sessionStorage.getItem("docType") == "business") {
+
+              var table;
+              if (this.weightForm.busProjectWig) {
+                //已有权重表
+                this.getRequest("/weight/sort/" + this.weightForm.busProjectWig)
+                  .then((resp) => {
+                    //查询对应的权重表得到json
+                    table = resp.data.tables;
+                    var key1 = this.docForm.docAbout;
+                    // var json1 = table;
+                    if (table[key1] == null) {
+                      table[key1] = "0";
+                    }
+                  })
+                  .then((r) => {
+                    var docAboutObj = {
+                      authId: sessionStorage.getItem("authId"),
+                      type: weightType1,
+                      tables: table,
+                    };
+
+                    this.putRequest(
+                      "/weight/" + this.weightForm.busProjectWig,
+                      docAboutObj
+                    ).then((resp) => {
+                      console.log("更新业务问题权重表");
+                      console.log(resp);
+                    });
+                  });
+
+                /**责任者
+                 *
+                 */
+                var table2;
+                this.getRequest("/weight/sort/" + this.weightForm.busAuthorWig)
+                  .then((resp) => {
+                    //查询对应的权重表得到json
+                    table2 = resp.data.tables;
+                    var key2 = this.docForm.dutyAuthor;
+                    // var json1 = table;
+                    if (table2[key2] == null) {
+                      table2[key2] = "0";
+                    }
+                  })
+                  .then((r) => {
+                    var dutyAuthorObj = {
+                      authId: sessionStorage.getItem("authId"),
+                      type: weightType2,
+                      tables: table2,
+                    };
+
+                    this.putRequest(
+                      "/weight/" + this.weightForm.busAuthorWig,
+                      dutyAuthorObj
+                    ).then((resp) => {
+                      console.log("更新文书责任者权重表");
+                      console.log(resp);
+                    });
+                  });
+
+                var table3;
+                this.getRequest("/weight/sort/" + this.weightForm.busKeywordWig)
+                  .then((resp) => {
+                    //查询对应的权重表得到json
+                    table3 = resp.data.tables;
+                    var key3 = kwTemp
+                    // var json1 = table;
+                    if (table3[key3] == null) {
+                      table3[key3] = "0";
+                    }
+
+                    console.log(key3);
+
+                    console.log(table3);
+                  })
+                  .then((r) => {
+                    var keyWordObj = {
+                      authId: sessionStorage.getItem("authId"),
+                      type: weightType3,
+                      tables: table3,
+                    };
+
+                    this.putRequest(
+                      "/weight/" + this.weightForm.busKeywordWig,
+                      keyWordObj
+                    ).then((resp) => {
+                      console.log("更新文书关键词权重表");
+                      console.log(resp);
+                    });
+                  }).then(r=>{
+                    this.showWaitingFlag=false;
+                  });
+              } else {
+                //第一次录入
+                var key1 = this.docForm.docAbout;
+                var json1 = {};
+                json1[key1] = "0";
+
+                var key2 = this.docForm.dutyAuthor;
+                var json2 = {};
+                json2[key2] = "0";
+
+                var key3 = this.docForm.keyword;
+                var json3 = {};
+                json3[key3] = "0";
+
+                var docAboutObj = {
+                  authId: sessionStorage.getItem("authId"),
+                  type: weightType1,
+                  tables: json1,
+                };
+
+                var dutyAuthorObj = {
+                  authId: sessionStorage.getItem("authId"),
+                  type: weightType2,
+                  tables: json2,
+                };
+
+                var keyWordObj = {
+                  authId: sessionStorage.getItem("authId"),
+                  type: weightType3,
+                  tables: json3,
+                };
+
+                this.postRequest(
+                  //注意防止重复提交
+                  "/weight",
+                  JSON.stringify(docAboutObj)
+                )
+                  .then((resp) => {
+                    console.log("提交问题权重表");
+                    console.log(resp);
+                  })
+                  .then((r) => {
+                    this.postRequest(
+                      //注意防止重复提交
+                      "/weight",
+                      JSON.stringify(dutyAuthorObj)
+                    )
+                      .then((resp) => {
+                        console.log("提交责任者权重表");
+                        console.log(resp);
+                      })
+                      .then((r) => {
+                        this.postRequest(
+                          //注意防止重复提交
+                          "/weight",
+                          JSON.stringify(keyWordObj)
+                        ).then((resp) => {
+                          console.log("提交关键词权重表");
+                          console.log(resp);
+                          this.weightForm = resp.data;
+                        }).then(r=>{
+                          this.showWaitingFlag=false;
+                        });
+                      });
+                  });
+              }
+            } //doctype==business if
+
+
+
+
+
+   if (sessionStorage.getItem("docType") == "science") {
+
+              var table;
+              if (this.weightForm.tecProjectWig) {
+                //已有权重表
+                this.getRequest("/weight/sort/" + this.weightForm.tecProjectWig)
+                  .then((resp) => {
+                    //查询对应的权重表得到json
+                    table = resp.data.tables;
+                    var key1 = this.docForm.docAbout;
+                    // var json1 = table;
+                    if (table[key1] == null) {
+                      table[key1] = "0";
+                    }
+                  })
+                  .then((r) => {
+                    var docAboutObj = {
+                      authId: sessionStorage.getItem("authId"),
+                      type: weightType1,
+                      tables: table,
+                    };
+
+                    this.putRequest(
+                      "/weight/" + this.weightForm.tecProjectWig,
+                      docAboutObj
+                    ).then((resp) => {
+                      console.log("更新科技项目权重表");
+                      console.log(resp);
+                    });
+                  });
+
+                /**责任者
+                 *
+                 */
+                var table2;
+                this.getRequest("/weight/sort/" + this.weightForm.tecAuthorWig)
+                  .then((resp) => {
+                    //查询对应的权重表得到json
+                    table2 = resp.data.tables;
+                    var key2 = this.docForm.dutyAuthor;
+                    // var json1 = table;
+                    if (table2[key2] == null) {
+                      table2[key2] = "0";
+                    }
+                  })
+                  .then((r) => {
+                    var dutyAuthorObj = {
+                      authId: sessionStorage.getItem("authId"),
+                      type: weightType2,
+                      tables: table2,
+                    };
+
+                    this.putRequest(
+                      "/weight/" + this.weightForm.tecAuthorWig,
+                      dutyAuthorObj
+                    ).then((resp) => {
+                      console.log("更新科技责任者权重表");
+                      console.log(resp);
+                    });
+                  });
+
+                var table3;
+                this.getRequest("/weight/sort/" + this.weightForm.tecKeywordWig)
+                  .then((resp) => {
+                    //查询对应的权重表得到json
+                    table3 = resp.data.tables;
+                    var key3 = kwTemp
+                    // var json1 = table;
+                    if (table3[key3] == null) {
+                      table3[key3] = "0";
+                    }
+
+                    console.log(key3);
+
+                    console.log(table3);
+                  })
+                  .then((r) => {
+                    var keyWordObj = {
+                      authId: sessionStorage.getItem("authId"),
+                      type: weightType3,
+                      tables: table3,
+                    };
+
+                    this.putRequest(
+                      "/weight/" + this.weightForm.tecKeywordWig,
+                      keyWordObj
+                    ).then((resp) => {
+                      console.log("更新科技关键词权重表");
+                      console.log(resp);
+                    });
+                  }).then(r=>{
+                    this.showWaitingFlag=false;
+                  });
+              } else {
+                //第一次录入
+                var key1 = this.docForm.docAbout;
+                var json1 = {};
+                json1[key1] = "0";
+
+                var key2 = this.docForm.dutyAuthor;
+                var json2 = {};
+                json2[key2] = "0";
+
+                var key3 = this.docForm.keyword;
+                var json3 = {};
+                json3[key3] = "0";
+
+                var docAboutObj = {
+                  authId: sessionStorage.getItem("authId"),
+                  type: weightType1,
+                  tables: json1,
+                };
+
+                var dutyAuthorObj = {
+                  authId: sessionStorage.getItem("authId"),
+                  type: weightType2,
+                  tables: json2,
+                };
+
+                var keyWordObj = {
+                  authId: sessionStorage.getItem("authId"),
+                  type: weightType3,
+                  tables: json3,
+                };
+
+                this.postRequest(
+                  //注意防止重复提交
+                  "/weight",
+                  JSON.stringify(docAboutObj)
+                )
+                  .then((resp) => {
+                    console.log("提交问题权重表");
+                    console.log(resp);
+                  })
+                  .then((r) => {
+                    this.postRequest(
+                      //注意防止重复提交
+                      "/weight",
+                      JSON.stringify(dutyAuthorObj)
+                    )
+                      .then((resp) => {
+                        console.log("提交责任者权重表");
+                        console.log(resp);
+                      })
+                      .then((r) => {
+                        this.postRequest(
+                          //注意防止重复提交
+                          "/weight",
+                          JSON.stringify(keyWordObj)
+                        ).then((resp) => {
+                          console.log("提交关键词权重表");
+                          console.log(resp);
+                          this.weightForm = resp.data;
+                        }).then(r=>{
+                          this.showWaitingFlag=false;
+                        });
+                      });
+                  });
+              }
+            } //doctype==science if
+
+
+
+
             this.$store.state.alreadyDocs.unshift(
               Object.assign({}, this.docForm)
             );
             this.keyWordEdit = false;
             this.docForm.keyword = "";
-            this.docForm.docDescNum="";
+            this.docForm.docDescNum="0";
             this.docForm.docSequence = this.genId(6, 62);
             this.docForm.docDate.replace("-", "");
             console.log(this.docForm);
@@ -855,6 +1439,8 @@ export default {
 
 
     this.docForm.docSequence = this.genId(6, 62);
+    this.docFormRS.docSequence = this.genId(6, 62);
+
     if (this.$store.state.tempDoc) {
       this.fixDocFlag = true;
       console.log(this.$store.state.tempDoc);
