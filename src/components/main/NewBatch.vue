@@ -81,7 +81,7 @@
             class="textInput"
             v-model="BatchForm.docTypeCode"
             auto-complete="off"
-            placeholder="如文书类填WS，不填为空"
+            placeholder="如文书类填WS，没有填无"
           ></el-input>
         </el-form-item>
 
@@ -286,6 +286,7 @@
 export default {
   data() {
     return {
+      weightForm:{},
       showWaitingFlag:false,
       can:true,
       step: 1,
@@ -373,6 +374,16 @@ export default {
     };
   },
   created() {
+
+ this.getRequest("/organ/" + sessionStorage.getItem("authId")).then(
+      (resp) => {
+        this.weightForm = resp.data;
+        console.log(resp.data)
+      })
+
+
+
+
       let attr;
     for (attr in this.BatchForm.lastBox) {
       this.jsonArray.push([attr, this.BatchForm.lastBox[attr]]);
@@ -554,7 +565,7 @@ for(  var i=0;i<this.jsonArray.length;i++){
 
       var a = { first: "1", second: "2", third: "3", forth: "4", fifth: "5" };
       let b = this.BatchForm.priority;
-      console.log(b)
+      // console.log(b)
 
       for (var key in b) {
         var newKey = a[key];
@@ -641,6 +652,7 @@ for(  var i=0;i<this.jsonArray.length;i++){
     },
 
     nextStep() {
+
       // 根据输入查询是否有该单位
       //  this.postKeyValueRequest(
       //   "/work/hasThisAuth",
@@ -654,6 +666,258 @@ for(  var i=0;i<this.jsonArray.length;i++){
       // })
       // if (this.BatchForm.authId == "") this.BatchForm.authId = -1;
       // var token=sessionStorage.getItem("token");
+      if(this.BatchForm.docType==3){
+
+/**
+ * 人事类
+ * 先查这个选中单位的权重表
+ */
+   this.getRequest("/organ/" + sessionStorage.getItem("authId")).then(
+      (resp) => {
+        this.weightForm = resp.data;
+        console.log(resp.data)
+      }).then(()=>{
+        if(this.weightForm.perSubWig10==null){
+          var key1 = '无';
+                var json1 = {};
+                json1[key1] = "0";
+              var rs1 = {
+                  authId: sessionStorage.getItem("authId"),
+                  type: 50,
+                  tables: json1,
+                };
+        var rs2 = {
+                  authId: sessionStorage.getItem("authId"),
+                  type: 51,
+                  tables: json1,
+                };
+                
+
+
+                                var rs3 = {
+                  authId: sessionStorage.getItem("authId"),
+                  type: 52,
+                  tables: json1,
+                };
+                
+
+  var key41 = '学历学位材料';
+                var json4 = {};
+                json4[key41] = "2";
+                 var key42 = '职称材料';
+                           json4[key42] = "1";
+
+                                                  var rs4 = {
+                  authId: sessionStorage.getItem("authId"),
+                  type: 53,
+                  tables: json4,
+                };
+            
+
+
+                  
+                                var rs5 = {
+                  authId: sessionStorage.getItem("authId"),
+                  type: 54,
+                  tables: json1,
+                };
+      
+
+
+                                var rs6 = {
+                  authId: sessionStorage.getItem("authId"),
+                  type: 55,
+                  tables: json1,
+                };
+ 
+
+
+                                var rs7 = {
+                  authId: sessionStorage.getItem("authId"),
+                  type: 56,
+                  tables: json1,
+                };
+        
+
+                  
+                                var rs8 = {
+                  authId: sessionStorage.getItem("authId"),
+                  type: 57,
+                  tables: json1,
+                };
+    
+
+                                                  var rs0 = {
+                  authId: sessionStorage.getItem("authId"),
+                  type: 59,
+                  tables: json1,
+                };
+      
+
+
+
+var key91 = '工资情况材料';
+                var json9 = {};
+                json9[key91] = "9";
+                 var key92 = '任免材料';
+                           json9[key92] = "8";
+
+                                            var key93 = '出国、出境材料';
+                           json9[key93] = "7";
+                                            var key94 = '各党派、团体代表登记表';
+                           json9[key94] = "6";
+                                            var key95 = '聘用、录用、转干、转业材料';
+                           json9[key95] = "5";
+                                                                       var key96 = '待遇、退（离）休、退职材料';
+                           json9[key96] = "4";
+                  
+                                var rs9 = {
+                  authId: sessionStorage.getItem("authId"),
+                  type: 58,
+                  tables: json9,
+                };
+  
+
+                
+                  this.postRequest(
+                  //注意防止重复提交
+                  "/weight",
+                  JSON.stringify(rs1)
+                )
+                  .then((resp) => {
+   this.postRequest(
+                  //注意防止重复提交
+                  "/weight",
+                  JSON.stringify(rs2)
+                )
+                  .then((resp) => {
+  this.postRequest(
+                  //注意防止重复提交
+                  "/weight",
+                  JSON.stringify(rs3)
+                )
+                  .then((resp) => {
+       this.postRequest(
+                  //注意防止重复提交
+                  "/weight",
+                  JSON.stringify(rs4)
+                )
+                  .then((resp) => {
+             this.postRequest(
+                  //注意防止重复提交
+                  "/weight",
+                  JSON.stringify(rs5)
+                )
+                  .then((resp) => {
+                               this.postRequest(
+                  //注意防止重复提交
+                  "/weight",
+                  JSON.stringify(rs6)
+                )
+                  .then((resp) => {
+           this.postRequest(
+                  //注意防止重复提交
+                  "/weight",
+                  JSON.stringify(rs7)
+                )
+                  .then((resp) => {
+                                this.postRequest(
+                  //注意防止重复提交
+                  "/weight",
+                  JSON.stringify(rs8)
+                )
+                  .then((resp) => {
+                               this.postRequest(
+                  //注意防止重复提交
+                  "/weight",
+                  JSON.stringify(rs0)
+                )
+                  .then((resp) => {
+                 this.postRequest(
+                  //注意防止重复提交
+                  "/weight",
+                  JSON.stringify(rs9)
+                )
+                  .then((resp) => {
+                    console.log("批次时提交子材料9");
+                    console.log(resp);
+                  })
+                  })
+                  })
+                  })
+                  })
+                  })
+
+                  })
+                  })
+                  })
+
+                  })
+
+
+ 
+ 
+      
+
+        }
+      })
+
+
+         var docTypetemp = "official";
+      if (this.BatchForm.docType == 2) {
+        docTypetemp = "science";
+      } else if (this.BatchForm.docType == 3) {
+        docTypetemp = "personnel";
+      } else if (this.BatchForm.docType == 4) {
+        docTypetemp = "business";
+      }
+      this.BatchForm.priority=this.uploadpriority
+            var a = { first: "1", second: "2", third: "3", forth: "4", fifth: "5" };
+            let b = this.BatchForm.priority;
+      for (var key in b) {
+        var newKey = a[key];
+        b[newKey] = b[key];
+        delete b[key];
+      }
+      console.log
+      this.BatchForm.rule = b;
+
+      sessionStorage.setItem("docType", docTypetemp);
+
+          var batchobj = {
+        authId: sessionStorage.getItem("authId"),
+        batchName: this.BatchForm.batchName,
+        // rule:JSON.stringify(this.BatchForm.rule),
+        // authName:sessionStorage.getItem('authName'),
+        docType: docTypetemp,
+        docTypeCode: this.BatchForm.docTypeCode,
+        rule: this.BatchForm.rule,
+        // lastBox:JSON.stringify(this.BatchForm.lastBox)
+        // lastBox: this.BatchForm.lastBox,
+      };
+      console.log("人事提交的批次信息");
+      console.log(batchobj);
+      this.postRequest(
+        //注意防止重复提交
+        "/work",
+        JSON.stringify(batchobj)
+      ).then((resp) => {
+        if (resp.data && resp.code == 0) {
+          window.sessionStorage.setItem("batchId", resp.data.id);
+        }else{
+          return
+        }
+      }).then(
+        ()=>{
+
+
+                 
+          this.$router.push("/work/docInput");
+
+
+      });
+  return
+      }
  
 this.validateForm1();
 if(this.can){

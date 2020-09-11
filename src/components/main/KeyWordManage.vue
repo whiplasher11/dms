@@ -38,6 +38,8 @@
         <div class="selectItem" @click="checkFromThisType(31)">业务类档案问题优先级设置</div>
         <div class="selectItem" @click="checkFromThisType(32)">业务类档案责任者优先级设置</div>
         <div class="selectItem" @click="checkFromThisType(33)">业务类档案关键词优先级设置</div>
+        <div class="selectItem" @click="checkFromThisType(41)">人事类档案关键词优先级设置</div>
+
 
         <div style="clear:both"></div>
         <div style="width:3rem;height:2rem"></div>
@@ -201,6 +203,9 @@ export default {
       }
             if(num==33){
          this.requestWigId=this.weightForm.busKeywordWig
+      }
+                  if(num==41){
+         this.requestWigId=this.weightForm.perKeywordWig
       }
 
       this.selectShow = false;

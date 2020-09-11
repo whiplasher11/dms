@@ -260,6 +260,35 @@
       <div class="docSequenceTip">本份文件唯一序列号：{{this.docFormRS.docSequence}}</div>
  
 
+       <el-row :gutter="24">
+
+        <el-col :span="24">
+          <el-form-item prop="batchName" label="文件标题：">
+            <el-input
+              size="normal"
+              type="text"
+              v-model="docFormRS.docTitle"
+              auto-complete="off"
+              placeholder="根据文件填写"
+            ></el-input>
+          </el-form-item>
+        </el-col>
+      </el-row>
+
+       <el-row :gutter="24">
+
+        <el-col :span="12">
+          <el-form-item prop="batchName" label="关键词：">
+            <el-input
+              size="normal"
+              type="text"
+              v-model="docFormRS.keyword"
+              auto-complete="off"
+              placeholder="填写关键词"
+            ></el-input>
+          </el-form-item>
+        </el-col>
+      </el-row>
  
 
       <el-row :gutter="24">
@@ -276,7 +305,31 @@
             ></el-input>
           </el-form-item>
         </el-col>
+        <el-col :span="12">
+          <el-form-item prop="batchName" label="材料形成时间：">
+            <el-date-picker
+              type="date"
+              placeholder="选择日期"
+              v-model="docFormRS.docDate"
+              value-format="yyyyMMdd"
+              :picker-options="pickerOptions"
+            ></el-date-picker>
+          </el-form-item>
+        </el-col>
 
+
+    
+      </el-row>
+
+<!-- erhang -->
+      <el-row :gutter="24">
+
+
+
+      </el-row>
+
+      <el-row :gutter="24">
+       
           <el-col :span="12">
           <el-form-item prop="batchName" label="材料类别：">
             <el-select v-model="docFormRS.docAbout" placeholder="选择材料类别">
@@ -289,38 +342,17 @@
             </el-select>
           </el-form-item>
         </el-col>
-    
-      </el-row>
 
-<!-- erhang -->
-      <el-row :gutter="24">
-
-
-        <el-col :span="12">
-          <el-form-item prop="batchName" label="材料形成时间：">
-            <el-date-picker
-              type="date"
-              placeholder="选择日期"
-              v-model="docFormRS.docDate"
-              value-format="yyyyMMdd"
-              :picker-options="pickerOptions"
-            ></el-date-picker>
-          </el-form-item>
-        </el-col>
-      </el-row>
-
-      <el-row :gutter="24">
-       
-
-        <el-col :span="12">
-          <el-form-item prop="batchName" label="材料名：">
-            <el-input
-              size="normal"
-              type="text"
-              v-model="docFormRS.docAboutSub"
-              auto-complete="off"
-              placeholder="输入"
-            ></el-input>
+          <el-col :span="12">
+          <el-form-item prop="z" label="子材料类别：">
+            <el-select v-model="docFormRS.docAboutSub" placeholder="选择子材料类别">
+              <el-option
+                v-for="item in RSSubTypes"
+                :key="item.value"
+                :label="item.name"
+                :value="item.value"
+              ></el-option>
+            </el-select>
           </el-form-item>
         </el-col>
       </el-row>
@@ -333,27 +365,27 @@
             <el-input
               size="normal"
               type="text"
-              v-model="docForm.docPage"
+              v-model="docFormRS.docPage"
               auto-complete="off"
               placeholder="根据文件填写"
             ></el-input>
           </el-form-item>
         </el-col>
       </el-row>
- 
+
 
    
 
-      <el-form-item class="textArea" prop="batchName" label="备注信息：">
+      <!-- <el-form-item class="textArea" prop="batchName" label="备注信息：">
         <el-input
           type="textarea"
           :rows="2"
           class="textAreaInput"
-          v-model="docForm.docRemark"
+          v-model="docFormRS.docRemark"
           auto-complete="off"
           placeholder="输入备注"
         ></el-input>
-      </el-form-item>
+      </el-form-item> -->
 
       <div class="buttonGroup">
         <el-button
@@ -361,25 +393,25 @@
           v-if="fixDocFlag"
           size="big"
           style="margin-left:30%"
-          @click="fixDoc"
+          @click="fixDocRS"
         >修改档案</el-button>
         <el-button
           type="success"
           v-if="!fixDocFlag"
           size="big"
           style="margin-left:20%"
-          @click="addDoc"
+          @click="addDocRS"
         >添加档案</el-button>
 
 
-        <el-button type="primary" size="big" style="margin-left:20%" @click="resetDocIn" v-if="!fixDocFlag">清空列表</el-button>
+        <el-button type="primary" size="big" style="margin-left:20%" @click="resetDocInRS" v-if="!fixDocFlag">清空列表</el-button>
 
                         <el-button
           type="warning"
           v-if="!fixDocFlag"
           size="big"
           style="margin-left:20%"
-          @click="addDoc"
+          @click="goDetail"
         >结束录入</el-button>
 
 
@@ -411,6 +443,46 @@ export default {
       // alert(that.TempdocSequence)
     });
   },
+    watch: {
+    docFormRS: {
+      handler(val, oldVal) {
+        
+        if(val.docAbout=='学历学位、评聘专业职务材料'&&oldVal.docAbout!='学历学位、评聘专业职务材料'){
+          this.docFormRS.docAboutSub=''
+        }
+                if(val.docAbout=='工资、任免、退休材料'&&oldVal.docAbout!='工资、任免、退休材料'){
+          this.docFormRS.docAboutSub=''
+        }
+        // console.log(val);
+        if (val.docAbout == '工资、任免、退休材料') {
+          this.RSSubTypes=this.RSSubTypesOrigin
+        } else if(val.docAbout=='学历学位、评聘专业职务材料') {
+          
+
+           this.RSSubTypes=[
+{
+          name: "学历学位材料",
+          value: "学历学位材料",
+        },{
+          name: "职称材料",
+          value: "职称材料",
+        },
+
+           ]
+        }else{
+          this.docFormRS.docAboutSub='无'
+          this.RSSubTypes=[
+            {
+                        name: "无",
+          value: "无",
+            }
+          ]
+        }
+      },
+      deep: true,
+    },
+  },
+
   computed:{
     isRS(){
       return sessionStorage.getItem('docType')=='personnel'
@@ -420,13 +492,14 @@ export default {
   data() {
     return {
       docFormRS:{
+
          id: "",
         docSequence: "", //序列号，标识文件
         docType: "",
-        // docTitle: "今天的猪肉12元", //标题
+        docTitle: "今天的猪肉12元", //标题
         docAbout: "",
         docAboutSub:'',
-        // keyword: "猪肉", //关键字
+        keyword: "猪肉", //关键字
         // docDesc: "", //文号
         // sortYear: "2019",
         docDate: "20190808",
@@ -440,11 +513,76 @@ export default {
         docDescNum: "0", //文号中的序号
 
       },
+       docFormRSKong:{
+         id: "",
+        docSequence: "", //序列号，标识文件
+        docType: "",
+        docTitle: "今天的猪肉12元", //标题
+        docAbout: "",
+        docAboutSub:'',
+        keyword: "猪肉", //关键字
+        // docDesc: "", //文号
+        // sortYear: "2019",
+        docDate: "20190808",
+        docTypeCode: sessionStorage.getItem("docTypeCode"),
+ 
+        docSecret: "", //文件密级
+        docPage: "",
+        docRemark: "", //备注
+        docNumber: "", //件号
+        personName:'',
+        docDescNum: "0", //文号中的序号
+
+
+      },
+
       showWaitingFlag:false,
       weightForm: {},
       manageKeyWordTime: 1,
       keyWordEdit: false,
       fixDocFlag: false,
+      RSSubTypesOrigin:[            {
+          name: "工资情况材料",
+          value: "工资情况材料",
+        },
+                                {
+          name: "任免材料",
+          value: "任免材料",
+        },                        {
+          name: "出国、出境材料",
+          value: "出国、出境材料",
+        },                        {
+          name: "各党派、团体代表登记表",
+          value: "各党派、团体代表登记表",
+        },                        {
+          name: "聘用、录用、转干、转业材料",
+          value: "聘用、录用、转干、转业材料",
+        },                        {
+          name: "待遇、退（离）休、退职材料",
+          value: "待遇、退（离）休、退职材料",
+        },],
+      RSSubTypes:[
+                        {
+          name: "工资情况材料",
+          value: "工资情况材料",
+        },
+                                {
+          name: "任免材料",
+          value: "任免材料",
+        },                        {
+          name: "出国、出境材料",
+          value: "出国、出境材料",
+        },                        {
+          name: "各党派、团体代表登记表",
+          value: "各党派、团体代表登记表",
+        },                        {
+          name: "聘用、录用、转干、转业材料",
+          value: "聘用、录用、转干、转业材料",
+        },                        {
+          name: "待遇、退（离）休、退职材料",
+          value: "待遇、退（离）休、退职材料",
+        },
+      ],
       RSTypes:[
                 {
           name: "履历材料",
@@ -459,20 +597,20 @@ export default {
           value: "鉴定、考核、考察材料",
         },
                 {
-          name: "学历和评聘专业职务材料",
-          value: "学历和评聘专业职务材料",
+          name: "学历学位、评聘专业职务材料",
+          value: "学历学位、评聘专业职务材料",
         },
                 {
           name: "政治历史情况审查材料",
           value: "政治历史情况审查材料",
         },
                 {
-          name: "入党入团材料子材料",
-          value: "入党入团材料子材料",
+          name: "入党入团材料",
+          value: "入党入团材料",
         },
                         {
-          name: "奖励材料子材料",
-          value: "奖励材料子材料",
+          name: "奖励材料",
+          value: "奖励材料",
         },
                         {
           name: "处分材料",
@@ -617,10 +755,30 @@ export default {
     };
   },
   methods: {
+    resetDocInRS(){
+      this.docFormRS=Object.assign({}, this.docFormRSKong);
+    },
     resetDocIn() {
       this.docForm = Object.assign({}, this.docFormKong);
       console.log(this.docFormKong);
     },
+       checkAddRS() {
+            if (
+        this.docFormRS.personName == "" ||
+        this.docFormRS.docPage==''||
+        this.docFormRS.docDate==''||
+        this.docFormRS.docTitle==''||
+
+        this.docFormRS.docAboutSub==''||
+        this.docFormRS.docAbout==''||
+        this.docFormRS.keyword==''
+
+
+      
+      )
+        return false;
+      else return true;
+       },
     checkAdd() {
       if (
         this.docForm.docTitle == "" ||
@@ -744,7 +902,128 @@ export default {
             this.docForm.docPage = "";
             this.fixDocFlag=false
     },
+    addRS(){
 
+    },
+    addDocRS(){
+      var docObj={
+         userId: sessionStorage.getItem("userIdNum"),
+          authId: sessionStorage.getItem("authId"),
+          batchId: sessionStorage.getItem("batchId"),
+          docDate: this.docFormRS.docDate,
+          docNum: "", //????
+          docPage: this.docFormRS.docPage,
+          docSequence: this.docFormRS.docSequence,
+          docTitle: this.docFormRS.docTitle,
+          docType: sessionStorage.getItem("docType"),
+          keyword: this.docFormRS.keyword,
+          // remark: this.docForm.remark,
+          // deadline: this.docForm.deadline,
+          docAbout: this.docFormRS.docAbout,
+          docAboutSub:this.docFormRS.docAboutSub,
+          personName:this.docFormRS.personName,
+          // docDesc:this.docForm.docDesc,
+          // docPage: this.docForm.docPage,
+          // docDescAuthor: this.docForm.docDescAuthor,
+          // docDescNum: this.docForm.docDescNum,
+          // docLevel: this.docForm.docLevel,
+          // docSecret: this.docForm.docSecret,
+          docTypeCode: sessionStorage.getItem("docTypeCode"),
+          // dutyAuthor: this.docForm.dutyAuthor,
+          // sortYear: this.docForm.sortYear,
+      }
+
+if (this.checkAddRS()) {
+  this.showWaitingFlag=true
+
+       var pathToDoc = "/document/" + sessionStorage.getItem("docType");
+        this.postRequest(
+          //注意防止重复提交
+          pathToDoc,
+          JSON.stringify(docObj)
+        )
+          .then((resp) => {
+                        console.log("tijiao人事文件");
+
+            console.log(docObj);
+            console.log("tijiao人事文件的结果");
+            console.log(resp);
+            this.docFormRS.id = resp.data.id;
+          }) .then((r) => {
+               var table;
+              if (this.weightForm.perKeywordWig) {
+                //已有权重表
+                this.getRequest("/weight/sort/" + this.weightForm.perKeywordWig)
+                  .then((resp) => {
+                    //查询对应的权重表得到json
+                    table = resp.data.tables;
+                    var key1 = this.docFormRS.keyword;
+                    // var json1 = table;
+                    if (table[key1] == null) {
+                      table[key1] = "0";
+                    }
+                  })
+                  .then((r) => {
+                    var docAboutObj = {
+                      authId: sessionStorage.getItem("authId"),
+                      type: 41,
+                      tables: table,
+                    };
+
+                    this.putRequest(
+                      "/weight/" + this.weightForm.perKeywordWig,
+                      docAboutObj
+                    ).then((resp) => {
+                      console.log("更新人事关键词权重表");
+                      console.log(resp);
+                      this.showWaitingFlag=false
+                    });
+                  })
+                  } //if  已有权重表
+
+                  else{
+                                    var key1 = this.docFormRS.keyword;
+                var json1 = {};
+                json1[key1] = "0";
+
+              
+      
+                var keyWordObj = {
+                  authId: sessionStorage.getItem("authId"),
+                  type: 41,
+                  tables: json1,
+                };
+
+                this.postRequest(
+                  //注意防止重复提交
+                  "/weight",
+                  JSON.stringify(keyWordObj)
+                )
+                  .then((resp) => {
+                    console.log("第一次提交人事关键词权重表");
+                    console.log(resp);
+                    if(resp.code==0){
+                      this.showWaitingFlag=false
+                    }
+                  })
+                 
+                    
+                       
+
+                  }
+
+
+
+          })
+  
+}else {
+        this.$message({
+          type: "error",
+          message: "填写完整",
+        });
+      }
+
+    },
     addDoc() {
       // var
       
@@ -795,6 +1074,7 @@ export default {
             // alert( this.docForm.id)
           })
           .then((r) => {
+            // if(r)
             //保证提交完返回id后再执行后续操作
 
             var weightType1;

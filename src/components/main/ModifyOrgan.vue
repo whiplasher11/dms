@@ -85,23 +85,10 @@ export default {
 window.sessionStorage.setItem("lastBox",JSON.stringify(item.lastBox))
 
             // batchId
-
-
-            var path='/document/page/'+item.docType+'/'+item.id+'?pageNow=0&pageSize=1000'
-                          axios.get(path, {
-                  headers:{
-            'Content-Type': 'application/json',
-            'authId':sessionStorage.getItem('checkAuthId'),
-            token:sessionStorage.getItem('token')?(sessionStorage.getItem('token').split('"')[1]||sessionStorage.getItem('token')):null,
-
-                  }
-              }).then(resp=>{
-                  console.log(resp)
-
-                  this.$store.state.alreadyDocs=resp.data.content
             this.$router.push('/work/docInputD')
 
-              })
+
+         
 
                
         },
