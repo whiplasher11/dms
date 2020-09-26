@@ -375,11 +375,11 @@ export default {
   },
   created() {
 
- this.getRequest("/organ/" + sessionStorage.getItem("authId")).then(
-      (resp) => {
-        this.weightForm = resp.data;
-        console.log(resp.data)
-      })
+//  this.getRequest("/organ/" + sessionStorage.getItem("authId")).then(
+//       (resp) => {
+//         this.weightForm = resp.data;
+//         console.log(resp.data)
+//       })
 
 
 
@@ -676,8 +676,10 @@ for(  var i=0;i<this.jsonArray.length;i++){
       (resp) => {
         this.weightForm = resp.data;
         console.log(resp.data)
+
       }).then(()=>{
-        if(this.weightForm.perSubWig10==null){
+        if(this.weightForm.perSubWig10==null){  
+          this.showWaitingFlag=true
           var key1 = '无';
                 var json1 = {};
                 json1[key1] = "0";
@@ -841,6 +843,11 @@ var key91 = '工资情况材料';
                   .then((resp) => {
                     console.log("批次时提交子材料9");
                     console.log(resp);
+
+
+
+
+
                   })
                   })
                   })

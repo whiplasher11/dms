@@ -63,7 +63,7 @@ const store = new Vuex.Store({
         docDescAuthor:'磁力公安局发文',
         docDescNum:2,
         docLevel:'部级',
-        docSecret:'',
+        docSecret:'无',
         docTypeCode:'WS',
         dutyAuthor:'磁力公安局发文',
         sortYear:2018
