@@ -18,7 +18,8 @@ const store = new Vuex.Store({
         tempDocSeq:'',
         tempDocId:'',
         tempDoc:'',
-        alreadyDocs:[
+        alreadyDocs:[],
+        alreadyDocss:[
             {
                 userId:7,
         authId:12,

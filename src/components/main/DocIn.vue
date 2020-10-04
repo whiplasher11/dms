@@ -220,7 +220,7 @@
           type="textarea"
           :rows="2"
           class="textAreaInput"
-          v-model="docForm.docRemark"
+          v-model="docForm.remark"
           auto-complete="off"
           placeholder="输入备注"
         ></el-input>
@@ -368,13 +368,24 @@
           </el-form-item>
         </el-col>
       </el-row>
-
+   <el-row>
+  <el-form-item class="textArea" prop="batchName" label="备注信息：">
+        <el-input
+          type="textarea"
+          :rows="2"
+          class="textAreaInput"
+          v-model="docFormRS.remark"
+          auto-complete="off"
+          placeholder="输入备注"
+        ></el-input>
+      </el-form-item>
+         </el-row>
       <!-- <el-form-item class="textArea" prop="batchName" label="备注信息：">
         <el-input
           type="textarea"
           :rows="2"
           class="textAreaInput"
-          v-model="docFormRS.docRemark"
+          v-model="docFormRS.remark"
           auto-complete="off"
           placeholder="输入备注"
         ></el-input>
@@ -458,8 +469,8 @@ export default {
     },
     docFormRSJS: {
       handler(val, oldVal) {
-        console.log(val);
-        console.log(oldVal);
+        // console.log(val);
+        // console.log(oldVal);
 
         if (val.docAbout != oldVal.docAbout) {
           this.docFormRS.docAboutSub = "";
@@ -532,7 +543,7 @@ export default {
 
         docSecret: "", //文件密级
         docPage: "",
-        docRemark: "", //备注
+        remark: "", //备注
         docNumber: "", //件号
         personName: "",
         docDescNum: "0", //文号中的序号
@@ -552,7 +563,7 @@ export default {
 
         docSecret: "", //文件密级
         docPage: "",
-        docRemark: "", //备注
+        remark: "", //备注
         docNumber: "", //件号
         personName: "",
         docDescNum: "0", //文号中的序号
@@ -745,7 +756,7 @@ export default {
         deadline: "", //文件期限
         docSecret: "", //文件密级
         docPage: "",
-        docRemark: "", //备注
+        remark: "", //备注
         docNumber: "", //件号
         boxNumber: "", //盒号
         docDescNum: "0", //文号中的序号
@@ -769,7 +780,7 @@ export default {
         deadline: "", //文件期限
         docSecret: "", //文件密级
         docPage: "",
-        docRemark: "", //备注
+        remark: "", //备注
         docNumber: "", //件号
         boxNumber: "", //盒号
         docDescNum: "0", //文号中的序号
@@ -888,6 +899,7 @@ export default {
         docAboutSub: this.docFormRS.docAboutSub,
         personName: this.docFormRS.personName,
         personJob: jobCode,
+        remark:this.docFormRS.remark,
         docTypeCode: sessionStorage.getItem("docTypeCode"),
       };
 
@@ -1226,6 +1238,8 @@ export default {
         personJob: jobCode,
         // docDesc:this.docForm.docDesc,
         // docPage: this.docForm.docPage,
+        remark:this.docFormRS.remark,
+
         // docDescAuthor: this.docForm.docDescAuthor,
         // docDescNum: this.docForm.docDescNum,
         // docLevel: this.docForm.docLevel,

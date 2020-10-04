@@ -168,13 +168,16 @@
 
         <div v-if="docType=='personnel'">
          <div style="height:1rem">
+ <div class="itemInfo">识别号</div>
+
  <div class="itemInfo">姓名</div>
   <div class="itemInfo">材料类型</div>
    <div class="itemInfo">子材料类型</div>
- <div class="itemInfo">件号</div>
   <div class="itemInfo" style="width:10%">标题</div>
    <div class="itemInfo">日期</div>
     <div class="itemInfo">页数</div>
+ <div class="itemInfo">材料序号</div>
+
      <div class="itemInfo" style="width:10%">备注</div>
       <div class="itemInfo">操作</div>
          </div>
@@ -182,7 +185,13 @@
             <!-- 上面是循环有多少个人  -->
             <!-- 接下来是循环每个人的16个list -->
             <div v-for="(i,ind) in item" :key="ind" > 
+
               <div v-for="(j,ind3) in i" :key="ind3">
+
+                                         <div class="itemInfo" >
+
+                {{j.docSequence}}
+              </div>
                               <div class="itemInfo" v-if="ind3==0">
 
                 {{j.personName}}
@@ -198,9 +207,7 @@
                 {{j.docAboutSub=='无'?'&nbsp;':j.docAboutSub}}
               </div>
 
-                            <div class="itemInfo">
-                {{j.docNumber}}
-              </div>
+
 
                                           <div class="itemInfo"  style="width:10%">
                 {{j.docTitle}}
@@ -213,8 +220,11 @@
                                           <div class="itemInfo">
                 {{j.docPage}}
               </div>
+                                          <div class="itemInfo">
+                {{j.docNum==''?'&nbsp;':j.docNum}}
+              </div>
                                                         <div class="itemInfo" style="width:10%" >
-                {{j.docPage}}
+                {{j.remark==''||j.remark==null?'&nbsp;':j.remark}}
               </div>
             <div class="itemInfo2" style="width:10%">
               <div
@@ -343,7 +353,7 @@ export default {
  
         docSecret: "", //文件密级
         docPage: "23",
-        docRemark: "", //备注
+        remark: "", //备注
         docNumber: "1", //件号
         personName:'陈海林',
         docDescNum: "0", //文号中的序号
@@ -364,7 +374,7 @@ export default {
  
         docSecret: "", //文件密级
         docPage: "23",
-        docRemark: "", //备注
+        remark: "", //备注
         docNumber: "2", //件号
         personName:'陈海林',
         docDescNum: "0", //文号中的序号
@@ -389,7 +399,7 @@ export default {
  
         docSecret: "", //文件密级
         docPage: "23",
-        docRemark: "", //备注
+        remark: "", //备注
         docNumber: "1", //件号
         personName:'陈海林',
         docDescNum: "0", //文号中的序号
@@ -410,7 +420,7 @@ export default {
  
         docSecret: "", //文件密级
         docPage: "23",
-        docRemark: "", //备注
+        remark: "", //备注
         docNumber: "2", //件号
         personName:'陈海林',
         docDescNum: "0", //文号中的序号
@@ -480,7 +490,7 @@ export default {
 
 //         }
 
-
+        this.showWaitingFlag=true
 
 
       // return
@@ -495,6 +505,7 @@ export default {
               }).then(resp=>{
                   console.log(resp)
                   if(resp){
+                    
                     if(resp.data.content&&this.docType=='personnel' ){
                        let vm = this;
       var path =
@@ -507,9 +518,12 @@ export default {
          this.getRequest(path).then((resp) => {
           console.log("排件号人事");
           console.log(resp);
+          if(resp){
+            this.showWaitingFlag=false
+          }
           // console.log(JSON.stringify(resp))
           if (resp.code == 0) {
- 
+            
             // console.log("ss000000000aaaa")
             this.showWaitingFlag = false;
             console.log(resp.data)
@@ -518,7 +532,10 @@ export default {
           }
         });
                     }
-                  else this.$store.state.alreadyDocs=resp.data.content
+                  else {this.$store.state.alreadyDocs=resp.data.content
+                  this.showWaitingFlag=false
+                  }
+
                   }
 
                  
