@@ -503,7 +503,7 @@ export default {
 
                   }
               }).then(resp=>{
-                  console.log(resp)
+                  // console.log(resp)
                   if(resp){
                     
                     if(resp.data.content&&this.docType=='personnel' ){
@@ -573,6 +573,14 @@ this.loadDocs()
       ).then((resp) => {
         // console.log(resp);
         this.$store.state.alreadyDocs=resp.data.content
+        if(sessionStorage.getItem('docType'=='personnel')){
+          var arr1=this.$store.state.alreadyDocs
+          var arr2=[]
+          arr2.push(arr1)
+          var arr3=[]
+          arr3.push(arr2)
+          this.$store.state.alreadyDocs=arr3
+        }
       });
     },
     sortThisBatchRS(){
@@ -706,6 +714,25 @@ this.loadDocs()
     },
     focusOnThis(e) {},
 
+    getZip(){
+      var path =
+          "/document/excel/" +
+          sessionStorage.getItem("docType") +
+          "/" +
+          sessionStorage.getItem("batchId");
+axios({
+        method: 'GET',
+        url: path,
+        params: {
+          reportRuleId: row.reportRuleId
+        },
+        responseType: 'blob'
+      }).then(response => {
+        let blob = new Blob([response.data], {type: 'application/zip'})
+        let url = window.URL.createObjectURL(blob)
+        window.location.href = url
+      })
+    },
     getExcel() {
       this.$confirm("下载前请确保已排件号盒号", "提示", {
         cancelButtonClass: "btn-custom-cancel",
@@ -714,15 +741,73 @@ this.loadDocs()
 
         type: "warning",
       }).then(() => {
-        // let date = item.plans[this.daysIndex[index]]
-        //  let url = '/Ecp.Export.exportXls.jdn?entityId='+item.FId+'&date='+date.FDeparture_date+'&token=' + sessionStorage.getItem("token")
-        var path =
-          "/document/excel/" +
-          sessionStorage.getItem("docType") +
-          "/" +
-          sessionStorage.getItem("batchId");
+           var path ='/excel'
 
-        axios({
+
+
+        if(sessionStorage.getItem('docType')=='personnel'){
+
+ axios({
+                method: "get",
+
+                url: path,
+
+                // data: {
+                //     id: this.documentId,
+
+                // },
+
+                responseType: "blob",
+
+            })
+
+                .then((res) => {
+                    //ie内核的浏览器下
+
+                    if (
+
+                        navigator.userAgent.match(/MSIE\s([\d.]+)/) ||
+
+                        navigator.userAgent.indexOf("Trident") > -1
+
+                    ) {
+                        window.navigator.msSaveBlob(res, `人员信息.zip`);
+
+                    } else {
+                        let url = window.URL.createObjectURL(res);
+
+                        let link = document.createElement("a");
+
+                        link.style.display = "none";
+
+                        link.href = url;
+
+                        link.download = `人员信息.zip`;
+
+                        document.body.appendChild(link);
+
+                        link.click();
+
+                        document.body.removeChild(link);
+
+                        window.URL.revokeObjectURL(url);
+
+                    }
+
+                })
+
+                .catch((error) => {
+                    this.$message.warning("导出失败");
+
+                });
+
+ 
+
+
+        }
+        else{
+          alert(2)
+            axios({
           method: "get",
           url: path,
           responseType: "arraybuffer",
@@ -793,32 +878,12 @@ this.loadDocs()
             }
             reject(null, e);
           });
-
-        //               var path='/document/excel/'+sessionStorage.getItem('docType')+'/'+sessionStorage.getItem('batchId')
-        //                     this.getRequest(path)
-        //                   .then((resp) => {
-        //         //             const reader = new FileReader()
-        //         // reader.readAsText(resp, 'utf-8')
-        //         // reader.onload = function (evt) {
-        //         //   console.log(evt)
-        //         //   const url = window.URL.createObjectURL(new Blob(['\uFEFF' + evt.target.result], {type: 'text/plain;charset=utf-8'}))
-        //         //   const link = document.createElement('a')
-        //         //   link.href = url
-        //         //   link.setAttribute('download', `${fileName}`)
-        //         //   document.body.appendChild(link)
-        //         //   link.click()}
-
-        //                                      var elink = document.createElement('a');
-        // elink.download = "导出结果.xls";
-        // elink.style.display = 'none';
-        // var blob = new Blob([resp], {type:"application/octet-stream;charset=UTF-8"});
-
-        // elink.href = URL.createObjectURL(blob);
-        // document.body.appendChild(elink);
-        // elink.click();
-        // document.body.removeChild(elink);
-        //                   })
-        //                   // window.open(path)
+ 
+        }
+        // let date = item.plans[this.daysIndex[index]]
+        //  let url = '/Ecp.Export.exportXls.jdn?entityId='+item.FId+'&date='+date.FDeparture_date+'&token=' + sessionStorage.getItem("token")
+     
+      
       });
     },
     fixThisItem(item) {
