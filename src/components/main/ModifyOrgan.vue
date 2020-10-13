@@ -33,7 +33,9 @@
             <div v-if="!organsShow">
                    <div class="organItem" style="height:2.2rem">
               <div class="BatchInfo ">批次名</div>
+              <div class="BatchInfo ">类型</div>
               <div class="BatchInfo ">时间</div>
+
               <div class="BatchInfo ">状态</div>
               <div style="clear:both"></div>
 
@@ -41,6 +43,8 @@
 
          <div class="organItem" style="height:2.2rem"  v-for="item in this.batches" :key="item.id">
               <div class="BatchInfo">{{item.batchName}}</div>
+              <div class="BatchInfo ">{{item.docType|formatdocType}}</div>
+
               <div class="BatchInfo">{{item.createTime}}</div>
               <div class="BatchInfo">已完成</div>
               <div class="BatchInfo hoverStyle" @click="batchDocs(item)">查看</div>
@@ -256,7 +260,7 @@ window.sessionStorage.setItem("lastBox",JSON.stringify(item.lastBox))
         .BatchInfo{
             text-align: center;
         float: left;
-        width: 20%;
+        width: 17%;
         height: 2rem;
         // border-left: solid 0.1rem;
         margin-top: 0.15rem;

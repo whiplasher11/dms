@@ -264,7 +264,7 @@ export default {
     },
     goHome() {
       //  alert("home")
-      this.$router.push("/");
+      this.$router.push("/home");
     },
     unLogin() {
       //  alert(1);

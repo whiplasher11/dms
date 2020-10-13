@@ -29,6 +29,16 @@ import 'vuescroll/dist/vuescroll.css';
 Vue.use(vuescroll);
 Vue.use(animate)
 
+Vue.filter('formatdocType',function(value){
+    var tvalue=value+""
+    if(tvalue==undefined||tvalue=='null'||!tvalue||tvalue==""){return '暂无'}
+    else {
+        if(tvalue=="official") return "文书"
+        if(tvalue=="personnel") return "人事"
+        if(tvalue=="science") return "科技"
+    }
+});
+
 Vue.filter('formatFiveKJ',function(value){
     var tvalue=value+""
     if(tvalue==undefined||tvalue=='null'||!tvalue||tvalue==""){return '暂无'}
