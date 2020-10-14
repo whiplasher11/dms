@@ -655,6 +655,7 @@ export default {
       this.$router.push("/work/modifyOrgan");
     },
     searchTheDoc() {
+      this.showWaitingFlag=true
       var searchPath =
         "/document/list/page/" +
         sessionStorage.getItem("docType") +
@@ -671,6 +672,7 @@ export default {
         JSON.stringify(docObj)
       ).then((resp) => {
         // console.log(resp);
+        this.showWaitingFlag=false
         this.$store.state.alreadyDocs=resp.data.content
 
         if(sessionStorage.getItem('docType')=='personnel'){
@@ -811,7 +813,7 @@ export default {
     focusOnThis(e) {},
 
        getExcel() {
-      this.$confirm("下载前请确保已排件号盒号", "提示", {
+      this.$confirm("下载前请确保已排序", "提示", {
         cancelButtonClass: "btn-custom-cancel",
         cancelButtonText: "否",
         confirmButtonText: "是",
@@ -828,7 +830,7 @@ export default {
 
 
         if(sessionStorage.getItem('docType')=='personnel'){
-
+this.showWaitingFlag=true
  axios({
                 method: "get",
 
@@ -836,12 +838,13 @@ export default {
 
            headers: {
             "Content-Type": "application/json",
-            authId: sessionStorage.getItem("checkAuthId"),
+            authId: sessionStorage.getItem("authId"),
             token: sessionStorage.getItem("token")
               ? sessionStorage.getItem("token").split('"')[1] ||
                 sessionStorage.getItem("token")
               : null,
           },
+          
                 responseType: "blob",
 
             })
@@ -876,7 +879,7 @@ export default {
                         document.body.removeChild(link);
 
                         window.URL.revokeObjectURL(url);
-
+    this.showWaitingFlag=false
                     }
 
                 })
@@ -892,13 +895,14 @@ export default {
         }
         else{
           // alert(2)
+          this.showWaitingFlag=true
             axios({
           method: "get",
           url: path,
           responseType: "arraybuffer",
           headers: {
             "Content-Type": "application/json",
-            authId: sessionStorage.getItem("checkAuthId"),
+            authId: sessionStorage.getItem("authId"),
             token: sessionStorage.getItem("token")
               ? sessionStorage.getItem("token").split('"')[1] ||
                 sessionStorage.getItem("token")
@@ -926,6 +930,7 @@ export default {
 
           URL.revokeObjectURL(elink.href); // 释放URL 对象
           document.body.removeChild(elink);
+          this.showWaitingFlag=false
         });
 
         return;
@@ -942,9 +947,9 @@ export default {
             {},
             { responseType: "arraybuffer" },
             {
-              headers: {
+              headers: {//checkAuthId
                 "Content-Type": "application/json",
-                authId: sessionStorage.getItem("checkAuthId"),
+                authId: sessionStorage.getItem("authId"),
                 token: sessionStorage.getItem("token")
                   ? sessionStorage.getItem("token").split('"')[1] ||
                     sessionStorage.getItem("token")

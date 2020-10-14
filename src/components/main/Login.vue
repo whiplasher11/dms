@@ -261,6 +261,8 @@ export default {
                   window.sessionStorage.setItem("admin",'')
                   if(resp.data.role=='管理员'){
                   window.sessionStorage.setItem("admin",'1')
+                  // window.sessionStorage.setItem("admin",'1')
+                  this.$store.state.admin=1
 
                   }
 

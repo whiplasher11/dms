@@ -743,9 +743,9 @@ export default {
         id: "",
         docSequence: "", //序列号，标识文件
         docType: "",
-        docTitle: "今天的猪肉12元", //标题
-        docAbout: "民生",
-        keyword: "猪肉", //关键字
+        docTitle: "请填写文件标题", //标题
+        docAbout: "填写",
+        keyword: "关键词", //关键字
         docDesc: "", //文号
         sortYear: "2019",
         docDate: "20190808",

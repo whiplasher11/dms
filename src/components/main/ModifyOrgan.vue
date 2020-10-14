@@ -75,7 +75,7 @@ export default {
         fixThisOrgan(item){
                         window.sessionStorage.setItem('authId',item.id)
             window.sessionStorage.setItem('authCode',item.authCode)
-            window.sessionStorage.setItem('checkAuthId',item.id)
+            // window.sessionStorage.setItem('checkAuthId',item.id)
             this.$router.replace('/work/keyWM')
         },
         batchDocs(item){ //查看某批
@@ -105,7 +105,7 @@ window.sessionStorage.setItem("lastBox",JSON.stringify(item.lastBox))
             console.log(item) //打印单位
             window.sessionStorage.setItem('authId',item.id)
             window.sessionStorage.setItem('authCode',item.authCode)
-            window.sessionStorage.setItem('checkAuthId',item.id)
+            // window.sessionStorage.setItem('checkAuthId',item.id)
             // window.sessionStorage.setItem('batchId',item.id)
 
               axios.get('/work/list', {

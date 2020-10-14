@@ -49,7 +49,7 @@
         <!-- <li @click="toHistory()">历史记录</li> -->
 
         <li class="product a wrjlb" @click="goCheckHistoryBat">查看与设置</li>
-        <li v-if="admin==1" class="product a wrjlb"   >管理用户 </li>
+        <li v-if="admin==1" class="product a wrjlb"  @click="ManageUser" >管理用户 </li>
 
         <li class="a" @click="goAboutUs()" v-if="kind==2">我的医生</li>
         <li>
@@ -215,6 +215,9 @@ export default {
   },
 
   methods: {
+    ManageUser(){
+      this.$router.replace('/admin/userManage')
+    },
     exit(){
             this.$confirm("是否退出", "提示", {
         cancelButtonClass: "btn-custom-cancel",

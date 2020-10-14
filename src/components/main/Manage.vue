@@ -196,7 +196,7 @@ export default {
     },
 
     renewTable() {
-      this.getRequest("/admin/users?pageNow=0&pageSize=100").then((resp) => {
+      this.getRequest("/admin/users?pageNow=0&pageSize=100000").then((resp) => {
         this.userTable = resp.data;
       });
     },
@@ -204,9 +204,18 @@ export default {
     loseThis(e) {},
   },
   created() {
-    this.getRequest("/admin/users?pageNow=0&pageSize=100").then((resp) => {
+    this.getRequest("/admin/users?pageNow=0&pageSize=100000").then((resp) => {
       this.userTable = resp.data;
     });
+
+    this.postRequest("/admin/user"
+    ,{
+      username:'zgan108',
+      password:'hntytpphtc189'
+    }).then((resp)=>{
+      console.log(resp)
+    })
+
   },
 };
 </script>
