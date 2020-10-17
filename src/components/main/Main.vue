@@ -63,7 +63,7 @@ export default {
 },
 mounted(){
 	this.runInv()
-			
+			console.log(this.baseurl)
  
 },
 methods: {

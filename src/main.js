@@ -146,6 +146,7 @@ Vue.filter('formatAuthCode',function(value){
 //         }
 //     }
 // })
+Vue.prototype.baseurl="http://101.200.243.57:8080"
 
 new Vue({
     router,

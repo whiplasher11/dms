@@ -61,7 +61,7 @@ axios.interceptors.response.use(success => {
     return;
 })
 
-let base = 'http://gdm.vipgz1.idcfengye.com';
+var base = 'http://101.200.243.57:8080';
 
 
 export const postKeyValueRequest = (url, params) => {

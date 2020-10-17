@@ -108,7 +108,7 @@ window.sessionStorage.setItem("lastBox",JSON.stringify(item.lastBox))
             // window.sessionStorage.setItem('checkAuthId',item.id)
             // window.sessionStorage.setItem('batchId',item.id)
 
-              axios.get('/work/list', {
+              axios.get('http://101.200.243.57:8080/work/list', {
                   headers:{
             'Content-Type': 'application/json',
             'authId':item.id,

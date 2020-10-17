@@ -599,7 +599,7 @@ export default {
         sessionStorage.getItem("batchId") +
         "?pageNow=0&pageSize=100000";
       axios
-        .get(path, {
+        .get(this.baseurl+path, {
           headers: {
             "Content-Type": "application/json",
             authId: sessionStorage.getItem("authId"),
@@ -789,7 +789,7 @@ export default {
         sessionStorage.getItem("batchId") +
         "?pageNow=0&pageSize=1000";
       axios
-        .get(path, {
+        .get(this.baseurl+path, {
           headers: {
             "Content-Type": "application/json",
             authId: sessionStorage.getItem("checkAuthId"),
@@ -834,7 +834,7 @@ this.showWaitingFlag=true
  axios({
                 method: "get",
 
-                url: path,
+                url: this.baseurl+path,
 
            headers: {
             "Content-Type": "application/json",
@@ -898,7 +898,7 @@ this.showWaitingFlag=true
           this.showWaitingFlag=true
             axios({
           method: "get",
-          url: path,
+          url: this.baseurl+path,
           responseType: "arraybuffer",
           headers: {
             "Content-Type": "application/json",
@@ -943,7 +943,7 @@ this.showWaitingFlag=true
 
         axios
           .post(
-            path,
+            this.baseurl+path,
             {},
             { responseType: "arraybuffer" },
             {
@@ -1003,7 +1003,7 @@ this.showWaitingFlag=true
           "/document/" + sessionStorage.getItem("docType") + "/" + item.id;
 
         axios
-          .delete(pathToDel, {
+          .delete(this.baseurl+pathToDel, {
             headers: {
               "Content-Type": "application/json",
               authId: sessionStorage.getItem("authId"),

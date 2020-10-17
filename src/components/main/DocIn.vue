@@ -60,7 +60,7 @@
           </el-form-item>
         </el-col>
 
-        <el-col :span="12" v-if="false">
+        <el-col :span="12" v-if="!isKJ">
           <el-form-item prop="batchName" label="机构/问题：">
             <el-input
               @blur="docAboutBlur"
@@ -72,7 +72,7 @@
             ></el-input>
           </el-form-item>
         </el-col>
-        <el-col :span="12" v-if="true">
+        <el-col :span="12" v-if="isKJ">
           <el-form-item prop="batchName" label="项目:">
             <el-input
               @blur="docAboutBlur"
@@ -524,6 +524,9 @@ export default {
     isRS() {
       return sessionStorage.getItem("docType") == "personnel";
     },
+    isKJ(){
+       return sessionStorage.getItem("docType") == "science";
+    }
   },
 
   data() {

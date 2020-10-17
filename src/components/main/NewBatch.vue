@@ -272,7 +272,7 @@
       <div style="height:1rem"></div>
 
         <el-button type="primary" class="midBtn" style="width:12%;position:absolute;left:25%" @click="preStep">上一步</el-button>
-        <el-button type="primary" class="midBtn" style="width:12%;position:absolute;left:45%" @click="newBoxType">新增盒型</el-button>
+        <el-button type="primary" class="midBtn" style="width:14%;position:absolute;left:45%" @click="newBoxType">新增盒型</el-button>
 
         <el-button type="primary" class="midBtn" style="width:12%;position:absolute;left:65%" @click="newBatch">下一步</el-button>
       </div>

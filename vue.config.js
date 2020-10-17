@@ -29,7 +29,7 @@ module.exports = {
         // }
         proxy:{
             '/': {
-                target: 'http://gdm.vipgz1.idcfengye.com/',
+                target: 'http://101.200.243.57:8080',
                 pathRewrite: {'^/' : ''},
                 changeOrigin:true,
             }
