@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="wrapper" style="padding-bottom: 10rem">
+    <div class="wrapper" style="padding-bottom: 50rem">
       <div style="height: 6.5rem"></div>
       <div
         style="
@@ -27,8 +27,149 @@
     </div> -->
 
       <div class="docDetailBox">
+
+
+        <div class="advSearchBox"  >
+
+                  <el-form
+        v-if="advSearchShow&&docType=='personnel'"
+ 
+      ref="searchForm"
+ 
+      :model="searchForm"
+      label-width="6rem"
+      class="loginContainer"
+     style="background-color:rgb(209, 218, 243);"
+    >
+      <h3 style="        text-align: center;
+        color: #505458;">输入一个或多个条件查找文档</h3>
+            <el-form-item prop="username" label="识别号：">
+        <el-input
+          size="normal"
+          type="text"
+          v-model="searchForm.docSequence"
+          auto-complete="off"
+          placeholder="识别号"
+        ></el-input>
+      </el-form-item>
+
+      <el-form-item prop="username" label="文件标题：">
+        <el-input
+          size="normal"
+          type="text"
+          v-model="searchForm.docTitle"
+          auto-complete="off"
+          placeholder="标题"
+        ></el-input>
+      </el-form-item>
+      <el-form-item prop="password" label="姓名：">
+        <el-input
+          size="normal"
+          type="text"
+          v-model="searchForm.personName"
+          auto-complete="off"
+          placeholder="姓名"
+        ></el-input>
+      </el-form-item>
+            <el-form-item prop="password" label="日期：">
+        <el-input
+          size="normal"
+          type="text"
+          v-model="searchForm.docDate"
+          auto-complete="off"
+          placeholder="日期"
+        ></el-input>
+      </el-form-item>
+    
+    
+      <!-- <el-form-item prop="code">
+                <el-input size="normal" type="text" v-model="loginForm.code" auto-complete="off"
+                          placeholder="点击图片更换验证码" @keydown.enter.native="submitLogin" style="width: 250px"></el-input>
+                <img :src="vcUrl" @click="updateVerifyCode" alt="" style="cursor: pointer">
+      </el-form-item>-->
+      <!-- <el-checkbox size="normal" class="loginRemember" v-model="checked"></el-checkbox> -->
+      <!-- <div class="goRegister" @click="goRegister">尚未注册？前往注册</div> -->
+      <el-button style="margin-left:35% ;float:left" size="normal" type="primary" @click="advSearch">查找</el-button>
+      <el-button style="position:absolute;left:60%" size="normal" type="warning" @click="hideAdvSearch">取消</el-button>
+
+    </el-form>
+
+
+           <el-form
+        v-if="advSearchShow&&docType!='personnel'"
+ 
+      ref="searchForm"
+ 
+      :model="searchForm"
+      label-width="6rem"
+      class="loginContainer"
+     style="background-color:rgb(209, 218, 243);"
+    >
+      <h3 style="        text-align: center;
+        color: #505458;">输入一个或多个条件查找文档</h3>
+            <el-form-item prop="username" label="识别号：">
+        <el-input
+          size="normal"
+          type="text"
+          v-model="searchForm.docSequence"
+          auto-complete="off"
+          placeholder="识别号"
+        ></el-input>
+      </el-form-item>
+
+      <el-form-item prop="username" label="文件标题：">
+        <el-input
+          size="normal"
+          type="text"
+          v-model="searchForm.docTitle"
+          auto-complete="off"
+          placeholder="标题"
+        ></el-input>
+      </el-form-item>
+      <el-form-item prop="password" label="文号：">
+        <el-input
+          size="normal"
+          type="text"
+          v-model="searchForm.docDesc"
+          auto-complete="off"
+          placeholder="文号"
+        ></el-input>
+      </el-form-item>
+        <el-form-item prop="password" label="发文日期">
+        <el-input
+          size="normal"
+          type="text"
+          v-model="searchForm.docDate"
+          auto-complete="off"
+          placeholder="发文日期"
+        ></el-input>
+      </el-form-item>
+
+              <el-form-item prop="password" label="责任者">
+        <el-input
+          size="normal"
+          type="text"
+          v-model="searchForm.dutyAuthor"
+          auto-complete="off"
+          placeholder="责任者"
+        ></el-input>
+      </el-form-item>
+      <!-- <el-form-item prop="code">
+                <el-input size="normal" type="text" v-model="loginForm.code" auto-complete="off"
+                          placeholder="点击图片更换验证码" @keydown.enter.native="submitLogin" style="width: 250px"></el-input>
+                <img :src="vcUrl" @click="updateVerifyCode" alt="" style="cursor: pointer">
+      </el-form-item>-->
+      <!-- <el-checkbox size="normal" class="loginRemember" v-model="checked"></el-checkbox> -->
+      <!-- <div class="goRegister" @click="goRegister">尚未注册？前往注册</div> -->
+      <el-button style="margin-left:35% ;float:left" size="normal" type="primary" @click="advSearch">查找</el-button>
+      <el-button style="position:absolute;left:60%" size="normal" type="warning" @click="hideAdvSearch">取消</el-button>
+
+    </el-form>
+
+        </div>
+
         <div
-          style="height: 4.5rem; position: absolute; top: -3.7rem; right: 5rem"
+          style="height: 4.5rem; position: absolute; top: -3.7rem; right: 14rem;width:18%"
         >
           <!-- 搜索 -->
           <el-input class="leftInput" v-model="searchContent"></el-input>
@@ -47,10 +188,18 @@
           <el-button
             type="warning"
             icon="el-icon-error"
-            style="border: none; margin-top: 1rem; position: absolute"
+            style="border: none; margin-top: 1rem; position: absolute;right:-4rem"
             @click="cancelSearch"
             >取消</el-button
           >
+
+                            <el-button
+            icon="el-icon-tickets"
+            style="border: none; margin-top: 1rem; margin-left:8rem;position: absolute;right:-11rem"
+            @click="ShowadvSearch"
+            >高级搜索</el-button
+          >
+
         </div>
 
         <div
@@ -425,6 +574,7 @@
 <script>
 import Utils from "../../utils/doc.js";
 import axios from "axios";
+import doc from '../../utils/doc.js';
 
 export default {
   computed: {
@@ -437,6 +587,17 @@ export default {
   },
   data() {
     return {
+      advSearchShow:false,
+      searchContent:'输入识别号',
+      searchForm:{
+        docSequence:'',
+        docTitle:'',
+        docDesc:'',
+        docDate:'',
+        dutyAuthor:'',
+        docType:'',
+        personName:'',
+      },
       RsDocs: [
         //所有的人
         [
@@ -564,7 +725,7 @@ export default {
       ],
 
       //   authCode:'2',
-      searchContent: "输入识别号",
+      // searchForm.docSequence: "输入识别号",
       showWaitingFlag: false,
       tempOrganName: "name",
       tempOrganCode: 123,
@@ -645,8 +806,9 @@ export default {
         });
     },
     cancelSearch() {
-      if (this.searchContent != "输入识别号") {
-        this.searchContent = "输入识别号";
+      // if (this.searchContent != "输入识别号") {
+      if (true) {
+        this.searchContent= "输入识别号";
         this.loadDocs();
       }
     },
@@ -654,6 +816,58 @@ export default {
       // this.$router.replace('/work/modifyOragan')
       this.$router.push("/work/modifyOrgan");
     },
+
+    hideAdvSearch(){
+      this.advSearchShow=false
+      this.loadDocs();
+    },
+  ShowadvSearch(){
+      this.advSearchShow=true;
+
+    },
+        advSearch(){
+      this.showWaitingFlag=true
+      var searchPath =
+        "/document/list/page/" +
+        sessionStorage.getItem("docType") +
+        "?pageNow=0&pageSize=100000";
+      // var docObj1 = {
+      //   // userId:JSON.stringify(sessionStorage.getItem("userId")),
+      //   // userId: sessionStorage.getItem('userId'),
+      //   docSequence: this.searchForm.docSequence,
+      //   docType: sessionStorage.getItem("docType"),
+      // };
+      this.searchForm.docType=sessionStorage.getItem('docType')
+      var docObj=this.searchForm
+      for(var key in docObj){
+        if(docObj[key]==''){
+          delete docObj[key];
+        }
+      }
+
+      this.postRequest(
+        //注意防止重复提交
+        searchPath,
+        JSON.stringify(docObj)
+      ).then((resp) => {
+        // console.log(resp);
+        this.showWaitingFlag=false
+        this.$store.state.alreadyDocs=resp.data.content
+
+        if(sessionStorage.getItem('docType')=='personnel'){
+          // alert(2)
+          var arr1=this.$store.state.alreadyDocs
+          var arr2=[]
+          arr2.push(arr1)
+          var arr3=[]
+          arr3.push(arr2)
+          this.$store.state.alreadyDocs=arr3
+          // console.log('aaa')
+          console.log(arr3)
+        }
+      });
+    },
+
     searchTheDoc() {
       this.showWaitingFlag=true
       var searchPath =
@@ -1015,15 +1229,23 @@ this.showWaitingFlag=true
           })
           .then((resp) => {
             if (resp.code == 0) {
+              this.showWaitingFlag=true
+
+              // this.loadDocs()
               var length = this.$store.state.alreadyDocs.length || 0;
               var _arr = this.$store.state.alreadyDocs;
               for (var i = 0; i < length; i++) {
-                if (_arr[i].docSequence == item.docSequence) {
-                  _arr.splice(i, 1); //删除下标为i的元素
+                for(var j=0;j<_arr[i].length;j++){
+                  for(var k=0;k<_arr[i][j].length;k++){
+ if (_arr[i][j][k].docSequence == item.docSequence) {
+                  _arr[i][j].splice(k, 1); //删除下标为i的元素
                   this.showWaitingFlag = false;
 
                   break;
                 }
+                  }
+                }
+               
               }
             }
           });
@@ -1058,9 +1280,23 @@ this.showWaitingFlag=true
 </script>
 
 <style lang="scss" scoped>
+.loginContainer{
+      position: absolute;
+    border-radius: 15px;
+    background-clip: padding-box;
+    margin: 0 auto;
+    width: 30rem;
+    left:50%;
+    margin-left: -15rem;
+    top: 4rem;
+    padding: 15px 35px 15px 35px;
+    background: #fff;
+    border: 1px solid #eaeaea;
+    box-shadow: 0 0 25px #cac6c6;
+}
 .leftInput {
   float: left;
-  width: 65%;
+  width: 60%;
   margin-left: 2%;
   margin-top: 0.9rem;
 }
@@ -1081,7 +1317,7 @@ this.showWaitingFlag=true
 }
 .wrapper {
   background-color: rgb(209, 218, 243);
-  height: 120vh;
+  // height: 120vh;
   position: relative;
   padding-bottom: 60vh;
 }
@@ -1089,6 +1325,7 @@ this.showWaitingFlag=true
 .docDetailBox {
   position: relative;
   top: 5rem;
+  // padding-bottom: 50rem;
 
   .detailItem {
     // height:2rem;

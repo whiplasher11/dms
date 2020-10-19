@@ -96,14 +96,14 @@
           ></el-input>
         </el-form-item>
 
-        <el-form-item label="自定义排件号优先级：">
+        <el-form-item label="自定义排件号规则：">
           <el-checkbox
             v-if="true"
             @change="priorityChange"
             false-label="0"
             true-label="1"
             :checked="false"
-          >涉排件号优先级，不选则为默认优先级</el-checkbox>
+          >本批工作规则顺序，不选则默认顺序</el-checkbox>
         </el-form-item>
 
         <el-form-item prop="priority.first" v-if="showPriority&&!showTwo" label="选择第一优先级：">

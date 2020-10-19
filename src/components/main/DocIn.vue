@@ -55,7 +55,7 @@
               type="text"
               v-model="docForm.keyword"
               auto-complete="off"
-              placeholder="系统识别或手动填写"
+              placeholder="请先填写文件标题"
             ></el-input>
           </el-form-item>
         </el-col>
@@ -95,6 +95,7 @@
               v-model="docForm.sortYear"
               value-format="yyyy"
               :picker-options="pickerOptions"
+              @change="selectDateChange"
             ></el-date-picker>
           </el-form-item>
         </el-col>
@@ -107,6 +108,7 @@
               v-model="docForm.docDate"
               value-format="yyyyMMdd"
               :picker-options="pickerOptions"
+              @change="selectDateChange"
             ></el-date-picker>
           </el-form-item>
         </el-col>
@@ -531,6 +533,15 @@ export default {
 
   data() {
     return {
+            searchForm:{
+        docSequence:'',
+        docTitle:'',
+        docDesc:'',
+        docDate:'',
+        dutyAuthor:'',
+        docType:'',
+        personName:'',
+      },
       docFormRS: {
         id: "",
         docSequence: "", //序列号，标识文件
@@ -800,6 +811,29 @@ export default {
     };
   },
   methods: {
+    selectDateChange(id){
+      var docDateYear=this.docForm.docDate.substring(0,4)
+      console.log(docDateYear)
+      console.log(this.docForm.sortYear)
+      
+      if(docDateYear>this.docForm.sortYear){
+  this.$confirm(
+"发文日期不能迟于整档年度",
+              "提示",
+              {
+                cancelButtonClass: "btn-custom-cancel",
+                confirmButtonText: "好的",
+                cancelButtonText: "忽略此条规则",
+                type: "warning",
+              }
+            ).then(()=>{
+                            this.docForm.docDate=20190808+""
+              this.docForm.sortYear=2019+""
+            }
+            )
+      
+      }
+    },
     resetDocInRS() {
       this.docFormRSKong.docSequence = this.docFormRS.docSequence;
       this.docFormRS = Object.assign({}, this.docFormRSKong);
@@ -1254,7 +1288,46 @@ export default {
 
       if (this.checkAddRS()) {
         this.showWaitingFlag = true;
-        var pathToDoc = "/document/" + sessionStorage.getItem("docType");
+
+              var searchPath =
+        "/document/list/page/" +
+        sessionStorage.getItem("docType") +
+        "?pageNow=0&pageSize=100000";
+
+ this.searchForm.docType=sessionStorage.getItem('docType')
+        this.searchForm.personName=this.docFormRS.personName;
+        this.searchForm.docTitle=this.docFormRS.docTitle
+        // this.searchForm.docSequence=this.docFormRS.docSequence
+        this.searchForm.docDate=this.docFormRS.docDate
+        this.searchForm.dutyAuthor=''
+        this.searchForm.docDesc=''
+
+   var searchObj=this.searchForm
+      for(var key in searchObj){
+        if(searchObj[key]==''){
+          delete searchObj[key];
+        }
+      }
+
+      this.postRequest(
+        //注意防止重复提交
+        searchPath,
+        JSON.stringify(searchObj)
+      ).then((resp) => {
+      if(resp.data.content.length!=0){
+                    this.$confirm(
+             "请检查是否录入重复",
+              "提示",
+              {
+                cancelButtonClass: "btn-custom-cancel",
+                confirmButtonText: "忽略，录入此条", //then必须在前面 否则点击空白都执行
+                cancelButtonText: "好的，暂不录入",
+                type: "warning",
+              }
+            )
+             .then(()=>{ //空白地方 点没重复，提交
+              
+  var pathToDoc = "/document/" + sessionStorage.getItem("docType");
         this.postRequest(
           //注意防止重复提交
           pathToDoc,
@@ -1337,6 +1410,23 @@ export default {
             // this.docForm.docTitle = "";
             // this.docForm.docPage = "";
           });
+
+              }) .catch(() => {
+                 
+                this.showWaitingFlag=false
+                return  //点击好的，然后不提交
+              })
+      }
+      
+      
+     
+      
+      
+      })
+        
+
+
+       
       } else {
         this.$message({
           type: "error",
@@ -1378,7 +1468,53 @@ export default {
           dutyAuthor: this.docForm.dutyAuthor,
           sortYear: this.docForm.sortYear,
         };
-        var pathToDoc = "/document/" + sessionStorage.getItem("docType");
+
+      
+          
+    
+      var searchPath =
+        "/document/list/page/" +
+        sessionStorage.getItem("docType") +
+        "?pageNow=0&pageSize=100000";
+
+      this.searchForm.docType=sessionStorage.getItem('docType')
+
+      {
+                this.searchForm.docTitle=this.docForm.docTitle
+        // this.searchForm.docSequence=this.docForm.docSequence
+        this.searchForm.docDesc=this.docForm.docDesc
+        this.searchForm.docDate=this.docForm.docDate
+        this.searchForm.dutyAuthor=this.docForm.dutyAuthor
+        this.searchForm.personName=''
+
+      }
+      var searchObj=this.searchForm
+      for(var key in searchObj){
+        if(searchObj[key]==''){
+          delete searchObj[key];
+        }
+      }
+
+      this.postRequest(
+        //注意防止重复提交
+        searchPath,
+        JSON.stringify(searchObj)
+      ).then((resp) => {
+        // console.log(resp);
+      
+       if(resp.data.content.length!=0){
+                             this.$confirm(
+             "请检查是否录入重复",
+              "提示",
+              {
+                cancelButtonClass: "btn-custom-cancel",
+                confirmButtonText: "没有重复，录入此条",
+                cancelButtonText: "好的，暂不录入",
+                type: "warning",
+              }
+            )
+              .then(() => {
+                       var pathToDoc = "/document/" + sessionStorage.getItem("docType");
         this.postRequest(
           //注意防止重复提交
           pathToDoc,
@@ -1411,12 +1547,36 @@ export default {
             this.docForm.docTitle = "";
             this.docForm.docPage = "";
           });
-      } else {
+
+              }) .catch(() => {
+                this.showWaitingFlag=false
+                return  //点击好的，然后不提交
+              });
+
+
+       }  //不重复则提交
+
+
+          
+        });  
+        }
+       else {
         this.$message({
           type: "error",
           message: "填写完整",
         });
-      }
+
+
+
+       }
+
+ 
+ 
+
+
+        
+
+    
     },
 
     optThreeWeightTable() {
@@ -1945,7 +2105,7 @@ export default {
           this.manageKeyWordTime++;
           if (this.manageKeyWordTime % 10 == 0) {
             this.$confirm(
-              "检测到10个新的关键字：" +
+              "检测到一些新的关键字：" +
                 this.docForm.keyword +
                 " , 和对应分类" +
                 this.docForm.docAbout +
@@ -1983,7 +2143,18 @@ export default {
         Math.random().toString().substr(3, length) + Date.now()
       ).toString(36);
     },
+    getId1(a,b){
+      var date = new Date();  //当前标准时间格式
+    var month = date.getMonth() + 1; //返回0~11之间的数字，0代表一月，11代表12月
+    var day = date.getDate(); //返回天数，0~31，getDay()返回的是星期几（0~6）
+    var hour = date.getHours(); //获取小时
+    var minute = date.getMinutes(); //获取分钟
+    var second = date.getSeconds(); //获取秒
+    var num = year +""+ month +""+ day +""+ hour +""+ minute +""+ second;
+    
+    },
     genId(len, radix) {
+
       var chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz".split(
         ""
       );
