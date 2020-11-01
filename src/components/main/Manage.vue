@@ -2,6 +2,56 @@
   <div>
     <div class="wrapper">
       <div style="height:6.5rem;position:relative">
+
+        <div style="position:absolute;top:6rem;font-size:1.4rem;width:50rem;left:50%;margin-left:-25rem;text-align:center"> 用户管理</div>
+        <div style="position:absolute;top:7rem;right:3rem;font-size:1.2rem;text-align:center;cursor:pointer;" @click="fixPswShowFunc"> 修改密码</div>
+
+        <div class="fixPswBox">
+                            <el-form
+        v-if="fixPswShow"
+
+      :model="searchForm"
+      label-width="6rem"
+      class="loginContainer"
+     style="background-color:rgb(209, 218, 243);"
+    >
+      <h3 style="        text-align: center;
+        color: #505458;">输入密码</h3>
+            <el-form-item prop="username" label="用户名：">
+        <el-input
+          size="normal"
+          type="text"
+          v-model="userForm.username"
+          auto-complete="off"
+          placeholder="用户名"
+        ></el-input>
+      </el-form-item>
+ 
+      <el-form-item prop="password" label="密码：">
+        <el-input
+          size="normal"
+          type="text"
+          v-model="userForm.password"
+          auto-complete="off"
+          placeholder="密码"
+        ></el-input>
+      </el-form-item>
+           
+    
+    
+      <!-- <el-form-item prop="code">
+                <el-input size="normal" type="text" v-model="loginForm.code" auto-complete="off"
+                          placeholder="点击图片更换验证码" @keydown.enter.native="submitLogin" style="width: 250px"></el-input>
+                <img :src="vcUrl" @click="updateVerifyCode" alt="" style="cursor: pointer">
+      </el-form-item>-->
+      <!-- <el-checkbox size="normal" class="loginRemember" v-model="checked"></el-checkbox> -->
+      <!-- <div class="goRegister" @click="goRegister">尚未注册？前往注册</div> -->
+      <el-button style="margin-left:35% ;float:left" size="normal" type="primary" @click="fixPswSubmit">修改</el-button>
+      <el-button style="position:absolute;left:60%" size="normal" type="warning" @click="cancleFixPsw">取消</el-button>
+
+    </el-form>
+
+        </div>
         <!-- <div
           style="position:absolute;bottom:0rem;right:20%;font-size:1.2rem;"
           v-if="true"
@@ -10,13 +60,15 @@
         >返回</div> -->
       </div>
       <div style="margin-top:3rem">
-        <div class="userItem">
+        <div class="userItem" style="border-top:0.2rem solid">
           <div class="userInfo">用户名</div>
           <div class="userInfo">注册时间</div>
           <div class="userInfo">工作地点</div>
           <div class="userInfo">手机号码</div>
           <div class="userInfo">权限</div>
           <div class="userInfo">到期时间</div>
+          <div class="userInfo">操作</div>
+
         </div>
 
         <div class="userItem" v-for="(item,index) in userTable" :key="index">
@@ -34,12 +86,24 @@
             @click="banUser($event,item)"
             v-if="item.state=='可用'"
           >禁用</el-button>
+
+          
           <el-button
+          
             type="info"
             class="kvButton"
             @click="unBanUser($event,item)"
             v-if="item.state=='禁用'"
           >解禁</el-button>
+
+
+          <el-button
+            type="warning"
+            class="kvButton"
+            @click="fixPswUser($event,item)"
+            v-if="true"
+          >改密</el-button>
+
         </div>
       </div>
     </div>
@@ -52,6 +116,11 @@ import axios from "axios";
 export default {
   data() {
     return {
+      fixPswShow:false,
+      userForm:{
+        username:'',
+        password:''
+      },
       userTable: [
         {
           role: "普通用户",
@@ -117,6 +186,24 @@ export default {
     };
   },
   methods: {
+    fixPswShowFunc(){
+      this.fixPswShow=true
+      this.userForm.username=''
+    },
+    cancleFixPsw(){
+      this.fixPswShow=false
+    },
+    fixPswUser(e, item){
+      this.$confirm("确定和用户协商好，修改此用户密码吗", "提示", {
+        cancelButtonClass: "btn-custom-cancel",
+        confirmButtonText: "是",
+        cancelButtonText: "否",
+        type: "warning",
+      }).then(()=>{
+          this.userForm.username=item.user.username
+          this.fixPswShow=true
+      })
+    },
       unBanUser(e, item) {
            this.$confirm("解除禁用此用户使用权限吗", "提示", {
         cancelButtonClass: "btn-custom-cancel",
@@ -202,25 +289,67 @@ export default {
     },
 
     loseThis(e) {},
+    fixPswSubmit(){
+
+              var path = "/admin/user" ;
+        this.postRequest(
+          //注意防止重复提交
+          path,JSON.stringify(this.userForm)
+          //   JSON.stringify(docObj)
+        ).then((resp) => {
+            if(resp.code==0){
+                        this.$message({
+          type: "success",
+          message: "修改成功",
+         
+        });
+         this.fixPswShow=false
+        // this.renewTable()
+            }
+            else{this.fixPswShow=false
+                                      this.$message({
+          type: "warning",
+          message: resp.message,
+         
+        });
+            }
+          console.log(resp);
+        });
+    },
   },
   created() {
     this.getRequest("/admin/users?pageNow=0&pageSize=100000").then((resp) => {
       this.userTable = resp.data;
     });
 
-    this.postRequest("/admin/user"
-    ,{
-      username:'zgan108',
-      password:'hntytpphtc189'
-    }).then((resp)=>{
-      console.log(resp)
-    })
+    // this.postRequest("/admin/user"
+    // ,{
+    //   username:'zgan108',
+    //   password:'hntytpphtc189'
+    // }).then((resp)=>{
+    //   console.log(resp)
+    // })
 
   },
 };
 </script>
 
 <style lang="scss" scoped>
+.loginContainer{
+        position: absolute;
+
+    border-radius: 15px;
+    background-clip: padding-box;
+    margin: 0 auto;
+    width: 30rem;
+    left:50%;
+    margin-left: -15rem;
+    top: 8rem;
+    padding: 15px 35px 15px 35px;
+    background: #fff;
+    border: 1px solid #eaeaea;
+    box-shadow: 0 0 25px #cac6c6;
+}
 .userItem {
   width: 95%;
   margin: auto;
@@ -230,12 +359,12 @@ export default {
     text-align: center;
     float: left;
     width: 13%;
-    height: 2rem;
+    // height: 2rem;
     // border-left: solid 0.1rem;
     margin-top: 0.15rem;
     margin-left: 0.2rem;
     // padding-top: 0rem;
-    line-height: 2rem;
+    // line-height: 2rem;
   }
 }
 

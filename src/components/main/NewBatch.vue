@@ -448,7 +448,7 @@ export default {
       this.conver(date) +
       "-" +
       this.conver(h) +
-      "-" +
+      "：" +
       this.conver(m) +
       "归档批";
 

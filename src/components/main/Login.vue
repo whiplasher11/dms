@@ -330,7 +330,7 @@ export default {
   position: relative;
   padding: 15px 35px 15px 35px;
   top: 1rem;
-  background: rgb(209, 218, 243) !important;
+  background: rgba(255, 255, 255, 0) !important;
 }
 </style>
 

@@ -4,6 +4,64 @@
           <div style="height:6.5rem;position:relative" >
               <div style="position:absolute;bottom:0rem;right:20%;font-size:1.2rem;" v-if="!organsShow" @click="backOrgans" class="hoverStyle">返回</div>
           </div>
+
+                <div
+        v-if="fixNameShow"
+        style="
+          position: absolute;
+          top: 40vh;
+          left: 50%;
+          margin-left: -15rem;
+          z-index: 122;
+          padding-top: 1rem;
+          color: #333;
+          font-size: 1.5rem;
+          width: 30rem;
+          height: 10rem;
+          background-color: rgb(209, 218, 243);
+          -webkit-box-shadow: 0 0 0.5rem #909399;
+          box-shadow: 0 0 0.5rem #909399;
+          border-radius: 1rem;
+        "
+      >
+        <div
+          style="
+            font-size: 1rem;
+            width: 10rem;
+            text-align: center;
+            margin-left: 10rem;
+            color: #333;
+          "
+        >
+          请修改单位名或全宗号
+        </div>
+        <input
+          type="text"
+          style="
+            height: 1.5rem;
+            margin-left: 6rem;
+            margin-top: 2rem;
+            width: 7rem;
+          "
+          v-model="nameToSet"
+        />&nbsp;&nbsp;&nbsp;:
+        <input
+          type="text"
+          style="height: 1.5rem; margin-left: 1rem; width: 7rem"
+          v-model="authCodeToSet"
+        />
+        <div
+          class="textButton"
+          @click="clearFixNA"
+          style="position: absolute; left: 5rem; color: #333"
+        >
+          取消
+        </div>
+
+        <div class="textButton" @click="doFixNA" style="color: #333">确定</div>
+      </div>
+
+
           <div v-if="organsShow">
             <div class="organItem" style="height:2rem">
               <div class="organInfo tip">单位名</div>
@@ -11,6 +69,9 @@
               <div class="organInfo tip">权重表修改</div>
               <div class="organInfo tip">操作</div>
               <div class="organInfo tip">操作</div>
+              <div class="organInfo tip"> </div>
+
+
 
 
 
@@ -23,6 +84,7 @@
             <div class="organInfo hoverStyle" style="border:none;font-size:0.9rem" @click="fixThisOrgan(item)">修改优先级</div>
             <div class="organInfo hoverStyle" style="border:none" @click="checkThisOrganBat(item)">查看批次</div>
             <div class="organInfo hoverStyle" style="border:none" @click="delThisOrgan(item)">删除单位记录</div>
+            <div class="organInfo hoverStyle" style="border:none" @click="fixOrganName(item)">修改单位</div>
 
 
           </div>
@@ -61,6 +123,9 @@ import axios from 'axios'
 export default {
     data(){
       return{
+fixNameShow:false,
+nameToSet:'',
+authCodeToSet:'',
             tempOrganName:'name',
             tempOrganCode:123,
 
@@ -72,6 +137,14 @@ export default {
       }
     },
     methods:{
+        fixOrganName(item){
+            this.nameToSet=item.authName
+            this.authCodeToSet=item.authCode
+            this.fixNameShow=true
+        },
+        clearFixNA(){
+            this.fixNameShow=false
+        },
         fixThisOrgan(item){
                         window.sessionStorage.setItem('authId',item.id)
             window.sessionStorage.setItem('authCode',item.authCode)
@@ -181,19 +254,19 @@ window.sessionStorage.setItem("lastBox",JSON.stringify(item.lastBox))
     created(){
         // alert(this.tempOrganName)
 
-    var json2 = {
-        'k1':'v1',
-        'k2':'v2',
+    // var json2 = {
+    //     'k1':'v1',
+    //     'k2':'v2',
 
-    };
-    var kk='k3'
-    json2[kk] = '0';
-        var ss='2'
-    if(json2[kk]=='0') json2[kk]='2'
-    if(json2[ss]==null){
-        console.log(1)
-    }
-    console.log(json2)
+    // };
+    // var kk='k3'
+    // json2[kk] = '0';
+    //     var ss='2'
+    // if(json2[kk]=='0') json2[kk]='2'
+    // if(json2[ss]==null){
+    //     console.log(1)
+    // }
+    // console.log(json2)
 
             //     function fun1(d)//回调函数，执行成功后 执行
             // {
@@ -269,6 +342,17 @@ window.sessionStorage.setItem("lastBox",JSON.stringify(item.lastBox))
         line-height: 2rem;
         }
     }
+    .textButton {
+  margin-top: 1.5rem;
+  color: rgb(227, 229, 236);
+  font-size: 1.2rem;
+  margin-left: 10rem;
+  // float:left
+}
+
+.textButton:hover {
+  cursor: pointer;
+}
 
     .organInfo{
         text-align: center;

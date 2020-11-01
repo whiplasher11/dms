@@ -1500,7 +1500,8 @@ export default {
         searchPath,
         JSON.stringify(searchObj)
       ).then((resp) => {
-        // console.log(resp);
+        console.log('添加前检查是否重复')
+        console.log(resp);
       
        if(resp.data.content.length!=0){
                              this.$confirm(
@@ -1555,6 +1556,43 @@ export default {
 
 
        }  //不重复则提交
+       else{
+         
+                       var pathToDoc = "/document/" + sessionStorage.getItem("docType");
+        this.postRequest(
+          //注意防止重复提交
+          pathToDoc,
+          JSON.stringify(docObj)
+        )
+          .then((resp) => {
+            console.log("tijiao文件");
+
+            console.log(docObj);
+            console.log("tijiao文件的结果");
+            console.log(resp);
+            this.docForm.id = resp.data.id; //赋给alreadydocs 修改文件用
+            // alert( this.docForm.id)
+          })
+          .then((r) => {
+            // if(r)
+            //保证提交完返回id后再执行后续操作
+
+            this.optThreeWeightTable();
+
+            this.$store.state.alreadyDocs.unshift(
+              Object.assign({}, this.docForm)
+            );
+            this.keyWordEdit = false;
+            this.docForm.keyword = "";
+            this.docForm.docDescNum = "0";
+            this.docForm.docSequence = this.genId(6, 62);
+            this.docForm.docDate.replace("-", "");
+            console.log(this.docForm);
+            this.docForm.docTitle = "";
+            this.docForm.docPage = "";
+          });
+          
+       }
 
 
           

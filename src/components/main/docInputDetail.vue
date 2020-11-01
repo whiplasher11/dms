@@ -39,7 +39,7 @@
       :model="searchForm"
       label-width="6rem"
       class="loginContainer"
-     style="background-color:rgb(209, 218, 243);"
+     style="background-color:rgb(209, 218, 243) !important;"
     >
       <h3 style="        text-align: center;
         color: #505458;">输入一个或多个条件查找文档</h3>
@@ -103,7 +103,7 @@
       :model="searchForm"
       label-width="6rem"
       class="loginContainer"
-     style="background-color:rgb(209, 218, 243);"
+     style="background-color:rgb(209, 218, 243) !important;"
     >
       <h3 style="        text-align: center;
         color: #505458;">输入一个或多个条件查找文档</h3>

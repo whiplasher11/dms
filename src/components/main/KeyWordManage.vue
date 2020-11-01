@@ -1,102 +1,293 @@
 <template>
   <div class="outbox">
-    <div style="position:relative" class="wrapper">
-      
- <div style="position:absolute;width:20rem;height:10rem;top:10rem;left:50%;margin-left:-10rem;line-height:10rem;
-    background-color:rgba(25,55,163,0.8);font-size:1.3rem;color:white;text-align:center;z-index:1000" v-if="showWaitingFlag">请求中，请稍候...</div>
-      <div  class="hoverStyle" style="position:absolute;top:6.5rem;right:20rem;z-index:123" v-if="selectShow" @click="backToOrgans">返回</div>
+    <div style="position: relative" class="wrapper">
+      <div
+        style="
+          position: absolute;
+          width: 20rem;
+          height: 10rem;
+          top: 10rem;
+          left: 50%;
+          margin-left: -10rem;
+          line-height: 10rem;
+          background-color: rgba(25, 55, 163, 0.8);
+          font-size: 1.3rem;
+          color: white;
+          text-align: center;
+          z-index: 1000;
+        "
+        v-if="showWaitingFlag"
+      >
+        请求中，请稍候...
+      </div>
+      <div
+        class="hoverStyle"
+        style="position: absolute; top: 6.5rem; right: 20rem; z-index: 123"
+        v-if="selectShow"
+        @click="backToOrgans"
+      >
+        返回
+      </div>
 
-      <div  class="hoverStyle" style="position:absolute;top:6.5rem;right:20rem;z-index:123" v-if="!selectShow" @click="backToSelect">返回</div>
-      <div style="height:4.5rem;"></div>
+      <div
+        class="hoverStyle"
+        style="position: absolute; top: 6.5rem; right: 20rem; z-index: 123"
+        v-if="!selectShow"
+        @click="backToSelect"
+      >
+        返回
+      </div>
+      <div style="height: 4.5rem"></div>
 
-      <div style="position:absolute;top:6rem;font-size:1.5rem;width:100%;text-align:center">排件号规则管理</div>
+      <div
+        style="
+          position: absolute;
+          top: 6rem;
+          font-size: 1.5rem;
+          width: 100%;
+          text-align: center;
+        "
+      >
+        排件号规则管理
+      </div>
 
- 
- 
- <div v-if="showKVFix"
- style="position:absolute;top:40vh;left:50%;margin-left:-15rem;z-index:122;padding-top:1rem;
- font-size:1.5rem;width:30rem;height:10rem;background-color:#666">
- <div style="font-size:1rem;width:10rem;text-align:center;margin-left:10rem;color:white">请输入词的大小</div>
-<input type="text" style="height:1.5rem;margin-left:6rem;margin-top:2rem;width:7rem" disabled="true"  v-model="keyToFix">&nbsp;&nbsp;&nbsp;:
-<input type="text" style="height:1.5rem;margin-left:1rem;width:7rem" v-model="valueToFix">
-<div class="textButton" @click="clearKV" style="position:absolute;left:5rem">取消</div>
+      <div
+        v-if="showKVFix"
+        style="
+          position: absolute;
+          top: 40vh;
+          left: 50%;
+          margin-left: -15rem;
+          z-index: 122;
+          padding-top: 1rem;
+          font-size: 1.5rem;
+          width: 30rem;
+          height: 10rem;
+          background-color: #666;
+          -webkit-box-shadow: 0 0 0.5rem #909399;
+          box-shadow: 0 0 0.5rem #909399;
+          border-radius: 1rem;
+        "
+      >
+        <div
+          style="
+            font-size: 1rem;
+            width: 10rem;
+            text-align: center;
+            margin-left: 10rem;
+            color: #333;
+          "
+        >
+          请输入词的大小
+        </div>
+        <input
+          type="text"
+          style="
+            height: 1.5rem;
+            margin-left: 6rem;
+            margin-top: 2rem;
+            width: 7rem;
+          "
+          disabled="true"
+          v-model="keyToFix"
+        />&nbsp;&nbsp;&nbsp;:
+        <input
+          type="text"
+          style="height: 1.5rem; margin-left: 1rem; width: 7rem"
+          v-model="valueToFix"
+        />
+        <div
+          class="textButton"
+          @click="clearKV"
+          style="position: absolute; left: 5rem; color: #333"
+        >
+          取消
+        </div>
 
-<div class="textButton" @click="fixTheKV">确定</div>
+        <div class="textButton" @click="fixTheKV" style="color: #333">确定</div>
+      </div>
 
- </div>
+      <div
+        v-if="showKVPreset"
+        style="
+          position: absolute;
+          top: 40vh;
+          left: 50%;
+          margin-left: -15rem;
+          z-index: 122;
+          padding-top: 1rem;
+          color: #333;
+          font-size: 1.5rem;
+          width: 30rem;
+          height: 10rem;
+          background-color: rgb(209, 218, 243);
+          -webkit-box-shadow: 0 0 0.5rem #909399;
+          box-shadow: 0 0 0.5rem #909399;
+          border-radius: 1rem;
+        "
+      >
+        <div
+          style="
+            font-size: 1rem;
+            width: 10rem;
+            text-align: center;
+            margin-left: 10rem;
+            color: #333;
+          "
+        >
+          请输入词和优先级的大小
+        </div>
+        <input
+          type="text"
+          style="
+            height: 1.5rem;
+            margin-left: 6rem;
+            margin-top: 2rem;
+            width: 7rem;
+          "
+          v-model="keyToSet"
+        />&nbsp;&nbsp;&nbsp;:
+        <input
+          type="text"
+          style="height: 1.5rem; margin-left: 1rem; width: 7rem"
+          v-model="valueToSet"
+        />
+        <div
+          class="textButton"
+          @click="clearPreset"
+          style="position: absolute; left: 5rem; color: #333"
+        >
+          取消
+        </div>
 
+        <div class="textButton" @click="doPreset" style="color: #333">确定</div>
+      </div>
 
       <div class="typeSelect" v-if="selectShow">
-        <div style="width:3rem;height:2rem"></div>
+        <div style="width: 3rem; height: 2rem"></div>
 
-        <div class="selectItem" @click="checkFromThisType(11)">文书类档案问题(机构)优先级设置</div>
-        <div class="selectItem" @click="checkFromThisType(12)">文书类档案责任者优先级设置</div>
-        <div class="selectItem" @click="checkFromThisType(13)">文书类档案关键词优先级设置</div>
-        <div class="selectItem" @click="checkFromThisType(21)">科技类档案项目优先级设置</div>
-        <div class="selectItem" @click="checkFromThisType(22)">科技类档案责任者优先级设置</div>
-        <div class="selectItem" @click="checkFromThisType(23)">科技类档案关键词优先级设置</div>
-        <div class="selectItem" @click="checkFromThisType(31)">业务类档案问题优先级设置</div>
-        <div class="selectItem" @click="checkFromThisType(32)">业务类档案责任者优先级设置</div>
-        <div class="selectItem" @click="checkFromThisType(33)">业务类档案关键词优先级设置</div>
-        <div class="selectItem" @click="checkFromThisType(41)">人事类档案关键词优先级设置</div>
+        <div class="selectItem" @click="checkFromThisType(11)">
+          文书类档案问题(机构)优先级设置
+        </div>
+        <div class="selectItem" @click="checkFromThisType(12)">
+          文书类档案责任者优先级设置
+        </div>
+        <div class="selectItem" @click="checkFromThisType(13)">
+          文书类档案关键词优先级设置
+        </div>
+        <div class="selectItem" @click="checkFromThisType(21)">
+          科技类档案项目优先级设置
+        </div>
+        <div class="selectItem" @click="checkFromThisType(22)">
+          科技类档案责任者优先级设置
+        </div>
+        <div class="selectItem" @click="checkFromThisType(23)">
+          科技类档案关键词优先级设置
+        </div>
+        <div class="selectItem" @click="checkFromThisType(31)">
+          业务类档案问题优先级设置
+        </div>
+        <div class="selectItem" @click="checkFromThisType(32)">
+          业务类档案责任者优先级设置
+        </div>
+        <div class="selectItem" @click="checkFromThisType(33)">
+          业务类档案关键词优先级设置
+        </div>
+        <div class="selectItem" @click="checkFromThisType(41)">
+          人事类档案关键词优先级设置
+        </div>
 
-
-        <div style="clear:both"></div>
-        <div style="width:3rem;height:2rem"></div>
+        <div style="clear: both"></div>
+        <div style="width: 3rem; height: 2rem"></div>
       </div>
       <!-- 选择类型 -->
 
       <div class="keyValueBox" @click="boxClick" v-if="!selectShow">
+        <div
+          style="
+            position: absolute;
+            right: 0;
+            top: -0;
+            font-weight: 699;
+            right: 2rem;
+            cursor: pointer;
+          "
+          @click="preSetButton"
+        >
+          点击预设优先级
+        </div>
         <div class="keyValueItem">
-          <div class="keyValueInfo" style="border:none;position:relative">
+          <div class="keyValueInfo" style="border: none; position: relative">
             优先级(越大越靠前）
             <el-button
               @click="saveKeyValue"
               type="success"
               class="kvButton"
-              style="  position: absolute; right: 2rem;"
+              style="position: absolute; right: 2rem"
               v-if="saveBtnShow"
-            >保存修改</el-button>
+              >保存修改</el-button
+            >
           </div>
-          <div class="keyValueInfo" style="border:none">词</div>
+          <div class="keyValueInfo" style="border: none">词</div>
 
-          <div class="keyValueInfo" style="border:none">操作</div>
+          <div class="keyValueInfo" style="border: none">操作</div>
         </div>
 
         <div
           class="keyValueItem"
           style="z-index=99"
-          v-for="(item,index) in jsonTable"
+          v-for="(item, index) in jsonTable"
           :key="index"
           draggable="false"
         >
           <div
-            v-bind:class="[{keyValueInfo:true},{hideText:false}] "
-            style="border:none"
-          >{{item[1]}}</div>
-          <div class="keyValueInfo" style="border:none">{{item[0]}}</div>
+            v-bind:class="[{ keyValueInfo: true }, { hideText: false }]"
+            style="border: none"
+          >
+            {{ item[1] }}
+          </div>
+          <div class="keyValueInfo" style="border: none">{{ item[0] }}</div>
 
           <div
-            v-bind:class="[{keyValueInfo:true},{hideText:true}] "
-            style="border:none"
+            v-bind:class="[{ keyValueInfo: true }, { hideText: true }]"
+            style="border: none"
             v-if="false"
-          >{{item.tables|formatKeyWordValue}}</div>
+          >
+            {{ item.tables | formatKeyWordValue }}
+          </div>
 
-          <div style="width:0;position:absolute;">{{item.id}}</div>
+          <div style="width: 0; position: absolute">{{ item.id }}</div>
           <el-button
             type="success"
             class="kvButton"
-            @click="upClick($event,item)"
-            style="margin-left:3rem"
-          >上调</el-button>
-          <el-button type="warning" class="kvButton" @click="downClick($event,item)">下调</el-button>
-          <el-button type="danger" class="kvButton" @click="deleteKV($event,item)">删除</el-button>
-          <el-button type="error" class="kvButton" @click="fixKv($event,item)" v-if="!saveBtnShow">修改值</el-button>
+            @click="upClick($event, item)"
+            style="margin-left: 3rem"
+            >上调</el-button
+          >
+          <el-button
+            type="warning"
+            class="kvButton"
+            @click="downClick($event, item)"
+            >下调</el-button
+          >
+          <el-button
+            type="danger"
+            class="kvButton"
+            @click="deleteKV($event, item)"
+            >删除</el-button
+          >
+          <el-button
+            type="error"
+            class="kvButton"
+            @click="fixKv($event, item)"
+            v-if="!saveBtnShow"
+            >修改值</el-button
+          >
 
           <!-- <div style="float:left;width:2rem;background-color:red;height:1.5rem">1</div> -->
         </div>
 
-        <div style="clear:both"></div>
+        <div style="clear: both"></div>
       </div>
     </div>
   </div>
@@ -111,15 +302,16 @@ export default {
   },
 
   created() {
-    this.showWaitingFlag=true
+    this.showWaitingFlag = true;
+
     this.getRequest("/organ/" + sessionStorage.getItem("authId")).then(
       (resp) => {
         this.weightForm = resp.data;
-        console.log("加载keyWM页面时某个特定单位的权重表对应的id")
-        if(this.weightForm){
-          this.showWaitingFlag=false
+        console.log("加载keyWM页面时某个特定单位的权重表对应的id");
+        if (this.weightForm) {
+          this.showWaitingFlag = false;
         }
-        console.log(this.weightForm)
+        console.log(this.weightForm);
       }
     );
 
@@ -133,108 +325,195 @@ export default {
     console.log(this.jsonTable);
   },
   methods: {
+    backToOrgans() {
+      this.$router.push("/work/modifyOrgan");
+    },
+    backToSelect() {
+      this.selectShow = true;
+    },
+    clearKV() {
+      this.showKVFix = false;
+    },
 
-    backToOrgans(){
-      this.$router.push('/work/modifyOrgan')
+    clearPreset() {
+      this.keyToSet = "";
+      this.valuetoSet = "";
+      this.showKVPreset = false;
     },
-    backToSelect(){
-      this.selectShow=true
-    },
-    clearKV(){
-      this.showKVFix=false;
-    },
-    renewTable(){
-      this.jsonTable=[]
-        this.selectShow = false;
-      // this.typeNum=num
-      if(!this.requestWigId){
-
-        this.jsonTable=[]
-            this.$message({
-              type: "warning",
-              message: "还没有添加过该类型的档案"
-            });  
-            location.reload()
+isNumber(value){
+	if(isNaN(value)){
+		return false;
+	}
+	else{
+		return true;
+	}
+},
+    doPreset() {
+      // alert(this.valueToSet)
+      // alert(this.typeNum)
+      if(!this.isNumber(this.valueToSet)){
+                this.$message({
+          type: "warning",
+          message: "优先级只能是数字",
+        });
+        return
       }
-      else{
-        var table
-                     this.getRequest("/weight/sort/" + this.requestWigId)
-                  .then((resp) => {
-                    //查询对应的权重表得到json
-                    table = resp.data.tables;
-               let attr;
-      this.jsonTable=[]
+      if (!this.requestWigId) {
+        //点进哪一种kv设置的时候就获取了 单位下的某种权重表id 或 null
+        //第一次添加，没录过
+        var json1 = {};
+        var key1 = this.keyToSet;
+        json1[key1] = this.valueToSet;
 
-    for (attr in table) {
-      this.jsonTable.push([attr, table[attr]]);
-    }
-                    // var json1 = table;
 
-                  })
+        var kvObj = {
+          authId: sessionStorage.getItem("authId"),
+          type: this.typeNum,
+          tables: json1,
+        };
+
+        this.postRequest(
+          //注意防止重复提交
+          "/weight",
+          JSON.stringify(kvObj)
+        ).then((resp) => {
+          console.log("第一次提交预设权重表");
+          console.log(resp);
+          // console.log(this.weightForm=resp)
+          this.weightForm = resp.data;
+          if (resp.code == 0) {
+            this.renewTable();
+            this.showWaitingFlag = false;
+          }
+        });
+      } else {
+        //添加过这种kv 那么是修改json
+        var table3;
+        this.getRequest("/weight/sort/" + this.requestWigId)
+          .then((resp) => {
+            //查询对应的权重表得到json
+            console.log("添加过，先获取：");
+            console.log(resp.data.tables);
+            table3 = resp.data.tables;
+            var key3 = this.keyToSet;
+            // var json1 = table;
+            table3[key3] = this.valueToSet;
+          })
+          .then((r) => {
+            var kvObj = {
+              authId: sessionStorage.getItem("authId"),
+              type: this.typeNum,
+              tables: table3,
+            };
+
+            this.putRequest("/weight/" + this.requestWigId, kvObj).then(
+              (resp) => {
+                console.log("更新预设kv权重表");
+                console.log(resp);
+                this.renewTable();
+              }
+            );
+          })
+          .then((r) => {
+            this.showWaitingFlag = false;
+            this.showKVPreset=false
+          });
+      } //添加过
+
+      // if(){}
+    },
+
+    renewTable() {
+      this.jsonTable = [];
+      this.selectShow = false;
+      // this.typeNum=num
+      if (!this.requestWigId) {
+        //点进哪一种kv设置的时候就获取了 单位下的某种权重表id 或 null
+
+        this.jsonTable = [];
+        this.$message({
+          type: "warning",
+          message: "还没有添加过该类型的档案",
+        });
+        location.reload();
+      } else {
+        var table;
+        this.getRequest("/weight/sort/" + this.requestWigId).then((resp) => {
+          //查询对应的权重表得到json
+          table = resp.data.tables;
+          console.log("刷新table");
+          console.log(table);
+          let attr;
+          this.jsonTable = [];
+
+          for (attr in table) {
+            this.jsonTable.push([attr, table[attr]]);
+          }
+          // var json1 = table;
+        });
       }
     },
 
     checkFromThisType(num) {
-      this.jsonTable=[]
-        // var this.requestWigId
-      if(num==11){
-        this.requestWigId=this.weightForm.docIssueWig
+      this.jsonTable = [];
+      // var this.requestWigId
+      if (num == 11) {
+        this.requestWigId = this.weightForm.docIssueWig;
       }
-      if(num==12){
-         this.requestWigId=this.weightForm.docAuthorWig
+      if (num == 12) {
+        this.requestWigId = this.weightForm.docAuthorWig;
       }
-            if(num==13){
-         this.requestWigId=this.weightForm.docKeywordWig
+      if (num == 13) {
+        this.requestWigId = this.weightForm.docKeywordWig;
       }
-            if(num==21){
-         this.requestWigId=this.weightForm.tecProjectWig
+      if (num == 21) {
+        this.requestWigId = this.weightForm.tecProjectWig;
       }
-            if(num==22){
-         this.requestWigId=this.weightForm.tecAuthorWig
+      if (num == 22) {
+        this.requestWigId = this.weightForm.tecAuthorWig;
       }
-            if(num==23){
-         this.requestWigId=this.weightForm.tecKeywordWig
+      if (num == 23) {
+        this.requestWigId = this.weightForm.tecKeywordWig;
       }
-            if(num==31){
-         this.requestWigId=this.weightForm.busProjectWig
+      if (num == 31) {
+        this.requestWigId = this.weightForm.busProjectWig;
       }
-            if(num==32){
-         this.requestWigId=this.weightForm.busAuthorWig
+      if (num == 32) {
+        this.requestWigId = this.weightForm.busAuthorWig;
       }
-            if(num==33){
-         this.requestWigId=this.weightForm.busKeywordWig
+      if (num == 33) {
+        this.requestWigId = this.weightForm.busKeywordWig;
       }
-                  if(num==41){
-         this.requestWigId=this.weightForm.perKeywordWig
+      if (num == 41) {
+        this.requestWigId = this.weightForm.perKeywordWig;
       }
 
       this.selectShow = false;
-      this.typeNum=num
-      if(!this.requestWigId){
+      this.typeNum = num; //选择一种键值进行修改调整 typeNum记录是哪种
 
-        this.jsonTable=[]
-            this.$message({
-              type: "warning",
-              message: "还没有添加过该类型的档案"
-            });  
+      // if(this.showKVPreset){
+      //   return //在键值预设窗口没消失的时候，仅执行到这里就返回，获取typeNum
+      // }
+      if (!this.requestWigId) {
+        this.jsonTable = [];
+        this.$message({
+          type: "warning",
+          message: "还没有添加过该类型的档案",
+        });
+      } else {
+        var table;
+        this.getRequest("/weight/sort/" + this.requestWigId).then((resp) => {
+          //查询对应的权重表得到json
+          table = resp.data.tables;
+          let attr;
+          this.jsonTable = [];
+
+          for (attr in table) {
+            this.jsonTable.push([attr, table[attr]]);
+          }
+          // var json1 = table;
+        });
       }
-      else{
-        var table
-                     this.getRequest("/weight/sort/" + this.requestWigId)
-                  .then((resp) => {
-                    //查询对应的权重表得到json
-                    table = resp.data.tables;
-               let attr;
-      this.jsonTable=[]
-
-    for (attr in table) {
-      this.jsonTable.push([attr, table[attr]]);
-    }
-                    // var json1 = table;
-
-                  })
-      }
-
     },
     saveKeyValue() {
       console.log("save");
@@ -285,112 +564,113 @@ export default {
       clearInterval(this.timer);
       this.timer = setInterval(this.changeFlag, 2000);
     },
-      fixKv(e, item) {  //按修改值button
-        this.showKVFix=true;
-        this.keyToFix=item[0]
-        this.valueToFix=item[1]
+    fixKv(e, item) {
+      //按修改值button
+      this.showKVFix = true;
+      this.keyToFix = item[0];
+      this.valueToFix = item[1];
 
-        // this.deleteKV(e,item)
-        // alert(this.keyToFix)
-        // this.valueToFix=item[1]
-      },
+      // this.deleteKV(e,item)
+      // alert(this.keyToFix)
+      // this.valueToFix=item[1]
+    },
 
+    preSetButton() {
+      this.showKVPreset = true;
+    },
 
-          fixTheKV(){  //确定修改
+    fixTheKV() {
+      //确定修改
+      if(!this.isNumber(this.valueToFix)){
+                this.$message({
+          type: "warning",
+          message: "优先级只能是数字",
+        });
+        return
+      }
 
       var _arr = this.jsonTable;
       var length = _arr.length;
 
-
       for (var i = 0; i < length; i++) {
         if (this.jsonTable[i][0] == this.keyToFix) {
-            //deleteRequest
+          //deleteRequest
           _arr.splice(i, 1); //删除下标为i的元素
-          var arrt=[this.keyToFix,this.valueToFix]
-          console.log(arrt)
+          var arrt = [this.keyToFix, this.valueToFix];
+          console.log(arrt);
           _arr.splice(i, 0, arrt);
-
         }
-      }   //**前端修改 */
+      } //**前端修改 */
 
-     
       this.submitFixFromQianDuan();
-      this.showKVFix=false
-      
-
-
-
+      this.showKVFix = false;
     },
 
-    submitFixFromQianDuan(){
-         var jsonToCommit={}   /**将修改提交 jsonTable是数组*/
-        for (var i = 0; i < this.jsonTable.length; i++) {
-        console.log(this.jsonTable[i][0]);
+    submitFixFromQianDuan() {
+      // alert("tijaio");
+      var jsonToCommit = {}; /**将修改提交 jsonTable是数组*/
+      for (var i = 0; i < this.jsonTable.length; i++) {
+        // console.log(this.jsonTable[i][0]);
         jsonToCommit[this.jsonTable[i][0]] = this.jsonTable[i][1];
       }
 
-            var docAboutObj = {
-            authId: sessionStorage.getItem("authId"),
-            type: this.typeNum,
-            id:this.requestWigId,
-            tables: jsonToCommit,
-            };
+      var docAboutObj = {
+        authId: sessionStorage.getItem("authId"),
+        type: this.typeNum,
+        id: this.requestWigId,
+        tables: jsonToCommit,
+      };
 
-          this.putRequest(
-          "/weight/" + this.requestWigId,
-          docAboutObj
-          ).then((resp) => {
-          console.log("修改值的方式更新权重表，类型："+this.typeNum);
+      this.putRequest("/weight/" + this.requestWigId, docAboutObj)
+        .then((resp) => {
+          console.log("修改值的方式更新权重表，类型：" + this.typeNum);
           console.log(resp);
-          return resp
-          }).then(r=>{
-            if(r.code==0){
-              this.$message({
+          return resp;
+        })
+        .then((r) => {
+          if (r.code == 0) {
+            this.$message({
               type: "warning",
-              message: "操作成功"
-              });  
-              this.renewTable()
-            }
-            else{
-                          this.$message({
+              message: "操作成功",
+            });
+            this.renewTable();
+          } else {
+            this.$message({
               type: "warning",
-              message: "操作失败"
-            });  
+              message: "操作失败",
+            });
 
-              location.reload()
-            }
-          });
+            location.reload();
+          }
+        });
     },
     deleteKV(e, item) {
-                  this.$confirm(
-                '确定要删除该条不再使用吗，若本批录入中有该词条可能导致排序失败',
-          {
-            cancelButtonClass: "btn-custom-cancel",
-            confirmButtonText: "确定",
-            cancelButtonText: "取消",
-            type: "warning"
-          }
-                  )
-                  .then(()=>{
-                          var _arr = this.jsonTable;
-      var length = _arr.length;
-      for (var i = 0; i < length; i++) {
-        if (this.jsonTable[i][0] == item[0]) {
-
-          _arr.splice(i, 1); //删除下标为i的元素
+      this.$confirm(
+        "确定要删除该条不再使用吗，若本批录入中有该词条可能导致排序失败",
+        {
+          cancelButtonClass: "btn-custom-cancel",
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning",
         }
-
-        this.submitFixFromQianDuan();
-
-
-      
-      }
-                  })
-                  .catch(() => {
-                    return
-          });
-
-
+      )
+        .then(() => {
+          var _arr = this.jsonTable;
+          var length = _arr.length;
+          // console.log(length)
+          for (var i = 0; i < length; i++) {
+            if (this.jsonTable[i][0] == item[0]) {
+              this.jsonTable.splice(i, 1); //删除下标为i的元素
+              break;  //不break的话会报错，因为外层循环还在继续，数组已经少了一个了
+            }
+          }
+ 
+          console.log(this.jsonTable);
+          this.submitFixFromQianDuan();
+        })
+        .catch(() => {
+          // alert(a)
+        });
     },
 
     downClick(e, item) {
@@ -483,13 +763,17 @@ export default {
   },
   data() {
     return {
-      showWaitingFlag:false,
-      requestWigId:'',
-      typeNum:'',
-      weightForm:{},
-      keyToFix:'',
-      valueToFix:'',
-      showKVFix:false,
+      showWaitingFlag: false,
+      requestWigId: "",
+      typeNum: "",
+      weightForm: {},
+      keyToFix: "",
+      valueToFix: "",
+
+      keyToSet: "",
+      valueToSet: "",
+      showKVFix: false,
+      showKVPreset: false,
       saveBtnShow: false,
       submitMap: new Map(),
       valueShow: true,
@@ -536,33 +820,31 @@ export default {
     font-size: 1.1rem;
     padding-left: 1rem;
   }
-      .hoverStyle:hover{
-        // margin-left: 22rem;
-        color:rgba(29, 30, 32, 0.733);
-        cursor: pointer;
-        z-index:9999;
-    }   
+  .hoverStyle:hover {
+    // margin-left: 22rem;
+    color: rgba(29, 30, 32, 0.733);
+    cursor: pointer;
+    z-index: 9999;
+  }
 }
 </style>
 
 <style lang="scss" scoped>
-      .hoverStyle:hover{
-        // margin-left: 22rem;
-        color:rgba(29, 30, 32, 0.733);
-        cursor: pointer;
-        z-index:9999;
-    }   
-.textButton{
+.hoverStyle:hover {
+  // margin-left: 22rem;
+  color: rgba(29, 30, 32, 0.733);
+  cursor: pointer;
+  z-index: 9999;
+}
+.textButton {
   margin-top: 1.5rem;
-  color:rgb(227, 229, 236);
+  color: rgb(227, 229, 236);
   font-size: 1.2rem;
-  margin-left:10rem;
+  margin-left: 10rem;
   // float:left
-  
 }
 
-
-.textButton:hover{
+.textButton:hover {
   cursor: pointer;
 }
 .hideText {
