@@ -205,11 +205,12 @@
         <div
           style="
             position: absolute;
-            left: 0rem;
+            left: 0.5rem;
             top: -2.5rem;
-            font-size: 1.2rem;
+            font-size: 1.1rem;
+
           "
-          class="hoverStyle"
+          class="hoverStyle "
           @click="backToOrgans"
         >
           选项：
@@ -220,12 +221,12 @@
             position: absolute;
             left: 18rem;
             top: -2.5rem;
-            font-size: 1.2rem;
+            font-size: 1.1rem;
           "
-          class="hoverStyle"
+          class="topTextButton hoverStyle"
           @click="backToOrgans"
         >
-          所有整档单位
+          查看与设置
         </div>
 
         <div
@@ -233,9 +234,9 @@
             position: absolute;
             left: 27rem;
             top: -2.5rem;
-            font-size: 1.2rem;
+            font-size: 1.1rem;
           "
-          class="hoverStyle"
+          class="hoverStyle topTextButton"
           @click="goDocIn"
         >
           继续录入
@@ -254,10 +255,10 @@
             position: absolute;
             left: 11rem;
             top: -2.5rem;
-            font-size: 1.2rem;
+            font-size: 1.1rem;
           "
           v-if="docType != 'personnel'"
-          class="hoverStyle"
+          class="hoverStyle topTextButton"
           @click="sortThisBatch"
         >
           排件号盒号
@@ -268,10 +269,10 @@
             position: absolute;
             left: 11rem;
             top: -2.5rem;
-            font-size: 1.2rem;
+            font-size: 1.1rem;
           "
           v-if="docType == 'personnel'"
-          class="hoverStyle"
+          class="hoverStyle topTextButton"
           @click="sortThisBatchRS"
         >
           报表排序
@@ -282,9 +283,9 @@
             position: absolute;
             left: 4rem;
             top: -2.5rem;
-            font-size: 1.2rem;
+            font-size: 1.1rem;
           "
-          class="hoverStyle"
+          class="hoverStyle topTextButton"
           @click="getExcel"
         >
           下载表格
@@ -393,7 +394,7 @@
         </div>
 
         <div v-if="docType == 'personnel'">
-          <div style="height: 1rem">
+          <div class="detailTopLine" style="">
             <div class="itemInfo">识别号</div>
 
             <div class="itemInfo">姓名</div>
@@ -763,7 +764,7 @@ export default {
       //         sessionStorage.getItem("docType") +
       //         "/sort/" +
       //         sessionStorage.getItem("batchId") +
-      //         "?pageNow=0&pageSize=10000";
+      //         "?pageNow=0&pageSize=90000";
 
       //         this.showWaitingFlag = true;
 
@@ -781,7 +782,7 @@ export default {
         sessionStorage.getItem("docType") +
         "/" +
         sessionStorage.getItem("batchId") +
-        "?pageNow=0&pageSize=100000";
+        "?pageNow=0&pageSize=900000";
       axios
         .get(this.baseurl+path, {
           headers: {
@@ -798,12 +799,19 @@ export default {
           if (resp) {
             if (resp.data.content && this.docType == "personnel") {
               let vm = this;
-              var path =
-                "/document/" +
-                sessionStorage.getItem("docType") +
-                "/sort/" +
-                sessionStorage.getItem("batchId") +
-                "?pageNow=0&pageSize=10000";
+              // var path =
+              //   "/document/" +
+              //   sessionStorage.getItem("docType") +
+              //  "/" +
+              //   sessionStorage.getItem("batchId") +
+              //   "?pageNow=0&pageSize=90000";
+
+                 var path =
+        "/document/page/" +
+        sessionStorage.getItem("docType") +
+        "/" +
+        sessionStorage.getItem("batchId") +
+        "?pageNow=0&pageSize=1000";
 
               this.getRequest(path).then((resp) => {
                 console.log("排件号人事");
@@ -837,7 +845,10 @@ export default {
     },
     goSetRule() {
       // this.$router.replace('/work/modifyOragan')
-      this.$router.push("/work/modifyOrgan");
+      // if(this.docType=='')
+      // this.$store.state.whichRuleSet=
+      // this.$store.state.whichRuleSet=sessionStorage.getItem('auth')
+      this.$router.push("/work/keyWM");
     },
 
     hideAdvSearch(){
@@ -853,7 +864,7 @@ export default {
       var searchPath =
         "/document/list/page/" +
         sessionStorage.getItem("docType") +
-        "?pageNow=0&pageSize=100000";
+        "?pageNow=0&pageSize=900000";
       // var docObj1 = {
       //   // userId:JSON.stringify(sessionStorage.getItem("userId")),
       //   // userId: sessionStorage.getItem('userId'),
@@ -932,7 +943,7 @@ export default {
         sessionStorage.getItem("docType") +
         "/sort/" +
         sessionStorage.getItem("batchId") +
-        "?pageNow=0&pageSize=10000";
+        "?pageNow=0&pageSize=90000";
       this.$confirm(
         "将对本批人事信息排序，本批工作是否已经完成录入，并且所有关键词都已经设置优先级",
         "提示",
@@ -979,7 +990,7 @@ export default {
         sessionStorage.getItem("docType") +
         "/sort/" +
         sessionStorage.getItem("batchId") +
-        "?pageNow=0&pageSize=10000";
+        "?pageNow=0&pageSize=90000";
       this.$confirm(
         "将生成件号盒号，本批工作是否已经完成录入，并且所有关键词责任者等都已经设置优先级",
         "提示",
@@ -1227,7 +1238,7 @@ this.showWaitingFlag=true
       this.$router.push("/work/docInput");
     },
     printBtn(item){
-
+ 
       if(sessionStorage.getItem("docType")=="personnel"){
               if(item.personJob==4||item.personJob==5) //personJob字段用来存是哪种文档类型
       {
@@ -1253,7 +1264,7 @@ this.showWaitingFlag=true
     var ttt=sessionStorage.getItem('rsPrint')
       window.sessionStorage.setItem('rsPrint',ttt+" ")
       }//personnel
-      else if(sessionStorage.getItem("docType")=="official"){
+      else if(sessionStorage.getItem("docType")=="official"||sessionStorage.getItem("docType")=="business"){
         window.sessionStorage.setItem('authCode',sessionStorage.getItem('authCode'))
 
         window.sessionStorage.setItem('sortYear',item.sortYear)
@@ -1265,16 +1276,28 @@ this.showWaitingFlag=true
 
       }
 
-      else if(sessionStorage.getItem("docType")=="business") {
-        var t=sessionStorage.getItem('authCode')+ "-" 
-             +'-' +item.docAbout + "-"  +this.formatFourNum1(item.docNum)
-        window.sessionStorage.setItem('danghao',t)
-      }else if(sessionStorage.getItem("docType")=="science"){
-          // alert(2)
-        var kjdh=sessionStorage.getItem('authCode')+ "-" + item.docTypeCode + "-"
-             + this.formatFiveKJ(item.boxSeq) +'-'+
-                this.formatThreeKJ(item.docNum)
-      window.sessionStorage.setItem("danghao",kjdh)
+      // else if(sessionStorage.getItem("docType")=="business") {
+      //   var t=sessionStorage.getItem('authCode')+ "-" 
+      //        +'-' +item.docAbout + "-"  +this.formatFourNum1(item.docNum)
+      //   window.sessionStorage.setItem('danghao',t)
+      // }
+      
+      else if(sessionStorage.getItem("docType")=="science"){
+        // alert(2)
+          // alert(2) 
+          var tauthcode=sessionStorage.getItem('authCode')
+              var c=tauthcode
+              // alert(tauthcode)
+    while(c.charAt(0)=='0') {
+      c=c.substring(1)
+    }
+        var kjdh=c+ "-"  
+             +  sessionStorage.getItem('docTypeCode') +'-'+
+               item.boxSeq
+    // alert(2)
+
+      window.sessionStorage.setItem("danghao1",kjdh)
+      window.sessionStorage.setItem("kjXuhao",item.docNum)
       }
 
 
@@ -1384,6 +1407,9 @@ this.showWaitingFlag=true
   },
   created() {
     // this
+    // var c="adsd"
+    // if(c.charAt(0)=='a') c=c.substring(1)
+    // alert(c)
 
     this.loadDocs();
   },
@@ -1461,6 +1487,33 @@ this.showWaitingFlag=true
     width: 6%;
     text-align: center;
     // border-right: 0.05rem solid;
+  }
+
+  .detailTopLine{
+    height: 2rem;
+    line-height: 2rem;
+    border-top:  solid rgb(56, 53, 53);
+  }
+  .topTextButton{
+             
+          
+      
+          color: #333;
+
+          // width: 30rem;
+          // height: 10rem;
+padding: 0.3rem;
+          background-color: rgb(108, 120, 153);
+          -webkit-box-shadow: 0 0 0.5rem #909399;
+          box-shadow: 0 0 0.5rem #909399;
+          border-radius: 0.5rem;
+          color:#ddd;
+          top:-2.8rem !important
+  }
+
+  .topTextButton:hover{
+          background-color: rgb(43, 50, 68);
+
   }
 }
 </style>

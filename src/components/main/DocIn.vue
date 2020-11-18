@@ -5,10 +5,85 @@
     <div class="detailBox"></div>
 
     <div
-      style="position:absolute;width:20rem;height:10rem;top:10rem;left:50%;margin-left:-10rem;line-height:10rem;
-    background-color:rgba(25,55,163,0.8);font-size:1.3rem;color:white;text-align:center;z-index:1000"
+      style="
+        position: absolute;
+        width: 20rem;
+        height: 10rem;
+        top: 10rem;
+        left: 50%;
+        margin-left: -10rem;
+        line-height: 10rem;
+        background-color: rgba(25, 55, 163, 0.8);
+        font-size: 1.3rem;
+        color: white;
+        text-align: center;
+        z-index: 1000;
+      "
       v-if="showWaitingFlag"
-    >提交中，请稍候...</div>
+    >
+      提交中，请稍候...
+    </div>
+    <!-- 录入提示 -->
+    <div
+      typeInTipBox
+      v-if="tipShowFlag"
+      style="
+        position: absolute;
+        top: 30vh;
+        left: 40rem;
+
+        z-index: 122;
+        padding-top: 1rem;
+        color: #333;
+        font-size: 1.5rem;
+        width: 20rem;
+
+        background-color: rgb(209, 218, 243);
+        -webkit-box-shadow: 0 0 0.5rem #909399;
+        box-shadow: 0 0 0.5rem #909399;
+        border-radius: 1rem;
+      "
+    >
+      <div
+        style="font-size: 1rem; height: 2rem; width: 100%; text-align: center"
+      >
+        智能匹配:
+      </div>
+      <!-- <div style="font-size:1rem;text-align:center;width:100%;line-height:2rem">
+            关键词 : 问题/机构/项目
+          </div> -->
+      <div
+        v-for="(item, index) in matchedKV"
+        :key="index"
+        class="matchedKVClass"
+      >
+        <div
+          @click="selectThisTip($e, item)"
+          style="
+            font-size: 1rem;
+            text-align: center;
+            width: 80%;
+            margin-left: 10%;
+            line-height: 2rem;
+          "
+          class="matchedItem"
+        >
+          {{ item[0] }}:{{ item[1] }}
+        </div>
+      </div>
+      <div
+        style="
+          height: 2rem;
+          text-align: right;
+          font-size: 0.8rem;
+          line-height: 2rem;
+          cursor: pointer;
+        "
+        @click="closeTip"
+      >
+        关闭&nbsp;
+      </div>
+    </div>
 
     <div class="keyWordSelect" v-if="false">
       <div class="keywords">农村</div>
@@ -20,18 +95,27 @@
       <div class="keyWordsTimer">3秒后消失</div>
     </div>
 
-    <el-form v-if="!isRS" class="docInForm" ref="docForm" :model="docForm" label-width="10rem">
+    <el-form
+      v-if="!isRS"
+      class="docInForm"
+      ref="docForm"
+      :model="docForm"
+      label-width="10rem"
+    >
       <!-- <div class="docTypeTitle">sessionStorage批次</div> -->
-      <div class="docSequenceTip">本份文件唯一序列号：{{this.docForm.docSequence}}</div>
+      <div class="docSequenceTip">
+        该批次文件唯一序列号：{{ this.docForm.docSequence }}
+      </div>
 
       <el-checkbox
-        style="position:absolute;right:1rem;top:1rem;"
-        v-if="true"
+        style="position: absolute; right: 1rem; top: 1rem"
+        v-if="false"
         @change="inputChange"
         false-label="0"
         true-label="1"
         :checked="false"
-      >开启智能录入</el-checkbox>
+        >对应规则存入对照表</el-checkbox
+      >
 
       <el-form-item class="textArea" prop="batchName" label="文件标题：">
         <el-input
@@ -171,7 +255,7 @@
         <el-col :span="12">
           <el-form-item prop="batchName" label="有无文号:">
             <el-checkbox
-              style="position:absolute;left:2rem;top:0.5rem;"
+              style="position: absolute; left: 2rem; top: 0.5rem"
               v-if="true"
               @change="docDescChange"
               false-label="0"
@@ -182,11 +266,15 @@
         </el-col>
 
         <el-col :span="12">
-          <el-form-item prop="batchName" v-if="docForm.docDescNum==1" label="文号">
+          <el-form-item
+            prop="batchName"
+            v-if="docForm.docDescNum == 1"
+            label="文号"
+          >
             <el-input
               size="normal"
               type="text"
-              v-model="docForm.docDesc "
+              v-model="docForm.docDesc"
               auto-complete="off"
               placeholder="文号"
             ></el-input>
@@ -198,7 +286,12 @@
         <el-col :span="12">
           <el-form-item prop="batchName" label="文件期限(年)：">
             <el-select v-model="docForm.deadline" placeholder="选择文件期限">
-              <el-option v-for="item in docTimeDues" :key="item" :label="item" :value="item"></el-option>
+              <el-option
+                v-for="item in docTimeDues"
+                :key="item"
+                :label="item"
+                :value="item"
+              ></el-option>
             </el-select>
           </el-form-item>
         </el-col>
@@ -233,50 +326,64 @@
           type="warning"
           v-if="fixDocFlag"
           size="big"
-          style="margin-left:40%"
+          style="margin-left: 40%"
           @click="fixDoc"
-        >修改档案</el-button>
+          >修改档案</el-button
+        >
         <el-button
           type="success"
           v-if="!fixDocFlag"
           size="big"
-          style="margin-left:30%"
+          style="margin-left: 30%"
           @click="addDoc"
-        >添加档案</el-button>
+          >添加档案</el-button
+        >
 
         <el-button
           type="primary"
           size="big"
-          style="margin-left:10%"
+          style="margin-left: 10%"
           @click="resetDocIn"
           v-if="!fixDocFlag"
-        >清空列表</el-button>
+          >清空列表</el-button
+        >
         <el-button
           type="primary"
           size="big"
-          style="margin-left:10%"
+          style="margin-left: 10%"
           @click="goDetail"
           v-if="!fixDocFlag"
-        >结束录入</el-button>
+          >结束录入</el-button
+        >
 
         <el-button
           type="primary"
           size="big"
-          style="margin-left:10%"
+          style="margin-left: 10%"
           @click="cancelFix"
           v-if="fixDocFlag"
-        >取消修改</el-button>
+          >取消修改</el-button
+        >
       </div>
     </el-form>
 
-    <el-form v-if="isRS" class="docInForm" ref="docForm" :model="docFormRS" label-width="10rem">
+    <el-form
+      v-if="isRS"
+      class="docInForm"
+      ref="docForm"
+      :model="docFormRS"
+      label-width="10rem"
+    >
       <!-- <div class="docTypeTitle">sessionStorage批次</div> -->
-      <div class="docSequenceTip">本份文件唯一序列号：{{this.docFormRS.docSequence}}</div>
+      <div class="docSequenceTip">
+        本份文件唯一序列号：{{ this.docFormRS.docSequence }}
+      </div>
 
       <el-row :gutter="24">
         <el-col :span="24">
           <el-form-item prop="batchName" label="材料标题：">
             <el-input
+              @blur="titleComplete"
               size="normal"
               type="text"
               v-model="docFormRS.docTitle"
@@ -345,7 +452,10 @@
 
         <el-col :span="12">
           <el-form-item prop="z" label="子材料类别：">
-            <el-select v-model="docFormRS.docAboutSub" placeholder="选择子材料类别">
+            <el-select
+              v-model="docFormRS.docAboutSub"
+              placeholder="选择子材料类别"
+            >
               <el-option
                 v-for="item in RSSubTypes"
                 :key="item.value"
@@ -370,18 +480,18 @@
           </el-form-item>
         </el-col>
       </el-row>
-   <el-row>
-  <el-form-item class="textArea" prop="batchName" label="备注信息：">
-        <el-input
-          type="textarea"
-          :rows="2"
-          class="textAreaInput"
-          v-model="docFormRS.remark"
-          auto-complete="off"
-          placeholder="输入备注"
-        ></el-input>
-      </el-form-item>
-         </el-row>
+      <el-row>
+        <el-form-item class="textArea" prop="batchName" label="备注信息：">
+          <el-input
+            type="textarea"
+            :rows="2"
+            class="textAreaInput"
+            v-model="docFormRS.remark"
+            auto-complete="off"
+            placeholder="输入备注"
+          ></el-input>
+        </el-form-item>
+      </el-row>
       <!-- <el-form-item class="textArea" prop="batchName" label="备注信息：">
         <el-input
           type="textarea"
@@ -398,40 +508,45 @@
           type="warning"
           v-if="fixDocFlag"
           size="big"
-          style="margin-left:30%"
+          style="margin-left: 30%"
           @click="fixDocRS"
-        >修改档案</el-button>
+          >修改档案</el-button
+        >
         <el-button
           type="success"
           v-if="!fixDocFlag"
           size="big"
-          style="margin-left:20%"
+          style="margin-left: 20%"
           @click="addDocRS"
-        >添加档案</el-button>
+          >添加档案</el-button
+        >
 
         <el-button
           type="primary"
           size="big"
-          style="margin-left:20%"
+          style="margin-left: 20%"
           @click="resetDocInRS"
           v-if="!fixDocFlag"
-        >清空列表</el-button>
+          >清空列表</el-button
+        >
 
         <el-button
           type="warning"
           v-if="!fixDocFlag"
           size="big"
-          style="margin-left:20%"
+          style="margin-left: 20%"
           @click="goDetail"
-        >结束录入</el-button>
+          >结束录入</el-button
+        >
 
         <el-button
           type="primary"
           size="big"
-          style="margin-left:10%"
+          style="margin-left: 10%"
           @click="cancelFixRS"
           v-if="fixDocFlag"
-        >取消修改</el-button>
+          >取消修改</el-button
+        >
       </div>
     </el-form>
   </div>
@@ -440,6 +555,7 @@
 <script>
 import Utils from "../../utils/doc.js";
 import Left from "../common/History";
+import axios from "axios";
 
 export default {
   name: "docInput",
@@ -526,21 +642,26 @@ export default {
     isRS() {
       return sessionStorage.getItem("docType") == "personnel";
     },
-    isKJ(){
-       return sessionStorage.getItem("docType") == "science";
-    }
+    isKJ() {
+      return sessionStorage.getItem("docType") == "science";
+    },
   },
 
   data() {
     return {
-            searchForm:{
-        docSequence:'',
-        docTitle:'',
-        docDesc:'',
-        docDate:'',
-        dutyAuthor:'',
-        docType:'',
-        personName:'',
+      rsDocTypeMain:"",
+      matchedKV: [],
+      tipShowFlag: false,
+      keywordTemp: "",
+      searchForm: {
+        batchId: sessionStorage.getItem("batchId"),
+        docSequence: "",
+        docTitle: "",
+        docDesc: "",
+        docDate: "",
+        dutyAuthor: "",
+        docType: "",
+        personName: "",
       },
       docFormRS: {
         id: "",
@@ -811,27 +932,104 @@ export default {
     };
   },
   methods: {
-    selectDateChange(id){
-      var docDateYear=this.docForm.docDate.substring(0,4)
-      console.log(docDateYear)
-      console.log(this.docForm.sortYear)
-      
-      if(docDateYear>this.docForm.sortYear){
-  this.$confirm(
-"发文日期不能迟于整档年度",
-              "提示",
-              {
-                cancelButtonClass: "btn-custom-cancel",
-                confirmButtonText: "好的",
-                cancelButtonText: "忽略此条规则",
-                type: "warning",
-              }
-            ).then(()=>{
-                            this.docForm.docDate=20190808+""
-              this.docForm.sortYear=2019+""
-            }
-            )
-      
+    getRsText(code) {
+      if (code == 1 || code == "1") {
+        this.rsDocTypeMain="履历材料"
+        
+        return "无";}
+      if (code == 2 || code == "2"){
+        this.rsDocTypeMain="自传材料"
+
+         return "无";
+      }
+      if (code == 3 || code == "3") {
+        this.rsDocTypeMain="鉴定、考核、考察材料"
+
+        return "无";
+      }
+      if (code == 4 || code == "4") {
+        this.rsDocTypeMain="学历学位、评聘专业职务材料"
+
+        return "学历学位材料";
+      }
+      if (code == 5 || code == "5") {
+        this.rsDocTypeMain="学历学位、评聘专业职务材料"
+
+        return "职称材料"; //return 子材料
+      } 
+      if (code == 6 || code == "6") 
+       {
+        this.rsDocTypeMain="政治历史情况审查材料"
+
+        return "无";
+      }
+      if (code == 7 || code == "7") {
+        this.rsDocTypeMain="入党入团材料"
+        return "无";
+
+      }
+      if (code == 8 || code == "8"){
+        this.rsDocTypeMain="奖励材料"
+        return "无";
+
+      }
+      if (code == 9 || code == "9"){
+                this.rsDocTypeMain="处分材料"
+        return "无";
+      }  
+      if (code == 10 || code == "10"){
+        this.rsDocTypeMain="工资、任免、退休材料"
+
+        return "工资情况材料"; //return 子材料
+      }   
+      if (code == 11 || code == "11") {
+        this.rsDocTypeMain="工资、任免、退休材料"
+
+        return "任免材料"; //return 子材料
+      }  
+      if (code == 12 || code == "12")  {
+        this.rsDocTypeMain="工资、任免、退休材料"
+
+        return "出国、出境材料"; //return 子材料
+      } 
+      if (code == 13 || code == "13") {
+        this.rsDocTypeMain="工资、任免、退休材料"
+
+        return "各党派、团体代表登记表"; //return 子材料
+      }  
+      if (code == 14 || code == "14"){
+        this.rsDocTypeMain="工资、任免、退休材料"
+
+        return "聘用、录用、转干、转业材料"; //return 子材料
+      }   
+      if (code == 15 || code == "15"){
+        this.rsDocTypeMain="工资、任免、退休材料"
+
+        return "待遇、退（离）休、退职材料"; //return 子材料
+      }    
+      if (code == 16 || code == "16") {
+                this.rsDocTypeMain="其他可供参考的材料"
+        return "无";
+      }
+    },
+    closeTip() {
+      this.tipShowFlag = false;
+    },
+    selectDateChange(id) {
+      var docDateYear = this.docForm.docDate.substring(0, 4);
+      console.log(docDateYear);
+      console.log(this.docForm.sortYear);
+
+      if (docDateYear > this.docForm.sortYear) {
+        this.$confirm("发文日期不能迟于整档年度", "提示", {
+          cancelButtonClass: "btn-custom-cancel",
+          confirmButtonText: "好的",
+          cancelButtonText: "忽略此条规则",
+          type: "warning",
+        }).then(() => {
+          this.docForm.docDate = 20190808 + "";
+          this.docForm.sortYear = 2019 + "";
+        });
       }
     },
     resetDocInRS() {
@@ -882,9 +1080,11 @@ export default {
         jobCode = 2;
       } else if (this.docFormRS.docAbout == "鉴定、考核、考察材料") {
         jobCode = 3;
-      } else if (this.docFormRS.docAbout == "学历学位、评聘专业职务材料") {
-        jobCode = 4;
-      } else if (this.docFormRS.docAbout == "政治历史情况审查材料") {
+      }
+      // else if (this.docFormRS.docAbout == "学历学位、评聘专业职务材料") {
+      //   jobCode = 4;
+      // }
+      else if (this.docFormRS.docAbout == "政治历史情况审查材料") {
         jobCode = 6;
       } else if (this.docFormRS.docAbout == "入党入团材料") {
         jobCode = 7;
@@ -936,12 +1136,12 @@ export default {
         docAboutSub: this.docFormRS.docAboutSub,
         personName: this.docFormRS.personName,
         personJob: jobCode,
-        remark:this.docFormRS.remark,
+        remark: this.docFormRS.remark,
         docTypeCode: sessionStorage.getItem("docTypeCode"),
       };
 
       if (this.checkAddRS()) {
-        this.showWaitingFlag=true
+         var keywordIssueJson
         this.showWaitingFlag = true;
         var pathToDoc =
           "/document/" +
@@ -964,11 +1164,15 @@ export default {
               var table;
               if (this.weightForm.perKeywordWig) {
                 //已有权重表
-                this.getRequest("/weight/sort/" + this.weightForm.perKeywordWig)
+                this.getRequest("/weight/keywordSort/" + this.weightForm.perKeywordWig)
                   .then((resp) => {
                     //查询对应的权重表得到json
                     table = resp.data.tables;
                     var key1 = this.docFormRS.keyword;
+                    keywordIssueJson=resp.keywordIssue
+                    if(keywordIssueJson==null){keywordIssueJson={}}  //fixRs
+                      keywordIssueJson[key1]=jobCode
+
                     // var json1 = table;
                     if (table[key1] == null) {
                       table[key1] = "0";
@@ -979,6 +1183,7 @@ export default {
                       authId: sessionStorage.getItem("authId"),
                       type: 41,
                       tables: table,
+                      keywordIssue:keywordIssueJson, //
                     };
 
                     this.putRequest(
@@ -991,31 +1196,31 @@ export default {
                     });
                   });
               } //if  已有权重表
-              else {
-                var key1 = this.docFormRS.keyword;
-                var json1 = {};
-                json1[key1] = "0";
+              // else {
+              //   var key1 = this.docFormRS.keyword;
+              //   var json1 = {};
+              //   json1[key1] = "0";
 
-                var keyWordObj = {
-                  authId: sessionStorage.getItem("authId"),
-                  type: 41,
-                  tables: json1,
-                };
+              //   var keyWordObj = {
+              //     authId: sessionStorage.getItem("authId"),
+              //     type: 41,
+              //     tables: json1,
+              //   };
 
-                this.postRequest(
-                  //注意防止重复提交
-                  "/weight",
-                  JSON.stringify(keyWordObj)
-                ).then((resp) => {
-                  console.log("第一次提交人事关键词权重表");
-                  console.log(resp);
-                  // console.log(this.weightForm=resp)
-                  this.weightForm = resp.data;
-                  if (resp.code == 0) {
-                    this.showWaitingFlag = false;
-                  }
-                });
-              }
+              //   this.postRequest(
+              //     //注意防止重复提交
+              //     "/weight",
+              //     JSON.stringify(keyWordObj)
+              //   ).then((resp) => {
+              //     console.log("第一次提交人事关键词权重表");
+              //     console.log(resp);
+              //     // console.log(this.weightForm=resp)
+              //     this.weightForm = resp.data;
+              //     if (resp.code == 0) {
+              //       this.showWaitingFlag = false;
+              //     }
+              //   });
+              // }
 
               var length = this.$store.state.alreadyDocs.length || 0;
               var _arr = this.$store.state.alreadyDocs;
@@ -1033,20 +1238,24 @@ export default {
             // this.docFormRS.id = resp.data.id;  //修改文件用
           })
           .then((r) => {
-             
+            this.getRequest("/work/" + sessionStorage.getItem("batchId")) //
+              .then((resp) => {
+                // this.
+              });
+
             this.docFormRS.docTitle = "";
-            this.docFormRS.docPage="";
-            this.docFormRS.docSequence = this.genId(6, 62);
+            this.docFormRS.docPage = "";
+            this.genId(6, 62);
             this.docFormRS.docDate.replace("-", "");
 
-            this.showWaitingFlag=false
+            this.showWaitingFlag = false;
 
             // console.log(this.docFormRS);
             // this.docForm.docTitle = "";
             // this.docForm.docPage = "";
           });
       } else {
-        this.showWaitingFlag=false
+        this.showWaitingFlag = false;
         this.$message({
           type: "error",
           message: "填写完整",
@@ -1139,7 +1348,7 @@ export default {
           .then(() => {
             this.keyWordEdit = false;
             this.docForm.keyword = "";
-            this.docForm.docSequence = this.genId(6, 62);
+            this.genId(6, 62);
             this.docForm.docDate.replace("-", "");
             this.docForm.docTitle = "";
             this.docForm.docPage = "";
@@ -1168,7 +1377,7 @@ export default {
       this.keyWordEdit = false;
       this.docFormRS.keyword = "";
       this.docFormRS.personName = "输入姓名";
-      this.docFormRS.docSequence = this.genId(6, 62);
+      this.genId(6, 62);
       this.docFormRS.docDate.replace("-", "");
       // console.log(this.docForm);
       this.docFormRS.docTitle = "";
@@ -1181,7 +1390,7 @@ export default {
       this.keyWordEdit = false;
       this.docForm.keyword = "";
       this.docForm.docDescNum = "0";
-      this.docForm.docSequence = this.genId(6, 62);
+      this.genId(6, 62);
       this.docForm.docDate.replace("-", "");
       console.log(this.docForm);
       this.docForm.docTitle = "";
@@ -1209,17 +1418,19 @@ export default {
           name: "待遇、退（离）休、退职材料",
           value: "待遇、退（离）休、退职材料",
      */
-    optSubmitRS(){
-        var jobCode;
+    optSubmitRS() {
+      var jobCode;
       if (this.docFormRS.docAbout == "履历材料") {
         jobCode = 1;
       } else if (this.docFormRS.docAbout == "自传材料") {
         jobCode = 2;
       } else if (this.docFormRS.docAbout == "鉴定、考核、考察材料") {
         jobCode = 3;
-      } else if (this.docFormRS.docAbout == "学历学位、评聘专业职务材料") {
-        jobCode = 4;
-      } else if (this.docFormRS.docAbout == "政治历史情况审查材料") {
+      } 
+      // else if (this.docFormRS.docAbout == "学历学位、评聘专业职务材料") {
+      //   jobCode = 4;
+      // } 
+      else if (this.docFormRS.docAbout == "政治历史情况审查材料") {
         jobCode = 6;
       } else if (this.docFormRS.docAbout == "入党入团材料") {
         jobCode = 7;
@@ -1275,166 +1486,149 @@ export default {
         personJob: jobCode,
         // docDesc:this.docForm.docDesc,
         // docPage: this.docForm.docPage,
-        remark:this.docFormRS.remark,
-
-        // docDescAuthor: this.docForm.docDescAuthor,
-        // docDescNum: this.docForm.docDescNum,
-        // docLevel: this.docForm.docLevel,
-        // docSecret: this.docForm.docSecret,
+        remark: this.docFormRS.remark,
         docTypeCode: sessionStorage.getItem("docTypeCode"),
         // dutyAuthor: this.docForm.dutyAuthor,
         // sortYear: this.docForm.sortYear,
       };
+       var keywordIssueJson
 
       var pathToDoc = "/document/" + sessionStorage.getItem("docType");
-        this.postRequest(
-          //注意防止重复提交
-          pathToDoc,
-          JSON.stringify(docObj)
-        )
-          .then((resp) => {
-            console.log("tijiao人事文件");
+      this.postRequest(
+        //注意防止重复提交
+        pathToDoc,
+        JSON.stringify(docObj)
+      )
+        .then((resp) => {
+          console.log("tijiao人事文件");
 
-            console.log(docObj);
-            console.log("tijiao人事文件的结果");
-            console.log(resp);
-            this.docFormRS.id = resp.data.id; //修改文件用
-          })
-          .then((r) => {
-            var table;
-            if (this.weightForm.perKeywordWig) {
-              //已有权重表
-              this.getRequest("/weight/sort/" + this.weightForm.perKeywordWig)
-                .then((resp) => {
-                  //查询对应的权重表得到json
-                  table = resp.data.tables;
-                  var key1 = this.docFormRS.keyword;
-                  // var json1 = table;
-                  if (table[key1] == null) {
-                    table[key1] = "0";
-                  }
-                })
-                .then((r) => {
-                  var docAboutObj = {
-                    authId: sessionStorage.getItem("authId"),
-                    type: 41,
-                    tables: table,
-                  };
+          console.log(docObj);
+          console.log("tijiao人事文件的结果");
+          console.log(resp);
+          this.docFormRS.id = resp.data.id; //修改文件用
+        })
+        .then((r) => {
+          var table;
+          if (this.weightForm.perKeywordWig) {
+            //已有权重表
+            this.getRequest("/weight/sort/" + this.weightForm.perKeywordWig)
+              .then((resp) => {
+                //查询对应的权重表得到json
+                table = resp.data.tables;
+                var key1 = this.docFormRS.keyword;
+                // var json1 = table;
+                                   keywordIssueJson=resp.keywordIssue
+                    if(keywordIssueJson==null){keywordIssueJson={}}
+                      keywordIssueJson[key1]=jobCode  //optRs
 
-                  this.putRequest(
-                    "/weight/" + this.weightForm.perKeywordWig,
-                    docAboutObj
-                  ).then((resp) => {
-                    console.log("更新人事关键词权重表");
-                    console.log(resp);
-                    this.showWaitingFlag = false;
-                  });
-                });
-            } //if  已有权重表
-            else {
-              var key1 = this.docFormRS.keyword;
-              var json1 = {};
-              json1[key1] = "0";
-
-              var keyWordObj = {
-                authId: sessionStorage.getItem("authId"),
-                type: 41,
-                tables: json1,
-              };
-
-              this.postRequest(
-                //注意防止重复提交
-                "/weight",
-                JSON.stringify(keyWordObj)
-              ).then((resp) => {
-                console.log("第一次提交人事关键词权重表");
-                console.log(resp);
-                // console.log(this.weightForm=resp)
-                this.weightForm = resp.data;
-                if (resp.code == 0) {
-                  this.showWaitingFlag = false;
+                if (table[key1] == null) {
+                  table[key1] = "0";
                 }
+
+              })
+              .then((r) => {
+                var docAboutObj = {
+                  authId: sessionStorage.getItem("authId"),
+                  type: 41,
+                  tables: table,
+                  keywordIssue:keywordIssueJson,
+                };
+
+                this.putRequest(
+                  "/weight/" + this.weightForm.perKeywordWig,
+                  docAboutObj
+                ).then((resp) => {
+                  console.log("更新人事关键词权重表");
+                  console.log(resp);
+                  this.showWaitingFlag = false;
+                });
               });
-            }
-            this.$store.state.alreadyDocs.unshift(
-              Object.assign({}, this.docFormRS)
-            );
+          } //if  已有权重表
+          // else {
+          //   var key1 = this.docFormRS.keyword;
+          //   var json1 = {};
+          //   json1[key1] = "0";
 
-            this.docFormRS.docTitle = "";
-            this.docFormRS.docPage = "";
-            this.docFormRS.docSequence = this.genId(6, 62);
-            this.docFormRS.docDate.replace("-", "");
+          //   var keyWordObj = {
+          //     authId: sessionStorage.getItem("authId"),
+          //     type: 41,
+          //     tables: json1,
+          //   };
 
-            console.log(this.docForm);
-            // this.docForm.docTitle = "";
-            // this.docForm.docPage = "";
-          });
+          //   this.postRequest(
+          //     //注意防止重复提交
+          //     "/weight",
+          //     JSON.stringify(keyWordObj)
+          //   ).then((resp) => {
+          //     console.log("第一次提交人事关键词权重表");
+          //     console.log(resp);
+          //     // console.log(this.weightForm=resp)
+          //     this.weightForm = resp.data;
+          //     if (resp.code == 0) {
+          //       this.showWaitingFlag = false;
+          //     }
+          //   });
+          // }
+          this.$store.state.alreadyDocs.unshift(
+            Object.assign({}, this.docFormRS)
+          );
 
+          this.docFormRS.docTitle = "";
+          this.docFormRS.docPage = "";
+          this.genId(6, 62);
+          this.docFormRS.docDate.replace("-", "");
+
+        });
     },
 
     addDocRS() {
- 
       if (this.checkAddRS()) {
         this.showWaitingFlag = true;
 
-              var searchPath =
-        "/document/list/page/" +
-        sessionStorage.getItem("docType") +
-        "?pageNow=0&pageSize=100000";
+        var searchPath =
+          "/document/list/page/" +
+          sessionStorage.getItem("docType") +
+          "?pageNow=0&pageSize=900000";
 
- this.searchForm.docType=sessionStorage.getItem('docType')
-        this.searchForm.personName=this.docFormRS.personName;
-        this.searchForm.docTitle=this.docFormRS.docTitle
+        this.searchForm.docType = sessionStorage.getItem("docType");
+        this.searchForm.personName = this.docFormRS.personName;
+        this.searchForm.docTitle = this.docFormRS.docTitle;
         // this.searchForm.docSequence=this.docFormRS.docSequence
-        this.searchForm.docDate=this.docFormRS.docDate
-        this.searchForm.dutyAuthor=''
-        this.searchForm.docDesc=''
+        this.searchForm.docDate = this.docFormRS.docDate;
+        this.searchForm.dutyAuthor = "";
+        this.searchForm.docDesc = "";
 
-   var searchObj=this.searchForm
-      for(var key in searchObj){
-        if(searchObj[key]==''){
-          delete searchObj[key];
+        var searchObj = this.searchForm;
+        for (var key in searchObj) {
+          if (searchObj[key] == "") {
+            delete searchObj[key];
+          }
         }
-      }
 
-      this.postRequest(
-        //注意防止重复提交
-        searchPath,
-        JSON.stringify(searchObj)
-      ).then((resp) => {
-      if(resp.data.content.length!=0){
-                    this.$confirm(
-             "请检查是否录入重复",
-              "提示",
-              {
-                cancelButtonClass: "btn-custom-cancel",
-                confirmButtonText: "忽略，录入此条", //then必须在前面 否则点击空白都执行
-                cancelButtonText: "好的，暂不录入",
-                type: "warning",
-              }
-            )
-             .then(()=>{ //空白地方 点没重复，提交
-                 this.optSubmitRS()
-  
-
-              }) .catch(() => {
-                 
-                this.showWaitingFlag=false
-                return  //点击好的，然后不提交
+        this.postRequest(
+          //注意防止重复提交
+          searchPath,
+          JSON.stringify(searchObj)
+        ).then((resp) => {
+          if (resp.data.content.length != 0) {
+            this.$confirm("请检查是否录入重复", "提示", {
+              cancelButtonClass: "btn-custom-cancel",
+              confirmButtonText: "忽略，录入此条", //then必须在前面 否则点击空白都执行
+              cancelButtonText: "好的，暂不录入",
+              type: "warning",
+            })
+              .then(() => {
+                //空白地方 点没重复，提交
+                this.optSubmitRS();
               })
-      }else{
-        this.optSubmitRS()
-      }
-      
-      
-     
-      
-      
-      })
-        
-
-
-       
+              .catch(() => {
+                this.showWaitingFlag = false;
+                return; //点击好的，然后不提交
+              });
+          } else {
+            this.optSubmitRS();
+          }
+        });
       } else {
         this.$message({
           type: "error",
@@ -1443,6 +1637,7 @@ export default {
       }
     },
     addDoc() {
+      this.tipShowFlag = false;
       // var
       // this.optThreeWeightTable()
       // return
@@ -1479,154 +1674,179 @@ export default {
           sortYear: this.docForm.sortYear,
         };
 
-      
-          
-    
-      var searchPath =
-        "/document/list/page/" +
-        sessionStorage.getItem("docType") +
-        "?pageNow=0&pageSize=100000";
+        var searchPath =
+          "/document/list/page/" +
+          sessionStorage.getItem("docType") +
+          "?pageNow=0&pageSize=900000";
 
-      this.searchForm.docType=sessionStorage.getItem('docType')
+        this.searchForm.docType = sessionStorage.getItem("docType");
 
-      {
-                this.searchForm.docTitle=this.docForm.docTitle
-        // this.searchForm.docSequence=this.docForm.docSequence
-        this.searchForm.docDesc=this.docForm.docDesc
-        this.searchForm.docDate=this.docForm.docDate
-        this.searchForm.dutyAuthor=this.docForm.dutyAuthor
-        this.searchForm.personName=''
-
-      }
-      var searchObj=this.searchForm
-      for(var key in searchObj){
-        if(searchObj[key]==''){
-          delete searchObj[key];
+        {
+          this.searchForm.docTitle = this.docForm.docTitle;
+          // this.searchForm.docSequence=this.docForm.docSequence
+          this.searchForm.docDesc = this.docForm.docDesc;
+          this.searchForm.docDate = this.docForm.docDate;
+          this.searchForm.dutyAuthor = this.docForm.dutyAuthor;
+          this.searchForm.personName = "";
         }
-      }
+        var searchObj = this.searchForm;
+        for (var key in searchObj) {
+          if (searchObj[key] == "") {
+            delete searchObj[key];
+          }
+        }
 
-      this.postRequest(
-        //注意防止重复提交
-        searchPath,
-        JSON.stringify(searchObj)
-      ).then((resp) => {
-        console.log('添加前检查是否重复')
-        console.log(resp);
-      
-       if(resp.data.content.length!=0){
-                             this.$confirm(
-             "请检查是否录入重复",
-              "提示",
-              {
-                cancelButtonClass: "btn-custom-cancel",
-                confirmButtonText: "没有重复，录入此条",
-                cancelButtonText: "好的，暂不录入",
-                type: "warning",
-              }
-            )
+        this.postRequest(
+          //注意防止重复提交
+          searchPath,
+          JSON.stringify(searchObj)
+        ).then((resp) => {
+          console.log("添加前检查是否重复");
+          console.log(resp);
+
+          if (resp.data.content.length != 0) {
+            this.$confirm("请检查是否录入重复", "提示", {
+              cancelButtonClass: "btn-custom-cancel",
+              confirmButtonText: "没有重复，录入此条",
+              cancelButtonText: "好的，暂不录入",
+              type: "warning",
+            })
               .then(() => {
-                       var pathToDoc = "/document/" + sessionStorage.getItem("docType");
-        this.postRequest(
-          //注意防止重复提交
-          pathToDoc,
-          JSON.stringify(docObj)
-        )
-          .then((resp) => {
-            console.log("tijiao文件");
+                var pathToDoc =
+                  "/document/" + sessionStorage.getItem("docType");
+                this.postRequest(
+                  //注意防止重复提交
+                  pathToDoc,
+                  JSON.stringify(docObj)
+                )
+                  .then((resp) => {
+                    console.log("tijiao文件");
 
-            console.log(docObj);
-            console.log("tijiao文件的结果");
-            console.log(resp);
-            this.docForm.id = resp.data.id; //赋给alreadydocs 修改文件用
-            // alert( this.docForm.id)
-          })
-          .then((r) => {
-            // if(r)
-            //保证提交完返回id后再执行后续操作
+                    console.log(docObj);
+                    console.log("tijiao文件的结果");
+                    console.log(resp);
+                    this.docForm.id = resp.data.id; //赋给alreadydocs 修改文件用
+                    // alert( this.docForm.id)
+                  })
+                  .then((r) => {
+                    // if(r)
+                    //保证提交完返回id后再执行后续操作
+                    this.keywordTemp = this.docForm.keyword;
+                    this.optThreeWeightTable();
 
-            this.optThreeWeightTable();
-
-            this.$store.state.alreadyDocs.unshift(
-              Object.assign({}, this.docForm)
-            );
-            this.keyWordEdit = false;
-            this.docForm.keyword = "";
-            this.docForm.docDescNum = "0";
-            this.docForm.docSequence = this.genId(6, 62);
-            this.docForm.docDate.replace("-", "");
-            console.log(this.docForm);
-            this.docForm.docTitle = "";
-            this.docForm.docPage = "";
-          });
-
-              }) .catch(() => {
-                this.showWaitingFlag=false
-                return  //点击好的，然后不提交
+                    this.$store.state.alreadyDocs.unshift(
+                      Object.assign({}, this.docForm)
+                    );
+                    this.keyWordEdit = false;
+                    this.docForm.keyword = "";
+                    this.docForm.docDescNum = "0";
+                    this.genId(6, 62);
+                    this.docForm.docDate.replace("-", "");
+                    console.log(this.docForm);
+                    this.docForm.docTitle = "";
+                    this.docForm.docPage = "";
+                  });
+              })
+              .catch(() => {
+                this.showWaitingFlag = false;
+                return; //点击好的，然后不提交
               });
+          } // 重复，不提交 或 仍要提交
+          else {
+            //不重复
 
+            var pathToDoc = "/document/" + sessionStorage.getItem("docType");
+            this.postRequest(
+              //注意防止重复提交
+              pathToDoc,
+              JSON.stringify(docObj)
+            )
+              .then((resp) => {
+                console.log("tijiao文件");
 
-       }  //不重复则提交
-       else{
-         
-                       var pathToDoc = "/document/" + sessionStorage.getItem("docType");
-        this.postRequest(
-          //注意防止重复提交
-          pathToDoc,
-          JSON.stringify(docObj)
-        )
-          .then((resp) => {
-            console.log("tijiao文件");
+                console.log(docObj);
+                console.log("tijiao文件的结果");
+                console.log(resp);
+                this.docForm.id = resp.data.id; //赋给alreadydocs 修改文件用
+                // alert( this.docForm.id)
+              })
+              .then((r) => {
+                // if(r)
+                //保证提交完返回id后再执行后续操作
+                this.keywordTemp = this.docForm.keyword;
+                this.optThreeWeightTable();
 
-            console.log(docObj);
-            console.log("tijiao文件的结果");
-            console.log(resp);
-            this.docForm.id = resp.data.id; //赋给alreadydocs 修改文件用
-            // alert( this.docForm.id)
-          })
-          .then((r) => {
-            // if(r)
-            //保证提交完返回id后再执行后续操作
+                this.getRequest("/work/" + sessionStorage.getItem("batchId")) //
+                  .then((resp) => {});
 
-            this.optThreeWeightTable();
-
-            this.$store.state.alreadyDocs.unshift(
-              Object.assign({}, this.docForm)
-            );
-            this.keyWordEdit = false;
-            this.docForm.keyword = "";
-            this.docForm.docDescNum = "0";
-            this.docForm.docSequence = this.genId(6, 62);
-            this.docForm.docDate.replace("-", "");
-            console.log(this.docForm);
-            this.docForm.docTitle = "";
-            this.docForm.docPage = "";
-          });
-          
-       }
-
-
-          
-        });  
-        }
-       else {
+                this.$store.state.alreadyDocs.unshift(
+                  Object.assign({}, this.docForm)
+                );
+                this.keyWordEdit = false;
+                this.docForm.keyword = "";
+                this.docForm.docDescNum = "0";
+                this.genId(6, 62);
+                this.docForm.docDate.replace("-", "");
+                console.log(this.docForm);
+                this.docForm.docTitle = "";
+                this.docForm.docPage = "";
+              });
+          }
+        });
+      } else {
         this.$message({
           type: "error",
           message: "填写完整",
         });
+      }
+    },
+    optThreeWeightTable1() {
+      var weightType1;
+      var weightType2;
+      var weightType3;
 
+      var kwTemp = this.docForm.keyword;
 
+      // if (sessionStorage.getItem("docType") == "official") {
+      // if (true) {
+      if (sessionStorage.getItem("docType") == "official") {
+        weightType1 = 11; //文书问题
+        weightType2 = 12;
+        weightType3 = 13;
+      }
+      if (sessionStorage.getItem("docType") == "science") {
+        weightType1 = 21;
+        weightType2 = 22;
+        weightType3 = 23;
+      }
 
-       }
-
- 
- 
-
-
-        
-
-    
+      if (sessionStorage.getItem("docType") == "business") {
+        weightType1 = 31;
+        weightType2 = 32;
+        weightType3 = 33;
+      }
     },
 
+    //  setTheJsonWigTable(reqId,key,value){
+    //          var table
+    //         this.getRequest("/weight/sort/" + reqId)
+    //           .then((resp) => {
+    //             // alert(0)
+    //             //查询对应的权重表得到json
+    //             table = resp.data.tables;
+    //             var key1 = key;
+    //             // var json1 = table;
+    //             if (table[key1] == null) {
+    //               table[key1] = "0";
+    //             }
+    //           })
+    //             var setObj = {
+    //               authId: sessionStorage.getItem("authId"),
+    //               type: weightType1,
+    //               tables: table,
+    //               issueKeyword:issueKeyword
+    //             };
+    //  },
     optThreeWeightTable() {
       //操作三种类型的权重表，前提是已知weightForm即单位信息，第一次则先get 不是第一次则
       var weightType1;
@@ -1656,10 +1876,12 @@ export default {
 
       if (sessionStorage.getItem("docType") == "official") {
         var table;
+        var issueKeywordArrJson;
         if (this.weightForm.docIssueWig) {
-          //已有权重表
-          this.getRequest("/weight/sort/" + this.weightForm.docIssueWig)
+          //已有权重表 1111
+          this.getRequest("/weight/" + this.weightForm.docIssueWig)
             .then((resp) => {
+              // alert(0)
               //查询对应的权重表得到json
               table = resp.data.tables;
               var key1 = this.docForm.docAbout;
@@ -1667,12 +1889,35 @@ export default {
               if (table[key1] == null) {
                 table[key1] = "0";
               }
+              issueKeywordArrJson = resp.data.issueKeyword;
+
+              console.log(resp);
+
+              if (issueKeywordArrJson[key1] == null) {
+                var arrtemp = [];
+                arrtemp.push(kwTemp);
+                issueKeywordArrJson[key1] = arrtemp;
+              } else {
+                if (issueKeywordArrJson[key1].indexOf(kwTemp) < 0) {
+                  issueKeywordArrJson[key1].push(kwTemp);
+                }
+              }
             })
+
             .then((r) => {
+              // var issueKeyword={}
+              // if(true){//假设不包含这个问题
+              //   var docAboutKeyWordArr=[]
+              //   docAboutKeyWordArr.push(kwTemp) //因为异步执行，表格已经刷新，kwTemp暂存的关键字
+              //   console.log(docAboutKeyWordArr)
+              //   issueKeyword[this.docForm.docAbout]=docAboutKeyWordArr
+              // }
+
               var docAboutObj = {
                 authId: sessionStorage.getItem("authId"),
                 type: weightType1,
                 tables: table,
+                issueKeyword: issueKeywordArrJson,
               };
 
               this.putRequest(
@@ -1688,7 +1933,9 @@ export default {
            *
            */
           var table2;
+          // this.getRequest("/weight/sort/" + this.weightForm.docAuthorWig)
           this.getRequest("/weight/sort/" + this.weightForm.docAuthorWig)
+
             .then((resp) => {
               //查询对应的权重表得到json
               table2 = resp.data.tables;
@@ -1703,6 +1950,8 @@ export default {
                 authId: sessionStorage.getItem("authId"),
                 type: weightType2,
                 tables: table2,
+                issueKeyword: {},
+                keywordIssue: {},
               };
 
               this.putRequest(
@@ -1715,14 +1964,29 @@ export default {
             });
 
           var table3;
+          var keywordIssueJson;
           this.getRequest("/weight/sort/" + this.weightForm.docKeywordWig)
             .then((resp) => {
               //查询对应的权重表得到json
               table3 = resp.data.tables;
-              var key3 = kwTemp;
+              keywordIssueJson = resp.data.keywordIssue;
+              var key3 = kwTemp; //docForm里的会被刷新
               // var json1 = table;
               if (table3[key3] == null) {
                 table3[key3] = "0";
+              }
+              if (keywordIssueJson[key3] == null) {
+                keywordIssueJson[key3] = this.docForm.docAbout;
+              } else {
+                if (
+                  keywordIssueJson[key3]
+                    .split("|")
+                    .indexOf(this.docForm.docAbout) < 0
+                ) {
+                  //
+                  keywordIssueJson[key3] =
+                    keywordIssueJson[key3] + "|" + this.docForm.docAbout;
+                }
               }
 
               console.log(key3);
@@ -1734,6 +1998,7 @@ export default {
                 authId: sessionStorage.getItem("authId"),
                 type: weightType3,
                 tables: table3,
+                keywordIssue: keywordIssueJson,
               };
 
               this.putRequest(
@@ -1747,111 +2012,17 @@ export default {
             .then((r) => {
               this.showWaitingFlag = false;
             });
-        } else {
-          //第一次录入
-          var key1 = this.docForm.docAbout;
-          var json1 = {};
-          json1[key1] = "0";
-
-          var key2 = this.docForm.dutyAuthor;
-          var json2 = {};
-          json2[key2] = "0";
-
-          var key3 = this.docForm.keyword;
-          var json3 = {};
-          json3[key3] = "0";
-
-          var dutyAuthorObj = {
-            authId: sessionStorage.getItem("authId"),
-            type: weightType2,
-            tables: json2,
-          };
-          var jsonIsu_KeyW={}
-          var keywordItem={}
-          keywordItem["kWeight"]="0"
-          keywordItem["keyword"]=key3
-
-          var itemList=[]
-          itemList.push(keywordItem)
-          jsonIsu_KeyW[key1]=itemList
-          // var keywordArr=[]
-          // var keywordItem=[]
-          // keywordItem.push(json3)
-          // keywordItem.push("0")
-          // keywordArr.push(keywordItem)
-          
-          // jsonIsu_KeyW[key1]=keywordArr
-
-          var docAboutObj = {
-            authId: sessionStorage.getItem("authId"),
-            type: weightType1,
-            tables: json1,
-            issueKeyword:jsonIsu_KeyW
-          };
-
-
-
-          var jsonKeyW_Isu={};
-          jsonKeyW_Isu[key3]=key1
-
-
-          var keyWordObj = {
-            authId: sessionStorage.getItem("authId"),
-            type: weightType3,
-            tables: json3,
-            // keywordIssue:JSON.stringify(jsonKeyW_Isu)
-            keywordIssue:jsonKeyW_Isu
-          };
-          // console.log(keyWordObj)
-          // console.log(docAboutObj)
-          // return
-
-          this.postRequest(
-            //注意防止重复提交
-            "/weight",
-            JSON.stringify(docAboutObj)
-          )
-            .then((resp) => {
-              console.log(2)
-              console.log("提交wenshu问题权重表");
-              console.log(keyWordObj)
-              console.log(resp);
-            })
-            .then((r) => {
-              this.postRequest(
-                //注意防止重复提交
-                "/weight",
-                JSON.stringify(dutyAuthorObj)
-              )
-                .then((resp) => {
-                  console.log("提交责任者权重表");
-                  console.log(resp);
-                })
-                .then((r) => {
-                  this.postRequest(
-                    //注意防止重复提交
-                    "/weight",
-                    JSON.stringify(keyWordObj)
-                  )
-                    .then((resp) => {
-                      console.log("提交关键词权重表");
-                      console.log(resp);
-                      this.weightForm = resp.data;
-                    })
-                    .then((r) => {
-                      this.showWaitingFlag = false;
-                    });
-                });
-            });
         }
       } //doctype==official if
 
       if (sessionStorage.getItem("docType") == "business") {
         var table;
+        var issueKeywordArrJson;
         if (this.weightForm.busProjectWig) {
           //已有权重表
-          this.getRequest("/weight/sort/" + this.weightForm.busProjectWig)
+          this.getRequest("/weight/" + this.weightForm.busProjectWig)
             .then((resp) => {
+              // alert(0)
               //查询对应的权重表得到json
               table = resp.data.tables;
               var key1 = this.docForm.docAbout;
@@ -1859,23 +2030,36 @@ export default {
               if (table[key1] == null) {
                 table[key1] = "0";
               }
+              issueKeywordArrJson = resp.data.issueKeyword;
+              if (issueKeywordArrJson[key1] == null) {
+                var arrtemp = [];
+                arrtemp.push(kwTemp);
+                issueKeywordArrJson[key1] = arrtemp;
+              } else {
+                if (issueKeywordArrJson[key1].indexOf(kwTemp) < 0) {
+                  issueKeywordArrJson[key1].push(kwTemp);
+                }
+              }
             })
+
             .then((r) => {
               var docAboutObj = {
                 authId: sessionStorage.getItem("authId"),
                 type: weightType1,
                 tables: table,
+                issueKeyword: issueKeywordArrJson,
               };
+
+              console.log(docAboutObj);
 
               this.putRequest(
                 "/weight/" + this.weightForm.busProjectWig,
                 docAboutObj
               ).then((resp) => {
-                console.log("更新业务问题权重表");
+                console.log("更新yewu问题权重表");
                 console.log(resp);
               });
             });
-
           /**责任者
            *
            */
@@ -1895,6 +2079,8 @@ export default {
                 authId: sessionStorage.getItem("authId"),
                 type: weightType2,
                 tables: table2,
+                issueKeyword: {},
+                keywordIssue: {},
               };
 
               this.putRequest(
@@ -1907,14 +2093,29 @@ export default {
             });
 
           var table3;
+          var keywordIssueJson;
           this.getRequest("/weight/sort/" + this.weightForm.busKeywordWig)
             .then((resp) => {
               //查询对应的权重表得到json
               table3 = resp.data.tables;
-              var key3 = kwTemp;
+              keywordIssueJson = resp.data.keywordIssue;
+              var key3 = kwTemp; //docForm里的会被刷新
               // var json1 = table;
               if (table3[key3] == null) {
                 table3[key3] = "0";
+              }
+              if (keywordIssueJson[key3] == null) {
+                keywordIssueJson[key3] = this.docForm.docAbout;
+              } else {
+                if (
+                  keywordIssueJson[key3]
+                    .split("|")
+                    .indexOf(this.docForm.docAbout) < 0
+                ) {
+                  //
+                  keywordIssueJson[key3] =
+                    keywordIssueJson[key3] + "|" + this.docForm.docAbout;
+                }
               }
 
               console.log(key3);
@@ -1926,113 +2127,30 @@ export default {
                 authId: sessionStorage.getItem("authId"),
                 type: weightType3,
                 tables: table3,
+                keywordIssue: keywordIssueJson,
               };
-
               this.putRequest(
                 "/weight/" + this.weightForm.busKeywordWig,
                 keyWordObj
               ).then((resp) => {
-                console.log("更新文书关键词权重表");
+                console.log("更新业务关键词权重表");
                 console.log(resp);
               });
             })
             .then((r) => {
               this.showWaitingFlag = false;
             });
-        } else {
-          //第一次录入
-          var key1 = this.docForm.docAbout;
-          var json1 = {};
-          json1[key1] = "0";
-
-          var key2 = this.docForm.dutyAuthor;
-          var json2 = {};
-          json2[key2] = "0";
-
-          var key3 = this.docForm.keyword;
-          var json3 = {};
-          json3[key3] = "0";
-
-      
-          var dutyAuthorObj = {
-            authId: sessionStorage.getItem("authId"),
-            type: weightType2,
-            tables: json2,
-          };
-
- 
-
-            var jsonIsu_KeyW={}
-          var keywordArr=[]
-
-          keywordArr.push(json3)
-          jsonIsu_KeyW[key1]=keywordArr
-
-          var docAboutObj = {
-            authId: sessionStorage.getItem("authId"),
-            type: weightType1,
-            tables: json1,
-            issueKeyword:jsonIsu_KeyW
-          };
-
-
-
-          var jsonKeyW_Isu={};
-          jsonKeyW_Isu[key3]=key1
-
-
-          var keyWordObj = {
-            authId: sessionStorage.getItem("authId"),
-            type: weightType3,
-            tables: json3,
-            keywordIssue:jsonKeyW_Isu
-          };
-
-          this.postRequest(
-            //注意防止重复提交
-            "/weight",
-            JSON.stringify(docAboutObj)
-          )
-            .then((resp) => {
-              console.log("提交业务问题权重表");
-              console.log(docAboutObj)
-              console.log(resp);
-            })
-            .then((r) => {
-              this.postRequest(
-                //注意防止重复提交
-                "/weight",
-                JSON.stringify(dutyAuthorObj)
-              )
-                .then((resp) => {
-                  console.log("提交责任者权重表");
-                  console.log(resp);
-                })
-                .then((r) => {
-                  this.postRequest(
-                    //注意防止重复提交
-                    "/weight",
-                    JSON.stringify(keyWordObj)
-                  )
-                    .then((resp) => {
-                      console.log("提交关键词权重表");
-                      console.log(resp);
-                      this.weightForm = resp.data;
-                    })
-                    .then((r) => {
-                      this.showWaitingFlag = false;
-                    });
-                });
-            });
         }
       } //doctype==business if
 
       if (sessionStorage.getItem("docType") == "science") {
         var table;
+        var issueKeywordArrJson;
         if (this.weightForm.tecProjectWig) {
-          //已有权重表
+          //已有权重表 3333
           this.getRequest("/weight/sort/" + this.weightForm.tecProjectWig)
             .then((resp) => {
+              // alert(0)
               //查询对应的权重表得到json
               table = resp.data.tables;
               var key1 = this.docForm.docAbout;
@@ -2040,23 +2158,36 @@ export default {
               if (table[key1] == null) {
                 table[key1] = "0";
               }
+              issueKeywordArrJson = resp.data.issueKeyword;
+              if (issueKeywordArrJson[key1] == null) {
+                var arrtemp = [];
+                arrtemp.push(kwTemp);
+                issueKeywordArrJson[key1] = arrtemp;
+              } else {
+                if (issueKeywordArrJson[key1].indexOf(kwTemp) < 0) {
+                  issueKeywordArrJson[key1].push(kwTemp);
+                }
+              }
             })
+
             .then((r) => {
               var docAboutObj = {
                 authId: sessionStorage.getItem("authId"),
                 type: weightType1,
                 tables: table,
+                issueKeyword: issueKeywordArrJson,
               };
+
+              console.log(docAboutObj);
 
               this.putRequest(
                 "/weight/" + this.weightForm.tecProjectWig,
                 docAboutObj
               ).then((resp) => {
-                console.log("更新科技项目权重表");
+                console.log("更新科技问题权重表");
                 console.log(resp);
               });
             });
-
           /**责任者
            *
            */
@@ -2076,6 +2207,8 @@ export default {
                 authId: sessionStorage.getItem("authId"),
                 type: weightType2,
                 tables: table2,
+                issueKeyword: {},
+                keywordIssue: {},
               };
 
               this.putRequest(
@@ -2088,14 +2221,29 @@ export default {
             });
 
           var table3;
+          var keywordIssueJson;
           this.getRequest("/weight/sort/" + this.weightForm.tecKeywordWig)
             .then((resp) => {
               //查询对应的权重表得到json
               table3 = resp.data.tables;
-              var key3 = kwTemp;
+              keywordIssueJson = resp.data.keywordIssue;
+              var key3 = kwTemp; //docForm里的会被刷新
               // var json1 = table;
               if (table3[key3] == null) {
                 table3[key3] = "0";
+              }
+              if (keywordIssueJson[key3] == null) {
+                keywordIssueJson[key3] = this.docForm.docAbout;
+              } else {
+                if (
+                  keywordIssueJson[key3]
+                    .split("|")
+                    .indexOf(this.docForm.docAbout) < 0
+                ) {
+                  //
+                  keywordIssueJson[key3] =
+                    keywordIssueJson[key3] + "|" + this.docForm.docAbout;
+                }
               }
 
               console.log(key3);
@@ -2107,6 +2255,7 @@ export default {
                 authId: sessionStorage.getItem("authId"),
                 type: weightType3,
                 tables: table3,
+                keywordIssue: keywordIssueJson,
               };
 
               this.putRequest(
@@ -2120,76 +2269,11 @@ export default {
             .then((r) => {
               this.showWaitingFlag = false;
             });
-        } else {
-          //第一次录入
-          var key1 = this.docForm.docAbout;
-          var json1 = {};
-          json1[key1] = "0";
-
-          var key2 = this.docForm.dutyAuthor;
-          var json2 = {};
-          json2[key2] = "0";
-
-          var key3 = this.docForm.keyword;
-          var json3 = {};
-          json3[key3] = "0";
-
-          var docAboutObj = {
-            authId: sessionStorage.getItem("authId"),
-            type: weightType1,
-            tables: json1,
-          };
-
-          var dutyAuthorObj = {
-            authId: sessionStorage.getItem("authId"),
-            type: weightType2,
-            tables: json2,
-          };
-
-          var keyWordObj = {
-            authId: sessionStorage.getItem("authId"),
-            type: weightType3,
-            tables: json3,
-          };
-
-          this.postRequest(
-            //注意防止重复提交
-            "/weight",
-            JSON.stringify(docAboutObj)
-          )
-            .then((resp) => {
-              console.log("提交问题权重表");
-              console.log(resp);
-            })
-            .then((r) => {
-              this.postRequest(
-                //注意防止重复提交
-                "/weight",
-                JSON.stringify(dutyAuthorObj)
-              )
-                .then((resp) => {
-                  console.log("提交责任者权重表");
-                  console.log(resp);
-                })
-                .then((r) => {
-                  this.postRequest(
-                    //注意防止重复提交
-                    "/weight",
-                    JSON.stringify(keyWordObj)
-                  )
-                    .then((resp) => {
-                      console.log("提交关键词权重表");
-                      console.log(resp);
-                      this.weightForm = resp.data;
-                    })
-                    .then((r) => {
-                      this.showWaitingFlag = false;
-                    });
-                });
-            });
         }
       } //doctype==science if
     },
+
+    optThreeWeightTable2() {},
 
     docAboutBlur() {
       if (this.docForm.keyword != "" && this.docForm.docAbout != "") {
@@ -2226,10 +2310,108 @@ export default {
         }
       }
     },
+    weightFormKeywordCode() {
+      //点出标题区域可能还没返回
+      var type = sessionStorage.getItem("docType");
+      if (type == "official") {
+        return this.weightForm.docKeywordWig;
+      } else if (type == "business") {
+        return this.weightForm.busKeywordWig;
+      } else if (type == "science") {
+        return this.weightForm.tecKeywordWig;
+      } else if (type == "personnel") {
+        return this.weightForm.perKeywordWig;
+      }
+    },
+
+    aiInputFunc() {
+      // alert(2)
+      if (sessionStorage.getItem("docType") == "personnel") {
+        this.getRequest("/weight/" + this.weightForm.perKeywordWig).then(
+          (resp) => {
+            var keywordIssueJson = resp.data.keywordIssue;
+            console.log(keywordIssueJson);
+          }
+        );
+      }
+      axios
+        .get(this.baseurl + "/weight/map/" + this.weightFormKeywordCode(), {
+          headers: {
+            "Content-Type": "application/json",
+            authId: sessionStorage.getItem("authId"),
+            token: sessionStorage.getItem("token")
+              ? sessionStorage.getItem("token").split('"')[1] ||
+                sessionStorage.getItem("token")
+              : null,
+          },
+          params: {
+            title: this.docForm.docTitle,
+          },
+        })
+        .then((resp) => {
+          this.matchedKV = [];
+          resp={
+            data:['10']
+          }
+          console.log(resp)
+
+          for (var attr in resp.data) {
+            var splitArr = resp.data[attr].split("|");
+
+            if (sessionStorage.getItem("docType") == "personnel") {
+              console.log(2);
+
+              for (var k in splitArr) {
+                var i = this.getRsText(splitArr[k]);
+                this.matchedKV.push([attr, i]);
+                console.log(this.matchedKV);
+              }
+            } // 人事要找对照表
+            else {
+              // 其他三种
+              for (var k in splitArr) {
+                this.matchedKV.push([attr, splitArr[k]]);
+              }
+            }
+
+            if (this.matchedKV.length == 1) {
+              if(sessionStorage.getItem("docType") == "personnel"){
+                this.docFormRS.docAboutSub=this.matchedKV[0][1]
+                this.docFormRS.docAbout=this.rsDocTypeMain
+              }
+              else{
+              this.docForm.docAbout = this.matchedKV[0][1];
+              this.docForm.keyword = this.matchedKV[0][0];
+              }
+
+            } else {
+              this.tipShowFlag = true;
+            }
+          }
+          // alert()
+        });
+    },
+    selectThisTip(event, item) {
+      this.docForm.docAbout = item[1];
+      this.docForm.keyword = item[0];
+      this.tipShowFlag = false;
+    },
     titleComplete() {
       if (this.docForm.docTitle == "") {
         this.keyWordEdit = false;
       } else this.keyWordEdit = true;
+
+      this.aiInputFunc();
+      // this.getRequest(   //查标题
+
+      //             "/weight/map/"+this.weightFormKeywordCode(),{
+      //               title:this.docForm.docTitle,
+
+      //             }
+
+      //           ).then((resp) => {
+      //             console.log(resp)
+      //           })
     },
 
     checkTitle() {},
@@ -2238,17 +2420,27 @@ export default {
         Math.random().toString().substr(3, length) + Date.now()
       ).toString(36);
     },
-    getId1(a,b){
-      var date = new Date();  //当前标准时间格式
-    var month = date.getMonth() + 1; //返回0~11之间的数字，0代表一月，11代表12月
-    var day = date.getDate(); //返回天数，0~31，getDay()返回的是星期几（0~6）
-    var hour = date.getHours(); //获取小时
-    var minute = date.getMinutes(); //获取分钟
-    var second = date.getSeconds(); //获取秒
-    var num = year +""+ month +""+ day +""+ hour +""+ minute +""+ second;
-    
+    getId1(a, b) {
+      var date = new Date(); //当前标准时间格式
+      var month = date.getMonth() + 1; //返回0~11之间的数字，0代表一月，11代表12月
+      var day = date.getDate(); //返回天数，0~31，getDay()返回的是星期几（0~6）
+      var hour = date.getHours(); //获取小时
+      var minute = date.getMinutes(); //获取分钟
+      var second = date.getSeconds(); //获取秒
+      var num =
+        year + "" + month + "" + day + "" + hour + "" + minute + "" + second;
     },
+
     genId(len, radix) {
+      this.getRequest("/work/" + sessionStorage.getItem("batchId")).then(
+        (resp) => {
+          if (resp) {
+            this.docForm.docSequence = resp.data.doc_number;
+            this.docFormRS.docSequence = resp.data.doc_number;
+          }
+        }
+      );
+      return;
 
       var chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz".split(
         ""
@@ -2286,6 +2478,14 @@ export default {
     },
   },
   created() {
+    // var jsonk={}
+    // var aa='aa'
+    // if(jsonk[aa]==null){
+    //   jsonk[aa]='2'
+    // }
+    // console.log(jsonk)
+    // return
+
     this.docTimeDues = [];
     var deadlineJson = JSON.parse(sessionStorage.getItem("lastBox"));
     // console.log(JSON.parse(deadlineJson))
@@ -2305,9 +2505,12 @@ export default {
         console.log(resp.data);
       }
     );
+    //  this.getRequest("/work/"+sessionStorage.getItem('batchId')) //
+    //       .then((resp) => {
 
-    this.docForm.docSequence = this.genId(6, 62);
-    this.docFormRS.docSequence = this.genId(6, 62);
+    //       })
+
+    this.genId(6, 62);
 
     if (this.$store.state.tempDoc) {
       this.fixDocFlag = true;
@@ -2435,7 +2638,18 @@ export default {
 //   height: 50rem;
 //   z-
 // }
+.matchedItem {
+}
+.matchedItem:hover {
+  color: rgb(93, 93, 117);
+  font-weight: 600;
+  cursor: pointer;
+}
 
+.matchedKVClass {
+  height: 2rem;
+  border-bottom: solid 0.2px #aaa;
+}
 .docSequenceTip {
   position: absolute;
   left: 2rem;

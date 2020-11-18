@@ -5,6 +5,7 @@ import FriendChat from './views/chat/FriendChat.vue'
 import HrInfo from './views/HrInfo.vue'
 import Register from './views/Register.vue'
 import Main from './components/main/Main.vue'
+import Temp from'./components/main/Recover.vue'
 import Login from './components/main/Login.vue'
 import newBatch from './components/main/NewBatch.vue'
 import DocIn from './components/main/DocIn.vue'
@@ -83,7 +84,7 @@ export default new Router({
         {
             path: '/home',
             name: 'm',
-            component: Main,
+            component: Temp,
             hidden: true
         },
         {

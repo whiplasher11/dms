@@ -63,7 +63,11 @@
 
 
           <div v-if="organsShow">
+            <div style="width:100%;text-align:center;font-size:1.2rem;border-bottom:solid rgb(44,44,44) 0.2rem;margin-bottom:1rem
+            ;height:2rem;line-height:2rem">设置您的档案单位</div>
             <div class="organItem" style="height:2rem">
+              <div class="organInfo tip" style="width:12%">序号</div>
+
               <div class="organInfo tip">单位名</div>
               <div class="organInfo tip">单位全宗号</div>
               <div class="organInfo tip">权重表修改</div>
@@ -77,7 +81,9 @@
 
           </div>
 
-          <div class="organItem" v-for="item in this.organs" :key="item.id">
+          <div class="organItem" v-for="(item,index) in this.organs" :key="item.id">
+              <div class="organInfo" style="width:12%;font-size:0.8rem;border:none">{{index+1}}</div>
+
               <div class="organInfo"  style="font-size:0.8rem;border:none"     @focus="focusOnThis(item)"  @blur="loseThis(item)" :v-model="tempOrganName">{{item.authName}}</div>
             
             <div class="organInfo"   style="font-size:0.8rem;border:none"      @focus="focusOnThis"  @blur="isLocked =false" :v-model="tempOrganCode">{{item.authCode|formatAuthCode}}</div>
@@ -109,7 +115,9 @@
 
               <div class="BatchInfo">{{item.createTime}}</div>
               <div class="BatchInfo">已完成</div>
-              <div class="BatchInfo hoverStyle" @click="batchDocs(item)">查看</div>
+              <div class="BatchInfo hoverStyle " style="width:6%" @click="batchDocs(item)">查看</div>
+              <div class="BatchInfo hoverStyle" style="width:6%" @click="deleteTheBatch(item)">删除</div>
+
 
           </div>
             </div>
@@ -137,6 +145,42 @@ authCodeToSet:'',
       }
     },
     methods:{
+      deleteTheBatch(item){
+            //   type: "success",
+            //   message: "删除成功"
+            // });  
+            
+            this.$confirm(
+                '确定要删除该批次及相关记录吗',
+          {
+            cancelButtonClass: "btn-custom-cancel",
+            confirmButtonText: "确定",
+            cancelButtonText: "取消",
+            type: "warning"
+          }
+        ).then(() => {
+            var tpath='/work/'+item.id
+            this.deleteRequest(tpath)
+            .then(resp => {
+                if(resp.code==0){
+                    this.batches=this.batches.filter(i=>{
+                    return i.id!=item.id
+
+            })
+            this.$message({
+              type: "success",
+              message: "删除成功"
+            });  
+                } //if
+
+
+            })
+          })
+          .catch(() => {
+
+          });
+
+      },
         fixOrganName(item){
             this.nameToSet=item.authName
             this.authCodeToSet=item.authCode
@@ -146,6 +190,9 @@ authCodeToSet:'',
             this.fixNameShow=false
         },
         doFixNA(){},
+        // fixThisOrganFromDetail(){
+
+        // },
         fixThisOrgan(item){
                         window.sessionStorage.setItem('authId',item.id)
             window.sessionStorage.setItem('authCode',item.authCode)
@@ -153,6 +200,7 @@ authCodeToSet:'',
             this.$router.replace('/work/keyWM')
         },
         batchDocs(item){ //查看某批
+        window.scrollTo(0,0)
             console.log(item)
             console.log('查看某批')
 
@@ -174,6 +222,7 @@ window.sessionStorage.setItem("lastBox",JSON.stringify(item.lastBox))
             this.organsShow=true
         },
         checkThisOrganBat(item){
+          window.scrollTo(0,0)
             console.log("查看批次item")
 
             console.log(item) //打印单位
@@ -182,7 +231,7 @@ window.sessionStorage.setItem("lastBox",JSON.stringify(item.lastBox))
             // window.sessionStorage.setItem('checkAuthId',item.id)
             // window.sessionStorage.setItem('batchId',item.id)
 
-              axios.get('http://101.200.243.57:8080/work/list', {
+              axios.get(this.baseurl+'/work/list', {
                   headers:{
             'Content-Type': 'application/json',
             'authId':item.id,
@@ -322,7 +371,7 @@ window.sessionStorage.setItem("lastBox",JSON.stringify(item.lastBox))
 
         .tip{
         float: left;
-        width: 15%;
+        width: 13%;
         height: 2rem;
         margin-top: 0;
         margin-right: 0.2rem;
@@ -358,7 +407,7 @@ window.sessionStorage.setItem("lastBox",JSON.stringify(item.lastBox))
     .organInfo{
         text-align: center;
         float: left;
-        width: 15%;
+        width: 13%;
         height: 2rem;
         border: solid 0.1rem;
         margin-top: 0.5rem;

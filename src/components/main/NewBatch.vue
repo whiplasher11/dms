@@ -448,7 +448,7 @@ export default {
       this.conver(date) +
       "-" +
       this.conver(h) +
-      "：" +
+      ":" +
       this.conver(m) +
       "归档批";
 
@@ -633,6 +633,7 @@ for(  var i=0;i<this.jsonArray.length;i++){
         docTypeCode: this.BatchForm.docTypeCode,
         rule: this.BatchForm.rule,
         // lastBox:JSON.stringify(this.BatchForm.lastBox)
+        doc_number:1,
         lastBox: this.BatchForm.lastBox,
       };
       console.log("提交了organ后提交的批次信息");
@@ -667,11 +668,13 @@ for(  var i=0;i<this.jsonArray.length;i++){
       // if (this.BatchForm.authId == "") this.BatchForm.authId = -1;
       // var token=sessionStorage.getItem("token");
       if(this.BatchForm.docType==3){
-
+{
 /**
  * 人事类
  * 先查这个选中单位的权重表
  */
+/*
+
    this.getRequest("/organ/" + sessionStorage.getItem("authId")).then(
       (resp) => {
         this.weightForm = resp.data;
@@ -870,6 +873,8 @@ var key91 = '工资情况材料';
       })
 
 
+*/
+}
          var docTypetemp = "official";
       if (this.BatchForm.docType == 2) {
         docTypetemp = "science";
@@ -899,6 +904,8 @@ var key91 = '工资情况材料';
         docType: docTypetemp,
         docTypeCode: this.BatchForm.docTypeCode,
         rule: this.BatchForm.rule,
+        doc_number:1,
+
         // lastBox:JSON.stringify(this.BatchForm.lastBox)
         // lastBox: this.BatchForm.lastBox,
       };
@@ -1212,6 +1219,7 @@ setTimeout(() => {
   }
 
   .organModify {
+    border-radius: 0.5rem;
     position: absolute;
     width: 10%;
     top: 3.6rem;

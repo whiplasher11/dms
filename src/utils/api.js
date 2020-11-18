@@ -62,8 +62,8 @@ axios.interceptors.response.use(success => {
 })
 
 var base = 'http://101.200.243.57:8080';
-// var base = 'http://gdm.vipgz1.idcfengye.com';
-
+// var base = 'http://gdm.free.idcfengye.com';
+export const baseurl=base;
 
 export const postKeyValueRequest = (url, params) => {
     return axios({
@@ -100,7 +100,7 @@ export const putRequest = (url, params) => {
         url: `${base}${url}`,
         data: params,
         headers: {
-            'Content-Type': 'application/json',
+            'Content-Type': 'application/json;charset=UTF-8',
 
             token:sessionStorage.getItem('token')?(sessionStorage.getItem('token').split('"')[1]||sessionStorage.getItem('token')):null,
             authId:sessionStorage.getItem('authId')||''
@@ -108,15 +108,15 @@ export const putRequest = (url, params) => {
         }
     })
 }
-export const getRequest = (url, params) => {
+export const getRequest = (url, data) => {
     return axios({
         method: 'get',
         url: `${base}${url}`,
-        data: params,
+        params: data,
         headers: {
             authId:sessionStorage.getItem('authId')||'',
             
-            'Content-Type': 'application/json',
+            'Content-Type': 'application/json;charset=UTF-8',
             token:sessionStorage.getItem('token')?(sessionStorage.getItem('token').split('"')[1]||sessionStorage.getItem('token')):null
         }
     })
@@ -127,6 +127,8 @@ export const deleteRequest = (url, params) => {
         url: `${base}${url}`,
         data: params,
         headers: {
+            authId:sessionStorage.getItem('authId')||'',
+
             'Content-Type': 'application/json',
             // 'Content-Type': 'application/x-www-form-urlencoded',
             token:sessionStorage.getItem('token')

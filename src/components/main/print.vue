@@ -20,7 +20,7 @@
 
 
   <!-- 文书 -->
-  <div v-if="docType=='official'">
+  <div v-if="docType=='official'||docType=='business'">
       <div ref="print1" style="position:relative;top:1cm;left:1cm;border:solid;height:1.6cm;width:45mm"  @mouseover="showAdjPos" @mouseleave="hideAdjPos" >
     <div class="clickSmall"   style="font-size:15px;cursor:pointer;float:left;width:14.5mm;border-bottom:solid 0.5mm;border-right:solid 0.5mm;line-height:0.8cm;height:7.75mm;text-align:center">
       {{this.authCode||""}}
@@ -61,28 +61,44 @@
   </div>
   </div>
 
-  <!-- 科技 业务 -->
-    <div v-if="docType=='business'||docType=='science'">
-      <div ref="print1" style="position:relative;top:1cm;left:1cm;border:solid;height:2cm;width:50mm">
+  <!-- 科技   -->
+    <div v-if="docType=='science'">
+      <div ref="print1" style="position:relative;top:1cm;left:1cm;border:solid;height:2cm;width:50mm"  @mouseover="showAdjPos" @mouseleave="hideAdjPos">
+        
     <div  style="float:left;width:35mm;border-bottom:0.5mm;border-bottom:0.5mm solid;border-right:solid 0.5mm;line-height:1cm;height:10mm;text-align:center">
       档号
     </div>
         <div  style="float:left;width:14.5mm;border-bottom:0.5mm solid;line-height:1cm;height:10mm;text-align:center">
-      序号
+      <div>序号</div> 
+
+      
     </div>
     <div  style="float:left;width:35mm;border-bottom:0.5mm;border-right:solid 0.5mm;line-height:1cm;height:10mm;text-align:center">
-      {{this.danghao}}
+      <div :style="[{'transform':smaller},{'left':leftAbout},{'top':topAbout}]" style="position:absolute">{{this.danghao}}</div> 
     </div>
-        <div  style="float:left;width:14.5mm;border-bottom:0.5mm;line-height:1cm;height:10mm;text-align:center">
-      {{this.docNum==null?this.docNum:""||"暂无"}}
+        <div  style="float:left;position:relative;width:14.5mm;border-bottom:0.5mm;line-height:1cm;height:10mm;text-align:center">
+      {{this.docNum==null?"":this.docNum}}
+       <div class="controlPos" v-if="AdjPosFlag">
+        <div @click="clickUp" style="cursor:pointer;position:absolute;width:5mm;height:5mm;left:-20mm;top:-6mm;color:red;font-weight:600;border:solid 0.3mm;line-height:5mm">↑</div>
+             <div @click="clickDown" style="cursor:pointer;position:absolute;width:5mm;height:5mm;left:-20mm;bottom:-6mm;
+             color:red;font-weight:600;border:solid 0.3mm;line-height:5mm">↓</div>
+
+           <div @click="clickLeft" style="cursor:pointer;position:absolute;width:5mm;height:5mm;
+           left:-41mm;top:1mm;color:red;font-weight:600;border:solid 0.3mm;line-height:5mm">←</div>
+
+          <div @click="clickRight" style="cursor:pointer;position:absolute;width:5mm;height:5mm;
+          left:0mm;top:1mm;color:red;font-weight:600;border:solid 0.3mm;line-height:5mm">→</div>
+                    <div @click="Clicksmaller" style=" cursor:pointer;position:absolute;width:10mm;height:5mm;
+          right:25mm;top:2mm;color:white;font-size:14px;border:solid 0.3mm rgb(222,66,66);background-color:rgb(222,66,66);line-height:5mm">缩小</div>
+</div>
     </div>
          
-
+<!-- 
     <div style="float:left;width:2.25cm;height:0.725cm;text-align:center;">
       <font style="font-size:1.2rem" >{{this.rsPrint}}</font>
       <font style="font-size:1rem">{{this.rsPrintSub}}</font>
 
-    </div>
+    </div> -->
   </div>
   </div>
 
@@ -139,7 +155,7 @@ smaller:function(){
   },
   created () {
       this.$message.warning({
-        duration:600,
+        duration:1000,
         message:"请按 ctrl+p 进行打印"
       });
     
@@ -155,7 +171,14 @@ smaller:function(){
     this.docPage=sessionStorage.getItem('docPage')
     this.timedue=sessionStorage.getItem('timedue')
 
-this.danghao=sessionStorage.getItem('danghao')
+this.danghao=sessionStorage.getItem('danghao1')
+
+if(window.sessionStorage.getItem("docType")=='science'){
+  this.topPosAbout=9.5
+  this.leftPosAbout=4.5
+  this.docNum=sessionStorage.getItem('kjXuhao')
+}
+// this.doc
     // this.$print(this.$refs.print1);//$refs的值要和html里的ref一致
     // console.log(this.rsPrint)
     // alert(this.$store.state.rsPrint)

@@ -21,25 +21,35 @@
         请求中，请稍候...
       </div>
       <div
-        class="hoverStyle"
-        style="position: absolute; top: 6.5rem; right: 20rem; z-index: 123"
+        class="topTextButton"
+        style="position: absolute; top: 7.5rem; right: 20rem; z-index: 123"
         v-if="selectShow"
         @click="backToOrgans"
+      >
+        返回单位表
+      </div>
+
+      <div
+        class="topTextButton"
+        style="position: absolute; top: 7.5rem; right: 20rem; z-index: 123"
+        v-if="backToDocAboutShow"
+        @click="backToDocAbout"
       >
         返回
       </div>
 
       <div
-        class="hoverStyle"
-        style="position: absolute; top: 6.5rem; right: 20rem; z-index: 123"
-        v-if="!selectShow"
+        class="topTextButton"
+        style="position: absolute; top: 7.5rem; right: 20rem; z-index: 123"
+        v-if="!selectShow && !backToDocAboutShow"
         @click="backToSelect"
       >
-        返回
+        &nbsp; 返回 &nbsp;
       </div>
       <div style="height: 4.5rem"></div>
 
       <div
+        v-if="!selectShow && !backToDocAboutShow"
         style="
           position: absolute;
           top: 6rem;
@@ -48,7 +58,33 @@
           text-align: center;
         "
       >
-        排件号规则管理
+        优先级规则
+      </div>
+
+      <div
+        v-if="selectShow"
+        style="
+          position: absolute;
+          top: 6rem;
+          font-size: 1.5rem;
+          width: 100%;
+          text-align: center;
+        "
+      >
+        选择设置优先级规则
+      </div>
+
+      <div
+        v-if="backToDocAboutShow"
+        style="
+          position: absolute;
+          top: 6rem;
+          font-size: 1.5rem;
+          width: 100%;
+          text-align: center;
+        "
+      >
+        {{ true ? this.deepInThisDocAbout : authName }}-优先级规则设置
       </div>
 
       <div
@@ -60,10 +96,11 @@
           margin-left: -15rem;
           z-index: 122;
           padding-top: 1rem;
+          color: #333;
           font-size: 1.5rem;
           width: 30rem;
           height: 10rem;
-          background-color: #666;
+          background-color: rgb(209, 218, 243);
           -webkit-box-shadow: 0 0 0.5rem #909399;
           box-shadow: 0 0 0.5rem #909399;
           border-radius: 1rem;
@@ -72,9 +109,9 @@
         <div
           style="
             font-size: 1rem;
-            width: 10rem;
+            width: 20rem;
             text-align: center;
-            margin-left: 10rem;
+            margin-left: 5rem;
             color: #333;
           "
         >
@@ -103,9 +140,92 @@
         >
           取消
         </div>
-
-        <div class="textButton" @click="fixTheKV" style="color: #333">确定</div>
+        <div  @click="fixTheKV" style="color: #333 ;cursor:pointer;position:absolute; margin-top: 1.5rem;
+ 
+  font-size: 1.2rem;
+  margin-left: 10rem;">确定</div>
       </div>
+<!--  -->
+            <div
+        v-if="selectRsDAFlag"
+        style="
+          position: absolute;
+          top: 40vh;
+          left: 50%;
+          margin-left: -15rem;
+          z-index: 122;
+          padding-top: 1rem;
+          color: #333;
+          font-size: 1.5rem;
+          width: 30rem;
+          height: 10rem;
+          background-color: rgb(209, 218, 243);
+          -webkit-box-shadow: 0 0 0.5rem #909399;
+          box-shadow: 0 0 0.5rem #909399;
+          border-radius: 1rem;
+        "
+      >
+        <div
+          style="
+            font-size: 1rem;
+            width: 20rem;
+            text-align: center;
+            margin-left: 5rem;
+            color: #333;
+          "
+        >
+          请选择词对应的材料类别
+        </div>
+        <input
+          type="text"
+          style="
+            height: 1.5rem;
+            margin-left: 6rem;
+            margin-top: 2rem;
+            width: 7rem;
+          "
+           disabled="true"
+          v-model="keyToSet"
+        />&nbsp;&nbsp;&nbsp;:
+        <!-- <input
+          type="text"
+          style="height: 1.5rem; margin-left: 1rem; width: 7rem"
+          v-model="valueToSet"
+          
+        /> -->
+        <select v-model="valueToSet" name="" id="" style="height: 2rem; margin-left: 1rem; width: 9rem">
+  <option value ="1">履历材料</option>
+  <option value="2">自传材料</option>
+  <option value="3">鉴定、考核、考察材料</option>
+  <option value="4">学历学位材料</option>
+  <option value="5">职称材料</option>
+  <option value="6">政治历史情况审查材料</option>
+  <option value="7">入党入团材料</option>
+  <option value="8">奖励材料</option>
+  <option value="9">处分材料</option>
+  <option value="10">工资情况材料</option>
+  <option value="11">任免材料</option>
+  <option value="12">出国、出境材料</option>
+  <option value="13">各党派、团体代表登记表</option>
+  <option value="14">聘用、录用、转干、转业材料</option>
+  <option value="15">待遇、退（离）休、退职材料</option>
+  <option value="16">其他可供参考的材料</option>
+
+        </select>
+        <div
+          class="textButton"
+          @click="clearRsSet"
+          style="position: absolute; left: 5rem; color: #333"
+        >
+          取消
+        </div>
+
+        <div  @click="doPresetRs" style="color: #333 ;cursor:pointer;position:absolute; margin-top: 1.5rem;
+ 
+  font-size: 1.2rem;
+  margin-left: 10rem;">确定</div>
+      </div>
+
 
       <div
         v-if="showKVPreset"
@@ -129,9 +249,9 @@
         <div
           style="
             font-size: 1rem;
-            width: 10rem;
+            width: 20rem;
             text-align: center;
-            margin-left: 10rem;
+            margin-left: 5rem;
             color: #333;
           "
         >
@@ -160,7 +280,10 @@
           取消
         </div>
 
-        <div class="textButton" @click="doPreset" style="color: #333">确定</div>
+        <div  @click="doPreset" style="color: #333 ;cursor:pointer;position:absolute; margin-top: 1.5rem;
+ 
+  font-size: 1.2rem;
+  margin-left: 10rem;">确定</div>
       </div>
 
       <div class="typeSelect" v-if="selectShow">
@@ -172,27 +295,27 @@
         <div class="selectItem" @click="checkFromThisType(12)">
           文书类档案责任者优先级设置
         </div>
-        <div class="selectItem" @click="checkFromThisType(13)">
+        <!-- <div class="selectItem" @click="checkFromThisType(13)">
           文书类档案关键词优先级设置
-        </div>
+        </div> -->
         <div class="selectItem" @click="checkFromThisType(21)">
           科技类档案项目优先级设置
         </div>
         <div class="selectItem" @click="checkFromThisType(22)">
           科技类档案责任者优先级设置
         </div>
-        <div class="selectItem" @click="checkFromThisType(23)">
+        <!-- <div class="selectItem" @click="checkFromThisType(23)">
           科技类档案关键词优先级设置
-        </div>
+        </div> -->
         <div class="selectItem" @click="checkFromThisType(31)">
           业务类档案问题优先级设置
         </div>
         <div class="selectItem" @click="checkFromThisType(32)">
           业务类档案责任者优先级设置
         </div>
-        <div class="selectItem" @click="checkFromThisType(33)">
+        <!-- <div class="selectItem" @click="checkFromThisType(33)">
           业务类档案关键词优先级设置
-        </div>
+        </div> -->
         <div class="selectItem" @click="checkFromThisType(41)">
           人事类档案关键词优先级设置
         </div>
@@ -208,9 +331,10 @@
             position: absolute;
             right: 0;
             top: -0;
-            font-weight: 699;
+            font-weight: 700;
             right: 2rem;
             cursor: pointer;
+            line-height: 2rem;
           "
           @click="preSetButton"
         >
@@ -277,12 +401,29 @@
             >删除</el-button
           >
           <el-button
-            type="error"
+            type="primary"
             class="kvButton"
             @click="fixKv($event, item)"
             v-if="!saveBtnShow"
             >修改值</el-button
           >
+
+          <el-button
+            type=""
+            class="kvButton"
+            @click="thisDocAbout($event, item)"
+            v-if="!saveBtnShow && showKeyWord && !backToDocAboutShow"
+            >关键词对应表</el-button
+          >
+          
+          <el-button
+            type=""
+            class="kvButton"
+            @click="rsKeywordToDocAbout($event, item)"
+            v-if="rsKeywordPage"
+            >设置对应材料类别</el-button
+          >
+          
 
           <!-- <div style="float:left;width:2rem;background-color:red;height:1.5rem">1</div> -->
         </div>
@@ -294,19 +435,42 @@
 </template>
 
 <script>
+import axios from "axios";
+import messageVue from '../chat/message.vue';
+
+
 export default {
   computed: {
     user() {
       //   return this.$store.state.user;
     },
+    rsKeywordPage(){
+return this.tableTypeNum == 41
+    },
+    showKeyWord() {
+      return (
+        this.tableTypeNum == 11 ||
+        this.tableTypeNum == 21 ||
+        this.tableTypeNum == 31 
+        
+      );
+    },
   },
 
   created() {
+    window.scrollTo(0,0)
+    var js = {};
+    var k = 3;
+    js["3"] == 2 ? 1 : 2;
+    console.log(js);
+
+    // return
     this.showWaitingFlag = true;
 
     this.getRequest("/organ/" + sessionStorage.getItem("authId")).then(
       (resp) => {
         this.weightForm = resp.data;
+        this.authName = resp.data.authName;
         console.log("加载keyWM页面时某个特定单位的权重表对应的id");
         if (this.weightForm) {
           this.showWaitingFlag = false;
@@ -315,128 +479,358 @@ export default {
       }
     );
 
-    var json3 = {};
+    // var json3 = {};
 
-    console.log(json3);
-    let attr;
-    for (attr in json3) {
-      this.jsonTable.push([attr, json3[attr]]);
-    }
-    console.log(this.jsonTable);
+    // console.log(json3);
+    // let attr;
+    // for (attr in json3) {
+    //   this.jsonTable.push([attr, json3[attr]]);
+    // }
+    // console.log(this.jsonTable);
   },
   methods: {
+    clearRsSet(){
+        this.selectRsDAFlag=false
+    },
+    rsKeywordToDocAbout(e,item){
+      this.keyToSet=item[0]
+      this.selectRsDAFlag=true
+    },
+    getKwTypeNum() {
+      if (this.typeNum == 11) {
+        return 13;
+      }
+      if (this.typeNum == 21) {
+        return 23;
+      }
+      if (this.typeNum == 31) {
+        return 33;
+      }
+      if(this.typeNum==41) return 41
+      
+    },
+    thisDocAbout(e, item) {
+      this.getRequest("/weight/keywordSort/" + this.keywordWigId).then((resp) => {
+        //预加载关键词列表 删除的时候可用
+        this.keywordTable = resp.data.tables;
+        this.keywordIssueTable = resp.data.keywordIssue;
+        // this.keywordWigId=-1
+      });
+
+      console.log(this.keywordTable)
+
+      this.showWaitingFlag = true;
+      // this.selectShow=false
+      // console.log(item[0])
+      this.deepInThisDocAbout = item[0];
+      // 查问题的关键词数组 1111
+      this.getRequest(
+        "/weight/map/about/" + this.requestWigId + "?word=" + item[0]
+      )
+      .then((resp) => {
+        console.log("按问题查关键词数组");
+
+        console.log(resp);
+        if (resp.data == null) {
+          this.jsonTable = [];
+          this.$message({
+            type: "warning",
+            message: "还没有关键词表，点击预设",
+          });
+          this.showWaitingFlag = false;
+          return;
+        }
+
+        var kwArr = resp.data;
+        this.keywordArrFromIssue = kwArr;
+
+        var attr;
+        this.jsonTable = [];
+        for (attr in this.keywordTable) {
+          console.log("搜索关键词权重数组的" + attr);
+          if (kwArr.indexOf(attr) >= 0) {
+            console.log("you");
+            // this.jsonTable=[]
+            this.jsonTable.push([attr, this.keywordTable[attr]]);
+          } //问题对应的关键词数组含有
+        }
+        console.log(this.jsonTable);
+        this.showWaitingFlag = false;
+      });
+
+      // axios.get(this.baseurl+"weight/map/about/"+this.requestWigId, {
+      //           headers:{
+      //     'Content-Type': 'application/json',
+      //     'authId':sessionStorage.getItem('authId'),
+      //     token:sessionStorage.getItem('token')?(sessionStorage.getItem('token').split('"')[1]||sessionStorage.getItem('token')):null,
+
+      //           },
+      //           params:{
+      //             word:"填写"
+      //           }
+
+      //       })
+
+      this.backToDocAboutShow = true;
+    },
+    backToDocAbout() {
+      this.jsonTable=this.level1JsonTable
+      this.backToDocAboutShow=false
+      // this.checkFromThisType(this.tableTypeNum);
+    },
     backToOrgans() {
       this.$router.push("/work/modifyOrgan");
     },
     backToSelect() {
+      this.saveBtnShow = false;
       this.selectShow = true;
     },
     clearKV() {
+      this.keyToFix = "";
+      this.valueToFix = "";
       this.showKVFix = false;
     },
 
     clearPreset() {
       this.keyToSet = "";
-      this.valuetoSet = "";
+      this.valueToSet = "";
       this.showKVPreset = false;
     },
-isNumber(value){
-	if(isNaN(value)){
-		return false;
-	}
-	else{
-		return true;
-	}
-},
+    isNumber(value) {
+      if (isNaN(value)) {
+        return false;
+      } else {
+        return true;
+      }
+    },
+
+    addKeyWordToArr() {},
+    doPresetRs(){
+                    this.selectRsDAFlag=false
+
+                  this.getRequest("/weight/keywordSort/" + this.requestWigId).then((resp) => {
+                //获取关键词权重表
+                var keywordJson = resp.data.tables;
+                var keywordIssueJson = resp.data.keywordIssue;
+                // if (keywordIssueJson[this.keyToSet] == null) {
+                //   keywordIssueJson[this.keyToSet] = JSON.stringify(this.valueToSet);
+                // } 
+                console.log("设置的材料类型")
+
+                console.log(this.valueToSet)
+                  keywordIssueJson[this.keyToSet] = this.valueToSet
+
+                // else if (
+                //   keywordIssueJson[this.keyToSet]
+                //     .split("|")
+                //     .indexOf(this.rsDocAbout) < 0
+                // ) {
+                //   //不包含该问题
+                //   keywordIssueJson[this.keyToSet] =
+                //     keywordIssueJson[this.keyToSet] +
+                //     "|" +
+                //     this.rsDocAbout;
+                // }
+
+ 
+                var kvObj = {
+                  authId: sessionStorage.getItem("authId"),
+                  type: this.getKwTypeNum(),
+                  tables: keywordJson,
+                  issueKeyword:{},
+                  keywordIssue: keywordIssueJson,
+                };
+                this.putRequest("/weight/" + this.requestWigId, kvObj).then(
+                  (resp) => {
+                    console.log(kvObj);
+                    console.log("更新rs预设kv权重表");
+                    console.log(resp);
+         
+                    this.checkFromThisType(41)
+                  }
+                );
+              });
+    },
     doPreset() {
-      // alert(this.valueToSet)
-      // alert(this.typeNum)
-      if(!this.isNumber(this.valueToSet)){
-                this.$message({
+        
+
+      if (!this.isNumber(this.valueToSet)) {
+        this.$message({
           type: "warning",
           message: "优先级只能是数字",
         });
-        return
-      }
-      if (!this.requestWigId) {
-        //点进哪一种kv设置的时候就获取了 单位下的某种权重表id 或 null
-        //第一次添加，没录过
-        var json1 = {};
-        var key1 = this.keyToSet;
-        json1[key1] = this.valueToSet;
+        return;
+      }      this.showWaitingFlag = true;
+      this.showKVPreset = false;
+      // alert(this.valueToSet)
+      // alert(this.typeNum)
 
+      {
+        if (this.backToDocAboutShow) {  //添加一个关键词 需要：
+        //问题权重表：问题对应的关键词数组push
+        //关键词权重表： 关键词 kv存， 关键词对应的问题存
 
-        var kvObj = {
-          authId: sessionStorage.getItem("authId"),
-          type: this.typeNum,
-          tables: json1,
-        };
+          //zai 问题对应关键词页面
+          var docAboutTable;
+          this.getRequest("/weight/" + this.requestWigId)
+            .then((resp) => {
+              //问题列表、问题—关键词数组列表1
+              docAboutTable = resp.data.tables;
+              this.issueKeywordTable = resp.data.issueKeyword;  
+              console.log(this.issueKeywordTable); //不同问题对应的关键词数组
+              console.log(this.issueKeywordTable[this.deepInThisDocAbout]);
 
-        this.postRequest(
-          //注意防止重复提交
-          "/weight",
-          JSON.stringify(kvObj)
-        ).then((resp) => {
-          console.log("第一次提交预设权重表");
-          console.log(resp);
-          // console.log(this.weightForm=resp)
-          this.weightForm = resp.data;
-          if (resp.code == 0) {
-            this.renewTable();
-            this.showWaitingFlag = false;
-          }
-        });
-      } else {
-        //添加过这种kv 那么是修改json
-        var table3;
-        this.getRequest("/weight/sort/" + this.requestWigId)
-          .then((resp) => {
-            //查询对应的权重表得到json
-            console.log("添加过，先获取：");
-            console.log(resp.data.tables);
-            table3 = resp.data.tables;
-            var key3 = this.keyToSet;
-            // var json1 = table;
-            table3[key3] = this.valueToSet;
-          })
-          .then((r) => {
-            var kvObj = {
-              authId: sessionStorage.getItem("authId"),
-              type: this.typeNum,
-              tables: table3,
-            };
-
-            this.putRequest("/weight/" + this.requestWigId, kvObj).then(
-              (resp) => {
-                console.log("更新预设kv权重表");
-                console.log(resp);
-                this.renewTable();
+              if (this.issueKeywordTable[this.deepInThisDocAbout] == null) {
+                this.issueKeywordTable[this.deepInThisDocAbout] = [];
               }
-            );
-          })
-          .then((r) => {
-            this.showWaitingFlag = false;
-            this.showKVPreset=false
-          });
+              if (
+                this.issueKeywordTable[this.deepInThisDocAbout].indexOf(
+                  this.keyToSet
+                ) < 0
+              ) {
+                //问题对应的关键词列表json，不用判断，肯定有这个问题
+                this.issueKeywordTable[this.deepInThisDocAbout].push(
+                  this.keyToSet
+                );
+              }
+              var docAboutObj = {
+                authId: sessionStorage.getItem("authId"),
+                type: this.typeNum,
+                tables: docAboutTable,
+                issueKeyword: this.issueKeywordTable,
+              };
+
+              this.putRequest(
+                "/weight/" + this.weightForm.docIssueWig,
+                docAboutObj
+              ).then((resp) => {
+                console.log("更新文书问题权重表");
+                console.log(resp);
+              });
+
+              /**以上是问题权重表 */
+
+              this.getRequest("/weight/keywordSort/" + this.keywordWigId).then((resp) => {
+                //获取关键词权重表
+                var keywordJson = resp.data.tables;
+                keywordJson[this.keyToSet] = this.valueToSet;
+                //**以上是正常添加到权重表 */
+                var keywordIssueJson = resp.data.keywordIssue;
+                console.log(keywordIssueJson);
+                console.log(keywordIssueJson[this.keyToSet]);
+                if (keywordIssueJson[this.keyToSet] == null) {
+                  keywordIssueJson[this.keyToSet] = this.deepInThisDocAbout;
+                } else if (
+                  keywordIssueJson[this.keyToSet]
+                    .split("|")
+                    .indexOf(this.deepInThisDocAbout) < 0
+                ) {
+                  //不包含该问题
+                  keywordIssueJson[this.keyToSet] =
+                    keywordIssueJson[this.keyToSet] +
+                    "|" +
+                    this.deepInThisDocAbout;
+                }
+
+                keywordJson[this.keyToSet] = this.valueToSet;
+                var kvObj = {
+                  authId: sessionStorage.getItem("authId"),
+                  type: this.getKwTypeNum(),
+                  tables: keywordJson,
+                  keywordIssue: keywordIssueJson,
+                };
+                this.putRequest("/weight/" + this.keywordWigId, kvObj).then(
+                  (resp) => {
+                    console.log(kvObj);
+                    console.log("更新预设kv权重表");
+                    console.log(resp);
+          
+                    var e = 1;
+                    var tempp = [];
+                    tempp.push(this.deepInThisDocAbout); //为了再查一次这个问题
+                    this.thisDocAbout(e, tempp);
+                  }
+                );
+              });
+            })
+            .then(() => {});
+        } else {
+          //问题和责任者和人事关键词
+          var table3;
+          var issueKeywordArrJson
+          var keywordIssueJson
+          this.getRequest("/weight/sort/" + this.requestWigId)
+            .then((resp) => {
+              //查询对应的权重表得到json
+              console.log("添加过，先获取：");
+              console.log(resp.data.tables);
+              table3 = resp.data.tables;
+              if(resp.code==0){
+                  var key3 = this.keyToSet;
+              // var json1 = table;
+              table3[key3] = this.valueToSet;
+
+                 issueKeywordArrJson=resp.data.issueKeyword
+                 keywordIssueJson=resp.data.keywordIssue
+                 if(keywordIssueJson==null){
+                   keywordIssueJson={}
+                 }
+
+            if(issueKeywordArrJson[this.keyToSet]==null){
+                var arrtemp=[]
+
+                issueKeywordArrJson[this.keyToSet]=arrtemp
+              }
+ 
+              }
+              else {
+                        this.$message({
+          type: "warning",
+          message: "添加失败",
+        });
+                return
+              }
+             
+              
+
+
+            
+            })
+            .then((r) => {
+
+
+              var kvObj = {
+                authId: sessionStorage.getItem("authId"),
+                type: this.typeNum,
+                tables: table3,
+                issueKeyword: issueKeywordArrJson,
+                keywordIssue:keywordIssueJson
+              };
+
+              this.putRequest("/weight/" + this.requestWigId, kvObj).then(
+                (resp) => {
+                  console.log("更新预设kv权重表");
+                  console.log(resp);
+                  this.renewTable();
+                }
+              );
+            })
+            .then((r) => {
+              this.showWaitingFlag = false;
+              this.showKVPreset = false;
+            });
+        }
+        //添加过这种kv 那么是修改json
       } //添加过
 
       // if(){}
     },
 
-    renewTable() {
+    renewTable() {   //问题责任者的刷新
       this.jsonTable = [];
       this.selectShow = false;
-      // this.typeNum=num
-      if (!this.requestWigId) {
-        //点进哪一种kv设置的时候就获取了 单位下的某种权重表id 或 null
 
-        this.jsonTable = [];
-        this.$message({
-          type: "warning",
-          message: "还没有添加过该类型的档案",
-        });
-        location.reload();
-      } else {
+       {
         var table;
         this.getRequest("/weight/sort/" + this.requestWigId).then((resp) => {
           //查询对应的权重表得到json
@@ -449,16 +843,23 @@ isNumber(value){
           for (attr in table) {
             this.jsonTable.push([attr, table[attr]]);
           }
+            this.level1JsonTable=this.jsonTable
+
           // var json1 = table;
         });
       }
     },
 
     checkFromThisType(num) {
+      this.showWaitingFlag = true;
+      this.backToDocAboutShow = false;
+      // this.ba
       this.jsonTable = [];
+      this.tableTypeNum = num;
       // var this.requestWigId
       if (num == 11) {
         this.requestWigId = this.weightForm.docIssueWig;
+        this.keywordWigId = this.weightForm.docKeywordWig;
       }
       if (num == 12) {
         this.requestWigId = this.weightForm.docAuthorWig;
@@ -468,6 +869,7 @@ isNumber(value){
       }
       if (num == 21) {
         this.requestWigId = this.weightForm.tecProjectWig;
+        this.keywordWigId = this.weightForm.tecKeywordWig;
       }
       if (num == 22) {
         this.requestWigId = this.weightForm.tecAuthorWig;
@@ -477,6 +879,7 @@ isNumber(value){
       }
       if (num == 31) {
         this.requestWigId = this.weightForm.busProjectWig;
+        this.keywordWigId = this.weightForm.busKeywordWig; //预加载关键词表
       }
       if (num == 32) {
         this.requestWigId = this.weightForm.busAuthorWig;
@@ -486,14 +889,13 @@ isNumber(value){
       }
       if (num == 41) {
         this.requestWigId = this.weightForm.perKeywordWig;
+         
       }
 
       this.selectShow = false;
       this.typeNum = num; //选择一种键值进行修改调整 typeNum记录是哪种
 
-      // if(this.showKVPreset){
-      //   return //在键值预设窗口没消失的时候，仅执行到这里就返回，获取typeNum
-      // }
+ 
       if (!this.requestWigId) {
         this.jsonTable = [];
         this.$message({
@@ -502,17 +904,34 @@ isNumber(value){
         });
       } else {
         var table;
-        this.getRequest("/weight/sort/" + this.requestWigId).then((resp) => {
-          //查询对应的权重表得到json
-          table = resp.data.tables;
-          let attr;
-          this.jsonTable = [];
+        this.getRequest("/weight/sort/" + this.requestWigId)
+          .then((resp) => {
+            //查询对应的权重表得到json
+            table = resp.data.tables;
+            // this.issueKeywordTable=resp.data.issueKeyword==null?{}:resp.data.issueKeyword;  //关键词对应数组json
+            // this.keywordIssueTable=resp.data.keywordIssue==null?{}:resp.data.keywordIssue;
+            this.issueTable=resp.data.tables
+            this.issueKeywordTable = resp.data.issueKeyword; //问题对应关键词数组json
+            // this.keywordIssueTable=resp.data.keywordIssue
+      if(num==41){
+        console.log(this.issueKeywordTable)
+        this.keywordIssueTable=resp.data.keywordIssue
+        this.keywordTable=resp.data.tablses
+      }
 
-          for (attr in table) {
-            this.jsonTable.push([attr, table[attr]]);
-          }
-          // var json1 = table;
-        });
+            let attr;
+            this.jsonTable = [];
+
+            for (attr in table) {
+              this.jsonTable.push([attr, table[attr]]);
+            }
+            this.level1JsonTable=this.jsonTable  //缓存
+
+            // var json1 = table;
+          })
+          .then(() => {
+            this.showWaitingFlag = false;
+          });
       }
     },
     saveKeyValue() {
@@ -577,16 +996,18 @@ isNumber(value){
 
     preSetButton() {
       this.showKVPreset = true;
+      this.keyToSet='词'
+      this.valueToSet='数字'
     },
 
     fixTheKV() {
       //确定修改
-      if(!this.isNumber(this.valueToFix)){
-                this.$message({
+      if (!this.isNumber(this.valueToFix)) {
+        this.$message({
           type: "warning",
           message: "优先级只能是数字",
         });
-        return
+        return;
       }
 
       var _arr = this.jsonTable;
@@ -604,6 +1025,7 @@ isNumber(value){
 
       this.submitFixFromQianDuan();
       this.showKVFix = false;
+                       
     },
 
     submitFixFromQianDuan() {
@@ -614,11 +1036,14 @@ isNumber(value){
         jsonToCommit[this.jsonTable[i][0]] = this.jsonTable[i][1];
       }
 
+if(!this.backToDocAboutShow){  //问题责任者 人事关键词
       var docAboutObj = {
         authId: sessionStorage.getItem("authId"),
         type: this.typeNum,
         id: this.requestWigId,
         tables: jsonToCommit,
+        issueKeyword:this.issueKeywordTable,
+        keywordIssue:this.keywordIssueTable
       };
 
       this.putRequest("/weight/" + this.requestWigId, docAboutObj)
@@ -633,7 +1058,7 @@ isNumber(value){
               type: "warning",
               message: "操作成功",
             });
-            this.renewTable();
+            this.renewTable();//1
           } else {
             this.$message({
               type: "warning",
@@ -643,10 +1068,159 @@ isNumber(value){
             location.reload();
           }
         });
+}  //责任者和问题的提交
+
+else{
+for (var i = 0; i < this.jsonTable.length; i++) {  //
+        // console.log(this.jsonTable[i][0]);
+        if(this.keywordTable[this.jsonTable[i][0]]){
+        this.keywordTable[this.jsonTable[i][0]] = this.jsonTable[i][1];
+        }
+      }
+            var kvObj = {
+                  authId: sessionStorage.getItem("authId"),
+                  type: this.getKwTypeNum(),
+                  tables: this.keywordTable,
+                  keywordIssue: this.keywordIssueTable,
+                };
+                this.putRequest("/weight/" + this.keywordWigId, kvObj).then(
+                  (resp) => {
+                    console.log(kvObj);
+                    console.log("调整后，关键词对应的表");
+                    console.log(resp);
+             
+             
+
+                   
+                  }
+                ).then(()=>{
+                     var e = 1;
+                    var tempp = [];
+                    tempp.push(this.deepInThisDocAbout); //为了再查一次这个问题
+                    this.thisDocAbout(e, tempp);
+                    
+                });
+}
+
     },
+
+    deleteDocAbout(item){
+      //进入问题表的时候就已经设置好 this
+      //this.issueTable
+      //this.issueKeywordTable
+      // alert('shanchu')
+      this.getRequest(
+        "/weight/map/about/" + this.requestWigId + "?word=" + item[0]
+      )
+      .then((resp) => {
+        console.log("按问题查关键词数组 删除某个问题后");
+          var kwArr = resp.data;
+          if(kwArr==null) {
+            kwArr=[]
+          }
+              this.getRequest("/weight/keywordSort/" + this.keywordWigId).then((resp) => {
+        this.keywordTable = resp.data.tables;
+ 
+        this.keywordIssueTable = resp.data.keywordIssue;
+      });
+
+ 
+
+        var issueToDelete=item[0]
+
+      for(var kwitem in kwArr){
+        var stringWithSplit=this.keywordIssueTable[kwArr[kwitem]]
+        if(stringWithSplit){
+          var keywordIssueStringToArr=stringWithSplit.split('|')
+          var indext=keywordIssueStringToArr.indexOf(issueToDelete)
+          
+          if(indext>-1){  //串中含有
+          console.log('含有')
+            keywordIssueStringToArr.splice(indext,1)
+            stringWithSplit=keywordIssueStringToArr[0]
+            for(var i=1;i<keywordIssueStringToArr.length;i++){
+              stringWithSplit=stringWithSplit+'|'+keywordIssueStringToArr[i]  //删除后再拼接
+            }
+          }
+          this.keywordIssueTable[kwArr[kwitem]]=stringWithSplit //放回
+        } //该关键词有 问题串
+        
+      }
+
+          var kvObj = {
+                  authId: sessionStorage.getItem("authId"),
+                  type: this.getKwTypeNum(),
+                  tables: this.keywordTable,
+                  keywordIssue: this.keywordIssueTable,
+                };
+                this.putRequest("/weight/" + this.keywordWigId, kvObj).then(
+                  (resp) => {
+                    console.log(kvObj);
+                    console.log("删除问题后，关键词权重表 每一个关键词检查问题串");
+                    console.log(resp);
+       
+       
+
+                   
+                  }
+                );
+
+
+        }).then(()=>{
+     delete this.issueTable[item[0]]
+      delete this.issueKeywordTable[item[0]]
+             var issueObj = {
+                  authId: sessionStorage.getItem("authId"),
+                  type: this.typeNum,
+                  tables: this.issueTable,
+                  issueKeyword: this.issueKeywordTable,
+                };
+
+                this.putRequest(
+                  "/weight/" + this.weightForm.docIssueWig,
+                  issueObj
+                ).then((resp) => {
+                  console.log("shanchu问题权重表");
+                  console.log(resp);
+                  if(resp.code==0){
+                              this.$message({
+            type: "success",
+            message: "删除成功",
+          });
+                  this.issueKeywordTable=resp.data.issueKeyword
+                  this.issueTable=resp.data.tables
+        this.jsonTable=[]
+                     for (var attr in this.issueTable) {
+            this.jsonTable.push([attr, this.issueTable[attr]]);
+          }
+                  }else{
+                        this.$message({
+            type: "success",
+            message: "删除失败",
+          });
+                    this.checkFromThisType(this.typeNum)
+                  }
+                });
+
+
+        })
+
+
+ 
+          
+
+        
+
+    },
+
     deleteKV(e, item) {
+      //删除问题
+
+
+
+      var keywordTodelete = {};
       this.$confirm(
-        "确定要删除该条不再使用吗，若本批录入中有该词条可能导致排序失败",
+        "确定要删除该条不再使用吗，若某批次录入中有该词条可能导致排序失败",
         {
           cancelButtonClass: "btn-custom-cancel",
           confirmButtonText: "确定",
@@ -655,16 +1229,96 @@ isNumber(value){
         }
       )
         .then(() => {
+          
+//问题删除
+          if(this.typeNum==11||this.typeNum==21||this.typeNum==31){
+        if(this.backToDocAboutShow==false){ //问题责任者
+          this.deleteDocAbout(item)
+            return
+      }
+    
+
+}
+
+// alert(2)
+
           var _arr = this.jsonTable;
           var length = _arr.length;
           // console.log(length)
           for (var i = 0; i < length; i++) {
             if (this.jsonTable[i][0] == item[0]) {
-              this.jsonTable.splice(i, 1); //删除下标为i的元素
-              break;  //不break的话会报错，因为外层循环还在继续，数组已经少了一个了
+              keywordTodelete = this.jsonTable.splice(i, 1); //删除下标为i的元素  返回的是数组，长度为1
+              break; //不break的话会报错，因为外层循环还在继续，数组已经少了一个了
             }
           }
- 
+
+
+
+          if (this.backToDocAboutShow) {
+            this.showWaitingFlag = true;
+
+            var docAboutTable;
+            this.getRequest("/weight/" + this.requestWigId)
+              .then((resp) => {
+                //问题列表、问题—关键词数组列表1
+                docAboutTable = resp.data.tables;
+                this.issueKeywordTable = resp.data.issueKeyword;
+                var inde = this.issueKeywordTable[
+                  this.deepInThisDocAbout
+                ].indexOf(item[0]);
+                if (inde > -1) {
+                  this.issueKeywordTable[this.deepInThisDocAbout].splice(
+                    inde,
+                    1
+                  );
+                }
+                var issueObj = {
+                  authId: sessionStorage.getItem("authId"),
+                  type: this.typeNum,
+                  tables: docAboutTable,
+                  issueKeyword: this.issueKeywordTable,
+                };
+
+                this.putRequest(
+                  "/weight/" + this.weightForm.docIssueWig,
+                  issueObj
+                ).then((resp) => {
+                  console.log("更新文书问题权重表");
+                  console.log(resp);
+                });
+                return "k"
+              })
+              .then((resp) => {
+                console.log(resp)
+                console.log("删除关键字")
+                console.log(keywordTodelete[0][0])
+                delete this.keywordTable[keywordTodelete[0][0]];  //可能会删除关键词对应其他问题 kkkk
+                console.log(this.keywordTable)
+                delete this.keywordIssueTable[keywordTodelete[0][0]];
+
+                var kvObj = {
+                  authId: sessionStorage.getItem("authId"),
+                  type: this.getKwTypeNum(),
+                  tables: this.keywordTable,
+                  keywordIssue: this.keywordIssueTable,
+                };
+                this.putRequest("/weight/" + this.keywordWigId, kvObj).then(
+                  (resp) => {
+                    console.log(kvObj);
+                    console.log("删除后更新 预设kv权重表");
+                    console.log(resp);
+             
+                    var e = 1;
+                    var tempp = [];
+                    tempp.push(this.deepInThisDocAbout); //为了再查一次这个问题
+                    this.thisDocAbout(e, tempp);
+                  }
+                );
+              });
+
+            return;
+          }
+
           console.log(this.jsonTable);
           this.submitFixFromQianDuan();
         })
@@ -763,12 +1417,23 @@ isNumber(value){
   },
   data() {
     return {
+selectRsDAFlag:false,
+      level1JsonTable:[],
+      keywordIssueTable: {},
+      keywordArrFromIssue: [],
+      docAboutWigTable: {},
+      deepInThisDocAbout: "", //对哪个问题下的关键词修改
+      issueKeywordTable: {}, //问题对应关键词数组json
+      issueTable:{},
+      tableTypeNum: 11,
       showWaitingFlag: false,
+      backToDocAboutShow: false,
       requestWigId: "",
       typeNum: "",
       weightForm: {},
       keyToFix: "",
       valueToFix: "",
+      authName: "",
 
       keyToSet: "",
       valueToSet: "",
@@ -781,6 +1446,8 @@ isNumber(value){
       selectShow: true,
 
       jsonTable: [],
+      keywordTable: "",
+      keywordWigId: 1,
 
       keyWordTemp: [
         {
@@ -918,6 +1585,21 @@ isNumber(value){
 }
 .selectItem:hover {
   cursor: pointer;
+}
+
+.topTextButton {
+  color: #333;
+  padding: 0.3rem;
+  background-color: rgb(47, 115, 124);
+  -webkit-box-shadow: 0 0 0.5rem #909399;
+  box-shadow: 0 0 0.5rem #909399;
+  border-radius: 0.5rem;
+  color: #ddd;
+}
+
+.topTextButton:hover {
+  cursor: pointer;
+  background-color: rgb(18, 71, 78);
 }
 .wrapper {
   background-color: rgb(209, 218, 243);

@@ -10,6 +10,7 @@ import {postKeyValueRequest} from "./utils/api";
 import {putRequest} from "./utils/api";
 import {deleteRequest} from "./utils/api";
 import {getRequest} from "./utils/api";
+import {baseurl} from "./utils/api"
 import {initMenu} from "./utils/menus";
 import 'font-awesome/css/font-awesome.min.css'
 import Print from './utils/print.js'
@@ -17,6 +18,7 @@ import Print from './utils/print.js'
 import animate from 'animate.css'
 
 Vue.prototype.postRequest = postRequest;
+Vue.prototype.baseurl=baseurl
 Vue.prototype.postKeyValueRequest = postKeyValueRequest;
 Vue.prototype.putRequest = putRequest;
 Vue.prototype.deleteRequest = deleteRequest;
@@ -148,7 +150,7 @@ Vue.filter('formatAuthCode',function(value){
 //         }
 //     }
 // })
-Vue.prototype.baseurl="http://101.200.243.57:8080"
+// Vue.prototype.baseurl="http://101.200.243.57:8080"
 
 new Vue({
     router,

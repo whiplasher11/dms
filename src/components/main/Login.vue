@@ -47,7 +47,7 @@
       </el-form-item>-->
       <!-- <el-checkbox size="normal" class="loginRemember" v-model="checked"></el-checkbox> -->
       <div class="goRegister" @click="goRegister">尚未注册？前往注册</div>
-      <el-button class="loginBtn" size="normal" type="primary" @click="submitLogin">登录</el-button>
+      <el-button class="loginBtn" size="normal" type="primary" @click="submitLogin" @keyup.enter="submitLogin">登录</el-button>
     </el-form>
       </transition>
 
@@ -133,6 +133,17 @@
 <script>
 export default {
   name: "Login",
+  created(){
+    
+
+      let that = this;
+      document.onkeydown = function (e) {
+        let key = window.event.keyCode;
+        if (key === 13){
+          that.submitLogin();//方法
+        }}
+
+  },
   data() {
     return {
       flag:true,
