@@ -58,7 +58,7 @@
         class="matchedKVClass"
       >
         <div
-          @click="selectThisTip($e, item)"
+          @click="selectThisTip(item)"
           style="
             font-size: 1rem;
             text-align: center;
@@ -556,6 +556,7 @@
 import Utils from "../../utils/doc.js";
 import Left from "../common/History";
 import axios from "axios";
+// import { delete } from 'vue/types/umd';
 
 export default {
   name: "docInput",
@@ -590,9 +591,9 @@ export default {
         // console.log(val);
         // console.log(oldVal);
 
-        if (val.docAbout != oldVal.docAbout) {
-          this.docFormRS.docAboutSub = "";
-        }
+        // if (val.docAbout != oldVal.docAbout) {
+        //   this.docFormRS.docAboutSub = "";
+        // }
 
         // console.log(val);
         if (val.docAbout == "工资、任免、退休材料") {
@@ -649,6 +650,7 @@ export default {
 
   data() {
     return {
+      kwInTitle:[],
       rsDocTypeMain:"",
       matchedKV: [],
       tipShowFlag: false,
@@ -1517,7 +1519,7 @@ export default {
                 table = resp.data.tables;
                 var key1 = this.docFormRS.keyword;
                 // var json1 = table;
-                                   keywordIssueJson=resp.keywordIssue
+                                   keywordIssueJson=resp.data.keywordIssue
                     if(keywordIssueJson==null){keywordIssueJson={}}
                       keywordIssueJson[key1]=jobCode  //optRs
 
@@ -2326,14 +2328,33 @@ export default {
 
     aiInputFunc() {
       // alert(2)
+    var keywordIssueJson
+
+/*
       if (sessionStorage.getItem("docType") == "personnel") {
         this.getRequest("/weight/" + this.weightForm.perKeywordWig).then(
           (resp) => {
-            var keywordIssueJson = resp.data.keywordIssue;
+             keywordIssueJson = resp.data.keywordIssue;
             console.log(keywordIssueJson);
+               let attr;
+    for (attr in keywordIssueJson) {
+      if(this.docFormRS.docTitle.indexOf(attr)==-1){
+       delete keywordIssueJson[attr]
+      }
+      
+    }
+    console.log(keywordIssueJson)
+
+    // kwInTitleTrue=[]
+    // for(var k in kwInTitle){
+    //   if(this.docFormRS.docTitle.indexOf(kwInTitle[k])>-1){
+    //     kwInTitleTrue.push(kwInTitle[k])
+    //   }
+    // }
           }
         );
-      }
+      }*/
+      // var titttt=sessionStorage.getItem('docType')=='personnel'?this.docFormRs.docTitle:this.docForm.docTitle
       axios
         .get(this.baseurl + "/weight/map/" + this.weightFormKeywordCode(), {
           headers: {
@@ -2345,39 +2366,51 @@ export default {
               : null,
           },
           params: {
-            title: this.docForm.docTitle,
+            title: sessionStorage.getItem('docType')=='personnel'?this.docFormRS.docTitle:this.docForm.docTitle,
           },
         })
         .then((resp) => {
           this.matchedKV = [];
-          resp={
-            data:['10']
-          }
+
           console.log(resp)
 
-          for (var attr in resp.data) {
+
+
+
+
+           for (var attr in resp.data) {
+             if(resp.data==null){
+               resp.data=keywordIssueJson
+             }
             var splitArr = resp.data[attr].split("|");
 
-            if (sessionStorage.getItem("docType") == "personnel") {
+             if (sessionStorage.getItem("docType") == "personnel") {
               console.log(2);
 
               for (var k in splitArr) {
+                console.log(splitArr[k])
                 var i = this.getRsText(splitArr[k]);
-                this.matchedKV.push([attr, i]);
-                console.log(this.matchedKV);
+                console.log(i)
+                this.matchedKV.push([attr, this.rsDocTypeMain,i]);
               }
+                console.log(this.matchedKV);
+
             } // 人事要找对照表
-            else {
-              // 其他三种
-              for (var k in splitArr) {
+
+
+       else{
+                       for (var k in splitArr) {
                 this.matchedKV.push([attr, splitArr[k]]);
               }
-            }
+         
+       }
+              // 其他三种
+
 
             if (this.matchedKV.length == 1) {
               if(sessionStorage.getItem("docType") == "personnel"){
-                this.docFormRS.docAboutSub=this.matchedKV[0][1]
-                this.docFormRS.docAbout=this.rsDocTypeMain
+                this.docFormRS.docAboutSub=this.matchedKV[0][2]
+                this.docFormRS.docAbout=this.matchedKV[0][1]
               }
               else{
               this.docForm.docAbout = this.matchedKV[0][1];
@@ -2388,12 +2421,20 @@ export default {
               this.tipShowFlag = true;
             }
           }
+
+ 
           // alert()
         });
     },
-    selectThisTip(event, item) {
+    selectThisTip( item) {
       this.docForm.docAbout = item[1];
       this.docForm.keyword = item[0];
+
+      if(sessionStorage.getItem('docType')=='personnel'){
+              this.docFormRS.docAbout = item[1];
+              this.docFormRS.docAboutSub = item[2];
+      this.docForm.keyword = item[0];
+      }
       this.tipShowFlag = false;
     },
     titleComplete() {

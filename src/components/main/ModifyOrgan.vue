@@ -201,6 +201,7 @@ authCodeToSet:'',
         },
         batchDocs(item){ //查看某批
         window.scrollTo(0,0)
+      this. $store.state.alreadyDocs=[]
             console.log(item)
             console.log('查看某批')
 
@@ -244,6 +245,7 @@ window.sessionStorage.setItem("lastBox",JSON.stringify(item.lastBox))
                     if(response.code==0){
                         this.organsShow=false;
                         this.batches=response.data;
+                        this.batches.reverse()
 
                     }
 
@@ -335,6 +337,7 @@ window.sessionStorage.setItem("lastBox",JSON.stringify(item.lastBox))
              if(resp.code==0){
              console.log('加载时请求单位列表')
             this.organs=resp.data;
+              this.organs.reverse()
             // console.log(this.organs)
             //  console.log(resp)
 

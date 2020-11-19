@@ -169,7 +169,7 @@
         </div>
 
         <div
-          style="height: 4.5rem; position: absolute; top: -3.7rem; right: 14rem;width:18%"
+          style="height: 4.5rem; position: absolute; top: -1.5rem; right: 14rem;width:18%"
         >
           <!-- 搜索 -->
           <el-input class="leftInput" v-model="searchContent"></el-input>
@@ -201,13 +201,15 @@
           >
 
         </div>
-
+    <div style="position: relative;
+            left: 0.5rem;
+            top: -0.5rem;
+            font-size: 1.1rem;">
         <div
           style="
-            position: absolute;
-            left: 0.5rem;
-            top: -2.5rem;
-            font-size: 1.1rem;
+         float:left
+         width:3rem
+         text-align:center
 
           "
           class="hoverStyle "
@@ -218,10 +220,9 @@
 
         <div
           style="
-            position: absolute;
-            left: 18rem;
-            top: -2.5rem;
-            font-size: 1.1rem;
+         float:left
+         width:5rem
+         text-align:center
           "
           class="topTextButton hoverStyle"
           @click="backToOrgans"
@@ -231,31 +232,26 @@
 
         <div
           style="
-            position: absolute;
-            left: 27rem;
-            top: -2.5rem;
-            font-size: 1.1rem;
+         float:left
+         width:5rem
+         text-align:center
+         margin-left:1rem
           "
           class="hoverStyle topTextButton"
           @click="goDocIn"
         >
           继续录入
         </div>
+        
 
-        <div
-          style="position: absolute; left: 35rem; top: -2.4rem; font-size: 1rem"
-          class="hoverStyle"
-          @click="goSetRule"
-        >
-          顺序有问题？请前往设置本单位规则
-        </div>
+
 
         <div
           style="
-            position: absolute;
-            left: 11rem;
-            top: -2.5rem;
-            font-size: 1.1rem;
+         float:left
+         width:5rem
+         text-align:center
+         margin-left:1rem
           "
           v-if="docType != 'personnel'"
           class="hoverStyle topTextButton"
@@ -264,7 +260,7 @@
           排件号盒号
         </div>
 
-        <div
+        <!-- <div
           style="
             position: absolute;
             left: 11rem;
@@ -275,27 +271,40 @@
           class="hoverStyle topTextButton"
           @click="sortThisBatchRS"
         >
-          报表排序
-        </div>
+          查看本单位
+        </div> -->
 
         <div
           style="
-            position: absolute;
-            left: 4rem;
-            top: -2.5rem;
-            font-size: 1.1rem;
+         float:left
+         width:5rem
+         text-align:center
+         margin-left:1rem !important
           "
           class="hoverStyle topTextButton"
           @click="getExcel"
         >
           下载表格
         </div>
+        <div
+          style="         float:left
+         width:5rem;
+         text-align:center;
+         margin-left:1rem;
+         "
+          class="hoverStyle"
+          @click="goSetRule"
+        >
+          顺序有问题？请前往设置本单位规则
+        </div>
+<div style="clear:both"></div>
 
+    </div>
         <div
           style="
             position: absolute;
             width: 16rem;
-            top: -6.5rem;
+            top: -3.5rem;
             font-size: 1.4rem;
             margin-left: -8rem;
             left: 50%;
@@ -303,7 +312,6 @@
         >
           本批所有已录入文档
         </div>
-
         <div v-if="docType != 'science' && docType != 'personnel'">
           <div class="detailItem">
             <div class="itemInfo">识别号</div>
@@ -393,22 +401,22 @@
           </div>
         </div>
 
-        <div v-if="docType == 'personnel'">
-          <div class="detailTopLine" style="">
+        <div v-if="docType == 'personnel'" >
+          <div class="detailTopLine" >
             <div class="itemInfo">识别号</div>
 
             <div class="itemInfo">姓名</div>
-            <div class="itemInfo">材料类型</div>
-            <div class="itemInfo">子材料类型</div>
-            <div class="itemInfo" style="width: 10%">标题</div>
+            <div class="itemInfo" style="width: 10%">材料类型 </div>
+            <div class="itemInfo" style="width: 10%">子材料类型</div>
+            <div class="itemInfo" style="width: 15%">标题</div>
             <div class="itemInfo">日期</div>
-            <div class="itemInfo">页数</div>
-            <div class="itemInfo">材料序号</div>
+            <div class="itemInfo" style="width: 4%">页数</div>
+            <div class="itemInfo" style="width: 4%">材料序号</div>
 
             <div class="itemInfo" style="width: 10%">备注</div>
             <div class="itemInfo">操作</div>
 
-            <div class="itemInfo" style="width: 23%">&nbsp;</div>
+            <div class="itemInfo" style="width: 18%">&nbsp;</div>
               <div style="clear:both"></div>
 
             <!-- <div class="itemInfo">操作</div> -->
@@ -430,18 +438,18 @@
                 <div class="itemInfo" v-if="ind3 == 0">
                   {{ j.personName }}
                 </div>
-                <div class="itemInfo" v-if="ind3 != 0">&nbsp;</div>
+                <div class="itemInfo"  v-if="ind3 != 0">&nbsp;</div>
 
-                <div class="itemInfo" v-if="ind3 == 0">
+                <div class="itemInfo" style="width: 10%" v-if="ind3 == 0">
                   {{ j.docAbout }}
                 </div>
                 <div class="itemInfo" v-if="ind3 != 0">&nbsp;</div>
 
-                <div class="itemInfo">
+                <div class="itemInfo" style="width: 10%">
                   {{ j.docAboutSub == "无" ? "&nbsp;" : j.docAboutSub }}
                 </div>
 
-                <div class="itemInfo" style="width: 10%">
+                <div class="itemInfo" style="width: 15%">
                   {{ j.docTitle }}
                 </div>
 
@@ -449,13 +457,13 @@
                   {{ j.docDate }}
                 </div>
 
-                <div class="itemInfo">
+                <div class="itemInfo" style="width: 4%">
                   {{ j.docPage }}
                 </div>
-                <div class="itemInfo">
+                <div class="itemInfo" style="width: 4%">
                   {{ j.docNum == "" || j.docNum == null ? "&nbsp;" : j.docNum }}
                 </div>
-                <div class="itemInfo" style="width: 10%">
+                <div class="itemInfo" style="width: 10%" >
                   {{ j.remark == "" || j.remark == null ? "&nbsp;" : j.remark }}
                 </div>
                 <div class="itemInfo2" style="width: 10%">
@@ -755,7 +763,70 @@ export default {
     };
   },
   methods: {
-    loadDocs() {
+       loadDocs(){
+//         if(sessionStorage.getItem('docType')=='personnel'){
+// var path =
+//         "/document/" +
+//         sessionStorage.getItem("docType") +
+//         "/sort/" +
+//         sessionStorage.getItem("batchId") +
+//         "?pageNow=0&pageSize=10000";
+        
+//         this.showWaitingFlag = true;
+//         this.getRequest(path).then((resp) => {
+//           console.log("排件号盒号");
+//           console.log(resp);})
+//         }
+        this.showWaitingFlag=true
+      // return
+       var path='/document/page/'+sessionStorage.getItem('docType')+'/'
+       +sessionStorage.getItem('batchId')+'?pageNow=0&pageSize=100000'  // 其他三种档案都是这个接口，但人事的渲染比较nb，三重循环
+                          axios.get(path, {
+                  headers:{
+            'Content-Type': 'application/json',
+            'authId':sessionStorage.getItem('authId'),
+            token:sessionStorage.getItem('token')?(sessionStorage.getItem('token').split('"')[1]||sessionStorage.getItem('token')):null,
+                  }
+              }).then(resp=>{
+                  // console.log(resp)
+                  if(resp){
+                    
+                    if(resp.data.content&&this.docType=='personnel' ){
+                       let vm = this;
+      var path =
+        "/document/" +
+        sessionStorage.getItem("docType") +
+        "/sort/" +
+        sessionStorage.getItem("batchId") +
+        "?pageNow=0&pageSize=10000";
+ 
+         this.getRequest(path).then((resp) => {
+          console.log("排件号人事");
+          console.log(resp);
+          if(resp){
+            this.showWaitingFlag=false
+          }
+          // console.log(JSON.stringify(resp))
+          if (resp.code == 0) {
+            
+            // console.log("ss000000000aaaa")
+            this.showWaitingFlag = false;
+            console.log(resp.data)
+            this.$store.state.alreadyDocs = resp.data
+ 
+          }
+        });
+                    }
+                  else {this.$store.state.alreadyDocs=resp.data.content
+                  this.showWaitingFlag=false
+                  }
+                  }
+                 
+            // this.$router.push('/work/docInputD')
+              })
+    },
+
+    loadDocs1() {
       this.$store.state.alreadyDocs=[]
       //         if(sessionStorage.getItem('docType')=='personnel'){
 
@@ -777,12 +848,22 @@ export default {
       this.showWaitingFlag = true;
 
       // return
-      var path =
-        "/document/page/" +
+      // var path =
+      //   "/document/page/" +
+      //   sessionStorage.getItem("docType") +
+      //   "/" +
+      //   sessionStorage.getItem("batchId") +
+      //   "?pageNow=0&pageSize=900000";
+var path =
+        "/document/" +
         sessionStorage.getItem("docType") +
-        "/" +
+        "/sort/" +
         sessionStorage.getItem("batchId") +
-        "?pageNow=0&pageSize=900000";
+        "?pageNow=0&pageSize=10000";
+
+          // var path='/document/page/'+sessionStorage.getItem('docType')+'/'
+          // +sessionStorage.getItem('batchId')+'?pageNow=0&pageSize=100000'
+
       axios
         .get(this.baseurl+path, {
           headers: {
@@ -796,9 +877,13 @@ export default {
         })
         .then((resp) => {
           console.log(resp);
+    this.$store.state.alreadyDocs = resp.data;
+
           if (resp) {
+            // if (resp.data.content && this.docType == "personnel") {
             if (resp.data.content && this.docType == "personnel") {
-              let vm = this;
+
+              // let vm = this;
               // var path =
               //   "/document/" +
               //   sessionStorage.getItem("docType") +
@@ -829,6 +914,7 @@ export default {
               });
             } else {
               this.$store.state.alreadyDocs = resp.data.content;
+
               this.showWaitingFlag = false;
             }
           }
@@ -936,8 +1022,38 @@ export default {
         }
       });
     },
+    sortThisBatchRS1(){
+                window.scrollTo(0,0)
+            console.log("查看批次item")
+
+            console.log(item) //打印单位
+
+
+              axios.get(this.baseurl+'/work/list', {
+                  headers:{
+            'Content-Type': 'application/json',
+            'authId':sessionStorage.getItem('authId'),
+            token:sessionStorage.getItem('token')?(sessionStorage.getItem('token').split('"')[1]||sessionStorage.getItem('token')):null,
+
+                  }
+              })
+                //成功返回
+                .then(response => {
+                    if(response.code==0){
+                        this.organsShow=false;
+                        this.batches=response.data;
+                        this.batches.reverse()
+
+                    }
+
+                })
+                //失败返回
+                .catch(error => {
+                    console.log(error);
+                })
+    },
     sortThisBatchRS() {
-      let vm = this;
+      // let vm = this;
       var path =
         "/document/" +
         sessionStorage.getItem("docType") +
@@ -984,7 +1100,7 @@ export default {
       });
     },
     sortThisBatch() {
-      let vm = this;
+      // let vm = this;
       var path =
         "/document/" +
         sessionStorage.getItem("docType") +
@@ -1466,7 +1582,7 @@ this.showWaitingFlag=true
 
 .docDetailBox {
   position: relative;
-  top: 5rem;
+  top: 3rem;
   // padding-bottom: 50rem;
 
   .detailItem {
@@ -1508,7 +1624,8 @@ padding: 0.3rem;
           box-shadow: 0 0 0.5rem #909399;
           border-radius: 0.5rem;
           color:#ddd;
-          top:-2.8rem !important
+          // top:-2.8rem !important
+          margin-left: 1rem;
   }
 
   .topTextButton:hover{

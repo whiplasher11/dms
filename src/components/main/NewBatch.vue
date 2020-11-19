@@ -396,7 +396,7 @@ export default {
     this.$store.state.username = sessionStorage.getItem("userId");
     this.$store.state.alreadyDocs = [];
     this.getRequest("/organs").then((resp) => {
-      if (resp.data.status == 500) {
+      if (resp.status == 500) {
         this.$message({
           type: "error",
           message: resp.data.message,

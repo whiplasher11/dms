@@ -4,7 +4,7 @@
 	  <div style="height:10rem;"></div>
 		<div class="topTip">
 			<div class="topicon"></div>
-		  <div class="toptext">欢迎来到国安档案管理系统</div>
+		  <div class="toptext">欢迎来到国安智能档案系统</div>
 	  </div>
 
 	  <div class="introduce">
