@@ -21,7 +21,7 @@
       label-width="6rem"
       class="loginContainer"
     >
-      <h3 class="loginTitle">登录档案管理系统</h3>
+      <h3 class="loginTitle">登录智能档案系统</h3>
       <el-form-item prop="username" label="账号：">
         <el-input
           size="normal"

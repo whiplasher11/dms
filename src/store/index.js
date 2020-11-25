@@ -17,6 +17,7 @@ const store = new Vuex.Store({
         hi:2,
         username:'',
         admin:"",
+        whichRuleSet:1,
         tempDocSeq:'',
         tempDocId:'',
         tempDoc:'',

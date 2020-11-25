@@ -509,15 +509,77 @@ return this.tableTypeNum == 41
       if(this.typeNum==41) return 41
       
     },
-    thisDocAbout(e, item) {
+
+    
+        thisDocAbout(e, item) {
+          this.showWaitingFlag = true;
+this.deepInThisDocAbout = item[0];
+   this.backToDocAboutShow = true;
+var that=this
+Promise.all([
+  new Promise((resolve,reject)=>{
+      that.getRequest("/weight/keywordSort/" + that.keywordWigId).then((resp)=>{
+        resolve(resp)
+  })
+  }),
+
+    new Promise((resolve,reject)=>{
+  that.getRequest(
+        "/weight/map/about/" + that.requestWigId + "?word=" + item[0]
+      ).then((resp)=>{
+        resolve(resp)
+  })
+  }),
+
+]).then((resp)=>{
+          console.log("按问题查关键词数组");
+        console.log(resp[1]);
+        if (resp[1].data == null) {
+          this.jsonTable = [];
+          this.$message({
+            type: "warning",
+            message: "还没有关键词表，点击预设",
+          });
+          this.showWaitingFlag = false;
+          return;
+        }
+                var kwArr = resp[1].data;
+        this.keywordArrFromIssue = kwArr;
+
+      this.keywordTable = resp[0].data.tables;
+      this.keywordIssueTable = resp[0].data.keywordIssue;
+      console.log(this.keywordTable)
+      
+       var attr;
+        this.jsonTable = [];
+        console.log(this.keywordTable)
+
+        // this.keywordTable=JSON.parse(this.keywordTable)
+        // console.log(this.keywordTable)
+
+        for (attr in this.keywordTable) {
+          console.log("搜索关键词权重数组的" + attr);
+          if (kwArr.indexOf(attr) >= 0) {
+            console.log("you");
+            // this.jsonTable=[]
+            this.jsonTable.push([attr, this.keywordTable[attr]]);
+          } //问题对应的关键词数组含有
+        }
+        console.log(this.jsonTable);
+        
+          
+}).then(()=>{
+  this.showWaitingFlag = false;
+})
+
+ 
+        },
+    thisDocAbout1(e, item) {
       this.getRequest("/weight/keywordSort/" + this.keywordWigId).then((resp) => {
         //预加载关键词列表 删除的时候可用
         this.keywordTable = resp.data.tables;
         this.keywordIssueTable = resp.data.keywordIssue;
-        // this.keywordWigId=-1
       });
-
-      console.log(this.keywordTable)
 
       this.showWaitingFlag = true;
       // this.selectShow=false
@@ -542,6 +604,7 @@ return this.tableTypeNum == 41
         }
 
         var kwArr = resp.data;
+        
         this.keywordArrFromIssue = kwArr;
 
         var attr;
@@ -557,7 +620,7 @@ return this.tableTypeNum == 41
         console.log(this.jsonTable);
         this.showWaitingFlag = false;
       });
-
+   this.backToDocAboutShow = true;
       // axios.get(this.baseurl+"weight/map/about/"+this.requestWigId, {
       //           headers:{
       //     'Content-Type': 'application/json',
@@ -571,9 +634,10 @@ return this.tableTypeNum == 41
 
       //       })
 
-      this.backToDocAboutShow = true;
+   
     },
     backToDocAbout() {
+      this.saveBtnShow=false
       this.jsonTable=this.level1JsonTable
       this.backToDocAboutShow=false
       // this.checkFromThisType(this.tableTypeNum);

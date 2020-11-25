@@ -58,7 +58,7 @@
           取消
         </div>
 
-        <div class="textButton" @click="doFixNA" style="color: #333">确定</div>
+        <div class="textButton" @click="doFixNA()" style="color: #333">确定</div>
       </div>
 
 
@@ -91,6 +91,7 @@
             <div class="organInfo hoverStyle" style="border:none" @click="checkThisOrganBat(item)">查看批次</div>
             <div class="organInfo hoverStyle" style="border:none" @click="delThisOrgan(item)">删除单位记录</div>
             <div class="organInfo hoverStyle" style="border:none" @click="fixOrganName(item)">修改单位</div>
+                <div style="clear: both"></div>
 
 
           </div>
@@ -134,6 +135,7 @@ export default {
 fixNameShow:false,
 nameToSet:'',
 authCodeToSet:'',
+authfix:'',
             tempOrganName:'name',
             tempOrganCode:123,
 
@@ -182,14 +184,37 @@ authCodeToSet:'',
 
       },
         fixOrganName(item){
+         
             this.nameToSet=item.authName
             this.authCodeToSet=item.authCode
+            this.authfix=item
             this.fixNameShow=true
         },
         clearFixNA(){
             this.fixNameShow=false
         },
-        doFixNA(){},
+        doFixNA(){
+          this.authfix.authName=this.nameToSet
+          this.authfix.authCode=this.authCodeToSet
+
+                this.putRequest(
+        //注意防止重复提交
+        '/organ/'+this.authfix.id,
+        JSON.stringify(this.authfix)
+      ).then((resp) => {
+        if(resp.code==0){
+             this.getRequest("/organs").then(resp => {
+             if(resp.code==0){
+             console.log('修改单位后请求单位列表')
+            this.organs=resp.data;
+              this.organs.reverse()
+             }
+         })
+        }
+      })
+
+          this.fixNameShow=false
+        },
         // fixThisOrganFromDetail(){
 
         // },
@@ -369,7 +394,7 @@ window.sessionStorage.setItem("lastBox",JSON.stringify(item.lastBox))
     .organItem{
         width: 95%;
         margin:auto;
-        height: 3rem;
+        // height: 3rem;
         border-bottom:solid 0.02rem;
 
         .tip{
@@ -411,12 +436,14 @@ window.sessionStorage.setItem("lastBox",JSON.stringify(item.lastBox))
         text-align: center;
         float: left;
         width: 13%;
-        height: 2rem;
+        // height: 2rem;
         border: solid 0.1rem;
-        margin-top: 0.5rem;
+        margin-top: 0.7rem;
         margin-left: 0.2rem;
+        margin-bottom: 0.7rem;
+
         // padding-top: 0rem;
-        line-height: 2rem;
+        // line-height: 2rem;
 
     }
 }

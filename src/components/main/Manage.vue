@@ -13,7 +13,7 @@
       :model="searchForm"
       label-width="6rem"
       class="loginContainer"
-     style="background-color:rgb(209, 218, 243);"
+     style="background-color:rgb(209, 218, 243) !important;"
     >
       <h3 style="        text-align: center;
         color: #505458;">输入密码</h3>
@@ -346,7 +346,7 @@ export default {
     margin-left: -15rem;
     top: 8rem;
     padding: 15px 35px 15px 35px;
-    background: #fff;
+     background-color: rgb(209, 218, 243);
     border: 1px solid #eaeaea;
     box-shadow: 0 0 25px #cac6c6;
 }

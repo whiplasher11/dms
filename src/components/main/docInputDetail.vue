@@ -169,7 +169,7 @@
         </div>
 
         <div
-          style="height: 4.5rem; position: absolute; top: -1.5rem; right: 14rem;width:18%"
+          style="z-index:333;height: 4.5rem; position: absolute; top: -1.5rem; right: 14rem;width:18%"
         >
           <!-- 搜索 -->
           <el-input class="leftInput" v-model="searchContent"></el-input>
@@ -338,8 +338,8 @@
 
           <div
             class="detailItem"
-            v-for="item in this.$store.state.alreadyDocs"
-            :key="item.docSequence"
+            v-for="(item, index) in this.$store.state.alreadyDocs"
+            :key="index"
           >
             <div class="itemInfo">{{ item.docSequence }}</div>
 
@@ -526,8 +526,8 @@
 
           <div
             class="detailItem"
-            v-for="item in this.$store.state.alreadyDocs"
-            :key="item.docSequence"
+            v-for="(item, index) in this.$store.state.alreadyDocs"
+            :key="index"
           >
             <div class="itemInfo2">{{ item.docSequence }}</div>
 
@@ -763,6 +763,14 @@ export default {
     };
   },
   methods: {
+        isNumber(value) {
+      if (isNaN(value)) {
+        return false;
+      } else {
+        return true;
+      }
+    },
+
        loadDocs(){
 //         if(sessionStorage.getItem('docType')=='personnel'){
 // var path =
@@ -781,7 +789,7 @@ export default {
       // return
        var path='/document/page/'+sessionStorage.getItem('docType')+'/'
        +sessionStorage.getItem('batchId')+'?pageNow=0&pageSize=100000'  // 其他三种档案都是这个接口，但人事的渲染比较nb，三重循环
-                          axios.get(path, {
+                          axios.get(this.baseurl+path, {
                   headers:{
             'Content-Type': 'application/json',
             'authId':sessionStorage.getItem('authId'),
@@ -1381,12 +1389,22 @@ this.showWaitingFlag=true
       window.sessionStorage.setItem('rsPrint',ttt+" ")
       }//personnel
       else if(sessionStorage.getItem("docType")=="official"||sessionStorage.getItem("docType")=="business"){
+        // alert(2)
         window.sessionStorage.setItem('authCode',sessionStorage.getItem('authCode'))
 
         window.sessionStorage.setItem('sortYear',item.sortYear)
         window.sessionStorage.setItem('docNum',item.docNum)
         window.sessionStorage.setItem('docAbout',item.docAbout)
-        window.sessionStorage.setItem('timedue',item.deadline)
+        var y=item.deadline
+        // console.log(y)
+        if(this.isNumber(y)){
+          // alert(1)
+          console.log(y)
+          y=y+'年'
+        }
+        window.sessionStorage.setItem('timedue',y)
+
+
         window.sessionStorage.setItem('docPage',item.docPage)
 
 
@@ -1484,24 +1502,24 @@ this.showWaitingFlag=true
           })
           .then((resp) => {
             if (resp.code == 0) {
-              this.showWaitingFlag=true
+              this.showWaitingFlag=false
 
-              // this.loadDocs()
-              var length = this.$store.state.alreadyDocs.length || 0;
-              var _arr = this.$store.state.alreadyDocs;
-              for (var i = 0; i < length; i++) {
-                for(var j=0;j<_arr[i].length;j++){
-                  for(var k=0;k<_arr[i][j].length;k++){
- if (_arr[i][j][k].docSequence == item.docSequence) {
-                  _arr[i][j].splice(k, 1); //删除下标为i的元素
-                  this.showWaitingFlag = false;
+              this.loadDocs()
+//               var length = this.$store.state.alreadyDocs.length || 0;
+//               var _arr = this.$store.state.alreadyDocs;
+//               for (var i = 0; i < length; i++) {
+//                 for(var j=0;j<_arr[i].length;j++){
+//                   for(var k=0;k<_arr[i][j].length;k++){
+//  if (_arr[i][j][k].docSequence == item.docSequence) {
+//                   _arr[i][j].splice(k, 1); //删除下标为i的元素
+//                   this.showWaitingFlag = false;
 
-                  break;
-                }
-                  }
-                }
+//                   break;
+//                 }
+//                   }
+//                 }
                
-              }
+//               }
             }
           });
       });

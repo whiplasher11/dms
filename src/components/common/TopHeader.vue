@@ -14,7 +14,7 @@
       <ul v-on:mouseover="topHeaderShow()" v-on:mouseleave="topHeaderHide()">
         <li style="font-size:2rem" class="logo" @click="goHome()">
           <!-- <div class="top_box"></div> -->
-          国安智能档案
+          智能档案
           <div class="topHeaderIcon"></div>
           <!-- <img class="zclogo" src="../../static/zclogo.png" alt=""> -->
         </li>

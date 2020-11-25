@@ -650,6 +650,7 @@ export default {
 
   data() {
     return {
+      addDocBtnFlg:true,
       kwInTitle:[],
       rsDocTypeMain:"",
       matchedKV: [],
@@ -1021,6 +1022,9 @@ export default {
       var docDateYear = this.docForm.docDate.substring(0, 4);
       console.log(docDateYear);
       console.log(this.docForm.sortYear);
+      if(docDateYear==null||this.docForm.sortYear==null){
+        return
+      }
 
       if (docDateYear > this.docForm.sortYear) {
         this.$confirm("发文日期不能迟于整档年度", "提示", {
@@ -1582,8 +1586,22 @@ export default {
 
         });
     },
-
+    addDocTimer(){
+      this.addDocBtnFlg=false
+      var that=this
+      setTimeout(function(){
+        that.addDocBtnFlg=true  //???
+      },2000);
+    },
     addDocRS() {
+      this.tipShowFlag = false; //录入提示关闭
+
+      if(!this.addDocBtnFlg){
+        console.log(this.addDocBtnFlg)
+        return
+      }
+      this.addDocTimer()
+
       if (this.checkAddRS()) {
         this.showWaitingFlag = true;
 
@@ -1640,6 +1658,12 @@ export default {
     },
     addDoc() {
       this.tipShowFlag = false;
+            if(!this.addDocBtnFlg){
+        console.log(this.addDocBtnFlg)
+
+        return
+      }
+      this.addDocTimer()
       // var
       // this.optThreeWeightTable()
       // return
