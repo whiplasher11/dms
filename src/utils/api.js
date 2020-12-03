@@ -61,9 +61,12 @@ axios.interceptors.response.use(success => {
     return;
 })
 
-var base = 'http://101.200.243.57:8080';
+// var base = 'http://101.200.243.57:8080';
+var base = 'http://localhost:8080';
+
 // var base= 'http://193.112.147.158:8088'
 // var base = 'http://gdm.free.idcfengye.com';
+
 export const baseurl=base;
 
 export const postKeyValueRequest = (url, params) => {
@@ -90,7 +93,7 @@ export const postRequest = (url, params) => {   // tlq1
         data: params,
         headers: {
             'Content-Type': 'application/json',
-            token:sessionStorage.getItem('token')?(sessionStorage.getItem('token').split('"')[1]||sessionStorage.getItem('token')):null,
+            token:localStorage.getItem('token')?(localStorage.getItem('token').split('"')[1]||localStorage.getItem('token')):null,
             authId:sessionStorage.getItem('authId')||''
         }
     })
@@ -103,7 +106,7 @@ export const putRequest = (url, params) => {
         headers: {
             'Content-Type': 'application/json;charset=UTF-8',
 
-            token:sessionStorage.getItem('token')?(sessionStorage.getItem('token').split('"')[1]||sessionStorage.getItem('token')):null,
+            token:localStorage.getItem('token')?(localStorage.getItem('token').split('"')[1]||localStorage.getItem('token')):null,
             authId:sessionStorage.getItem('authId')||''
 
         }
@@ -118,7 +121,7 @@ export const getRequest = (url, data) => {
             authId:sessionStorage.getItem('authId')||'',
             
             'Content-Type': 'application/json;charset=UTF-8',
-            token:sessionStorage.getItem('token')?(sessionStorage.getItem('token').split('"')[1]||sessionStorage.getItem('token')):null
+            token:localStorage.getItem('token')?(localStorage.getItem('token').split('"')[1]||localStorage.getItem('token')):null
         }
     })
 }
@@ -132,7 +135,7 @@ export const deleteRequest = (url, params) => {
 
             'Content-Type': 'application/json',
             // 'Content-Type': 'application/x-www-form-urlencoded',
-            token:sessionStorage.getItem('token')
+            token:localStorage.getItem('token')
         }
     })
 }

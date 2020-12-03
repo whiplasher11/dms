@@ -2,78 +2,66 @@
   <!-- <div id="top_header"> -->
   <div v-bind:class="classObject">
     <div
-      v-bind:class="[{selectPull:true},{switchdeepColor:switchColorflag}]"
+      v-bind:class="[
+        { selectPull: true },
+        { switchdeepColor: switchColorflag },
+      ]"
       @click="fixTheTopHeader"
       v-on:mouseover="topHeaderShow()"
       v-on:mouseleave="topHeaderHide()"
     >
+    
       <i class="fa fa-paperclip"></i>
     </div>
 
     <div class="content">
       <ul v-on:mouseover="topHeaderShow()" v-on:mouseleave="topHeaderHide()">
-        <li style="font-size:2rem" class="logo" @click="goHome()">
-          <!-- <div class="top_box"></div> -->
+        <li style="font-size: 2rem" class="logo" @click="goHome()">
           智能档案
           <div class="topHeaderIcon"></div>
-          <!-- <img class="zclogo" src="../../static/zclogo.png" alt=""> -->
         </li>
-
-        <!-- <li v-if="true" style="width:35rem"></li> -->
-        <!-- <li class="a" v-if="true"></li> -->
-
         <li class="a" @click="goHome()" v-if="true">首页</li>
-
         <li class="a" @click="goDocIn()">档案录入</li>
-        <!-- <li class="a" v-if="admin==1" ></li> -->
-
-        <li class="a" v-if="kind==3">
-          <div
-            style="position: absolute;
-    right: 5%;
-    text-align: center;
-    line-height: 1rem;
-    background-color: rgb(255,87,34);
-    height: 1.1rem;
-    width: 1.1rem;
-    color:#fff;
-
-    top: 50%;
-    margin-top: -0.5rem;
-    font-size: 0.9rem; "
-          >3</div>消息列表
+        <li class="a wrjlb" @click="goCheckHistoryBat">单位列表</li>
+        <li v-if="admin == 1" class="a wrjlb" @click="ManageUser">
+          管理用户
         </li>
 
-
-
-        <!-- <li @click="toHistory()">历史记录</li> -->
-
-        <li class="product a wrjlb" @click="goCheckHistoryBat">查看与设置</li>
-        <li v-if="admin==1" class="product a wrjlb"  @click="ManageUser" >管理用户 </li>
-
-        <li class="a" @click="goAboutUs()" v-if="kind==2">我的医生</li>
         <li>
-          <div
+        
+          <!-- <div
             class="headpic malestyle"
             v-if="user"
             @click="goUser(1)"
-            v-bind:class="[{malestyle:user.sex==1}, {femalestyle:user.sex==0}]"
-          ></div>
+            v-bind:class="[
+              { malestyle: user.sex == 1 },
+              { femalestyle: user.sex == 0 },
+            ]"
+          ></div> -->
         </li>
-        <li class="m_right user_controll a" @click="gologin" v-if="!user">登录</li>
+        <!-- <li  style="float:right">&nbsp;</li> -->
+
+        <li class="user_controll a"  style="float:right;margin-right:3rem" @click="gologin" v-if="!user">
+          登录
+        </li>
         <!-- 
         <li class="user_controll" v-if="$store.state.userInfo">
           <router-link to="/user" class="a user_controll" tag="span">
             您好：{{$store.state.userInfo.userName}}
           </router-link>
         </li>-->
-        <li
-          @click="goUser(1)"
-          class="user_controll a"
-          v-if="user"
-        >{{user}}</li>
-        <li class="m_right user_controll a" @click="exit" v-if="user">退出</li>
 
+        <!-- <li class="m_right user_controll a" style="float:right" @click="exit" v-if="user">退出</li> -->
+
+
+        <li @click="goUser(1)" class="user_controll a" style="float:right;margin-right:3rem"
+         v-on:mouseleave="resetUserShow()"  v-on:mouseover="changeUserShow()" v-if="user">
+          {{ user }}
+        </li>
+                        <li @click="exit" class="a user_controll" style="float:right;;width:3rem"
+        v-if="user">
+         退出
+        </li>
         <!-- <li
           @click="goUser(1)"
           class="user_controll a"
@@ -110,35 +98,37 @@
       </div>
 
     </transition>-->
-    <transition name="fade">
+   
+ <transition name="fade">
       <div
         class="user_center"
-        v-if="showuser"
+        v-if="showuser&&user"
         v-on:mouseleave="resetUserShow()"
         v-on:mouseover="changeUserShow()"
       >
         <div class="userinfo_items">
-          <div style="width:10px;height:10px">
+          <div style="width: 10px; height: 10px">
             <span id="user_top"></span>
           </div>
-          <li @click="goUser(1)">客户中心</li>
-          <li @click="goHistory">康复记录</li>
-          <li @click="goUser(2)">修改信息</li>
+           <span class="userLevel" style="font-size:600;color:#ddd">
+             <i class="el-icon-user-solid"></i>
+             vip1</span>
+          <li @click="showExpireTime"
+          >
+          <i class="el-icon-date"></i>
+          到期时间</li>
+          <li @click="exit">
+            <i class="el-icon-circle-close"></i>
+            注销账号</li>
+          <li @click="fixPassword">
+            <i class="el-icon-edit"></i>
+            修改密码</li>
         </div>
+
       </div>
     </transition>
 
-    <transition name="fade">
-      <div v-if="showIllManage" v-on:mouseleave="resetIllShow()" v-on:mouseover="changeIllShow()">
-        <div class="illManageDetail">
-          <div style="width:10px;height:10px">
-            <span id="user_top"></span>
-          </div>
-          <li @click="goUser(1)">新建慢病管理</li>
-          <li @click="goHistory">上传病史</li>
-        </div>
-      </div>
-    </transition>
+  
   </div>
 </template>
 
@@ -163,7 +153,7 @@ export default {
       top_header_a: "top_header_a",
       top_header_c: "top_header_c",
       drawer: false,
-      curNav: this.$store.state.curNav
+      curNav: this.$store.state.curNav,
     };
   },
 
@@ -171,21 +161,23 @@ export default {
 
   computed: {
     user() {
-      return this.$store.state.username
+      // return sessionStorage.getItem('userId');
+      return this.$store.state.username;
+      
     },
-    admin(){
-      return this.$store.state.admin
+    admin() {
+      return this.$store.state.admin;
     },
-    classObject: function() {
+    classObject: function () {
       return {
         top_header_b: this.topHeaderState,
         top_header_a: true,
-        top_header_c: !this.showTopHeader && !this.topHeaderFix
+        top_header_c: !this.showTopHeader && !this.topHeaderFix,
       };
     },
     kind() {
       return this.$store.state.kind;
-    }
+    },
     // userInfo() {
     //   return (
     //     this.$store.state.userInfo || {
@@ -201,10 +193,20 @@ export default {
   ready() {},
 
   created() {
-    this.getUserInfo();
+
+    // this.getUserInfo();
+    //         var userId1 = sessionStorage.getItem("userIdNum");
+    //     userId1=parseInt(userId1)
+    //     var obj={userId:userId1}
+    // this.postRequest(
+    //       //注意防止重复提交
+    //       "/logout?userId="+8,
+    //       obj
+    //     ).then((resp) => {})
+
     this.$store.info_state = 1; //个人信息页面的哪个模块
-    this.$store.state.username=sessionStorage.getItem('userId')
-    this.$store.state.admin=sessionStorage.getItem('admin')
+    this.$store.state.username = sessionStorage.getItem("userId");
+    this.$store.state.admin = sessionStorage.getItem("admin");
 
     // alert(this.user)
   },
@@ -215,33 +217,69 @@ export default {
   },
 
   methods: {
-    ManageUser(){
-      this.$router.replace('/admin/userManage')
+    fixPassword(){
+       this.$message({
+            type: "warning",
+            message: "请联系管理员"})
     },
-    exit(){
-            this.$confirm("是否退出", "提示", {
+    fomatTime(value){
+    console.log(value)
+    console.log(typeof(value))
+    var tvalue=value+""
+    if(tvalue=='null'||!tvalue){return ''}
+ 
+    return tvalue.substring(0,10)
+    
+},
+    showExpireTime(){
+var t=sessionStorage.getItem('expireTime')
+t=this.fomatTime(t)
+                            this.$message({
+            type: "warning",
+            message: "将于"+t+"过期",})
+    },
+    ManageUser() {
+      this.$router.replace("/admin/userManage");
+    },
+    exit() {
+      this.$confirm("是否退出", "提示", {
         cancelButtonClass: "btn-custom-cancel",
         confirmButtonText: "是",
         cancelButtonText: "否",
         type: "warning",
-      }).then(()=>{
-              window.sessionStorage.setItem('userId','')
-              window.sessionStorage.setItem('token','')
-            window.sessionStorage.setItem('admin','')
-      this.$store.state.username=''
-      this.$store.state.admin='0'
-      this.$router.replace('/login')
-      })
+      }).then(() => {
+        var userId1 = sessionStorage.getItem("userIdNum");
+        userId1=parseInt(userId1)
+        var obj={userId:userId1}
+        this.postRequest(
+          //注意防止重复提交
+          "/logout?userId="+userId1,
+          obj
+        ).then((resp) => {
 
+          if(resp.code==0){
+                      this.$message({
+            type: "success",
+            message: "注销成功!",
+          });
+          }
+          window.sessionStorage.setItem("userId", "");
+          window.window.localStorage.setItem("token", "");
+          window.sessionStorage.setItem("admin", "");
+          this.$store.state.username = "";
+          this.$store.state.admin = "0";
+          window.sessionStorage.setItem('userId',null)
 
+        });
+
+        this.$router.replace("/login");
+      });
     },
-    goKWM(){
-            this.$router.push('/work/keyWM');
-
+    goKWM() {
+      this.$router.push("/work/keyWM");
     },
-    goCheckHistoryBat(){
-            this.$router.push('/work/modifyOrgan');
-
+    goCheckHistoryBat() {
+      this.$router.push("/work/modifyOrgan");
     },
     fixTheTopHeader() {
       this.topHeaderFix = !this.topHeaderFix;
@@ -253,7 +291,6 @@ export default {
     topHeaderHide() {
       this.showTopHeader = false;
     },
-
 
     goDocIn() {
       this.$router.push("/work/newBatch");
@@ -274,13 +311,13 @@ export default {
       this.$confirm("确认注销账号?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
-        type: "warning"
+        type: "warning",
       })
         .then(() => {
           // this.$store.userInfo=null;
           this.$message({
             type: "success",
-            message: "注销成功!"
+            message: "注销成功!",
           });
           this.$store.state.user = null;
           this.$store.state.kind = 0;
@@ -303,7 +340,7 @@ export default {
       } else {
         this.$message({
           type: "info",
-          message: "请登录"
+          message: "请登录",
         });
         this.$router.push("/login");
       }
@@ -322,7 +359,7 @@ export default {
         // console.log(localStorage.getItem("token"))
         // alert(1)
         if (!this.$store.state.userInfo) {
-          this.$http1.get(this.$forePath + "/dist/getUserInfo").then(res => {
+          this.$http1.get(this.$forePath + "/dist/getUserInfo").then((res) => {
             //  console.log("headerinit",res)
             this.$store.commit("setUserInfo", res);
             console.log(res);
@@ -368,7 +405,7 @@ export default {
     },
     resetIllShow() {
       this.showIllManage = false;
-    }
+    },
 
     // resetShow() {
     //   this.show = false;
@@ -379,7 +416,7 @@ export default {
     //     this.topHeaderState = false;
     //   }
     // }
-  }
+  },
 
   // unLogin() {
   //   alert(1);
@@ -408,7 +445,7 @@ export default {
 
 <style lang="scss" scoped>
 .switchdeepColor {
-  background-color: #221f418e !important;
+  background-color: #a29fc5 !important;
 }
 
 .top_header_c {
@@ -424,6 +461,7 @@ export default {
   width: 2rem;
   top: 2rem;
   background-color: rgba(118, 143, 189, 0.753);
+  // background-color: rgb(118, 143, 189);
   border-radius: 1rem;
   line-height: 2rem;
 }
@@ -542,7 +580,7 @@ export default {
 
 .top_header_a {
   width: 100%;
-  background-color: rgba(35, 57, 184, 0.788);
+  background-color: rgb(55, 55, 55);
   height: 4.5rem;
   position: fixed;
   text-align: center;
@@ -554,7 +592,8 @@ export default {
   color: #ffffff;
 }
 .top_header_b ul {
-  background-color: #372aaa8f;
+  background-color: rgb(55, 55, 66);
+
   list-style-type: none;
   line-height: 4.5rem;
   white-space: nowrap;
@@ -567,12 +606,12 @@ export default {
 }
 
 .a {
-  color: #d2cbda;
+  color: #e5dfec;
   font-size: 1.2rem !important;
 }
 
 .topHeaderIcon {
-  background: url(("../../assets/topLogo.png"));
+  background: url(("../../assets/leftPic.png"));
   position: absolute;
   top: -0.1em;
   left: -4rem;
@@ -599,7 +638,7 @@ export default {
 
 .logo {
   font-family: STZhongsong;
-  margin-right: 12%;
+  margin-right: 8%;
   color: #cbd4da;
   margin-left: 2%;
 }
@@ -662,14 +701,15 @@ export default {
   top: -0.5vw;
 }
 .userinfo_items {
+  z-index: 99;
   position: absolute;
   border-radius: 0.4vw;
   width: 8vw;
   height: 10vw;
   background-color: aqua;
-  left: 80rem;
+  right: 4rem;
   list-style: none;
-  background: rgba(13, 94, 56, 0.836);
+  background: rgb(35, 39, 44);
 
   box-shadow: 0 0 1.30208vw #909399;
   padding-top: 0.3vw;

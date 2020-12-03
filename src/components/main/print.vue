@@ -154,6 +154,21 @@ smaller:function(){
 
   },
   created () {
+    var zishu=sessionStorage.getItem('aboutTextNum')
+    if(zishu==2){
+      this.leftPosAbout=3
+    }
+    if(zishu==3){
+      this.leftPosAbout=1.4
+    }
+    if(zishu==4){
+      this.leftPosAbout=-0.8
+      this.size=0.8
+    }
+    if(zishu==5){
+      this.leftPosAbout=-2.5
+      this.size=0.67
+    }
       this.$message.warning({
         duration:1000,
         message:"请按 ctrl+p 进行打印"
@@ -193,7 +208,7 @@ if(window.sessionStorage.getItem("docType")=='science'){
       timedue:'永久',
       docPage:88,
       danghao:'asd',
-      leftPosAbout:1,
+      leftPosAbout:3,
       topPosAbout:8,
       AdjPosFlag:false,
       size:1,

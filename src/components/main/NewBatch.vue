@@ -103,7 +103,7 @@
             false-label="0"
             true-label="1"
             :checked="false"
-          >本批工作规则顺序，不选则默认顺序</el-checkbox>
+          >本批整理规则，不选则默认按国家标准</el-checkbox>
         </el-form-item>
 
         <el-form-item prop="priority.first" v-if="showPriority&&!showTwo" label="选择第一优先级：">
@@ -305,7 +305,7 @@ export default {
           '备查': "0",
  
         },
-        priority: [],
+
         rule: "",
         to_box: {},
         end: 0,
@@ -339,7 +339,6 @@ export default {
         first: "keyword",
         second: "docDate",
       },
-      priorityForm: [{ first: "主题词", key: "1" }],
       priorityDic: [
         { name: "主题词", key: "keyword" },
         { name: "级别", key: "level" },
@@ -567,7 +566,7 @@ for(  var i=0;i<this.jsonArray.length;i++){
       let b = this.BatchForm.priority;
       // console.log(b)
 
-      for (var key in b) {
+      for (var key in b) {  //数字作为key ，keyword level 作为value
         var newKey = a[key];
         b[newKey] = b[key];
         delete b[key];
@@ -585,7 +584,7 @@ for(  var i=0;i<this.jsonArray.length;i++){
       console.log(this.BatchForm);
 
       sessionStorage.setItem("Batch", this.BatchForm);
-      // sessionStorage.setItem("token","12355")
+      // window.localStorage.setItem("token","12355")
 
       //新建单位
       // var code = this.BatchForm.authCode;
@@ -666,7 +665,7 @@ for(  var i=0;i<this.jsonArray.length;i++){
       //   else this.BatchForm.authId = res.obj.authId;
       // })
       // if (this.BatchForm.authId == "") this.BatchForm.authId = -1;
-      // var token=sessionStorage.getItem("token");
+      // var token=window.localStorage.getItem("token");
       if(this.BatchForm.docType==3){
 {
 /**
@@ -993,6 +992,8 @@ setTimeout(() => {
               ) {
                 // alert('ok')
                 window.sessionStorage.setItem("authId",resp.data.id);
+            window.sessionStorage.setItem('authName',resp.data.authName)
+
                 window.sessionStorage.setItem(
                   "authCode",
                   this.BatchForm.authCode
@@ -1025,6 +1026,8 @@ setTimeout(() => {
                 resp.data.authCode == this.BatchForm.authCode
               ) {
                 this.can=true
+            window.sessionStorage.setItem('authName',resp.data.authName)
+
                 window.sessionStorage.setItem("authId", resp.data.id);
                 window.sessionStorage.setItem(
                   "authCode",
@@ -1049,6 +1052,8 @@ setTimeout(() => {
           else if (resp.code == 0) {
             // alert('code=0')
             window.sessionStorage.setItem("authId", resp.data.id);
+            window.sessionStorage.setItem('authName',resp.data.authName)
+
             window.sessionStorage.setItem("authCode", resp.data.authCode);
             window.sessionStorage.setItem(
               "docTypeCode",
@@ -1111,6 +1116,9 @@ setTimeout(() => {
     },
     priorityChange() {
       //自定义优先级
+      //权限接口，定制规则
+      this.$message.warning("定制排档案规则请联系管理员");
+      return
       this.showPriority = !this.showPriority;
     },
   },
@@ -1199,7 +1207,9 @@ setTimeout(() => {
 
 .wrapper {
   height: 150vh;
-  background-color: rgb(209, 218, 243);
+  background-color: rgb(240, 240, 243);
+
+
 }
 .Card {
   width: 40rem;

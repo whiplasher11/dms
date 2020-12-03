@@ -39,10 +39,15 @@
       :model="searchForm"
       label-width="6rem"
       class="loginContainer"
-     style="background-color:rgb(209, 218, 243) !important;"
+     style=""
     >
       <h3 style="        text-align: center;
-        color: #505458;">输入一个或多个条件查找文档</h3>
+      width:100%;
+      
+        color: #555;">输入一个或多个条件查找文档</h3>
+
+        <div style="position:absolute"><i class="el-icon-remove"></i> 隐藏</div>
+
             <el-form-item prop="username" label="识别号：">
         <el-input
           size="normal"
@@ -52,6 +57,8 @@
           placeholder="识别号"
         ></el-input>
       </el-form-item>
+
+      
 
       <el-form-item prop="username" label="文件标题：">
         <el-input
@@ -103,10 +110,23 @@
       :model="searchForm"
       label-width="6rem"
       class="loginContainer"
-     style="background-color:rgb(209, 218, 243) !important;"
+ 
     >
+    <!-- <div style="    left: -0px;
+    position: absolute;
+    border-radius: 15px 15px 0 0;
+    width: 100%;
+    background-color: rgb(204,204,204);
+    height: 2.5rem;
+    text-align: center;
+    line-height: 2.5rem;
+    ">输入一个或多个条件查找文档</div> -->
+
       <h3 style="        text-align: center;
         color: #505458;">输入一个或多个条件查找文档</h3>
+        <div style="position:absolute;right:0.5rem;top:0.1rem;font-size:1.5rem;cursor:pointer" @click="hideAdvSearchNoReload"><i class="el-icon-remove"></i> </div>
+
+
             <el-form-item prop="username" label="识别号：">
         <el-input
           size="normal"
@@ -169,36 +189,43 @@
         </div>
 
         <div
-          style="z-index:333;height: 4.5rem; position: absolute; top: -1.5rem; right: 14rem;width:18%"
+          style="z-index:333;height: 4.5rem; position: absolute; top: -1.5rem; right: 0;width:35%;"
         >
-          <!-- 搜索 -->
-          <el-input class="leftInput" v-model="searchContent"></el-input>
-          <el-button
-            type="primary"
-            icon="el-icon-search"
-            style="
-              background-color: rgb(134, 151, 197);
-              border: none;
-              margin-top: 1rem;
-              margin-left: 0.2rem;
-            "
-            @click="searchTheDoc"
-            >搜索</el-button
+                                    <el-button
+            icon="el-icon-tickets"
+            style="border: none; margin-top: 1rem;margin-right:1rem;
+            float:right;"
+            @click="ShowadvSearch"
+            >高级搜索</el-button
           >
+
           <el-button
             type="warning"
             icon="el-icon-error"
-            style="border: none; margin-top: 1rem; position: absolute;right:-4rem"
+            style="border: none; margin-top: 1rem;margin-right:0.7rem; float:right"
             @click="cancelSearch"
             >取消</el-button
           >
 
-                            <el-button
-            icon="el-icon-tickets"
-            style="border: none; margin-top: 1rem; margin-left:8rem;position: absolute;right:-11rem"
-            @click="ShowadvSearch"
-            >高级搜索</el-button
+
+          <!-- 搜索 -->         <el-button
+            type="primary"
+            icon="el-icon-search"
+            style="
+            float:right;
+              background-color: rgb(134, 151, 197);
+              border: none;
+              margin-left:0.7rem;
+              margin-top: 1rem;
+             
+            "
+            @click="searchTheDoc"
+            >搜索</el-button
           >
+          <el-input class="leftInput" v-model="searchContent" @focus="clearSearchContent" @blur="putInContent"></el-input>
+ 
+        
+
 
         </div>
     <div style="position: relative;
@@ -207,8 +234,9 @@
             font-size: 1.1rem;">
         <div
           style="
-         float:left
-         width:3rem
+          margin-top:0.4rem;
+         float:left;
+       
          text-align:center
 
           "
@@ -291,6 +319,7 @@
          width:5rem;
          text-align:center;
          margin-left:1rem;
+         margin-top:0.3rem
          "
           class="hoverStyle"
           @click="goSetRule"
@@ -314,22 +343,26 @@
         </div>
         <div v-if="docType != 'science' && docType != 'personnel'">
           <div class="detailItem">
-            <div class="itemInfo">识别号</div>
+            <div class="itemInfo" style="width:3%">识别号</div>
+            <div class="itemInfo" style="width:6%">问题</div>
+            <div class="itemInfo" style="width:4%">关键字</div>
 
-            <div class="itemInfo">档号</div>
-            <div class="itemInfo">文号</div>
-            <div class="itemInfo">责任者</div>
-            <div class="itemInfo" style="font-size: 0.6rem; width: 10%">
+            <div class="itemInfo" style="width:10%">档号</div>
+            <div class="itemInfo" style="width:10%">文号</div>
+            <div class="itemInfo" style="width:12%">责任者</div>
+            <div class="itemInfo" style="font-size: 0.6rem; width: 12%">
               题名
             </div>
-            <div class="itemInfo">成文时间</div>
-            <div class="itemInfo">密级</div>
-            <div class="itemInfo">页数</div>
-            <div class="itemInfo" style="font-size: 0.6rem; width: 10%">
+            <div class="itemInfo" style="width:4%">成文时间</div>
+            <div class="itemInfo" style="width:4%">密级</div>
+            <div class="itemInfo" style="font-size: 0.6rem; width: 6%">
               备注
             </div>
-            <div class="itemInfo">件号</div>
-            <div class="itemInfo">盒号</div>
+            <div class="itemInfo" style="width:2%">页数</div>
+            <div class="itemInfo" style="width:2%">计</div>
+
+            <div class="itemInfo" style="width:4%">件号</div>
+            <div class="itemInfo" style="width:4%">盒号</div>
 
             <div style="clear: both"></div>
 
@@ -337,13 +370,15 @@
           </div>
 
           <div
-            class="detailItem"
+            class="detailItem infoItemHighlight" 
             v-for="(item, index) in this.$store.state.alreadyDocs"
             :key="index"
           >
-            <div class="itemInfo">{{ item.docSequence }}</div>
+            <div class="itemInfo" style="width:3%">{{ item.docSequence }}</div>
+   <div class="itemInfo" style="width:6%">{{ item.docAbout }}</div>
+      <div class="itemInfo" style="width:4%">{{ item.keyword }}</div>
 
-            <div class="itemInfo">
+            <div class="itemInfo" style="font-size: 0.6rem; width: 10%">
               {{ authCode + "-" + item.docTypeCode + "·"
               }}{{ item.sortYear | formatSortYear }}-{{
                 item.deadline | deadlineFormat
@@ -351,29 +386,32 @@
             </div>
             <!-- 档号 -->
             <!-- <div class="itemInfo">{{item.docDescAuthor+'['}}{{item.sortYear|formatSortYear}}{{']'+(item.docNum?item.docNum:'暂无')+"号"}}</div> -->
-            <div class="itemInfo">
+            <div class="itemInfo" style="font-size: 0.6rem; width: 10%">
               {{ item.docDesc ? item.docDesc : "&nbsp;" }}
             </div>
 
-            <div class="itemInfo">{{ item.dutyAuthor }}</div>
-            <div class="itemInfo" style="font-size: 0.6rem; width: 10%">
+            <div class="itemInfo" style="width:12%">{{ item.dutyAuthor }}</div>
+            <div class="itemInfo" style="font-size: 0.6rem; width: 12%">
               {{ item.docTitle }}
             </div>
-            <div class="itemInfo">{{ item.docDate }}</div>
-            <div class="itemInfo">
+            <div class="itemInfo" style="width:4%">{{ item.docDate }}</div>
+            <div class="itemInfo" style="width:4%">
               {{
                 item.docSecret == "无" || !item.docSecret
                   ? "&nbsp;"
                   : item.docSecret
               }}
             </div>
-            <div class="itemInfo">{{ item.docPage }}</div>
-            <div class="itemInfo" style="font-size: 0.6rem; width: 10%">
+                     <div class="itemInfo" style="font-size: 0.6rem; width: 6%">
               {{ item.remark ? item.remark : "&nbsp;" }}
             </div>
-            <div class="itemInfo">{{ item.docNum ? item.docNum : "暂无" }}</div>
-            <div class="itemInfo">{{ item.boxSeq ? item.boxSeq : "暂无" }}</div>
-            <div class="itemInfo" style="width: 10%">
+            <div class="itemInfo" style="width:2%">{{ item.docPage }}</div>
+            <div class="itemInfo" style="width:2%">{{item.pageTotal|pageTotalformat}}</div>
+
+   
+            <div class="itemInfo " style="width:4%">{{ item.docNum ? item.docNum : "暂无" }}</div>
+            <div class="itemInfo" style="width:4%">{{ item.boxSeq ? item.boxSeq : "暂无" }}</div>
+            <div class="itemInfo" style="width: 7%">
               <div
                 style="float:left;margin-left=1rem"
                 class="optionDiv"
@@ -411,6 +449,8 @@
             <div class="itemInfo" style="width: 15%">标题</div>
             <div class="itemInfo">日期</div>
             <div class="itemInfo" style="width: 4%">页数</div>
+
+
             <div class="itemInfo" style="width: 4%">材料序号</div>
 
             <div class="itemInfo" style="width: 10%">备注</div>
@@ -427,7 +467,7 @@
             v-for="(item, index) in this.$store.state.alreadyDocs"
             :key="index"
             style="border-top: 0.05rem solid"
-          >
+          class="infoItemHighlight" >
             <!-- 上面是循环有多少个人  -->
             <!-- 接下来是循环每个人的16个list -->
             <div v-for="(i, ind) in item" :key="ind">
@@ -497,27 +537,31 @@
         </div>
 
         <div v-if="docType == 'science'">
-          <div class="detailItem">
-            <div class="itemInfo2">识别号</div>
+          <div class="detailItem ">
+            <div class="itemInfo2" style="width:3%">识别号</div>
 
-            <div class="itemInfo2">档号</div>
-            <div class="itemInfo2">全宗号</div>
-            <div class="itemInfo2">目录号</div>
-            <div class="itemInfo2">案卷号</div>
-            <div class="itemInfo2">顺序号</div>
-            <div class="itemInfo2">责任者</div>
-
+            <div class="itemInfo2" style="width:6%">关键词</div>
+            <div class="itemInfo2" style="width:4%">项目</div>
+            <div class="itemInfo2" style="width:10%">档号</div>
+            <div class="itemInfo2" style="width:4%">全宗号</div>
+            <div class="itemInfo2" style="width:4%">目录号</div>
+            <div class="itemInfo2" style="width:10%">责任者</div>
             <div class="itemInfo2" style="font-size: 0.6rem; width: 10%">
               题名
             </div>
-            <div class="itemInfo2">成文时间</div>
-            <div class="itemInfo2">页数</div>
-            <div class="itemInfo2">期限</div>
-            <div class="itemInfo2">密级</div>
+            <div class="itemInfo2" style="width:4%">成文时间</div>
+            <div class="itemInfo2" style="width:4%">期限</div>
+            <div class="itemInfo2" style="width:3%">密级</div>
 
-            <div class="itemInfo2" style="font-size: 0.6rem; width: 10%">
+            <div class="itemInfo2" style="font-size: 0.6rem; width: 8%">
               备注
             </div>
+            <div class="itemInfo2" style="width:3%">页数</div>
+
+            <div class="itemInfo2" style="width:3%">计</div>
+
+            <div class="itemInfo2" style="width:3%">案卷号</div>
+            <div class="itemInfo2" style="width:3%">顺序号</div>
 
             <div style="clear: both"></div>
 
@@ -525,13 +569,15 @@
           </div>
 
           <div
-            class="detailItem"
+            class="detailItem infoItemHighlight"
             v-for="(item, index) in this.$store.state.alreadyDocs"
             :key="index"
           >
-            <div class="itemInfo2">{{ item.docSequence }}</div>
+            <div class="itemInfo2" style="width:3%">{{ item.docSequence }}</div>
+            <div class="itemInfo2" style="width:6%">{{item.keyword}}</div>
+            <div class="itemInfo2" style="width:4%">{{item.docAbout}}</div>
 
-            <div class="itemInfo2">
+            <div class="itemInfo2 " style="width:10%">
               {{ authCode + "-" + item.docTypeCode + "-"
               }}{{ item.boxSeq | formatFiveKJ }}-{{
                 item.docNum | formatThreeKJ
@@ -540,34 +586,41 @@
             <!-- 档号 -->
             <!-- <div class="itemInfo2">{{item.docDescAuthor+'['}}{{item.sortYear|formatSortYear}}{{']'+(item.docNum?item.docNum:'暂无')+"号"}}</div> -->
 
-            <div class="itemInfo2">{{ authCode }}</div>
-            <div class="itemInfo2">
+
+<!-- 全宗号 -->
+            <div class="itemInfo2" style="width:4%">{{ authCode }}</div>
+<!-- 目录号 -->
+            <div class="itemInfo2" style="width:4%">
               {{ item.docTypeCode ? item.docTypeCode : "&nbsp;" }}
             </div>
 
-            <div class="itemInfo2">
+
+            <div class="itemInfo2" style="width:10%">{{ item.dutyAuthor }}</div>
+            <div class="itemInfo2"  style="font-size: 0.6rem; width: 10%">
+              {{ item.docTitle }}
+            </div>
+            <div class="itemInfo2" style="width:4%">{{ item.docDate }}</div>
+            <div class="itemInfo2" style="width:4%">{{ item.deadline }}</div>
+
+            <div class="itemInfo2" style="width:3%">
+              {{ item.docSecret == "无" ? "&nbsp;" : item.docSecret }}
+            </div>
+            <div class="itemInfo2" style="font-size: 0.6rem; width: 8%">
+              {{ item.remark ? item.remark : "&nbsp;" }}
+            </div>
+            <div class="itemInfo2" style="width:3%">{{ item.docPage }}</div>
+
+        <div class="itemInfo2" style="width:3%">
+              {{item.pageTotal|pageTotalformat}}
+            </div>
+            <div class="itemInfo2" style="width:3%">
               {{ item.boxSeq ? item.boxSeq : "暂无" }}
             </div>
 
-            <div class="itemInfo2">
+            <div class="itemInfo2" style="width:3%">
               {{ item.docNum ? item.docNum : "暂无" }}
             </div>
-            <div class="itemInfo2">{{ item.dutyAuthor }}</div>
-            <div class="itemInfo2" style="font-size: 0.6rem; width: 10%">
-              {{ item.docTitle }}
-            </div>
-            <div class="itemInfo2">{{ item.docDate }}</div>
-            <div class="itemInfo2">{{ item.docPage }}</div>
-            <div class="itemInfo2">{{ item.deadline }}</div>
-
-            <div class="itemInfo2">
-              {{ item.docSecret == "无" ? "&nbsp;" : item.docSecret }}
-            </div>
-            <div class="itemInfo2" style="font-size: 0.6rem; width: 10%">
-              {{ item.remark ? item.remark : "&nbsp;" }}
-            </div>
-
-            <div class="itemInfo2" style="width: 10%">
+            <div class="itemInfo2" style="width: 7%">
               <div
                 style="float:left;margin-left=1rem"
                 class="optionDiv"
@@ -618,9 +671,11 @@ export default {
   },
   data() {
     return {
+      sortedTemp:[],
       advSearchShow:false,
       searchContent:'输入识别号',
       searchForm:{
+        authId:sessionStorage.getItem('authId'),
         docSequence:'',
         docTitle:'',
         docDesc:'',
@@ -772,6 +827,12 @@ export default {
     },
 
        loadDocs(){
+         console.log('loadDocs')
+         if(this.sortedTemp.length!=0){
+           this.$store.state.alreadyDocs=this.sortedTemp
+           console.log('return')
+           return
+         }
 //         if(sessionStorage.getItem('docType')=='personnel'){
 // var path =
 //         "/document/" +
@@ -793,7 +854,7 @@ export default {
                   headers:{
             'Content-Type': 'application/json',
             'authId':sessionStorage.getItem('authId'),
-            token:sessionStorage.getItem('token')?(sessionStorage.getItem('token').split('"')[1]||sessionStorage.getItem('token')):null,
+            token:localStorage.getItem('token')?(localStorage.getItem('token').split('"')[1]||localStorage.getItem('token')):null,
                   }
               }).then(resp=>{
                   // console.log(resp)
@@ -877,9 +938,9 @@ var path =
           headers: {
             "Content-Type": "application/json",
             authId: sessionStorage.getItem("authId"),
-            token: sessionStorage.getItem("token")
-              ? sessionStorage.getItem("token").split('"')[1] ||
-                sessionStorage.getItem("token")
+            token: window.localStorage.getItem("token")
+              ? window.localStorage.getItem("token").split('"')[1] ||
+                window.localStorage.getItem("token")
               : null,
           },
         })
@@ -930,6 +991,14 @@ var path =
           // this.$router.push('/work/docInputD')
         });
     },
+    putInContent(){
+      return
+      this.searchContent="输入识别号"
+
+    },
+    clearSearchContent(){
+      this.searchContent=""
+    },
     cancelSearch() {
       // if (this.searchContent != "输入识别号") {
       if (true) {
@@ -948,6 +1017,9 @@ var path =
     hideAdvSearch(){
       this.advSearchShow=false
       this.loadDocs();
+    },
+    hideAdvSearchNoReload(){
+      this.advSearchShow=false
     },
   ShowadvSearch(){
       this.advSearchShow=true;
@@ -1001,12 +1073,13 @@ var path =
       var searchPath =
         "/document/list/page/" +
         sessionStorage.getItem("docType") +
-        "?pageNow=0&pageSize=1000";
+        "?pageNow=0&pageSize=900000";
       var docObj = {
         // userId:JSON.stringify(sessionStorage.getItem("userId")),
         // userId: sessionStorage.getItem('userId'),
         docSequence: this.searchContent,
         docType: sessionStorage.getItem("docType"),
+        authId:sessionStorage.getItem('authId')
       };
       this.postRequest(
         //注意防止重复提交
@@ -1041,7 +1114,7 @@ var path =
                   headers:{
             'Content-Type': 'application/json',
             'authId':sessionStorage.getItem('authId'),
-            token:sessionStorage.getItem('token')?(sessionStorage.getItem('token').split('"')[1]||sessionStorage.getItem('token')):null,
+            token:localStorage.getItem('token')?(localStorage.getItem('token').split('"')[1]||localStorage.getItem('token')):null,
 
                   }
               })
@@ -1089,6 +1162,7 @@ var path =
             // console.log("ss000000000aaaa")
             this.showWaitingFlag = false;
             this.$store.state.alreadyDocs = resp.data;
+             this.sortedTemp = Object.assign({},  this.$store.state.alreadyDocs);
 
             // for(var arr in resp.data){
             //     for(var item in arr){
@@ -1133,6 +1207,7 @@ var path =
           console.log(resp);
           // console.log(JSON.stringify(resp))
           if (resp.code == 0) {
+           
             this.showWaitingFlag = false;
             this.$store.state.alreadyDocs = [];
             // for(var arr in resp.data){
@@ -1146,6 +1221,10 @@ var path =
                 //
               }
             }
+
+            
+             this.sortedTemp = Object.assign({},  this.$store.state.alreadyDocs);
+             console.log(this.sortedTemp)
           }
         });
       });
@@ -1165,9 +1244,9 @@ var path =
           headers: {
             "Content-Type": "application/json",
             authId: sessionStorage.getItem("checkAuthId"),
-            token: sessionStorage.getItem("token")
-              ? sessionStorage.getItem("token").split('"')[1] ||
-                sessionStorage.getItem("token")
+            token: window.localStorage.getItem("token")
+              ? window.localStorage.getItem("token").split('"')[1] ||
+                window.localStorage.getItem("token")
               : null,
           },
         })
@@ -1211,9 +1290,9 @@ this.showWaitingFlag=true
            headers: {
             "Content-Type": "application/json",
             authId: sessionStorage.getItem("authId"),
-            token: sessionStorage.getItem("token")
-              ? sessionStorage.getItem("token").split('"')[1] ||
-                sessionStorage.getItem("token")
+            token: window.localStorage.getItem("token")
+              ? window.localStorage.getItem("token").split('"')[1] ||
+                window.localStorage.getItem("token")
               : null,
           },
           
@@ -1275,9 +1354,9 @@ this.showWaitingFlag=true
           headers: {
             "Content-Type": "application/json",
             authId: sessionStorage.getItem("authId"),
-            token: sessionStorage.getItem("token")
-              ? sessionStorage.getItem("token").split('"')[1] ||
-                sessionStorage.getItem("token")
+            token: window.localStorage.getItem("token")
+              ? window.localStorage.getItem("token").split('"')[1] ||
+                window.localStorage.getItem("token")
               : null,
           },
         }).then((res) => {
@@ -1322,9 +1401,9 @@ this.showWaitingFlag=true
               headers: {//checkAuthId
                 "Content-Type": "application/json",
                 authId: sessionStorage.getItem("authId"),
-                token: sessionStorage.getItem("token")
-                  ? sessionStorage.getItem("token").split('"')[1] ||
-                    sessionStorage.getItem("token")
+                token: window.localStorage.getItem("token")
+                  ? window.localStorage.getItem("token").split('"')[1] ||
+                    window.localStorage.getItem("token")
                   : null,
               },
             }
@@ -1343,12 +1422,13 @@ this.showWaitingFlag=true
  
         }
         // let date = item.plans[this.daysIndex[index]]
-        //  let url = '/Ecp.Export.exportXls.jdn?entityId='+item.FId+'&date='+date.FDeparture_date+'&token=' + sessionStorage.getItem("token")
+        //  let url = '/Ecp.Export.exportXls.jdn?entityId='+item.FId+'&date='+date.FDeparture_date+'&token=' + window.localStorage.getItem("token")
      
       
       });
     },
     fixThisItem(item) {
+      this.$message.warning("修改后请重新排件号盒号");
       console.log(item);
       this.$store.state.tempDoc = Object.assign({}, item);
       //   alert(item.id)
@@ -1358,6 +1438,7 @@ this.showWaitingFlag=true
       this.$store.state.tempDocId = item.id;
 
       this.$store.state.tempDocSeq = item.docSequence;
+       this.sortedTemp=[]
 
       this.$router.push("/work/docInput");
     },
@@ -1395,6 +1476,7 @@ this.showWaitingFlag=true
         window.sessionStorage.setItem('sortYear',item.sortYear)
         window.sessionStorage.setItem('docNum',item.docNum)
         window.sessionStorage.setItem('docAbout',item.docAbout)
+        window.sessionStorage.setItem('aboutTextNum',item.docAbout.length)
         var y=item.deadline
         // console.log(y)
         if(this.isNumber(y)){
@@ -1478,7 +1560,7 @@ this.showWaitingFlag=true
     },
 
     deleteThisItem(item) {
-      this.$confirm("是否删除这条档案数据", "提示", {
+      this.$confirm("是否删除这条档案数据，删除后请排件号盒号再导出，否则可能会出错", "提示", {
         cancelButtonClass: "btn-custom-cancel",
         cancelButtonText: "否",
         confirmButtonText: "是",
@@ -1486,6 +1568,7 @@ this.showWaitingFlag=true
         type: "warning",
       }).then(() => {
         this.showWaitingFlag = true;
+         this.sortedTemp=[]
         var pathToDel =
           "/document/" + sessionStorage.getItem("docType") + "/" + item.id;
 
@@ -1494,9 +1577,9 @@ this.showWaitingFlag=true
             headers: {
               "Content-Type": "application/json",
               authId: sessionStorage.getItem("authId"),
-              token: sessionStorage.getItem("token")
-                ? sessionStorage.getItem("token").split('"')[1] ||
-                  sessionStorage.getItem("token")
+              token: window.localStorage.getItem("token")
+                ? window.localStorage.getItem("token").split('"')[1] ||
+                  window.localStorage.getItem("token")
                 : null,
             },
           })
@@ -1540,6 +1623,7 @@ this.showWaitingFlag=true
     },
   },
   created() {
+    this.sortedTemp=[]
     // this
     // var c="adsd"
     // if(c.charAt(0)=='a') c=c.substring(1)
@@ -1556,7 +1640,10 @@ this.showWaitingFlag=true
 </script>
 
 <style lang="scss" scoped>
+
+
 .loginContainer{
+  background-color:rgb(161, 161, 161) !important;
       position: absolute;
     border-radius: 15px;
     background-clip: padding-box;
@@ -1565,14 +1652,14 @@ this.showWaitingFlag=true
     left:50%;
     margin-left: -15rem;
     top: 4rem;
-    padding: 15px 35px 15px 35px;
+    padding: 0 35px 15px 35px;
     background: #fff;
     border: 1px solid #eaeaea;
     box-shadow: 0 0 25px #cac6c6;
 }
 .leftInput {
-  float: left;
-  width: 60%;
+  float: right;;
+  width:10rem;
   margin-left: 2%;
   margin-top: 0.9rem;
 }
@@ -1585,14 +1672,16 @@ this.showWaitingFlag=true
   // color:rgb(170, 138, 51);
   font-weight: 600;
   font-size: 1rem;
-  margin-left: 1rem;
+  margin-left: 0.5rem;
 }
 .optionDiv:hover {
   color: #aaa;
   cursor: pointer;
 }
 .wrapper {
-  background-color: rgb(209, 218, 243);
+  background-color: rgb(240, 240, 243);
+
+
   // height: 120vh;
   position: relative;
   padding-bottom: 60vh;
@@ -1606,20 +1695,38 @@ this.showWaitingFlag=true
   .detailItem {
     // height:2rem;
     // line-height: 2rem;
+    padding-top: 0.4rem;
+    // line-height: 100%;
     border-top: solid 0.02rem;
   }
   .itemInfo {
+    display:table-cell;
+    vertical-align: center;
+
     float: left;
     font-size: 0.8rem;
     width: 7%;
     text-align: center;
+
+    height: 100%;
+    padding-bottom: 0.2rem;
+    // line-height: ;
     // border-right: 0.05rem solid;
+    padding-left:0.3%;
+    padding-right:0.3%
+
   }
   .itemInfo2 {
+    padding-bottom: 0.2rem;  /**这样可以 就算没有内容也占据一格 */
+
+        display:table-cell;
+    vertical-align: center;
     float: left;
     font-size: 0.8rem;
     width: 6%;
     text-align: center;
+        padding-left:0.3%;
+    padding-right:0.3%
     // border-right: 0.05rem solid;
   }
 

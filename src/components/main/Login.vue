@@ -134,6 +134,7 @@
 export default {
   name: "Login",
   created(){
+                window.scrollTo(0,0)
     
 
       let that = this;
@@ -145,6 +146,16 @@ export default {
 
   },
   data() {
+              var validatePass = (rule, value, callback) => {
+          if (value === '') {
+              callback(new Error('请再1次输入密码'));
+          } else if (value != this.regiForm.password) {
+              callback(new Error('两次输入密码不一致!'));
+          } else {
+              callback();
+          }
+      };  //要在前面
+
     return {
       flag:true,
       flag2:false,
@@ -176,7 +187,11 @@ export default {
         password: [{ required: true, message: "请输入密码", trigger: "blur" },
         { min: 5,max: 25,message: '长度在 5 到 25个字符'},],
 
-        repassword: [{ required: true, message: "请再次输入密码", trigger: "blur" }],
+        repassword: [{ required: true, message: "请再次输入密码", trigger: "blur" },
+        {validator: validatePass, trigger: 'blur'},
+         { min: 5, max: 16, message: '长度在 5 到 16 个字符', trigger: 'blur' },
+ 
+         ],
 
         phone: [{ required: true, message: "请输入手机号", trigger: "blur" },
               	{validator:function(rule,value,callback){
@@ -189,15 +204,25 @@ export default {
 
         ],
 
+
         workplace: [{ required: true, message: "请输入单位名称", trigger: "blur" }],
 
         // code: [{required: true, message: '请输入验证码', trigger: 'blur'}]
       },
     };
+
   },
   methods: {
     submitRegi(){
             this.$refs.regiForm.validate(valid => {
+
+              // if(this.regiForm.repassword!=this.regiForm.password){
+              //     this.$message({
+              //           type: "success",
+              //           message: "密码不一致!"
+
+              //         });
+              // }
         if (valid) {
           this.loading = true;
           var regiData=JSON.stringify(this.regiForm)
@@ -262,14 +287,25 @@ export default {
           this.postKeyValueRequest("/login", logindata)
             .then(resp => {
               if (resp) {
+                if(resp.code==1701){
+                    this.$message({
+                        type: "warning",
+                        message: "您的账户已经在另一台设备在线!"
+                      });
+                      this.loading=false
+                      return
+                }
                 console.log(resp)
                 if(resp.code==0){
                   var thistoken=resp.data.token.split('"')[1];
                   if(thistoken==null) thistoken=resp.data.token; 
-                  window.sessionStorage.setItem("token",thistoken)
+                  window.window.localStorage.setItem("token",thistoken)
                   window.sessionStorage.setItem("userId",this.loginForm.username)
+                  window.sessionStorage.setItem("expireTime",resp.data.endTime)
+
                   window.sessionStorage.setItem("userIdNum",resp.data.userId)
                   window.sessionStorage.setItem("admin",'')
+
                   if(resp.data.role=='管理员'){
                   window.sessionStorage.setItem("admin",'1')
                   // window.sessionStorage.setItem("admin",'1')
@@ -314,14 +350,38 @@ export default {
   .el-input__inner {
     background: rgba(255, 255, 255, 0.15) !important;
     border-radius: 0.58vw;
-    border: 0.1rem solid #274596c5;
+    border: 0.05rem solid #8992acc5;
     height: 3rem;
-    color: #333;
+    color: #222;
     font-size: 1.1vw;
     padding-left: 3.3vw;
+
+    
+  &::-webkit-input-placeholder {
+    /* WebKit browsers 适配谷歌 */
+ color: rgb(155,155,155) !important;
   }
+
+  &:-moz-placeholder {
+    /* Mozilla Firefox 4 to 18 适配火狐 */
+ color: rgb(155,155,155) !important;
+  }
+
+  &::-moz-placeholder {
+    /* Mozilla Firefox 19+ 适配火狐 */
+  color: rgb(155,155,155) !important;
+  }
+
+  &:-ms-input-placeholder {
+    /* Internet Explorer 10+  适配ie*/
+ color: rgb(155,155,155) !important;
+  }
+  
+  }
+  
+  
     .el-input__inner:hover{
-    border: 0.1rem solid #718cd8c5;
+    border: 0.05rem solid #b8c1dac5;
 
   }
   input:-webkit-autofill {
@@ -348,7 +408,8 @@ export default {
 
 <style lang="scss" scoped>
 .Loginwrapper {
-  background-color: rgb(209, 218, 243);
+  background-color: rgb(240, 240, 243);
+
   height: 150vh;
 
   .loginContainer {
@@ -400,7 +461,7 @@ export default {
   cursor: pointer;
 }
 .goRegister:hover {
-  color: #1f8630;
+  color: #566f91;
 }
 
 .loginTitle {

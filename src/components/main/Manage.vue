@@ -71,10 +71,12 @@
 
         </div>
 
-        <div class="userItem" v-for="(item,index) in userTable" :key="index">
+        <div class="userItem" v-for="(item,index)  in userTable" :key="index">
+ 
           <div class="userInfo">{{item.user.username}}</div>
           <div class="userInfo">{{item.user.registryTime|formatTime}}</div>
-          <div class="userInfo">{{item.user.workplace}}</div>
+          <!-- <div class="userInfo">{{item.user.workplace}}</div> -->
+          <div class="userInfo">{{item.user.workplace=='湖南溇澧档案管理服务有限公司'?"":item.user.workplace}}</div>
 
           <div class="userInfo">{{item.user.phone}}</div>
           <div class="userInfo">{{item.role}}</div>
@@ -122,66 +124,7 @@ export default {
         password:''
       },
       userTable: [
-        {
-          role: "普通用户",
-          endTime: "2023-08-04T13:36:22.000+0000",
-          state: "可用",
-          user: {
-            id: 8,
-            salt: null,
-            workplace: "tpp",
-            phone: "15274861894",
-            registryTime: "2020-08-04T13:34:50.000+0000",
-            updateTime: null,
-            username: "tang",
-            password: null,
-          },
-        },
-        {
-          role: null,
-          endTime: null,
-          state: "到期",
-          user: {
-            id: null,
-            salt: null,
-            workplace: null,
-            phone: null,
-            registryTime: null,
-            updateTime: null,
-            username: null,
-            password: null,
-          },
-        },
-        {
-          role: "游客",
-          endTime: null,
-          state: "到期",
-          user: {
-            id: 6,
-            salt: null,
-            workplace: null,
-            phone: "18711145238",
-            registryTime: "2020-06-05T10:25:39.000+0000",
-            updateTime: null,
-            username: "qiyuanfeng",
-            password: null,
-          },
-        },
-        {
-          role: "游客",
-          endTime: null,
-          state: "到期",
-          user: {
-            id: 3,
-            salt: null,
-            workplace: null,
-            phone: "123",
-            registryTime: "2020-06-05T09:27:40.000+0000",
-            updateTime: null,
-            username: "test",
-            password: null,
-          },
-        },
+       
       ],
     };
   },

@@ -40,6 +40,8 @@ Vue.filter('formatdocType',function(value){
         if(tvalue=="official") return "文书"
         if(tvalue=="personnel") return "人事"
         if(tvalue=="science") return "科技"
+        if(tvalue=="business") return "业务"
+
     }
 });
 
@@ -95,17 +97,28 @@ Vue.filter('formatKeyWordValue',function(value){
     
 });
 Vue.filter('formatTime',function(value){
-    console.log(value)
-    console.log(typeof(value))
+
     var tvalue=value+""
     if(tvalue=='null'||!tvalue){return ''}
  
     return tvalue.substring(0,10)
     
 });
-Vue.filter('formatEndTime',function(value){
+
+Vue.filter('pageTotalformat',function(value){
     console.log(value)
-    console.log(typeof(value))
+    if(value==null){
+        return '    '
+    }
+    if(value<0){
+        return -value
+    }
+    else return '    '
+    
+});
+
+
+Vue.filter('formatEndTime',function(value){
     var tvalue=value+""
     if(!tvalue||tvalue=='null'){return '未购'}
     return tvalue.substring(0,10)

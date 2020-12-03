@@ -1,7 +1,8 @@
 <template>
   <div class="left_history_batches">
+      <div style="height:150vh;overflow-x:hidden;margin-top:4.6rem" >
         <vue-scroll :ops="ops">
-      <div style="height:150vh;margin-top:4.6rem" >
+
       <div style="height:2.5rem" > 
         <!-- 搜索 -->
         <!-- <el-input class="leftInput" v-model="searchContent" ></el-input> -->
@@ -9,10 +10,10 @@
       </div>
 
       <div style="height:2rem;position:relative;">
-        <div class="detailList" style="margin-left:0.5rem;font-size:0.9rem;" @click="goDetail">点击查看本批详细列表</div>
+        <div class="detailList" style="margin-left:0.5rem;font-size:0.9rem;" @click="goDetail">点击查看本批详情</div>
       </div>
         <div v-for="item in this.$store.state.alreadyDocs" @click="checkThisDoc(item)" v-on:mouseover="fixShow()" 
-        v-on:mouseleave="fixHide()" :key="item.docSequence"  class="leftItem animated fadeInLeft" style="width:65%;height:4.2rem;float:left;background-color: rgb(92, 96, 160);
+        v-on:mouseleave="fixHide()" :key="item.docSequence"  class="leftItem animated fadeInLeft" style="width:60%;height:2rem;float:left;
     box-shadow: 0 0 0.5rem #909399;
     border-radius: .8rem;
     cursor: pointer;
@@ -26,13 +27,14 @@
     >
           <div class="leftMask" @click="checkThisDoc(item)">修改</div>
           <div class="leftPic"></div>
-          <div class="leftKeyWord">{{item.docAbout}} </div>
+          <!-- <div class="leftKeyWord">{{item.docAbout}} </div> -->
           <div class="leftSeq">识别号： {{item.docSequence}}</div>
-          <div class="leftState">日期: {{item.docDate}}</div>
+          <!-- <div class="leftState">日期: {{item.docDate}}</div> -->
         </div>
+        </vue-scroll>
+
         </div>
    
-        </vue-scroll>
 
   </div>
 </template>
@@ -62,8 +64,8 @@ export default {
                     },
                     bar: {
                         hoverStyle: true,    
-                        onlyShowBarOnScroll: true, //是否只有滚动的时候才显示滚动条
-                        background: 'rgb(72,91,169)',   //颜色
+                        onlyShowBarOnScroll: false, //是否只有滚动的时候才显示滚动条
+                        background: 'rgb(72,72,72)',   //颜色
                     }
                 },
     }
@@ -137,26 +139,28 @@ export default {
 <style lang="scss" scoped>
 
 .leftMask{
-  position: absolute;
-  right:- 20.1rem;
+    position: absolute;
+    right: -22.1rem;
     width: 36rem;
-    height: 3rem;
+    height: 2rem;
+    top: 0.5rem;
     text-align: center;
-    line-height: 3rem;
-  background-color: rgba(180, 84, 116, 0.041)
+    line-height: 2rem;
+    background-color: rgba(180, 84, 116, 0.041);
 }
 
 .leftMask:hover{
-  background-color: rgba(253, 4, 58, 0.774);
+  // background-color: rgba(253, 4, 58, 0.774);
     right: 0.1rem;
     color:white;
+    font-weight: 600;
     width: 3rem;
 
 }
 
 .detailList:hover{
   cursor: pointer;
-  color: #ddd;
+  color: #666;
 }
 .leftKeyWord{
 
@@ -170,33 +174,41 @@ export default {
 
 .leftPic{
   position: absolute;
-  height: 5rem;
-  width: 5rem;
+  height: 3rem;
+  width: 3rem;
   left: 0%;
   top:-0.2rem;
-  background:url('../../assets/leftPic.png');
+  background:url('../../assets/topLogo.png');
   // background-color: #ddd;
   z-index: 5;
     background-repeat: no-repeat;
     background-size: 100%;
 
 }
-
+.leftItem{
+  background-color: rgb(178, 182, 189)
+}
 .leftItem:hover{
-    background-color:rgb(124, 142, 189) !important;
+    background-color:rgb(194, 198, 211) !important;
 }
 
 
 .left_history_batches{
     // float:left;
-    
+  //    ::-webkit-scrollbar {
+  //    width: 0 !important;
+  //  }
+  //  ::-webkit-scrollbar {
+  //    width: 0 !important;height: 0;
+  //  }
+
     height: 150vh;
-    width: 15rem;
-    background-color:rgb(134, 151, 197);
+    width: 10rem;
+    background-color:rgb(216, 221, 231);
     position: absolute;
     top:0;
     // top:4.5rem;
-    overflow-y: auto;
+    overflow-y: hidden;
      overflow-x: hidden;
     
 }

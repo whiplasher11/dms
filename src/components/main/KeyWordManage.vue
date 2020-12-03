@@ -340,7 +340,7 @@
         >
           点击预设优先级
         </div>
-        <div class="keyValueItem">
+        <div class="keyValueItem infoItemHighlight">
           <div class="keyValueInfo" style="border: none; position: relative">
             优先级(越大越靠前）
             <el-button
@@ -358,7 +358,7 @@
         </div>
 
         <div
-          class="keyValueItem"
+          class="keyValueItem infoItemHighlight"
           style="z-index=99"
           v-for="(item, index) in jsonTable"
           :key="index"
@@ -385,7 +385,7 @@
             type="success"
             class="kvButton"
             @click="upClick($event, item)"
-            style="margin-left: 3rem"
+            style="margin-left: 6rem"
             >上调</el-button
           >
           <el-button
@@ -515,10 +515,15 @@ return this.tableTypeNum == 41
           this.showWaitingFlag = true;
 this.deepInThisDocAbout = item[0];
    this.backToDocAboutShow = true;
+
+   var keywordJson
+   var keywordIssueJson
 var that=this
 Promise.all([
   new Promise((resolve,reject)=>{
       that.getRequest("/weight/keywordSort/" + that.keywordWigId).then((resp)=>{
+        keywordJson=resp.data.tables
+        keywordIssueJson=resp.data.keywordIssue
         resolve(resp)
   })
   }),
@@ -560,12 +565,36 @@ Promise.all([
         for (attr in this.keywordTable) {
           console.log("搜索关键词权重数组的" + attr);
           if (kwArr.indexOf(attr) >= 0) {
-            console.log("you");
+            // console.log("you");
             // this.jsonTable=[]
             this.jsonTable.push([attr, this.keywordTable[attr]]);
           } //问题对应的关键词数组含有
         }
         console.log(this.jsonTable);
+        for(var i=0;i<this.jsonTable.length;i++){
+          this.jsonTable[i][1]=this.jsonTable.length-i
+        }
+        
+    for (var i = 0; i < this.jsonTable.length; i++) {
+        // console.log(this.jsonTable[i][0]);
+        this.keywordTable[this.jsonTable[i][0]]=this.jsonTable[i][1]
+      }
+                var kvObj = {
+                  authId: sessionStorage.getItem("authId"),
+                  type: this.getKwTypeNum(),
+                  tables: keywordJson,
+                  keywordIssue: keywordIssueJson,
+                };
+
+      
+                      this.putRequest("/weight/" + this.keywordWigId, kvObj).then(
+                  (resp) => {
+                   
+                    console.log("更新预设kv权重表数字排序");
+                    console.log(resp);
+
+                  }
+                );
         
           
 }).then(()=>{
@@ -625,7 +654,7 @@ Promise.all([
       //           headers:{
       //     'Content-Type': 'application/json',
       //     'authId':sessionStorage.getItem('authId'),
-      //     token:sessionStorage.getItem('token')?(sessionStorage.getItem('token').split('"')[1]||sessionStorage.getItem('token')):null,
+      //     token:localStorage.getItem('token')?(localStorage.getItem('token').split('"')[1]||localStorage.getItem('token')):null,
 
       //           },
       //           params:{
@@ -715,21 +744,9 @@ Promise.all([
                 );
               });
     },
-    doPreset() {
-        
 
-      if (!this.isNumber(this.valueToSet)) {
-        this.$message({
-          type: "warning",
-          message: "优先级只能是数字",
-        });
-        return;
-      }      this.showWaitingFlag = true;
-      this.showKVPreset = false;
-      // alert(this.valueToSet)
-      // alert(this.typeNum)
-
-      {
+    doPresetSub(){
+           {
         if (this.backToDocAboutShow) {  //添加一个关键词 需要：
         //问题权重表：问题对应的关键词数组push
         //关键词权重表： 关键词 kv存， 关键词对应的问题存
@@ -757,6 +774,7 @@ Promise.all([
                   this.keyToSet
                 );
               }
+
               var docAboutObj = {
                 authId: sessionStorage.getItem("authId"),
                 type: this.typeNum,
@@ -777,6 +795,7 @@ Promise.all([
               this.getRequest("/weight/keywordSort/" + this.keywordWigId).then((resp) => {
                 //获取关键词权重表
                 var keywordJson = resp.data.tables;
+
                 keywordJson[this.keyToSet] = this.valueToSet;
                 //**以上是正常添加到权重表 */
                 var keywordIssueJson = resp.data.keywordIssue;
@@ -784,17 +803,19 @@ Promise.all([
                 console.log(keywordIssueJson[this.keyToSet]);
                 if (keywordIssueJson[this.keyToSet] == null) {
                   keywordIssueJson[this.keyToSet] = this.deepInThisDocAbout;
-                } else if (
-                  keywordIssueJson[this.keyToSet]
-                    .split("|")
-                    .indexOf(this.deepInThisDocAbout) < 0
-                ) {
-                  //不包含该问题
-                  keywordIssueJson[this.keyToSet] =
-                    keywordIssueJson[this.keyToSet] +
-                    "|" +
-                    this.deepInThisDocAbout;
-                }
+                } 
+
+                // else if (
+                //   keywordIssueJson[this.keyToSet]
+                //     .split("|")
+                //     .indexOf(this.deepInThisDocAbout) < 0
+                // ) {
+                //   //不包含该问题
+                //   keywordIssueJson[this.keyToSet] =
+                //     keywordIssueJson[this.keyToSet] +
+                //     "|" +
+                //     this.deepInThisDocAbout;
+                // }
 
                 keywordJson[this.keyToSet] = this.valueToSet;
                 var kvObj = {
@@ -885,7 +906,64 @@ Promise.all([
             });
         }
         //添加过这种kv 那么是修改json
-      } //添加过
+      }
+    },
+    doPreset() {
+     
+
+      if (!this.isNumber(this.valueToSet)) {
+        this.$message({
+          type: "warning",
+          message: "优先级只能是数字",
+        });
+        return;
+      }  
+
+ 
+      
+      this.showWaitingFlag = true;
+      this.showKVPreset = false;
+      // alert(this.valueToSet)
+      // alert(this.typeNum)
+if(this.backToDocAboutShow){  //关键词重复
+         this.getRequest("/weight/keywordSort/" + this.keywordWigId).then((resp) => {
+         if(resp.data.tables[this.keyToSet]!=null){
+                   this.$message({
+          type: "warning",
+          message: "关键词已存在,大小为"+resp.data.tables[this.keyToSet]+",问题为："+resp.data.keywordIssue[this.keyToSet],
+        });
+        
+      this.showWaitingFlag = false;
+
+        return;
+         }
+
+this.doPresetSub()
+
+       })
+}
+else{
+    this.getRequest("/weight/sort/" + this.requestWigId)
+            .then((resp) => {
+                       if(resp.data.tables[this.keyToSet]!=null){
+                   this.$message({
+          type: "warning",
+          message: "已存在"+this.keyToSet+",大小为"+resp.data.tables[this.keyToSet],
+        });
+        
+      this.showWaitingFlag = false;
+
+        return;
+         }
+
+            })
+
+
+this.doPresetSub()
+}
+
+
+  //添加过
 
       // if(){}
     },
@@ -1540,6 +1618,11 @@ selectRsDAFlag:false,
 };
 </script>
 <style lang="scss">
+.infoItemHighlight:hover{
+  background-color: rgba(210, 216, 228, 0.733);
+}
+
+
 .patientSearchWrapper {
   border: none !important;
   .el-input__inner {
@@ -1606,7 +1689,9 @@ selectRsDAFlag:false,
   .keyValueItem {
     float: left;
     width: 100%;
-    height: 2rem;
+    // height: 2rem;
+    padding-top: 0.2rem;
+    padding-bottom: 0.2rem;
     // margin-top: 0;
     margin-left: 0.2rem;
     text-align: center;
@@ -1619,12 +1704,12 @@ selectRsDAFlag:false,
     text-align: center;
     float: left;
     width: 25%;
-    height: 2rem;
+    // height: 2rem;
     border: solid 0.1rem;
     // margin-top: 0.5rem;
     margin-left: 0.2rem;
     // padding-top: 0rem;
-    line-height: 2rem;
+    // line-height: 2rem;
   }
 }
 
@@ -1641,7 +1726,7 @@ selectRsDAFlag:false,
   width: 20%;
   height: 3rem;
   text-align: center;
-  background-color: rgb(188, 200, 231);
+  background-color: rgb(155, 155, 155);
   border: solid rgb(54, 79, 139) 0.02rem;
   line-height: 3rem;
   margin-left: 3.6%;
@@ -1666,7 +1751,9 @@ selectRsDAFlag:false,
   background-color: rgb(18, 71, 78);
 }
 .wrapper {
-  background-color: rgb(209, 218, 243);
+  background-color: rgb(240, 240, 243);
+
+
 
   // height: 150vh;
   padding-bottom: 100vh;

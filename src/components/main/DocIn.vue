@@ -85,6 +85,78 @@
       </div>
     </div>
 
+    <!-- 标题匹配
+     -->
+        <div
+      typeInTipBox
+      v-if="likelyTipShowFlag"
+      class="windowStyle"
+      style="
+        position: absolute;
+        top: 30vh;
+        left: 13rem;
+
+        z-index: 122;
+        padding-top: 1rem;
+        color: #eee;
+        font-size: 1.5rem;
+        width: 75rem;
+
+     padding-bottom:1rem;
+        -webkit-box-shadow: 0 0 0.5rem #909399;
+        box-shadow: 0 0 0.5rem #909399;
+        border-radius: 1rem;
+      "
+    >
+          <div
+        style="
+    height: 2rem;
+    text-align: right;
+    font-size: 1rem;
+    line-height: 2rem;
+    cursor: pointer;
+    width: 3rem;
+    position: absolute;
+    
+    right: 1rem;
+    top: 0;
+        "
+        @click="closeDocTip"
+      >
+        关闭&nbsp;
+      </div>
+      <div
+        style="font-size: 1rem; height: 2rem; width: 100%; text-align: center"
+      >
+        智能匹配:
+      </div>
+      <!-- <div style="font-size:1rem;text-align:center;width:100%;line-height:2rem">
+            关键词 : 问题/机构/项目
+          </div> -->
+      <div
+        v-for="(item, index) in replaceval"
+        :key="index"
+        class="matchedDocClass"
+      >
+        <div
+          @click="selectThisDoc(item)"
+          style="
+            font-size: 1rem;
+            text-align: center;
+            width: 80%;
+            margin-left: 10%;
+           padding-bottom:0.2rem
+          
+          "
+          class="matchedItem"
+        >
+         <font v-html="item.docTitle">  </font> - <font style="font-size:1.1rem;color:#abc"> {{ item.docAbout }} </font>-{{item.docDate}}
+        </div>
+      </div>
+
+    </div>
+
+
     <div class="keyWordSelect" v-if="false">
       <div class="keywords">农村</div>
       <div class="keywords">农村</div>
@@ -104,17 +176,17 @@
     >
       <!-- <div class="docTypeTitle">sessionStorage批次</div> -->
       <div class="docSequenceTip">
-        该批次文件唯一序列号：{{ this.docForm.docSequence }}
+        该批次文件唯一识别号：{{ this.docForm.docSequence }}
       </div>
 
       <el-checkbox
         style="position: absolute; right: 1rem; top: 1rem"
-        v-if="false"
+        v-if="true"
         @change="inputChange"
         false-label="0"
         true-label="1"
         :checked="false"
-        >对应规则存入对照表</el-checkbox
+        >智能录入</el-checkbox
       >
 
       <el-form-item class="textArea" prop="batchName" label="文件标题：">
@@ -129,62 +201,124 @@
         ></el-input>
       </el-form-item>
 
+
       <el-row :gutter="24">
+        <el-col :span="4">
+          <el-form-item prop="batchName" label="有无文号:">
+            <el-checkbox
+              style="position: absolute; left: 2rem; top: 0.5rem"
+              v-if="true"
+              @change="docDescChange"
+              false-label="false"
+              true-label="true"
+              :checked="docForm.docDescAuthor"
+              v-model="docForm.docDescAuthor"
+              
+            ></el-checkbox>
+
+
+          </el-form-item>
+
+          
+        </el-col>
+
+
         <el-col :span="12">
-          <el-form-item prop="batchName" label="关键字：">
+          <el-form-item
+            prop="batchName"
+            v-if="docForm.docDescAuthor=='true' "
+            label="文号："
+          >
             <el-input
-              :disabled="!keyWordEdit"
-              @click="checkTitle"
               size="normal"
               type="text"
-              v-model="docForm.keyword"
+          @blur="docDescComplete"
+
+              v-model="docForm.docDesc"
               auto-complete="off"
-              placeholder="请先填写文件标题"
+              placeholder="文号"
             ></el-input>
           </el-form-item>
         </el-col>
 
-        <el-col :span="12" v-if="!isKJ">
-          <el-form-item prop="batchName" label="机构/问题：">
+          <el-col :span="8">
+          <el-form-item
+            prop="batchName"
+            v-if="docForm.docDescAuthor=='true'"
+            label="序号："
+          >
             <el-input
-              @blur="docAboutBlur"
               size="normal"
               type="text"
-              v-model="docForm.docAbout"
+              v-model="docForm.docDescNum"
               auto-complete="off"
-              placeholder="根据文件填写"
+              placeholder="文号中的序号"
             ></el-input>
+
           </el-form-item>
         </el-col>
-        <el-col :span="12" v-if="isKJ">
-          <el-form-item prop="batchName" label="项目:">
-            <el-input
-              @blur="docAboutBlur"
-              size="normal"
-              type="text"
-              v-model="docForm.docAbout"
-              auto-complete="off"
-              placeholder="根据文件填写"
-            ></el-input>
+
+      </el-row>
+        <el-row :gutter="24">
+          <el-col :span="12">
+          <el-form-item prop="batchName" label="文件级别：">
+            <el-select v-model="docForm.docLevel" 
+          @change="levelCompelete"
+            
+            placeholder="选择文件级别">
+              
+              <el-option
+
+                v-for="item in docLevels"
+                :key="item.value"
+                :label="item.name"
+                :value="item.value"
+              ></el-option>
+            </el-select>
           </el-form-item>
         </el-col>
+       <el-col :span="12">
+          <el-form-item prop="batchName" label="文件密级：">
+            <el-select v-model="docForm.docSecret" placeholder="选择文件密级">
+              <el-option
+                v-for="item in docSecrets"
+                :key="item.value"
+                :label="item.name"
+                :value="item.value"
+              ></el-option>
+            </el-select>
+          </el-form-item>
+        </el-col>
+
+
+
       </el-row>
 
+
       <el-row :gutter="24">
-        <el-col :span="12">
-          <el-form-item prop="batchName" label="整档年度：">
-            <el-date-picker
-              type="year"
-              placeholder="选择整档年度"
-              v-model="docForm.sortYear"
-              value-format="yyyy"
-              :picker-options="pickerOptions"
-              @change="selectDateChange"
-            ></el-date-picker>
+                       <el-col :span="24">
+          <el-form-item prop="batchName" label="责任者：">
+            <el-input
+              size="normal"
+              type="text"
+              v-model="docForm.dutyAuthor"
+              auto-complete="off"
+              placeholder="输入档案责任者"
+            ></el-input>
           </el-form-item>
         </el-col>
 
-        <el-col :span="12">
+
+
+
+
+      
+      </el-row>
+
+
+
+      <el-row :gutter="24">
+                <el-col :span="12">
           <el-form-item prop="batchName" label="发文日期：">
             <el-date-picker
               type="date"
@@ -196,49 +330,8 @@
             ></el-date-picker>
           </el-form-item>
         </el-col>
-      </el-row>
 
-      <el-row :gutter="24">
-        <el-col :span="12">
-          <el-form-item prop="batchName" label="文件级别：">
-            <el-select v-model="docForm.docLevel" placeholder="选择文件级别">
-              <el-option
-                v-for="item in docLevels"
-                :key="item.value"
-                :label="item.name"
-                :value="item.value"
-              ></el-option>
-            </el-select>
-          </el-form-item>
-        </el-col>
-
-        <el-col :span="12">
-          <el-form-item prop="batchName" label="责任者：">
-            <el-input
-              size="normal"
-              type="text"
-              v-model="docForm.dutyAuthor"
-              auto-complete="off"
-              placeholder="输入档案责任者"
-            ></el-input>
-          </el-form-item>
-        </el-col>
-      </el-row>
-
-      <el-row :gutter="24">
-        <el-col :span="12">
-          <el-form-item v-show="false" prop="batchName" label="责任者简称：">
-            <el-input
-              size="normal"
-              type="text"
-              v-model="docForm.docDescAuthor"
-              auto-complete="off"
-              placeholder="文号中的责任者简称"
-            ></el-input>
-          </el-form-item>
-        </el-col>
-
-        <el-col :span="12">
+                <el-col :span="12">
           <el-form-item prop="batchName" label="文件页数：">
             <el-input
               size="normal"
@@ -249,41 +342,27 @@
             ></el-input>
           </el-form-item>
         </el-col>
+     
+        
+
+
       </el-row>
 
-      <el-row :gutter="24">
-        <el-col :span="12">
-          <el-form-item prop="batchName" label="有无文号:">
-            <el-checkbox
-              style="position: absolute; left: 2rem; top: 0.5rem"
-              v-if="true"
-              @change="docDescChange"
-              false-label="0"
-              true-label="1"
-              :checked="false"
-            ></el-checkbox>
-          </el-form-item>
-        </el-col>
+    
 
-        <el-col :span="12">
-          <el-form-item
-            prop="batchName"
-            v-if="docForm.docDescNum == 1"
-            label="文号"
-          >
+      <el-row :gutter="24">
+        <!-- <el-col :span="12">
+          <el-form-item v-show="false" prop="batchName" label="责任者简称：">
             <el-input
               size="normal"
               type="text"
-              v-model="docForm.docDesc"
+              v-model="docForm.docDescNum"
               auto-complete="off"
-              placeholder="文号"
+              placeholder="文号中的责任者简称"
             ></el-input>
           </el-form-item>
-        </el-col>
-      </el-row>
-
-      <el-row :gutter="24">
-        <el-col :span="12">
+        </el-col> -->
+ <el-col :span="12">
           <el-form-item prop="batchName" label="文件期限(年)：">
             <el-select v-model="docForm.deadline" placeholder="选择文件期限">
               <el-option
@@ -296,18 +375,65 @@
           </el-form-item>
         </el-col>
 
-        <el-col :span="12">
-          <el-form-item prop="batchName" label="文件密级：">
-            <el-select v-model="docForm.docSecret" placeholder="选择文件密级">
-              <el-option
-                v-for="item in docSecrets"
-                :key="item.value"
-                :label="item.name"
-                :value="item.value"
-              ></el-option>
-            </el-select>
+<el-col :span="12">
+          <el-form-item prop="batchName" label="整档年度：">
+            <el-date-picker
+              type="year"
+              placeholder="选择整档年度"
+              v-model="docForm.sortYear"
+              value-format="yyyy"
+              :picker-options="pickerOptions"
+              @change="selectDateChange"
+            ></el-date-picker>
           </el-form-item>
         </el-col>
+        
+      </el-row>
+
+
+      <el-row :gutter="24">
+          <el-col :span="12" v-if="isKJ">
+          <el-form-item prop="batchName" label="项目:">
+            <el-input
+              @blur="docAboutBlur"
+              size="normal"
+              type="text"
+              v-model="docForm.docAbout"
+              auto-complete="off"
+              placeholder="根据文件填写"
+            ></el-input>
+          </el-form-item>
+        </el-col>
+        
+        <el-col :span="12" v-if="!isKJ">
+          <el-form-item prop="batchName" label="机构/问题：">
+            <el-input
+              @blur="docAboutBlur"
+              size="normal"
+              type="text"
+              v-model="docForm.docAbout"
+              auto-complete="off"
+              placeholder="根据文件填写"
+            ></el-input>
+          </el-form-item>
+        </el-col>
+
+       
+ <el-col :span="12">
+          <el-form-item prop="batchName" label="关键词：">
+              <!-- :disabled="!keyWordEdit" -->
+            <el-input
+            
+              @click="checkTitle"
+              size="normal"
+              type="text"
+              v-model="docForm.keyword"
+              auto-complete="off"
+              placeholder="请先填写文件标题"
+            ></el-input>
+          </el-form-item>
+        </el-col>
+ 
       </el-row>
 
       <el-form-item class="textArea" prop="batchName" label="备注信息：">
@@ -348,7 +474,8 @@
           >清空列表</el-button
         >
         <el-button
-          type="primary"
+          type="warning
+          "
           size="big"
           style="margin-left: 10%"
           @click="goDetail"
@@ -376,7 +503,7 @@
     >
       <!-- <div class="docTypeTitle">sessionStorage批次</div> -->
       <div class="docSequenceTip">
-        本份文件唯一序列号：{{ this.docFormRS.docSequence }}
+        本份文件唯一识别号：{{ this.docFormRS.docSequence }}
       </div>
 
       <el-row :gutter="24">
@@ -384,6 +511,7 @@
           <el-form-item prop="batchName" label="材料标题：">
             <el-input
               @blur="titleComplete"
+              oninput="titleInput()"
               size="normal"
               type="text"
               v-model="docFormRS.docTitle"
@@ -406,6 +534,8 @@
             ></el-input>
           </el-form-item>
         </el-col>
+
+        
       </el-row>
 
       <el-row :gutter="24">
@@ -579,6 +709,7 @@ export default {
     });
   },
   watch: {
+
     edocFormRSJS: {
       handler: (v, o) => {
         console.log(v.docAbout);
@@ -586,6 +717,28 @@ export default {
       },
       deep: true,
     },
+docFormJS:{
+  
+ handler(v, o){
+   this.wordsNum=v.length
+  //  console.log(this.docForm)
+  var len=v.length
+  console.log(len)
+    if(len>5&&len<9){
+      // alert(2)
+      this.likelyHoodQuery();
+    }
+
+    if(len>12&&len<16){
+      // alert(2)
+
+      this.likelyHoodQuery();
+    }
+
+      },
+      deep: true,
+    },
+
     docFormRSJS: {
       handler(val, oldVal) {
         // console.log(val);
@@ -637,8 +790,26 @@ export default {
   },
 
   computed: {
+        replaceval(){
+      var highlight=this.docForm.docTitle
+      const arr = JSON.parse(JSON.stringify(this.matchedDoc))
+      const replaceReg = new RegExp(highlight, 'g')
+      const replaceString = `<font color='#F14F4A'>${highlight}</font>`
+
+for (let i = 0; i < arr.length; i++) {
+        // 开始替换
+        arr[i].docTitle = arr[i].docTitle.replace(replaceReg, replaceString)
+      }
+
+      return arr
+    },
     docFormRSJS() {
-      return JSON.parse(JSON.stringify(this.docFormRS));
+     return JSON.parse(JSON.stringify(this.docFormRS));
+  
+    },
+        docFormJS() {
+         return this.docForm.docTitle
+
     },
     isRS() {
       return sessionStorage.getItem("docType") == "personnel";
@@ -646,10 +817,15 @@ export default {
     isKJ() {
       return sessionStorage.getItem("docType") == "science";
     },
+
   },
 
   data() {
     return {
+      chufa:1,//点击相似文档后不要触发了
+      likelyTipShowFlag:false,
+      matchedDoc:[],
+      wordsNum:3,
       addDocBtnFlg:true,
       kwInTitle:[],
       rsDocTypeMain:"",
@@ -684,7 +860,7 @@ export default {
         remark: "", //备注
         docNum: "", //件号
         personName: "",
-        docDescNum: "0", //文号中的序号
+        docDescAuthor: false, //文号中的序号
       },
       docFormRSKong: {
         id: "",
@@ -704,7 +880,7 @@ export default {
         remark: "", //备注
         docNum: "", //件号
         personName: "",
-        docDescNum: "0", //文号中的序号
+        docDescAuthor: false, //文号中的序号
       },
 
       showWaitingFlag: false,
@@ -889,7 +1065,7 @@ export default {
         docDate: "20190808",
         docTypeCode: sessionStorage.getItem("docTypeCode"),
         docLevel: "",
-        docDescAuthor: "", //责任者简称
+        docDescNum: "", //责任者简称
         dutyAuthor: "", //责任者
         deadline: "", //文件期限
         docSecret: "", //文件密级
@@ -897,7 +1073,7 @@ export default {
         remark: "", //备注
         docNum: "", //件号
         boxNumber: "", //盒号
-        docDescNum: "0", //文号中的序号
+        docDescAuthor: false, //文号中的序号
       },
 
       docFormKong: {
@@ -913,7 +1089,7 @@ export default {
         docDate: "",
         docTypeCode: "",
         docLevel: "",
-        docDescAuthor: "", //责任者简称
+        docDescNum: "", //责任者简称
         dutyAuthor: "", //责任者
         deadline: "", //文件期限
         docSecret: "", //文件密级
@@ -921,7 +1097,7 @@ export default {
         remark: "", //备注
         docNum: "", //件号
         boxNumber: "", //盒号
-        docDescNum: "0", //文号中的序号
+        docDescAuthor: false, //文号中的序号
       },
 
       TempdocSequence: "",
@@ -935,6 +1111,81 @@ export default {
     };
   },
   methods: {
+closeDocTip(){
+  this.likelyTipShowFlag=false
+},
+
+    selectThisDoc(item){
+      var itemId=item.id;
+      var docToSet;
+      for(var i in this.matchedDoc){
+        if(this.matchedDoc[i].id==itemId){
+          docToSet=this.matchedDoc[i]
+        }
+      }
+      this.docForm=docToSet
+             this.genId(6, 62);
+
+      this.likelyTipShowFlag=false
+    },
+
+    likelyHoodQuery(){
+      if(!this.aiInput){
+        return
+      }
+            if(this.chufa==0){
+              this.chufa=1
+        return
+      }
+      if(this.chufa==1){
+        this.chufa=0
+
+      }
+
+      var docObj={
+        // userId:sessionStorage.getItem
+        docType:sessionStorage.getItem('docType'),
+        docTitle:sessionStorage.getItem('docType')=='personnel'?this.docFormRS.docTitle:this.docForm.docTitle
+      }
+
+            var pathToDoc = "/document/list/like/" + sessionStorage.getItem("docType")+"?pageNow=0&pageSize=900000";
+;
+      this.postRequest(
+        //注意防止重复提交
+        pathToDoc,
+        JSON.stringify(docObj)
+      ).then(resp=>{
+        if(resp.data.content.length!=0){
+        this.likelyTipShowFlag=true
+        this.matchedDoc=resp.data.content
+        }
+
+      })
+
+    },
+    titleInput(){
+      console.log(this.docForm.docTitle)
+    },
+
+    docDescComplete(){
+      console.log(this.docForm.docDesc)
+
+var a=this.docForm.docDesc.replace(/【/g,"[")
+
+var b=a.replace(/】/g,"]")
+      console.log(b)
+      // console.log(Object.assign(b,this.docForm.docDesc))
+
+      this.docForm.docDesc=b
+      
+      console.log(this.docForm.docDesc)
+
+    },
+    levelCompelete(){
+      if(this.docForm.docLevel=="本级"){
+        this.docForm.dutyAuthor=sessionStorage.getItem("authName")
+      }
+    },
     getRsText(code) {
       if (code == 1 || code == "1") {
         this.rsDocTypeMain="履历材料"
@@ -1170,7 +1421,7 @@ export default {
               var table;
               if (this.weightForm.perKeywordWig) {
                 //已有权重表
-                this.getRequest("/weight/keywordSort/" + this.weightForm.perKeywordWig)
+                this.getRequest("/weight/sort/" + this.weightForm.perKeywordWig)
                   .then((resp) => {
                     //查询对应的权重表得到json
                     table = resp.data.tables;
@@ -1281,6 +1532,21 @@ export default {
         // this.$store.state.alreadyDocs.unshift({  docKeyWord:this.docForm.docAbout||'无文件信息',
         //   docSequence:this.docForm.docSequence ,
         //   docNumber:''})
+                var docDescNumTemp;
+        if(this.docForm.docDescAuthor){
+          //有文号
+          if(!this.docForm.docDescNum){
+          docDescNumTemp=99998  //有文号，没有文号的数字
+
+          }          else{
+            docDescNumTemp=this.docForm.docDescNum
+          }
+
+        }
+        else{
+          docDescNumTemp=99999  //没有文号
+        }
+
 
         var docObj = {
           // userId:JSON.stringify(sessionStorage.getItem("userId")),
@@ -1301,15 +1567,15 @@ export default {
           docAbout: this.docForm.docAbout,
           docDesc: this.docForm.docDesc,
           // docDesc:
-          //   this.docForm.docDescAuthor +
+          //   this.docForm.docDescNum +
           //   "[" +
           //   this.docForm.docDate.substring(0, 4) +
           //   "]" +
-          //   this.docForm.docDescNum +
+          //   this.docForm.docDescAuthor +
           //   "号", //文号
           docPage: this.docForm.docPage,
+          docDescNum: docDescNumTemp,
           docDescAuthor: this.docForm.docDescAuthor,
-          docDescNum: this.docForm.docDescNum,
           docLevel: this.docForm.docLevel,
           docSecret: this.docForm.docSecret,
           docTypeCode: sessionStorage.getItem("docTypeCode"),
@@ -1357,6 +1623,9 @@ export default {
             this.genId(6, 62);
             this.docForm.docDate.replace("-", "");
             this.docForm.docTitle = "";
+            this.docForm.docDescAuthor=false
+            this.docForm.docDescNum=""
+
             this.docForm.docPage = "";
           });
       } else {
@@ -1373,13 +1642,15 @@ export default {
     docDescChange(e) {
       // console.log(e)
       if (e == 1) {
-        this.docForm.docDescNum = 1;
+        this.docForm.docDescAuthor = 1;
       } else if (e == 0) {
-        this.docForm.docDescNum = 0;
+        this.docForm.docDescAuthor = 0;
         this.docForm.docDesc = "";
       }
     },
     cancelFixRS() {
+      this.tipShowFlag=false;
+
       this.keyWordEdit = false;
       this.docFormRS.keyword = "";
       this.docFormRS.personName = "输入姓名";
@@ -1388,6 +1659,11 @@ export default {
       // console.log(this.docForm);
       this.docFormRS.docTitle = "";
       this.docFormRS.docPage = "";
+      this.docFormRS.docDescNum=""
+      this.docFormRS.docDesc=""
+      this.docFormRS.docDescAuthor=false
+
+
       (this.docFormRS.docAboutSub = ""), (this.docFormRS.docAbout = "");
 
       this.fixDocFlag = false;
@@ -1395,7 +1671,10 @@ export default {
     cancelFix() {
       this.keyWordEdit = false;
       this.docForm.keyword = "";
-      this.docForm.docDescNum = "0";
+           this.docForm .docDescNum=""
+      this.docForm .docDesc=""
+      this.docForm.docDescAuthor=false
+
       this.genId(6, 62);
       this.docForm.docDate.replace("-", "");
       console.log(this.docForm);
@@ -1631,9 +1910,9 @@ export default {
           JSON.stringify(searchObj)
         ).then((resp) => {
           if (resp.data.content.length != 0) {
-            this.$confirm("请检查是否录入重复", "提示", {
+ this.$confirm("请检查是否录入重复,检测到可能重复的识别号："+repeatArr, "提示", {
               cancelButtonClass: "btn-custom-cancel",
-              confirmButtonText: "忽略，录入此条", //then必须在前面 否则点击空白都执行
+              confirmButtonText: "没有重复，录入此条",
               cancelButtonText: "好的，暂不录入",
               type: "warning",
             })
@@ -1657,6 +1936,12 @@ export default {
       }
     },
     addDoc() {
+//  if(!this.docForm.docDescNum){
+//    alert(0)
+//  }
+      // alert(this.docForm.docDescNum)
+      // return
+
       this.tipShowFlag = false;
             if(!this.addDocBtnFlg){
         console.log(this.addDocBtnFlg)
@@ -1673,6 +1958,20 @@ export default {
         // this.$store.state.alreadyDocs.unshift({  docKeyWord:this.docForm.docAbout||'无文件信息',
         //   docSequence:this.docForm.docSequence ,
         //   docNumber:''})
+        var docDescNumTemp;
+        if(this.docForm.docDescAuthor){
+          //有文号
+          if(!this.docForm.docDescNum){
+          docDescNumTemp=99998  //有文号，没有文号的数字
+
+          }          else{
+            docDescNumTemp=this.docForm.docDescNum
+          }
+
+        }
+        else{
+          docDescNumTemp=99999  //没有文号
+        }
         var docObj = {
           // userId:JSON.stringify(sessionStorage.getItem("userId")),
           // userId: sessionStorage.getItem('userId'),
@@ -1691,8 +1990,8 @@ export default {
           docAbout: this.docForm.docAbout,
           docDesc: this.docForm.docDesc,
           docPage: this.docForm.docPage,
+          docDescNum: docDescNumTemp,
           docDescAuthor: this.docForm.docDescAuthor,
-          docDescNum: this.docForm.docDescNum,
           docLevel: this.docForm.docLevel,
           docSecret: this.docForm.docSecret,
           docTypeCode: sessionStorage.getItem("docTypeCode"),
@@ -1729,9 +2028,12 @@ export default {
         ).then((resp) => {
           console.log("添加前检查是否重复");
           console.log(resp);
-
+          var repeatArr=[]
+          for(var i in resp.data.content){
+            repeatArr.push(resp.data.content[i].docSequence)
+          }
           if (resp.data.content.length != 0) {
-            this.$confirm("请检查是否录入重复", "提示", {
+            this.$confirm("请检查是否录入重复,检测到可能重复的识别号："+repeatArr, "提示", {
               cancelButtonClass: "btn-custom-cancel",
               confirmButtonText: "没有重复，录入此条",
               cancelButtonText: "好的，暂不录入",
@@ -1765,7 +2067,7 @@ export default {
                     );
                     this.keyWordEdit = false;
                     this.docForm.keyword = "";
-                    this.docForm.docDescNum = "0";
+                    this.docForm.docDescAuthor = "0";
                     this.genId(6, 62);
                     this.docForm.docDate.replace("-", "");
                     console.log(this.docForm);
@@ -1810,7 +2112,7 @@ export default {
                 );
                 this.keyWordEdit = false;
                 this.docForm.keyword = "";
-                this.docForm.docDescNum = "0";
+                this.docForm.docDescAuthor = "0";
                 this.genId(6, 62);
                 this.docForm.docDate.replace("-", "");
                 console.log(this.docForm);
@@ -1880,6 +2182,7 @@ export default {
       var weightType3;
 
       var kwTemp = this.docForm.keyword;
+ 
 
       // if (sessionStorage.getItem("docType") == "official") {
       // if (true) {
@@ -1991,7 +2294,7 @@ export default {
 
           var table3;
           var keywordIssueJson;
-          this.getRequest("/weight/sort/" + this.weightForm.docKeywordWig)
+          this.getRequest("/weight/keywordSort/" + this.weightForm.docKeywordWig)
             .then((resp) => {
               //查询对应的权重表得到json
               table3 = resp.data.tables;
@@ -2004,15 +2307,17 @@ export default {
               if (keywordIssueJson[key3] == null) {
                 keywordIssueJson[key3] = this.docForm.docAbout;
               } else {
-                if (
-                  keywordIssueJson[key3]
-                    .split("|")
-                    .indexOf(this.docForm.docAbout) < 0
-                ) {
-                  //
-                  keywordIssueJson[key3] =
-                    keywordIssueJson[key3] + "|" + this.docForm.docAbout;
-                }
+
+                // if (
+                //   keywordIssueJson[key3]
+                //     .split("|")
+                //     .indexOf(this.docForm.docAbout) < 0
+                // ) {
+                //   //
+                //   keywordIssueJson[key3] =
+                //     keywordIssueJson[key3] + "|" + this.docForm.docAbout;
+
+                // }
               }
 
               console.log(key3);
@@ -2120,7 +2425,7 @@ export default {
 
           var table3;
           var keywordIssueJson;
-          this.getRequest("/weight/sort/" + this.weightForm.busKeywordWig)
+          this.getRequest("/weight/keywordSort/" + this.weightForm.busKeywordWig)
             .then((resp) => {
               //查询对应的权重表得到json
               table3 = resp.data.tables;
@@ -2133,15 +2438,15 @@ export default {
               if (keywordIssueJson[key3] == null) {
                 keywordIssueJson[key3] = this.docForm.docAbout;
               } else {
-                if (
-                  keywordIssueJson[key3]
-                    .split("|")
-                    .indexOf(this.docForm.docAbout) < 0
-                ) {
-                  //
-                  keywordIssueJson[key3] =
-                    keywordIssueJson[key3] + "|" + this.docForm.docAbout;
-                }
+                // if (
+                //   keywordIssueJson[key3]
+                //     .split("|")
+                //     .indexOf(this.docForm.docAbout) < 0
+                // ) {
+                //   //
+                //   keywordIssueJson[key3] =
+                //     keywordIssueJson[key3] + "|" + this.docForm.docAbout;
+                // }
               }
 
               console.log(key3);
@@ -2248,7 +2553,7 @@ export default {
 
           var table3;
           var keywordIssueJson;
-          this.getRequest("/weight/sort/" + this.weightForm.tecKeywordWig)
+          this.getRequest("/weight/keywordSort/" + this.weightForm.tecKeywordWig)
             .then((resp) => {
               //查询对应的权重表得到json
               table3 = resp.data.tables;
@@ -2261,15 +2566,15 @@ export default {
               if (keywordIssueJson[key3] == null) {
                 keywordIssueJson[key3] = this.docForm.docAbout;
               } else {
-                if (
-                  keywordIssueJson[key3]
-                    .split("|")
-                    .indexOf(this.docForm.docAbout) < 0
-                ) {
-                  //
-                  keywordIssueJson[key3] =
-                    keywordIssueJson[key3] + "|" + this.docForm.docAbout;
-                }
+                // if (
+                //   keywordIssueJson[key3]
+                //     .split("|")
+                //     .indexOf(this.docForm.docAbout) < 0
+                // ) {
+                //   //
+                //   keywordIssueJson[key3] =
+                //     keywordIssueJson[key3] + "|" + this.docForm.docAbout;
+                // }
               }
 
               console.log(key3);
@@ -2384,9 +2689,9 @@ export default {
           headers: {
             "Content-Type": "application/json",
             authId: sessionStorage.getItem("authId"),
-            token: sessionStorage.getItem("token")
-              ? sessionStorage.getItem("token").split('"')[1] ||
-                sessionStorage.getItem("token")
+            token: window.localStorage.getItem("token")
+              ? window.localStorage.getItem("token").split('"')[1] ||
+                window.localStorage.getItem("token")
               : null,
           },
           params: {
@@ -2462,6 +2767,9 @@ export default {
       this.tipShowFlag = false;
     },
     titleComplete() {
+      if(this.fixDocFlag){  //修改文档焦点离开不要发请求
+        return
+      }
       if (this.docForm.docTitle == "") {
         this.keyWordEdit = false;
       } else this.keyWordEdit = true;
@@ -2539,7 +2847,14 @@ export default {
     },
 
     inputChange() {
+
       this.aiInput = !this.aiInput;
+            if(this.aiInput){
+                this.$message({
+          type: "success",
+          message: "将根据历史记录进行快速录入",
+        });
+      }
     },
   },
   created() {
@@ -2575,7 +2890,6 @@ export default {
 
     //       })
 
-    this.genId(6, 62);
 
     if (this.$store.state.tempDoc) {
       this.fixDocFlag = true;
@@ -2583,6 +2897,9 @@ export default {
       this.docForm = Object.assign({}, this.$store.state.tempDoc);
       this.docFormRS = Object.assign({}, this.$store.state.tempDoc);
       this.$store.state.tempDoc = "";
+    }else{
+    this.genId(6, 62);
+
     }
   },
 };
@@ -2591,32 +2908,42 @@ export default {
 <style lang="scss">
 .el-textarea__inner {
   &::placeholder {
-    color: rgba(116, 86, 86, 0.507);
+color: rgb(155,155,155);; 
+
   }
 
   &::-webkit-input-placeholder {
     /* WebKit browsers 适配谷歌 */
-    color: rgba(116, 86, 86, 0.507) !important;
+ color: rgb(155,155,155) !important;
   }
 
   &:-moz-placeholder {
     /* Mozilla Firefox 4 to 18 适配火狐 */
-    color: rgba(116, 86, 86, 0.507) !important;
+ color: rgb(155,155,155) !important;
   }
 
   &::-moz-placeholder {
     /* Mozilla Firefox 19+ 适配火狐 */
-    color: rgba(116, 86, 86, 0.507) !important;
+  color: rgb(155,155,155) !important;
   }
 
   &:-ms-input-placeholder {
     /* Internet Explorer 10+  适配ie*/
-    color: rgba(116, 86, 86, 0.507) !important;
+ color: rgb(155,155,155) !important;
   }
 }
 .docInForm >>> .el-input__inner {
-  border: 0.08rem solid #274596c5 !important;
+     color: #000;
+
+  border: 0.04rem solid #274596c5 !important;
 }
+.docInForm { .el-input__inner {
+     color: #000;
+
+}
+}
+
+ 
 .docInForm {
   .textArea {
     height: 5rem;
@@ -2631,36 +2958,35 @@ export default {
 
   .el-input__inner {
     &::placeholder {
-      color: rgba(116, 86, 86, 0.507);
+     color: rgb(155,155,155)
     }
 
     &::-webkit-input-placeholder {
       /* WebKit browsers 适配谷歌 */
-      color: rgba(116, 86, 86, 0.507);
+    color: rgb(155,155,155)
     }
 
     &:-moz-placeholder {
       /* Mozilla Firefox 4 to 18 适配火狐 */
-      color: rgba(116, 86, 86, 0.507);
+       color: rgb(155,155,155)
     }
 
     &::-moz-placeholder {
       /* Mozilla Firefox 19+ 适配火狐 */
-      color: rgba(116, 86, 86, 0.507);
+  color: rgb(155,155,155)
     }
 
     &:-ms-input-placeholder {
       /* Internet Explorer 10+  适配ie*/
-      color: rgba(116, 86, 86, 0.507);
+     color: rgb(155,155,155)
     }
   }
 
   .el-input__inner {
     background: rgba(255, 255, 255, 0.15) !important;
     border-radius: 0.48rem;
-    border: 0.08rem solid rgba(33, 57, 94, 0.74);
+    border: 0.05rem solid rgba(33, 57, 94, 0.74);
     height: 2.5rem !important;
-    color: rgb(83, 17, 17);
     font-size: 1.1rem;
     padding-left: 3.3rem;
   }
@@ -2706,13 +3032,18 @@ export default {
 .matchedItem {
 }
 .matchedItem:hover {
-  color: rgb(93, 93, 117);
-  font-weight: 600;
+  // background-color:rgb(57, 60, 65);
+  color: #fff;
+  font-weight: 550;
   cursor: pointer;
 }
 
 .matchedKVClass {
   height: 2rem;
+  border-bottom: solid 0.2px #aaa;
+}
+.matchedDocClass {
+
   border-bottom: solid 0.2px #aaa;
 }
 .docSequenceTip {
@@ -2785,22 +3116,21 @@ export default {
   text-align: center;
 }
 .docInForm {
-  position: relative;
-  padding-top: 4rem;
-  top: 5rem;
-  left: 20%;
-  // height: 20rem;
-  padding-bottom: 2rem;
-
-  width: 65rem;
-  padding-right: 5rem;
-  border: solid 1px;
+    position: relative;
+    padding-top: 4rem;
+    top: 5rem;
+    left: 16%;
+    padding-bottom: 2rem;
+    width: 70rem;
+    padding-right: 5rem;
+    border: solid 1px;
 }
 
 .wrapper {
   height: 150vh;
 
   position: relative;
-  background-color: rgb(195, 204, 228);
+    background-color: rgb(240, 240, 243);
+
 }
 </style>
