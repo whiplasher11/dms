@@ -19,10 +19,10 @@
 
                 <div
           style="
-            position: absolute;
-            bottom: -1.1rem;
-            right: 20%;
-            font-size: 1.2rem;
+            position: fixed;
+        top: 5.5rem;
+            right: 24%;
+            font-size: 1.1rem;
             cursor:pointer;
           "
           class="topTextButton"
@@ -31,6 +31,38 @@
        
         >
           预设单位
+        </div>
+        
+                <div
+          style="
+            position: fixed;
+           top: 5.5rem;
+            right: 17%;
+            font-size: 1.1rem;
+            cursor:pointer;
+          "
+          class="topTextButton"
+          v-if="organsShow"
+          @click="showUsusal"
+       
+        >
+          常用单位
+        </div>
+        
+                <div
+          style="
+            position: fixed;
+            top: 5.5rem;
+            right: 10%;
+            font-size: 1.1rem;
+            cursor:pointer;
+          "
+          class="topTextButton"
+          v-if="organsShow"
+          @click="showAll"
+       
+        >
+          所有单位
         </div>
 
       </div>
@@ -66,6 +98,19 @@
         >
           请预设单位名和全宗号
         </div>
+
+        <el-checkbox class="organShowCheckbox"
+        style="position: absolute; right: 1rem; top: 8rem"
+        v-if="true"
+       
+        false-label="false"
+        true-label="true"
+        @change="logShowtoSet"
+        v-model="showToSet"
+ 
+        >是否显示</el-checkbox
+      >
+
         <input
           type="text"
           style="
@@ -89,7 +134,7 @@
           取消
         </div>
 
-        <div class="textButton" @click="dopreSetNA" style="color: #ddd">
+        <div class="textButton" @click="dopreSetNA" style="color: #ddd;position: absolute">
           确定
         </div>
       </div>
@@ -125,6 +170,16 @@
         >
           请修改单位名或全宗号
         </div>
+                <el-checkbox class="organShowCheckbox"
+        style="position: absolute; right: 1rem; top: 8rem"
+        v-if="true"
+       
+        false-label="false"
+        true-label="true"
+        v-model="showToSet"
+        >是否显示</el-checkbox
+      >
+
         <input
           type="text"
           style="
@@ -156,20 +211,28 @@
       <div v-if="organsShow">
         <div
           style="
-            width: 100%;
-            text-align: center;
-            font-size: 1.2rem;
-            border-bottom: solid rgb(44, 44, 44) 0.2rem;
-            margin-bottom: 1rem;
-            height: 2rem;
-            line-height: 2rem;
+    width: 100%;
+    text-align: center;
+    font-size: 1.2rem;
+    /* border-bottom: 0.2rem solid rgb(44, 44, 44); */
+    margin-bottom: 1rem;
+    height: 5rem;
+    line-height: 2rem;
+    position: fixed;
+    background-color: rgb(240,240,243);
+    top: 4.5rem;
           "
         >
           您的档案单位
         </div>
-
-        <div class="organItem" style="height: 2rem">
-          <div class="organInfo tip" style="width: 12%">序号</div>
+<div class="organItem" style="height: 3rem "></div>
+        <div class="organItem topFix" style=" border-bottom:none;   height: 2rem;
+  line-height:2rem;
+    top: 7rem;
+    position: fixed;
+  
+    ">
+          <div class="organInfo tip" style="width: 12% ;margin-left:2rem">序号</div>
 
           <div class="organInfo tip">单位名</div>
           <div class="organInfo tip">单位全宗号</div>
@@ -244,7 +307,18 @@
       <!-- 单位展示 -->
 
       <div v-if="!organsShow">
-        <div class="organItem " style="height: 2.2rem">
+      <div class="organIrem" style="height:4rem " ></div>
+      <div class="organIrem" style="height:4rem ;width:100%;position:fixed;background-color:rgb(240,240,243);top:4.5rem" ></div>
+
+        <div class="organItem " style="border-bottom:none;   height: 2rem;
+  line-height:2rem;
+    top: 7.8rem;
+    position: fixed;
+    border-bottom:solid;
+    margin-left:2.5%;
+    background-color:rgb(240,240,243)
+  ">
+  <div></div>
           <div class="BatchInfo">批次名</div>
           <div class="BatchInfo">类型</div>
           <div class="BatchInfo">时间</div>
@@ -290,6 +364,10 @@ import axios from "axios";
 export default {
   data() {
     return {
+      showToSetReal:true,
+      organsOrigin:[],
+      usualOrgans:[],
+      showToSet:"",
       presetNameShowFlag:false,
       fixNameShow: false,
       nameToSet: "",
@@ -306,6 +384,28 @@ export default {
     };
   },
   methods: {
+    logShowtoSet(){
+      console.log(this.showToSet)
+      if(this.showToSet){
+        this.showToSetReal=true
+      }else{
+        this.showToSetReal=false
+      }
+    },
+    showUsusal(){
+      // if()
+      this.organsOrigin=JSON.parse(JSON.stringify(this.organs))
+      this.usualOrgans=[]
+      for(var i in this.organs){
+        if(this.organs[i].show){
+          this.usualOrgans.push(this.organs[i])
+        }
+      }
+      this.organs=JSON.parse(JSON.stringify(this.usualOrgans))
+    },
+    showAll(){
+      this.organs=JSON.parse(JSON.stringify(this.organsOrigin))
+    },
     deleteTheBatch(item) {
       //   type: "success",
       //   message: "删除成功"
@@ -337,6 +437,11 @@ export default {
       this.nameToSet = item.authName;
       this.authCodeToSet = item.authCode;
       this.authfix = item;
+      console.log(item)
+      console.log(item.show)
+      // if(this.showToSet)
+var i=item.show
+this.showToSet=i
       this.fixNameShow = true;
     },
     clearFixNA() {
@@ -350,11 +455,18 @@ export default {
     },
  
     dopreSetNA() {
+      console.log("预设")
+      console.log(this.showToSet)
+
+      var showma=this.showToSet
+      console.log(showma)
  
             var organObj = {
         authName: this.nameToSet,
         authCode: this.authCodeToSet,
+        show:showma,
       };
+      console.log(organObj)
       
       this.postRequest("/organ", JSON.stringify(organObj)).then((resp) => {
         if (resp) {
@@ -396,6 +508,8 @@ this.presetNameShowFlag=false
               console.log("修改单位后请求单位列表");
               this.organs = resp.data;
               this.organs.reverse();
+        this.showUsusal()
+
 
             }
           });
@@ -404,9 +518,14 @@ this.presetNameShowFlag=false
 
     },
     doFixNA() {
+ 
       this.authfix.authName = this.nameToSet;
       this.authfix.authCode = this.authCodeToSet;
+      console.log('修改单位')
+      console.log(this.showToSet)
+      var showma=this.showToSet
 
+      this.authfix.show=showma
       this.putRequest(
         //注意防止重复提交
         "/organ/" + this.authfix.id,
@@ -418,6 +537,8 @@ this.presetNameShowFlag=false
               console.log("修改单位后请求单位列表");
               this.organs = resp.data;
               this.organs.reverse();
+        this.showUsusal()
+
             }
           });
         }
@@ -442,15 +563,36 @@ this.presetNameShowFlag=false
       this.$store.state.alreadyDocs = [];
       console.log(item);
       console.log("查看某批");
+// if(item.sorted!=null){  //该批已经排好序
+// this.$store.state.sortedFlag=true
+//  var sorted=JSON.parse(item.sorted.sorted);
+//       console.log(sorted)
+//       console.log("查看某批");
 
+//       sorted=sorted[0]
+//                   for (var i = 0; i < sorted.length; i++) {
+//               for (var j = 0; j < sorted[i].length; j++) {
+//                 this.$store.state.alreadyDocs.push(sorted[i][j]);
+//                 //
+//               }
+//             }
+// }
       // /document/page/{type}/{batchId}
-      window.sessionStorage.setItem("docType", item.docType);
+     
+
+      // this.$store.state.alreadyDocs=JSON.parse( sorted);
+{
+        window.sessionStorage.setItem("docType", item.docType);
       window.sessionStorage.setItem("docTypeCode", item.docTypeCode);
       window.sessionStorage.setItem("batchId", item.id);
       window.sessionStorage.setItem("lastBox", JSON.stringify(item.lastBox));
 
       // batchId
+}
+
       this.$router.push("/work/docInputD");
+
+
     },
     backOrgans() {
       this.organsShow = true;
@@ -559,6 +701,7 @@ this.presetNameShowFlag=false
         console.log("加载时请求单位列表");
         this.organs = resp.data;
         this.organs.reverse();
+        this.showUsusal()
         // console.log(this.organs)
         //  console.log(resp)
       }
@@ -573,7 +716,128 @@ this.presetNameShowFlag=false
 };
 </script>
 
+
 <style lang="scss">
+.el-form-item__content{
+  font-size: 1rem !important;
+  line-height: 2rem !important;
+  .el-input{
+    font-size: 1rem !important;
+  }
+}
+.el-form-item__label{
+      padding: 0 0.8rem 0 0 !important;
+    font-size: 1rem !important;
+}
+// 本页面的
+.infoItemHighlight:hover{
+  background-color: rgba(210, 216, 228, 0.733);
+}
+
+ .topTextButton{
+             
+          cursor: pointer;
+      z-index: 9;
+padding: 0.3rem;
+          background-color: rgb(108, 120, 153);
+          -webkit-box-shadow: 0 0 0.5rem #909399;
+          box-shadow: 0 0 0.5rem #909399;
+          border-radius: 0.5rem;
+          color:#ddd !important;
+          // top:-2.8rem !important
+          margin-left: 1rem;
+  }
+
+  .topTextButton:hover{
+          background-color: rgb(43, 50, 68);
+
+  }
+
+   .topTextButtonBlue{
+             
+          cursor: pointer;
+      z-index: 9;
+padding: 0.5rem;
+text-align: center;
+          background-color: rgb(66, 94, 172);
+          -webkit-box-shadow: 0 0 0.5rem #909399;
+          box-shadow: 0 0 0.5rem #909399;
+          border-radius: 0.5rem;
+          color:#ddd !important;
+          // top:-2.8rem !important
+          margin-left: 1rem;
+  }
+
+  .topTextButtonBlue:hover{
+          background-color: rgb(20, 65, 177);
+
+  }
+
+
+
+.organShowCheckbox{
+  .el-checkbox__label{
+    color: #ddd !important;
+}
+.el-checkbox{
+    color: #ddd !important;
+
+}
+}
+
+</style>
+
+<style lang="scss">
+
+/**el-checkbox */
+
+.el-checkbox__inner{
+  width: 1rem !important;
+  height: 1rem !important;
+  border: 0.06rem solid #DCDFE6 !important;
+
+}
+
+/**el-checkbox */
+
+.el-select .el-input .el-select__caret{
+  font-size: 1rem !important;
+}
+.el-input--small .el-input__icon{
+  line-height: 2rem !important;
+}
+.el-input__icon{
+  width: 1.5rem !important;
+}
+.el-input__inner{
+  line-height: 2.5rem !important;
+  padding: 0 2.8rem !important;
+}
+.leftInput .el-input__inner{
+  padding: 0 0.8rem !important;
+
+}
+.myInput{
+ height: 1.5rem;
+    background-color: rgba(2,2,2,0);
+    border-radius: 0.5rem;
+    /* border: none; */
+    padding: 0.2rem;
+}
+
+.el-checkbox__inner{
+  width: 1rem;
+  height: 1rem;
+}
+.el-checkbox{
+  font-size: 1rem  !important;
+}
+.el-checkbox__label{
+    display: inline-block;
+    padding-left: 0.8rem !important;
+    line-height: 1.36rem !important;
+    font-size: 1rem !important;
+}
 .windowStyle {
   background-color: rgba(57, 60, 65, 0.808) !important;
 }
@@ -581,13 +845,8 @@ this.presetNameShowFlag=false
 
 <style lang="scss" scoped>
   .topTextButton{
-             
+            
           
-      
-          color: #333;
-
-          // width: 30rem;
-          // height: 10rem;
 padding: 0.3rem;
           background-color: rgb(97, 101, 112);
           -webkit-box-shadow: 0 0 0.5rem #909399;
@@ -601,6 +860,10 @@ padding: 0.3rem;
   .topTextButton:hover{
           background-color: rgb(43, 50, 68);
 
+  }
+  .topFix{
+    color: #222;
+    background-color: rgba(240, 240, 243, 1);
   }
   
 .wrapper {

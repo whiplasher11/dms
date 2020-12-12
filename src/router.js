@@ -84,7 +84,7 @@ export default new Router({
         {
             path: '/home',
             name: 'm',
-            component: Login,
+            component: Main,
             hidden: true
         },
         {

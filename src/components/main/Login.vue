@@ -19,7 +19,7 @@
       element-loading-background="rgba(0, 0, 0, 0.8)"
       :model="loginForm"
       label-width="6rem"
-      class="loginContainer"
+      class="specialELContainer"
     >
       <h3 class="loginTitle">登录智能档案系统</h3>
       <el-form-item prop="username" label="账号：">
@@ -47,7 +47,8 @@
       </el-form-item>-->
       <!-- <el-checkbox size="normal" class="loginRemember" v-model="checked"></el-checkbox> -->
       <div class="goRegister" @click="goRegister">尚未注册？前往注册</div>
-      <el-button class="loginBtn" size="normal" type="primary" @click="submitLogin" @keyup.enter="submitLogin">登录</el-button>
+      <div style="width:3rem;height:3rem"></div>
+      <div class="topTextButtonBlue"  style="width:6rem;margin-left:40%"  @click="submitLogin" @keyup.enter="submitLogin">登录</div>
     </el-form>
       </transition>
 
@@ -65,7 +66,7 @@
       element-loading-background="rgba(22, 44,22, 0.8)"
       :model="regiForm"
       label-width="6rem"
-      class="loginContainer"
+      class="specialELContainer"
     >
       <h3 class="loginTitle">注册</h3>
       <el-form-item prop="phone" label="手机号：">
@@ -124,7 +125,7 @@
       </el-form-item>-->
       <!-- <el-checkbox size="normal" class="loginRemember" v-model="checked"></el-checkbox> -->
       <div class="goRegister" @click="goLogin">已有账号？请登录</div>
-      <el-button class="loginBtn" size="normal" type="primary" @click="submitRegi">注册</el-button>
+      <div class="topTextButtonBlue"    style="width:6rem;margin-left:40%"   @click="submitRegi">注册</div>
     </el-form>
       </transition>
   </div>
@@ -346,15 +347,15 @@ export default {
 </script>
 
 <style lang="scss" >
-.loginContainer {
+.specialELContainer {
   .el-input__inner {
     background: rgba(255, 255, 255, 0.15) !important;
-    border-radius: 0.58vw;
+    border-radius: 0.6rem;
     border: 0.05rem solid #8992acc5;
     height: 3rem;
     color: #222;
-    font-size: 1.1vw;
-    padding-left: 3.3vw;
+    font-size: 1.1rem;
+    padding-left: 3.3rem !important;
 
     
   &::-webkit-input-placeholder {
@@ -412,7 +413,7 @@ export default {
 
   height: 150vh;
 
-  .loginContainer {
+  .specialELContainer {
  
     position: relative;
     border-radius: 15px;
@@ -457,7 +458,7 @@ export default {
 }
 .goRegister {
   position: absolute;
-  right: 35px;
+  right: 2rem;
   cursor: pointer;
 }
 .goRegister:hover {
@@ -465,7 +466,7 @@ export default {
 }
 
 .loginTitle {
-  margin: 15px auto 20px auto;
+  margin: 1rem auto 1.5rem auto;
   text-align: center;
   color: #505458;
 }

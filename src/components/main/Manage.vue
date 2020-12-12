@@ -12,7 +12,7 @@
 
       :model="searchForm"
       label-width="6rem"
-      class="loginContainer"
+      class="specialELContainer"
      style="background-color:rgb(209, 218, 243) !important;"
     >
       <h3 style="        text-align: center;
@@ -278,7 +278,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.loginContainer{
+.specialELContainer{
         position: absolute;
 
     border-radius: 15px;
@@ -312,7 +312,8 @@ export default {
 }
 
 .wrapper {
-  background-color: rgb(209, 218, 243);
+  background-color: rgb(240, 240, 243);
+
   // height: 120vh;
   padding-bottom: 100vh;
   position: relative;

@@ -20,7 +20,7 @@
 它能大量减少从业人员的劳动强度，大幅提高工作效率，还能保证工作结果的准确率，标准的统一性，作业的规范性。
 		  <div>&nbsp;</div>
 
-		  <div>注意：请使用谷歌内核的浏览器达到最佳使用效果</div>
+		  <div>注意：请使用谷歌内核的浏览器(谷歌、360)达到最佳使用效果</div>
 		  <div>&nbsp;</div>
 
 		  <div>注册购买请联系作者 ：电话15386181680 &nbsp;&nbsp;   微信:zgan108    QQ：2460947088</div>
@@ -62,6 +62,7 @@ export default {
 	 }
 },
 mounted(){
+	window.scrollTo(0,0)
 	this.runInv()
 			console.log(this.baseurl)
  
@@ -115,7 +116,8 @@ computed:{
 
 <style lang="scss" scoped>
 .wrapper{
-  background-color: rgb(209, 218, 243);
+  background-color: rgb(250, 250, 253);
+
   height: 120vh;
   position: relative;
   padding-bottom: 60vh;

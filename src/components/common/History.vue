@@ -120,6 +120,12 @@ export default {
 
       console.log('侧边点开的item')
       console.log(doc)
+      if(doc.docDescAuthor=="true"||doc.docDescAuthor==1||doc.docDescAuthor=="1"){
+        doc.docDescAuthor=true
+      }else{
+        doc.docDescAuthor=false
+      }
+      
 
       this.emitThisDoc(doc)
     },
@@ -131,6 +137,9 @@ export default {
 .leftInput .el-input__inner {
     background: rgba(255, 255, 255, 0.15) !important;
     border: 0.08rem solid rgba(33, 57, 94, 0.74);
+    height: 2rem !important;
+    line-height: 2rem !important;
+    border-radius: 0.3rem;
 
 }
 

@@ -8,7 +8,7 @@
                 element-loading-spinner="el-icon-loading"
                 element-loading-background="rgba(0, 0, 0, 0.8)"
                 :model="registerForm"
-                class="loginContainer">
+                class="specialELContainer">
             <h3 class="loginTitle">医生注册</h3>
 
             <div class="toggle" @click="changeToggle()">{{this.taggle==0?"切换医生注册":"切换病人注册"}}</div>
@@ -74,7 +74,7 @@
                 element-loading-spinner="el-icon-loading"
                 element-loading-background="rgba(0, 0, 0, 0.8)"
                 :model="registerFormp"
-                class="loginContainer">
+                class="specialELContainer">
             <h3 class="loginTitle">病人注册</h3>
 
             <div class="toggle" @click="changeToggle()">{{this.taggle==0?"医生注册":"病人注册"}}</div>
@@ -307,7 +307,7 @@ input:-webkit-autofill {
 .loginBtn{
     margin-top: 42px !important;
 }
-    .loginContainer {
+    .specialELContainer {
         position: relative;
         border-radius: 15px;
         background-clip: padding-box;

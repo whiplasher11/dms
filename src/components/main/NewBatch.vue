@@ -96,9 +96,9 @@
           ></el-input>
         </el-form-item>
 
-        <el-form-item label="自定义排件号规则：">
+        <el-form-item   v-if="false" label="自定义排件号规则：">
           <el-checkbox
-            v-if="true"
+          
             @change="priorityChange"
             false-label="0"
             true-label="1"
@@ -180,7 +180,7 @@
           </el-select>
         </el-form-item>
 
-        <el-button type="primary" class="midBtn" style="margin-left:40%" @click="nextStep">下一步</el-button>
+        <div type="primary" class="topTextButton" style="margin-left:40%;width:3rem;padding:0.5rem" @click="nextStep">下一步</div>
       </el-form>
     </div>
 <!-- step==2 -->
@@ -271,10 +271,10 @@
       <div style="position:relative">
       <div style="height:1rem"></div>
 
-        <el-button type="primary" class="midBtn" style="width:12%;position:absolute;left:25%" @click="preStep">上一步</el-button>
-        <el-button type="primary" class="midBtn" style="width:14%;position:absolute;left:45%" @click="newBoxType">新增盒型</el-button>
+        <div type="primary" class="topTextButtonBlue" style="width:12%;position:absolute;left:15%" @click="preStep">上一步</div>
+        <div type="primary" class="topTextButtonBlue" style="width:14%;position:absolute;left:35%" @click="newBoxType">新增盒型</div>
 
-        <el-button type="primary" class="midBtn" style="width:12%;position:absolute;left:65%" @click="newBatch">下一步</el-button>
+        <div type="primary" class="topTextButtonBlue" style="width:12%;position:absolute;left:55%" @click="newBatch">下一步</div>
       </div>
       <div style="height:1rem"></div>
       </el-form>
@@ -325,15 +325,15 @@ export default {
         first: "keyword",
         second: "level",
         third: "author",
-        forth: "docDescNum",
-        fifth: "docDate",
+        forth: "docDate",
+        fifth: "docDescNum",
       },
       priority: {
         first: "keyword",
         second: "level",
         third: "author",
-        forth: "docDescNum",
-        fifth: "docDate",
+        forth: "docDate",
+        fifth: "docDescNum",
       },
       renshipriority: {
         first: "keyword",
@@ -417,6 +417,8 @@ export default {
           },
         ];
       } else {
+        // organs=organs.rev?
+        organs.reverse();
         this.historyAuths = organs;
       }
     });
@@ -1146,6 +1148,8 @@ setTimeout(() => {
 
   .el-form-item__label {
     line-height: 3rem !important;
+    padding: 0 0.8rem 0 0 !important;
+    font-size: 1rem !important;
   }
   .el-form-item__content {
     height: 3rem !important;

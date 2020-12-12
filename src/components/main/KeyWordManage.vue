@@ -3,7 +3,7 @@
     <div style="position: relative" class="wrapper">
       <div
         style="
-          position: absolute;
+          position: fixed;
           width: 20rem;
           height: 10rem;
           top: 10rem;
@@ -1617,31 +1617,7 @@ selectRsDAFlag:false,
   },
 };
 </script>
-<style lang="scss">
-.infoItemHighlight:hover{
-  background-color: rgba(210, 216, 228, 0.733);
-}
-
-
-.patientSearchWrapper {
-  border: none !important;
-  .el-input__inner {
-    background: rgba(255, 255, 255, 0.15) !important;
-    border-radius: 0.58vw;
-    border: 0.1rem solid #21b15dc5;
-    height: 3rem;
-    color: #333;
-    font-size: 1.1rem;
-    padding-left: 1rem;
-  }
-  .hoverStyle:hover {
-    // margin-left: 22rem;
-    color: rgba(29, 30, 32, 0.733);
-    cursor: pointer;
-    z-index: 9999;
-  }
-}
-</style>
+ 
 
 <style lang="scss" scoped>
 .hoverStyle:hover {
@@ -1651,6 +1627,7 @@ selectRsDAFlag:false,
   z-index: 9999;
 }
 .textButton {
+  z-index: 9;
   margin-top: 1.5rem;
   color: rgb(227, 229, 236);
   font-size: 1.2rem;

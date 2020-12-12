@@ -13,8 +13,8 @@ import {getRequest} from "./utils/api";
 import {baseurl} from "./utils/api"
 import {initMenu} from "./utils/menus";
 import 'font-awesome/css/font-awesome.min.css'
-import Print from './utils/print.js'
-
+// import Print from './utils/print.js'
+import Print from 'vue-print-nb'
 import animate from 'animate.css'
 
 Vue.prototype.postRequest = postRequest;
@@ -106,7 +106,6 @@ Vue.filter('formatTime',function(value){
 });
 
 Vue.filter('pageTotalformat',function(value){
-    console.log(value)
     if(value==null){
         return '    '
     }

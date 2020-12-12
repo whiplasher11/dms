@@ -183,9 +183,9 @@
         style="position: absolute; right: 1rem; top: 1rem"
         v-if="true"
         @change="inputChange"
-        false-label="0"
-        true-label="1"
-        :checked="false"
+        false-label="false"
+        true-label="true"
+        :checked="true"
         >智能录入</el-checkbox
       >
 
@@ -211,7 +211,7 @@
               @change="docDescChange"
               false-label="false"
               true-label="true"
-              :checked="docForm.docDescAuthor"
+              :checked="false"
               v-model="docForm.docDescAuthor"
               
             ></el-checkbox>
@@ -226,7 +226,7 @@
         <el-col :span="12">
           <el-form-item
             prop="batchName"
-            v-if="docForm.docDescAuthor=='true' "
+            v-if="docForm.docDescAuthor "
             label="文号："
           >
             <el-input
@@ -244,7 +244,7 @@
           <el-col :span="8">
           <el-form-item
             prop="batchName"
-            v-if="docForm.docDescAuthor=='true'"
+            v-if="docForm.docDescAuthor"
             label="序号："
           >
             <el-input
@@ -448,48 +448,52 @@
       </el-form-item>
 
       <div class="buttonGroup">
-        <el-button
-          type="warning"
+        <div class="topTextButtonBlue"
+ 
           v-if="fixDocFlag"
           size="big"
-          style="margin-left: 40%"
+          style="float:left;margin-left: 40%"
           @click="fixDoc"
-          >修改档案</el-button
+          >修改档案</div
         >
-        <el-button
+        <div class="topTextButtonBlue"
+
           type="success"
           v-if="!fixDocFlag"
           size="big"
-          style="margin-left: 30%"
+          style="float:left;margin-left: 30%"
           @click="addDoc"
-          >添加档案</el-button
+          >添加档案</div
         >
 
-        <el-button
+        <div class="topTextButtonBlue"
+
           type="primary"
           size="big"
-          style="margin-left: 10%"
+          style="float:left;margin-left: 10%"
           @click="resetDocIn"
           v-if="!fixDocFlag"
-          >清空列表</el-button
+          >清空列表</div
         >
-        <el-button
+        <div class="topTextButtonBlue"
+
           type="warning
           "
           size="big"
-          style="margin-left: 10%"
+          style="float:left;margin-left: 10%"
           @click="goDetail"
           v-if="!fixDocFlag"
-          >结束录入</el-button
+          >结束录入</div
         >
 
-        <el-button
+        <div class="topTextButtonBlue"
+
           type="primary"
           size="big"
-          style="margin-left: 10%"
+          style="float:left;margin-left: 10%"
           @click="cancelFix"
           v-if="fixDocFlag"
-          >取消修改</el-button
+          >取消修改</div
         >
       </div>
     </el-form>
@@ -634,48 +638,47 @@
       </el-form-item>-->
 
       <div class="buttonGroup">
-        <el-button
+        <div class="topTextButtonBlue"
           type="warning"
           v-if="fixDocFlag"
-          size="big"
-          style="margin-left: 30%"
+ 
+          style="float:left;margin-left: 30%;width:4rem"
           @click="fixDocRS"
-          >修改档案</el-button
+          >修改档案</div
         >
-        <el-button
+     <div class="topTextButtonBlue"
           type="success"
           v-if="!fixDocFlag"
-          size="big"
-          style="margin-left: 20%"
+ 
+          style="float:left;margin-left: 20%;width:4rem"
           @click="addDocRS"
-          >添加档案</el-button
+          >添加档案</div
         >
-
-        <el-button
+     <div class="topTextButtonBlue"
           type="primary"
-          size="big"
-          style="margin-left: 20%"
+ 
+          style="float:left;margin-left: 20%;width:4rem"
           @click="resetDocInRS"
           v-if="!fixDocFlag"
-          >清空列表</el-button
+          >清空列表</div
         >
 
-        <el-button
-          type="warning"
+     <div class="topTextButtonBlue"
+ 
           v-if="!fixDocFlag"
-          size="big"
-          style="margin-left: 20%"
+ 
+          style="float:left;margin-left: 20%;width:4rem"
           @click="goDetail"
-          >结束录入</el-button
+          >结束录入</div
         >
 
-        <el-button
+     <div class="topTextButtonBlue"
           type="primary"
-          size="big"
-          style="margin-left: 10%"
+ 
+          style="float:left;margin-left: 10%;width:4rem"
           @click="cancelFixRS"
           v-if="fixDocFlag"
-          >取消修改</el-button
+          >取消修改</div
         >
       </div>
     </el-form>
@@ -700,7 +703,8 @@ export default {
       var obj = Object.assign({}, doc);
       that.docForm = Object.assign({}, doc);
       that.docFormRS = Object.assign({}, doc);
-
+      that.docForm.docDescAuthor=doc.docDescAuthor
+      // alert(that.docForm.docDescAuthor)
       that.fixDocFlag = true;
       that.$store.state.tempDocSeq = doc.docSequence;
       that.$store.state.tempDocId = doc.id; //id用来修改文件
@@ -723,7 +727,7 @@ docFormJS:{
    this.wordsNum=v.length
   //  console.log(this.docForm)
   var len=v.length
-  console.log(len)
+  // console.log(len)
     if(len>5&&len<9){
       // alert(2)
       this.likelyHoodQuery();
@@ -1102,7 +1106,7 @@ for (let i = 0; i < arr.length; i++) {
 
       TempdocSequence: "",
 
-      aiInput: false,
+      aiInput: true,
       pickerOptions: {
         disabledDate(time) {
           return time.getTime() < new Date("1995/5/1");
@@ -1145,6 +1149,7 @@ closeDocTip(){
       var docObj={
         // userId:sessionStorage.getItem
         docType:sessionStorage.getItem('docType'),
+        authId:sessionStorage.getItem('authId'),
         docTitle:sessionStorage.getItem('docType')=='personnel'?this.docFormRS.docTitle:this.docForm.docTitle
       }
 
@@ -1274,6 +1279,9 @@ var b=a.replace(/】/g,"]")
       console.log(docDateYear);
       console.log(this.docForm.sortYear);
       if(docDateYear==null||this.docForm.sortYear==null){
+        return
+      }
+      if(docDateYear==""||this.docForm.sortYear==""||this.docForm.docDate==""){
         return
       }
 
@@ -1535,7 +1543,8 @@ var b=a.replace(/】/g,"]")
                 var docDescNumTemp;
         if(this.docForm.docDescAuthor){
           //有文号
-          if(!this.docForm.docDescNum){
+            if(!this.docForm.docDescNum||this.docForm.docDescNum==null||this.docForm.docDescNum==""){
+
           docDescNumTemp=99998  //有文号，没有文号的数字
 
           }          else{
@@ -1557,6 +1566,7 @@ var b=a.replace(/】/g,"]")
           batchId: sessionStorage.getItem("batchId"),
           docDate: this.docForm.docDate,
           docNum: "", //件号
+          boxSeq:"",
           docPage: this.docForm.docPage,
           docSequence: this.docForm.docSequence,
           docTitle: this.docForm.docTitle,
@@ -1566,6 +1576,7 @@ var b=a.replace(/】/g,"]")
           deadline: this.docForm.deadline,
           docAbout: this.docForm.docAbout,
           docDesc: this.docForm.docDesc,
+          pageTotal:"",
           // docDesc:
           //   this.docForm.docDescNum +
           //   "[" +
@@ -1641,11 +1652,13 @@ var b=a.replace(/】/g,"]")
     },
     docDescChange(e) {
       // console.log(e)
-      if (e == 1) {
-        this.docForm.docDescAuthor = 1;
-      } else if (e == 0) {
-        this.docForm.docDescAuthor = 0;
+      if (e == "false"||!e) {
+        this.docForm.docDescAuthor = false;
+      } else if (e == "true"||e) {
+        this.docForm.docDescAuthor = true;
         this.docForm.docDesc = "";
+        this.docForm.docDescNum = "";
+
       }
     },
     cancelFixRS() {
@@ -1653,15 +1666,15 @@ var b=a.replace(/】/g,"]")
 
       this.keyWordEdit = false;
       this.docFormRS.keyword = "";
-      this.docFormRS.personName = "输入姓名";
+      this.docFormRS.personName = "";
       this.genId(6, 62);
       this.docFormRS.docDate.replace("-", "");
       // console.log(this.docForm);
       this.docFormRS.docTitle = "";
       this.docFormRS.docPage = "";
-      this.docFormRS.docDescNum=""
-      this.docFormRS.docDesc=""
-      this.docFormRS.docDescAuthor=false
+      // this.docFormRS.docDescNum=""
+      // this.docFormRS.docDesc=""
+      // this.docFormRS.docDescAuthor=false
 
 
       (this.docFormRS.docAboutSub = ""), (this.docFormRS.docAbout = "");
@@ -1829,31 +1842,6 @@ var b=a.replace(/】/g,"]")
                 });
               });
           } //if  已有权重表
-          // else {
-          //   var key1 = this.docFormRS.keyword;
-          //   var json1 = {};
-          //   json1[key1] = "0";
-
-          //   var keyWordObj = {
-          //     authId: sessionStorage.getItem("authId"),
-          //     type: 41,
-          //     tables: json1,
-          //   };
-
-          //   this.postRequest(
-          //     //注意防止重复提交
-          //     "/weight",
-          //     JSON.stringify(keyWordObj)
-          //   ).then((resp) => {
-          //     console.log("第一次提交人事关键词权重表");
-          //     console.log(resp);
-          //     // console.log(this.weightForm=resp)
-          //     this.weightForm = resp.data;
-          //     if (resp.code == 0) {
-          //       this.showWaitingFlag = false;
-          //     }
-          //   });
-          // }
           this.$store.state.alreadyDocs.unshift(
             Object.assign({}, this.docFormRS)
           );
@@ -1909,6 +1897,13 @@ var b=a.replace(/】/g,"]")
           searchPath,
           JSON.stringify(searchObj)
         ).then((resp) => {
+                    console.log("添加前检查是否重复");
+          console.log(resp);
+          var repeatArr=[]
+          for(var i in resp.data.content){
+            repeatArr.push(resp.data.content[i].docSequence)
+          }
+          
           if (resp.data.content.length != 0) {
  this.$confirm("请检查是否录入重复,检测到可能重复的识别号："+repeatArr, "提示", {
               cancelButtonClass: "btn-custom-cancel",
@@ -1961,7 +1956,7 @@ var b=a.replace(/】/g,"]")
         var docDescNumTemp;
         if(this.docForm.docDescAuthor){
           //有文号
-          if(!this.docForm.docDescNum){
+          if(!this.docForm.docDescNum||this.docForm.docDescNum==null||this.docForm.docDescNum==""){
           docDescNumTemp=99998  //有文号，没有文号的数字
 
           }          else{
@@ -2066,8 +2061,8 @@ var b=a.replace(/】/g,"]")
                       Object.assign({}, this.docForm)
                     );
                     this.keyWordEdit = false;
+                    this.docForm.docDescAuthor=false
                     this.docForm.keyword = "";
-                    this.docForm.docDescAuthor = "0";
                     this.genId(6, 62);
                     this.docForm.docDate.replace("-", "");
                     console.log(this.docForm);
@@ -2865,6 +2860,7 @@ var b=a.replace(/】/g,"]")
     // }
     // console.log(jsonk)
     // return
+    window.scrollTo(0,0)
 
     this.docTimeDues = [];
     var deadlineJson = JSON.parse(sessionStorage.getItem("lastBox"));
@@ -3055,6 +3051,7 @@ color: rgb(155,155,155);;
 .buttonGroup {
   position: relative;
   bottom: 0;
+  height: 3rem;
 
   .bottomButton {
     display: flex;

@@ -17,7 +17,7 @@
     <div class="content">
       <ul v-on:mouseover="topHeaderShow()" v-on:mouseleave="topHeaderHide()">
         <li style="font-size: 2rem" class="logo" @click="goHome()">
-          智能档案
+          &nbsp;国安智能档案
           <div class="topHeaderIcon"></div>
         </li>
         <li class="a" @click="goHome()" v-if="true">首页</li>
@@ -73,31 +73,7 @@
       </ul>
     </div>
 
-    <!-- <transition name="fade">
-      <div class="product_list" v-if="show" v-on:mouseleave="resetShow()"  v-on:mouseover="changeShow()">
-        <div class="product_content">
-          <router-link class="product_name" tag="div" to="classcard">
-            <p class="svg_p">
-              <img class="svg" src="../../static/banner_pad.svg" alt />
-            </p>
-            <p class="svg_p">百人俱乐部</p>
-          </router-link>
-          <router-link class="product_name" tag="div" to="homeschool">
-            <p class="svg_p">
-              <img class="svg" src="../../static/banner_phone.svg" alt />
-            </p>
-            <p class="svg_p">千人俱乐部</p>
-          </router-link>
-          <router-link class="product_name" tag="div" to="smartbracelet">
-            <p class="svg_p">
-              <img class="banner_band" src="../../static/banner_band.svg" alt />
-            </p>
-            <p class="banner_band_p">万人俱乐部</p>
-          </router-link>
-        </div>
-      </div>
-
-    </transition>-->
+ 
    
  <transition name="fade">
       <div
@@ -107,7 +83,7 @@
         v-on:mouseover="changeUserShow()"
       >
         <div class="userinfo_items">
-          <div style="width: 10px; height: 10px">
+          <div style="width: 0.7rem; height: 0.7rem">
             <span id="user_top"></span>
           </div>
            <span class="userLevel" style="font-size:600;color:#ddd">
@@ -162,6 +138,7 @@ export default {
   computed: {
     user() {
       // return sessionStorage.getItem('userId');
+      if(this.$store.state.username==null) return ""
       return this.$store.state.username;
       
     },
@@ -193,30 +170,57 @@ export default {
   ready() {},
 
   created() {
+      this.getUserInfo();
+var that=this
+          setInterval(function(){
+         that.getUserInfo();
+          // console.log(2)
+      },30000);
 
-    // this.getUserInfo();
+  
     //         var userId1 = sessionStorage.getItem("userIdNum");
     //     userId1=parseInt(userId1)
     //     var obj={userId:userId1}
     // this.postRequest(
     //       //注意防止重复提交
-    //       "/logout?userId="+8,
+    //       "/logout?userId="+10,
     //       obj
     //     ).then((resp) => {})
 
     this.$store.info_state = 1; //个人信息页面的哪个模块
-    this.$store.state.username = sessionStorage.getItem("userId");
+    this.$store.state.username =(sessionStorage.getItem("userId")==null?"":sessionStorage.getItem("userId"));
     this.$store.state.admin = sessionStorage.getItem("admin");
 
     // alert(this.user)
   },
 
+  
+
   mounted() {
-    window.addEventListener("scroll", this.handleScroll);
-    // if(this.$store.userInfo)
+     
+// window.onbeforeunload = function (e) {
+//   // alert(2)
+//   e = e || window.event;
+ 
+//   // 兼容IE8和Firefox 4之前的版本
+//   if (e) {
+//     e.returnValue = '关闭提示';
+//   }
+ 
+//   // Chrome, Safari, Firefox 4+, Opera 12+ , IE 9+
+//   return '关闭提示';
+// };
+
+  //   window.addEventListener("scroll", this.handleScroll);
+  //   // if(this.$store.userInfo)
+    
+  // window.addEventListener('beforeunload', e => this.beforeunloadHandler(e))
+ 
+
   },
 
   methods: {
+ 
     fixPassword(){
        this.$message({
             type: "warning",
@@ -268,7 +272,7 @@ t=this.fomatTime(t)
           window.sessionStorage.setItem("admin", "");
           this.$store.state.username = "";
           this.$store.state.admin = "0";
-          window.sessionStorage.setItem('userId',null)
+          window.sessionStorage.setItem('userId',"")
 
         });
 
@@ -356,16 +360,28 @@ t=this.fomatTime(t)
       //   return;
       // }
       if (localStorage.getItem("token")) {
-        // console.log(localStorage.getItem("token"))
-        // alert(1)
-        if (!this.$store.state.userInfo) {
-          this.$http1.get(this.$forePath + "/dist/getUserInfo").then((res) => {
-            //  console.log("headerinit",res)
-            this.$store.commit("setUserInfo", res);
-            console.log(res);
-            //console.log("aaa", this.$store.state.userInfo);
-          });
-        }
+     this.postRequest(
+          //注意防止重复提交
+          "/getUserInfo",
+        
+        ).then((resp) => {
+                    var thistoken=resp.data.token.split('"')[1];
+                  if(thistoken==null) thistoken=resp.data.token; 
+                  window.window.localStorage.setItem("token",thistoken)
+                  // window.sessionStorage.setItem("userId",this.loginForm.username)
+                  window.sessionStorage.setItem("expireTime",resp.data.endTime)
+
+                  window.sessionStorage.setItem("userIdNum",resp.data.userId)
+                  window.sessionStorage.setItem("admin",'')
+
+                  if(resp.data.role=='管理员'){
+                  window.sessionStorage.setItem("admin",'1')
+                  // window.sessionStorage.setItem("admin",'1')
+                  this.$store.state.admin=1
+
+                  }
+        })
+
       } else {
         // setTimeout(() => {
         //   this.$message.warning("登录信息已过期，请重新登录");

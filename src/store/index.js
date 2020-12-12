@@ -22,6 +22,7 @@ const store = new Vuex.Store({
         tempDocId:'',
         tempDoc:'',
         alreadyDocs:[],
+        sortedFlag:false,
         alreadyDocss:[
             {
                 userId:7,

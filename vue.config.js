@@ -15,7 +15,7 @@ proxyObj['/api'] = {
 module.exports = {
     devServer: {
         host: 'localhost',
-        port: 8082,
+        port: 8085,
         
         // proxy: {
         //     '/': {
