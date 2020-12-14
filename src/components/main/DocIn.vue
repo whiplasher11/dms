@@ -87,7 +87,7 @@
 
     <!-- 标题匹配
      -->
-        <div
+    <div
       typeInTipBox
       v-if="likelyTipShowFlag"
       class="windowStyle"
@@ -102,24 +102,24 @@
         font-size: 1.5rem;
         width: 75rem;
 
-     padding-bottom:1rem;
+        padding-bottom: 1rem;
         -webkit-box-shadow: 0 0 0.5rem #909399;
         box-shadow: 0 0 0.5rem #909399;
         border-radius: 1rem;
       "
     >
-          <div
+      <div
         style="
-    height: 2rem;
-    text-align: right;
-    font-size: 1rem;
-    line-height: 2rem;
-    cursor: pointer;
-    width: 3rem;
-    position: absolute;
-    
-    right: 1rem;
-    top: 0;
+          height: 2rem;
+          text-align: right;
+          font-size: 1rem;
+          line-height: 2rem;
+          cursor: pointer;
+          width: 3rem;
+          position: absolute;
+
+          right: 1rem;
+          top: 0;
         "
         @click="closeDocTip"
       >
@@ -145,17 +145,17 @@
             text-align: center;
             width: 80%;
             margin-left: 10%;
-           padding-bottom:0.2rem
-          
+            padding-bottom: 0.2rem;
           "
           class="matchedItem"
         >
-         <font v-html="item.docTitle">  </font> - <font style="font-size:1.1rem;color:#abc"> {{ item.docAbout }} </font>-{{item.docDate}}
+          <font v-html="item.docTitle"> </font> -
+          <font style="font-size: 1.1rem; color: #abc">
+            {{ item.docAbout }} </font
+          >-{{ item.docDate }}
         </div>
       </div>
-
     </div>
-
 
     <div class="keyWordSelect" v-if="false">
       <div class="keywords">农村</div>
@@ -201,7 +201,6 @@
         ></el-input>
       </el-form-item>
 
-
       <el-row :gutter="24">
         <el-col :span="4">
           <el-form-item prop="batchName" label="有无文号:">
@@ -213,27 +212,20 @@
               true-label="true"
               :checked="false"
               v-model="docForm.docDescAuthor"
-              
             ></el-checkbox>
-
-
           </el-form-item>
-
-          
         </el-col>
-
 
         <el-col :span="12">
           <el-form-item
             prop="batchName"
-            v-if="docForm.docDescAuthor "
+            v-if="docForm.docDescAuthor"
             label="文号："
           >
             <el-input
               size="normal"
               type="text"
-          @blur="docDescComplete"
-
+              @blur="docDescComplete"
               v-model="docForm.docDesc"
               auto-complete="off"
               placeholder="文号"
@@ -241,7 +233,7 @@
           </el-form-item>
         </el-col>
 
-          <el-col :span="8">
+        <el-col :span="8">
           <el-form-item
             prop="batchName"
             v-if="docForm.docDescAuthor"
@@ -254,21 +246,19 @@
               auto-complete="off"
               placeholder="文号中的序号"
             ></el-input>
-
           </el-form-item>
         </el-col>
-
       </el-row>
-        <el-row :gutter="24">
-          <el-col :span="12">
+      <el-row :gutter="24">
+        <el-col :span="12">
           <el-form-item prop="batchName" label="文件级别：">
-            <el-select v-model="docForm.docLevel" 
-          @change="levelCompelete"
-            
-            placeholder="选择文件级别">
-              
+            <el-select
+              v-model="docForm.docLevel"
+              @change="levelCompelete"
+ 
+              placeholder="选择文件级别"
+            >
               <el-option
-
                 v-for="item in docLevels"
                 :key="item.value"
                 :label="item.name"
@@ -277,26 +267,32 @@
             </el-select>
           </el-form-item>
         </el-col>
-       <el-col :span="12">
-          <el-form-item prop="batchName" label="文件密级：">
-            <el-select v-model="docForm.docSecret" placeholder="选择文件密级">
+        <el-col :span="12">
+                              <el-form-item prop="historyAuth" label="关键词：">
+            <el-select
+              ref="authSelectref"
+              @blur="keywordBlur"
+              @change="keywordComplete"
+              filterable
+              v-model="docForm.keyword"
+              placeholder="选择或填写关键词"
+            >
               <el-option
-                v-for="item in docSecrets"
-                :key="item.value"
-                :label="item.name"
-                :value="item.value"
+                v-for="item in keywordTipArr"
+                :key="item"
+                :label="item"
+                :value="item"
               ></el-option>
             </el-select>
           </el-form-item>
+
+
+
         </el-col>
-
-
-
       </el-row>
 
-
       <el-row :gutter="24">
-                       <el-col :span="24">
+        <el-col :span="24">
           <el-form-item prop="batchName" label="责任者：">
             <el-input
               size="normal"
@@ -307,18 +303,10 @@
             ></el-input>
           </el-form-item>
         </el-col>
-
-
-
-
-
-      
       </el-row>
 
-
-
       <el-row :gutter="24">
-                <el-col :span="12">
+        <el-col :span="12">
           <el-form-item prop="batchName" label="发文日期：">
             <el-date-picker
               type="date"
@@ -331,7 +319,7 @@
           </el-form-item>
         </el-col>
 
-                <el-col :span="12">
+        <el-col :span="12">
           <el-form-item prop="batchName" label="文件页数：">
             <el-input
               size="normal"
@@ -342,13 +330,7 @@
             ></el-input>
           </el-form-item>
         </el-col>
-     
-        
-
-
       </el-row>
-
-    
 
       <el-row :gutter="24">
         <!-- <el-col :span="12">
@@ -362,7 +344,7 @@
             ></el-input>
           </el-form-item>
         </el-col> -->
- <el-col :span="12">
+        <el-col :span="12">
           <el-form-item prop="batchName" label="文件期限(年)：">
             <el-select v-model="docForm.deadline" placeholder="选择文件期限">
               <el-option
@@ -375,7 +357,7 @@
           </el-form-item>
         </el-col>
 
-<el-col :span="12">
+        <el-col :span="12">
           <el-form-item prop="batchName" label="整档年度：">
             <el-date-picker
               type="year"
@@ -387,13 +369,11 @@
             ></el-date-picker>
           </el-form-item>
         </el-col>
-        
       </el-row>
 
-
       <el-row :gutter="24">
-          <el-col :span="12" v-if="isKJ">
-          <el-form-item prop="batchName" label="项目:">
+        <el-col :span="12" v-if="isKJ">
+          <!-- <el-form-item prop="batchName" label="项目:">
             <el-input
               @blur="docAboutBlur"
               size="normal"
@@ -402,11 +382,31 @@
               auto-complete="off"
               placeholder="根据文件填写"
             ></el-input>
+          </el-form-item> -->
+          
+
+                    <el-form-item prop="historyAuth" label="项目：">
+            <el-select
+              ref="authSelectref"
+              filterable
+              @blur="docAboutBlur"
+
+              v-model="docForm.docAbout"
+              placeholder="填写或选择问题/机构"
+            >
+              <el-option
+                v-for="item in docAboutTipArr"
+                :key="item"
+                :label="item"
+                :value="item"
+              ></el-option>
+            </el-select>
           </el-form-item>
+
         </el-col>
-        
+
         <el-col :span="12" v-if="!isKJ">
-          <el-form-item prop="batchName" label="机构/问题：">
+          <!-- <el-form-item prop="batchName" label="机构/问题：">
             <el-input
               @blur="docAboutBlur"
               size="normal"
@@ -415,15 +415,31 @@
               auto-complete="off"
               placeholder="根据文件填写"
             ></el-input>
+          </el-form-item> -->
+
+          <el-form-item prop="historyAuth" label="机构/问题：">
+            <el-select
+              ref="authSelectref"
+              filterable
+              @blur="docAboutBlur"
+
+              v-model="docForm.docAbout"
+              placeholder="填写或选择问题/机构"
+            >
+              <el-option
+                v-for="item in docAboutTipArr"
+                :key="item"
+                :label="item"
+                :value="item"
+              ></el-option>
+            </el-select>
           </el-form-item>
         </el-col>
 
-       
- <el-col :span="12">
-          <el-form-item prop="batchName" label="关键词：">
-              <!-- :disabled="!keyWordEdit" -->
+        <el-col :span="12">
+          <!-- <el-form-item prop="batchName" label="关键词：">
+ 
             <el-input
-            
               @click="checkTitle"
               size="normal"
               type="text"
@@ -431,9 +447,20 @@
               auto-complete="off"
               placeholder="请先填写文件标题"
             ></el-input>
+          </el-form-item> -->
+
+          <el-form-item prop="batchName" label="文件密级：">
+            <el-select v-model="docForm.docSecret" placeholder="选择文件密级">
+              <el-option
+                v-for="item in docSecrets"
+                :key="item.value"
+                :label="item.name"
+                :value="item.value"
+              ></el-option>
+            </el-select>
           </el-form-item>
+
         </el-col>
- 
       </el-row>
 
       <el-form-item class="textArea" prop="batchName" label="备注信息：">
@@ -448,53 +475,58 @@
       </el-form-item>
 
       <div class="buttonGroup">
-        <div class="topTextButtonBlue"
- 
+        <div
+          class="topTextButtonBlue"
           v-if="fixDocFlag"
           size="big"
-          style="float:left;margin-left: 40%"
+          style="float: left; margin-left: 40%"
           @click="fixDoc"
-          >修改档案</div
         >
-        <div class="topTextButtonBlue"
-
+          修改档案
+        </div>
+        <div
+          class="topTextButtonBlue"
           type="success"
           v-if="!fixDocFlag"
           size="big"
-          style="float:left;margin-left: 30%"
+          style="float: left; margin-left: 30%"
           @click="addDoc"
-          >添加档案</div
         >
+          添加档案
+        </div>
 
-        <div class="topTextButtonBlue"
-
+        <div
+          class="topTextButtonBlue"
           type="primary"
           size="big"
-          style="float:left;margin-left: 10%"
+          style="float: left; margin-left: 10%"
           @click="resetDocIn"
           v-if="!fixDocFlag"
-          >清空列表</div
         >
-        <div class="topTextButtonBlue"
-
+          清空列表
+        </div>
+        <div
+          class="topTextButtonBlue"
           type="warning
           "
           size="big"
-          style="float:left;margin-left: 10%"
+          style="float: left; margin-left: 10%"
           @click="goDetail"
           v-if="!fixDocFlag"
-          >结束录入</div
         >
+          结束录入
+        </div>
 
-        <div class="topTextButtonBlue"
-
+        <div
+          class="topTextButtonBlue"
           type="primary"
           size="big"
-          style="float:left;margin-left: 10%"
+          style="float: left; margin-left: 10%"
           @click="cancelFix"
           v-if="fixDocFlag"
-          >取消修改</div
         >
+          取消修改
+        </div>
       </div>
     </el-form>
 
@@ -528,7 +560,7 @@
 
       <el-row :gutter="24">
         <el-col :span="12">
-          <el-form-item prop="batchName" label="关键词：">
+          <!-- <el-form-item prop="batchName" label="关键词：">
             <el-input
               size="normal"
               type="text"
@@ -536,10 +568,24 @@
               auto-complete="off"
               placeholder="填写关键词"
             ></el-input>
+          </el-form-item> -->
+  <el-form-item prop="historyAuth" label="关键词：">
+            <el-select
+              ref="authSelectref"
+              filterable
+              v-model="docFormRS.keyword"
+              placeholder="选择或填写关键词"
+            >
+              <el-option
+                v-for="item in keywordTipArr"
+                :key="item"
+                :label="item"
+                :value="item"
+              ></el-option>
+            </el-select>
           </el-form-item>
-        </el-col>
 
-        
+        </el-col>
       </el-row>
 
       <el-row :gutter="24">
@@ -638,48 +684,52 @@
       </el-form-item>-->
 
       <div class="buttonGroup">
-        <div class="topTextButtonBlue"
+        <div
+          class="topTextButtonBlue"
           type="warning"
           v-if="fixDocFlag"
- 
-          style="float:left;margin-left: 30%;width:4rem"
+          style="float: left; margin-left: 30%; width: 4rem"
           @click="fixDocRS"
-          >修改档案</div
         >
-     <div class="topTextButtonBlue"
+          修改档案
+        </div>
+        <div
+          class="topTextButtonBlue"
           type="success"
           v-if="!fixDocFlag"
- 
-          style="float:left;margin-left: 20%;width:4rem"
+          style="float: left; margin-left: 20%; width: 4rem"
           @click="addDocRS"
-          >添加档案</div
         >
-     <div class="topTextButtonBlue"
+          添加档案
+        </div>
+        <div
+          class="topTextButtonBlue"
           type="primary"
- 
-          style="float:left;margin-left: 20%;width:4rem"
+          style="float: left; margin-left: 20%; width: 4rem"
           @click="resetDocInRS"
           v-if="!fixDocFlag"
-          >清空列表</div
         >
+          清空列表
+        </div>
 
-     <div class="topTextButtonBlue"
- 
+        <div
+          class="topTextButtonBlue"
           v-if="!fixDocFlag"
- 
-          style="float:left;margin-left: 20%;width:4rem"
+          style="float: left; margin-left: 20%; width: 4rem"
           @click="goDetail"
-          >结束录入</div
         >
+          结束录入
+        </div>
 
-     <div class="topTextButtonBlue"
+        <div
+          class="topTextButtonBlue"
           type="primary"
- 
-          style="float:left;margin-left: 10%;width:4rem"
+          style="float: left; margin-left: 10%; width: 4rem"
           @click="cancelFixRS"
           v-if="fixDocFlag"
-          >取消修改</div
         >
+          取消修改
+        </div>
       </div>
     </el-form>
   </div>
@@ -703,7 +753,7 @@ export default {
       var obj = Object.assign({}, doc);
       that.docForm = Object.assign({}, doc);
       that.docFormRS = Object.assign({}, doc);
-      that.docForm.docDescAuthor=doc.docDescAuthor
+      that.docForm.docDescAuthor = doc.docDescAuthor;
       // alert(that.docForm.docDescAuthor)
       that.fixDocFlag = true;
       that.$store.state.tempDocSeq = doc.docSequence;
@@ -713,7 +763,6 @@ export default {
     });
   },
   watch: {
-
     edocFormRSJS: {
       handler: (v, o) => {
         console.log(v.docAbout);
@@ -721,24 +770,33 @@ export default {
       },
       deep: true,
     },
-docFormJS:{
-  
- handler(v, o){
-   this.wordsNum=v.length
-  //  console.log(this.docForm)
-  var len=v.length
-  // console.log(len)
-    if(len>5&&len<9){
-      // alert(2)
-      this.likelyHoodQuery();
-    }
+    docFormDescJS1:{
+            handler(v, o) {
+              var desc=v
+        if(desc.indexOf('[')>0){
+          console.log(desc)
+        }
+      },
+      deep: true,
 
-    if(len>12&&len<16){
-      // alert(2)
+    },
+    docFormJS: {
+      handler(v, o) {
+        // console.log(v)
+        this.wordsNum = v.length;
+        //  console.log(this.docForm)
+        var len = v.length;
+        // console.log(len)
+        if (len > 5 && len < 9) {
+          // alert(2)
+          this.likelyHoodQuery();
+        }
 
-      this.likelyHoodQuery();
-    }
+        if (len > 12 && len < 16) {
+          // alert(2)
 
+          this.likelyHoodQuery();
+        }
       },
       deep: true,
     },
@@ -794,26 +852,27 @@ docFormJS:{
   },
 
   computed: {
-        replaceval(){
-      var highlight=this.docForm.docTitle
-      const arr = JSON.parse(JSON.stringify(this.matchedDoc))
-      const replaceReg = new RegExp(highlight, 'g')
-      const replaceString = `<font color='#F14F4A'>${highlight}</font>`
+    replaceval() {
+      var highlight = this.docForm.docTitle;
+      const arr = JSON.parse(JSON.stringify(this.matchedDoc));
+      const replaceReg = new RegExp(highlight, "g");
+      const replaceString = `<font color='#F14F4A'>${highlight}</font>`;
 
-for (let i = 0; i < arr.length; i++) {
+      for (let i = 0; i < arr.length; i++) {
         // 开始替换
-        arr[i].docTitle = arr[i].docTitle.replace(replaceReg, replaceString)
+        arr[i].docTitle = arr[i].docTitle.replace(replaceReg, replaceString);
       }
 
-      return arr
+      return arr;
     },
     docFormRSJS() {
-     return JSON.parse(JSON.stringify(this.docFormRS));
-  
+      return JSON.parse(JSON.stringify(this.docFormRS));
     },
-        docFormJS() {
-         return this.docForm.docTitle
-
+    docFormJS() {
+      return this.docForm.docTitle;
+    },
+    docFormDescJS(){
+      return this.docForm.docDesc;
     },
     isRS() {
       return sessionStorage.getItem("docType") == "personnel";
@@ -821,18 +880,20 @@ for (let i = 0; i < arr.length; i++) {
     isKJ() {
       return sessionStorage.getItem("docType") == "science";
     },
-
   },
 
   data() {
     return {
-      chufa:1,//点击相似文档后不要触发了
-      likelyTipShowFlag:false,
-      matchedDoc:[],
-      wordsNum:3,
-      addDocBtnFlg:true,
-      kwInTitle:[],
-      rsDocTypeMain:"",
+      docAboutTipArr: [],
+      keywordTipArr: [],
+
+      chufa: 1, //点击相似文档后不要触发了
+      likelyTipShowFlag: false,
+      matchedDoc: [],
+      wordsNum: 3,
+      addDocBtnFlg: true,
+      kwInTitle: [],
+      rsDocTypeMain: "",
       matchedKV: [],
       tipShowFlag: false,
       keywordTemp: "",
@@ -1115,159 +1176,235 @@ for (let i = 0; i < arr.length; i++) {
     };
   },
   methods: {
-closeDocTip(){
-  this.likelyTipShowFlag=false
-},
+        keywordBlur(e) {
 
-    selectThisDoc(item){
-      var itemId=item.id;
-      var docToSet;
-      for(var i in this.matchedDoc){
-        if(this.matchedDoc[i].id==itemId){
-          docToSet=this.matchedDoc[i]
-        }
+      var input = e.target.value;
+      this.docForm.keyword = input;
+      this.docFormRS.keyword = input;
+
+this.levelAndKwToDeadline()
+    },
+    docAboutBlur(e){
+            var input = e.target.value;
+      this.docForm.docAbout = input;
+    },
+    initTable(){
+
+    },
+    initNull(){
+      if(this.weightForm.officialDescAuthor==null){
+          this.weightForm.officialDescAuthor={}
       }
-      this.docForm=docToSet
-             this.genId(6, 62);
+            if(this.weightForm.officialLevelKeywordDeadline==null){
+          this.weightForm.officialLevelKeywordDeadline={}
 
-      this.likelyTipShowFlag=false
+      }
+            if(this.weightForm.tecDescAuthor==null){
+          this.weightForm.tecDescAuthor={}
+
+      }
+            if(this.weightForm.tecLevelKeywordDeadline==null){
+          this.weightForm.tecLevelKeywordDeadline={}
+      }
+                  if(this.weightForm.busDescAuthor==null){
+          this.weightForm.busDescAuthor={}
+      }
+                  if(this.weightForm.busLevelKeywordDeadline==null){
+          this.weightForm.busLevelKeywordDeadline={}
+      }
+    },
+    closeDocTip() {
+      this.likelyTipShowFlag = false;
     },
 
-    likelyHoodQuery(){
-      if(!this.aiInput){
-        return
+    selectThisDoc(item) {
+      var itemId = item.id;
+      var docToSet;
+      for (var i in this.matchedDoc) {
+        if (this.matchedDoc[i].id == itemId) {
+          docToSet = this.matchedDoc[i];
+        }
       }
-            if(this.chufa==0){
-              this.chufa=1
-        return
-      }
-      if(this.chufa==1){
-        this.chufa=0
+      this.resetDocInRS();
+      this.resetDocIn()
 
+      this.docForm.deadline=docToSet.deadline
+      this.docForm.keyword=docToSet.keyword
+      this.docForm.docAbout=docToSet.docAbout
+
+      this.docFormRS.personName=docToSet.personName
+      this.docFormRS.keyword=docToSet.keyword
+      
+      // this.docForm.
+      this.genId(6, 62);
+
+      this.likelyTipShowFlag = false;
+    },
+
+    likelyHoodQuery() {
+      if (!this.aiInput) {
+        return;
+      }
+      if (this.chufa == 0) {
+        this.chufa = 1;
+        return;
+      }
+      if (this.chufa == 1) {
+        this.chufa = 0;
       }
 
-      var docObj={
+      var docObj = {
         // userId:sessionStorage.getItem
-        docType:sessionStorage.getItem('docType'),
-        authId:sessionStorage.getItem('authId'),
-        docTitle:sessionStorage.getItem('docType')=='personnel'?this.docFormRS.docTitle:this.docForm.docTitle
-      }
+        docType: sessionStorage.getItem("docType"),
+        authId: sessionStorage.getItem("authId"),
+        docTitle:
+          sessionStorage.getItem("docType") == "personnel"
+            ? this.docFormRS.docTitle
+            : this.docForm.docTitle,
+        // docSequence:4
+      };
 
-            var pathToDoc = "/document/list/like/" + sessionStorage.getItem("docType")+"?pageNow=0&pageSize=900000";
-;
+      var pathToDoc =
+        "/document/list/like/" +
+        sessionStorage.getItem("docType") +
+        "?pageNow=0&pageSize=900000";
       this.postRequest(
         //注意防止重复提交
         pathToDoc,
         JSON.stringify(docObj)
-      ).then(resp=>{
-        if(resp.data.content.length!=0){
-        this.likelyTipShowFlag=true
-        this.matchedDoc=resp.data.content
+      ).then((resp) => {
+        if (resp.data.content.length != 0) {
+          this.likelyTipShowFlag = true;
+          this.matchedDoc = resp.data.content;
         }
-
-      })
-
+      });
     },
-    titleInput(){
-      console.log(this.docForm.docTitle)
+    titleInput() {
+      console.log(this.docForm.docTitle);
     },
 
-    docDescComplete(){
-      console.log(this.docForm.docDesc)
+    docDescComplete() {
+      console.log(this.docForm.docDesc);
 
-var a=this.docForm.docDesc.replace(/【/g,"[")
+      var a = this.docForm.docDesc.replace(/【/g, "[");
 
-var b=a.replace(/】/g,"]")
-      console.log(b)
-      // console.log(Object.assign(b,this.docForm.docDesc))
+      var b = a.replace(/】/g, "]");
 
-      this.docForm.docDesc=b
-      
-      console.log(this.docForm.docDesc)
+      this.docForm.docDesc = b;
+var descText
+      if(b.indexOf('[')>0){
+        descText=b.split("[")[0]
+      }
+      if(this.descToAuthor[descText]!=null){
+                        this.$message({
+          type: "success",
+          message: "系统根据对照表识别出责任者",
+        });
+        this.docForm.dutyAuthor=this.descToAuthor[descText]
+      }
 
+      console.log(this.docForm.docDesc);
     },
-    levelCompelete(){
-      if(this.docForm.docLevel=="本级"){
-        this.docForm.dutyAuthor=sessionStorage.getItem("authName")
+    keywordComplete(){
+      console.log(this.levelkwToDeadlineTable)
+      this.levelAndKwToDeadline()
+    },
+    levelCompelete() {
+      if (this.docForm.docLevel == "本级") {
+        this.docForm.dutyAuthor = sessionStorage.getItem("authName");
+      }
+
+      this.levelAndKwToDeadline()
+    },
+    levelAndKwToDeadline(){
+      var key=this.docForm.docLevel+"~"+this.docForm.keyword
+      console.log(key)
+      console.log(this.levelkwToDeadlineTable)
+      if(this.levelkwToDeadlineTable[key]!=null){
+                this.$message({
+          type: "success",
+          message: "系统根据对照表识别出保管期限",
+        });
+        var dd=this.levelkwToDeadlineTable[key]
+        dd=dd.split('年')[0]
+        this.docForm.deadline=dd
       }
     },
     getRsText(code) {
       if (code == 1 || code == "1") {
-        this.rsDocTypeMain="履历材料"
-        
-        return "无";}
-      if (code == 2 || code == "2"){
-        this.rsDocTypeMain="自传材料"
+        this.rsDocTypeMain = "履历材料";
 
-         return "无";
+        return "无";
+      }
+      if (code == 2 || code == "2") {
+        this.rsDocTypeMain = "自传材料";
+
+        return "无";
       }
       if (code == 3 || code == "3") {
-        this.rsDocTypeMain="鉴定、考核、考察材料"
+        this.rsDocTypeMain = "鉴定、考核、考察材料";
 
         return "无";
       }
       if (code == 4 || code == "4") {
-        this.rsDocTypeMain="学历学位、评聘专业职务材料"
+        this.rsDocTypeMain = "学历学位、评聘专业职务材料";
 
         return "学历学位材料";
       }
       if (code == 5 || code == "5") {
-        this.rsDocTypeMain="学历学位、评聘专业职务材料"
+        this.rsDocTypeMain = "学历学位、评聘专业职务材料";
 
         return "职称材料"; //return 子材料
-      } 
-      if (code == 6 || code == "6") 
-       {
-        this.rsDocTypeMain="政治历史情况审查材料"
+      }
+      if (code == 6 || code == "6") {
+        this.rsDocTypeMain = "政治历史情况审查材料";
 
         return "无";
       }
       if (code == 7 || code == "7") {
-        this.rsDocTypeMain="入党入团材料"
+        this.rsDocTypeMain = "入党入团材料";
         return "无";
-
       }
-      if (code == 8 || code == "8"){
-        this.rsDocTypeMain="奖励材料"
+      if (code == 8 || code == "8") {
+        this.rsDocTypeMain = "奖励材料";
         return "无";
-
       }
-      if (code == 9 || code == "9"){
-                this.rsDocTypeMain="处分材料"
+      if (code == 9 || code == "9") {
+        this.rsDocTypeMain = "处分材料";
         return "无";
-      }  
-      if (code == 10 || code == "10"){
-        this.rsDocTypeMain="工资、任免、退休材料"
+      }
+      if (code == 10 || code == "10") {
+        this.rsDocTypeMain = "工资、任免、退休材料";
 
         return "工资情况材料"; //return 子材料
-      }   
+      }
       if (code == 11 || code == "11") {
-        this.rsDocTypeMain="工资、任免、退休材料"
+        this.rsDocTypeMain = "工资、任免、退休材料";
 
         return "任免材料"; //return 子材料
-      }  
-      if (code == 12 || code == "12")  {
-        this.rsDocTypeMain="工资、任免、退休材料"
+      }
+      if (code == 12 || code == "12") {
+        this.rsDocTypeMain = "工资、任免、退休材料";
 
         return "出国、出境材料"; //return 子材料
-      } 
+      }
       if (code == 13 || code == "13") {
-        this.rsDocTypeMain="工资、任免、退休材料"
+        this.rsDocTypeMain = "工资、任免、退休材料";
 
         return "各党派、团体代表登记表"; //return 子材料
-      }  
-      if (code == 14 || code == "14"){
-        this.rsDocTypeMain="工资、任免、退休材料"
+      }
+      if (code == 14 || code == "14") {
+        this.rsDocTypeMain = "工资、任免、退休材料";
 
         return "聘用、录用、转干、转业材料"; //return 子材料
-      }   
-      if (code == 15 || code == "15"){
-        this.rsDocTypeMain="工资、任免、退休材料"
+      }
+      if (code == 15 || code == "15") {
+        this.rsDocTypeMain = "工资、任免、退休材料";
 
         return "待遇、退（离）休、退职材料"; //return 子材料
-      }    
+      }
       if (code == 16 || code == "16") {
-                this.rsDocTypeMain="其他可供参考的材料"
+        this.rsDocTypeMain = "其他可供参考的材料";
         return "无";
       }
     },
@@ -1278,11 +1415,15 @@ var b=a.replace(/】/g,"]")
       var docDateYear = this.docForm.docDate.substring(0, 4);
       console.log(docDateYear);
       console.log(this.docForm.sortYear);
-      if(docDateYear==null||this.docForm.sortYear==null){
-        return
+      if (docDateYear == null || this.docForm.sortYear == null) {
+        return;
       }
-      if(docDateYear==""||this.docForm.sortYear==""||this.docForm.docDate==""){
-        return
+      if (
+        docDateYear == "" ||
+        this.docForm.sortYear == "" ||
+        this.docForm.docDate == ""
+      ) {
+        return;
       }
 
       if (docDateYear > this.docForm.sortYear) {
@@ -1319,7 +1460,21 @@ var b=a.replace(/】/g,"]")
         return false;
       else return true;
     },
+    checkDeadline(){
+      // console.log(docTimeDues)
+      var arr=this.docTimeDues
+
+      if(arr.indexOf(this.docForm.deadline)<0){
+                this.$message({
+          type: "error",
+          message: "本批整档没有该保管期限",
+        });
+        return false
+      }
+      else return true
+    },
     checkAdd() {
+
       if (
         this.docForm.docTitle == "" ||
         this.docForm.keyword == "" ||
@@ -1331,9 +1486,18 @@ var b=a.replace(/】/g,"]")
         this.docForm.docPage == "" ||
         this.docForm.deadline == "" ||
         this.docForm.docSecret == ""
-      )
-        return false;
-      else return true;
+      ){
+                this.$message({
+          type: "error",
+          message: "填写完整",
+        });
+                return false;
+      
+      }
+
+else return true;
+
+
     },
     fixDocRS() {
       // this.fixDocFlag = false;
@@ -1406,7 +1570,7 @@ var b=a.replace(/】/g,"]")
       };
 
       if (this.checkAddRS()) {
-         var keywordIssueJson
+        var keywordIssueJson;
         this.showWaitingFlag = true;
         var pathToDoc =
           "/document/" +
@@ -1434,9 +1598,11 @@ var b=a.replace(/】/g,"]")
                     //查询对应的权重表得到json
                     table = resp.data.tables;
                     var key1 = this.docFormRS.keyword;
-                    keywordIssueJson=resp.keywordIssue
-                    if(keywordIssueJson==null){keywordIssueJson={}}  //fixRs
-                      keywordIssueJson[key1]=jobCode
+                    keywordIssueJson = resp.keywordIssue;
+                    if (keywordIssueJson == null) {
+                      keywordIssueJson = {};
+                    } //fixRs
+                    keywordIssueJson[key1] = jobCode;
 
                     // var json1 = table;
                     if (table[key1] == null) {
@@ -1448,7 +1614,7 @@ var b=a.replace(/】/g,"]")
                       authId: sessionStorage.getItem("authId"),
                       type: 41,
                       tables: table,
-                      keywordIssue:keywordIssueJson, //
+                      keywordIssue: keywordIssueJson, //
                     };
 
                     this.putRequest(
@@ -1532,7 +1698,7 @@ var b=a.replace(/】/g,"]")
       /**需要从store里删除 */
       // alert(this.TempdocSequence)
 
-      if (this.checkAdd()) {
+      if (this.checkAdd()&&this.checkDeadline()) {
         /**需要从store里删除 */
 
         /**需要从store里删除 */
@@ -1540,22 +1706,21 @@ var b=a.replace(/】/g,"]")
         // this.$store.state.alreadyDocs.unshift({  docKeyWord:this.docForm.docAbout||'无文件信息',
         //   docSequence:this.docForm.docSequence ,
         //   docNumber:''})
-                var docDescNumTemp;
-        if(this.docForm.docDescAuthor){
+        var docDescNumTemp;
+        if (this.docForm.docDescAuthor) {
           //有文号
-            if(!this.docForm.docDescNum||this.docForm.docDescNum==null||this.docForm.docDescNum==""){
-
-          docDescNumTemp=99998  //有文号，没有文号的数字
-
-          }          else{
-            docDescNumTemp=this.docForm.docDescNum
+          if (
+            !this.docForm.docDescNum ||
+            this.docForm.docDescNum == null ||
+            this.docForm.docDescNum == ""
+          ) {
+            docDescNumTemp = 99998; //有文号，没有文号的数字
+          } else {
+            docDescNumTemp = this.docForm.docDescNum;
           }
-
+        } else {
+          docDescNumTemp = 99999; //没有文号
         }
-        else{
-          docDescNumTemp=99999  //没有文号
-        }
-
 
         var docObj = {
           // userId:JSON.stringify(sessionStorage.getItem("userId")),
@@ -1566,7 +1731,7 @@ var b=a.replace(/】/g,"]")
           batchId: sessionStorage.getItem("batchId"),
           docDate: this.docForm.docDate,
           docNum: "", //件号
-          boxSeq:"",
+          boxSeq: "",
           docPage: this.docForm.docPage,
           docSequence: this.docForm.docSequence,
           docTitle: this.docForm.docTitle,
@@ -1576,7 +1741,7 @@ var b=a.replace(/】/g,"]")
           deadline: this.docForm.deadline,
           docAbout: this.docForm.docAbout,
           docDesc: this.docForm.docDesc,
-          pageTotal:"",
+          pageTotal: "",
           // docDesc:
           //   this.docForm.docDescNum +
           //   "[" +
@@ -1634,17 +1799,14 @@ var b=a.replace(/】/g,"]")
             this.genId(6, 62);
             this.docForm.docDate.replace("-", "");
             this.docForm.docTitle = "";
-            this.docForm.docDescAuthor=false
-            this.docForm.docDescNum=""
+            this.docForm.docDescAuthor = false;
+            this.docForm.docDescNum = "";
 
             this.docForm.docPage = "";
           });
       } else {
         this.showWaitingFlag = false;
-        this.$message({
-          type: "error",
-          message: "填写完整",
-        });
+
       }
     },
     goDetail() {
@@ -1652,17 +1814,16 @@ var b=a.replace(/】/g,"]")
     },
     docDescChange(e) {
       // console.log(e)
-      if (e == "false"||!e) {
+      if (e == "false" || !e) {
         this.docForm.docDescAuthor = false;
-      } else if (e == "true"||e) {
+      } else if (e == "true" || e) {
         this.docForm.docDescAuthor = true;
         this.docForm.docDesc = "";
         this.docForm.docDescNum = "";
-
       }
     },
     cancelFixRS() {
-      this.tipShowFlag=false;
+      this.tipShowFlag = false;
 
       this.keyWordEdit = false;
       this.docFormRS.keyword = "";
@@ -1676,7 +1837,6 @@ var b=a.replace(/】/g,"]")
       // this.docFormRS.docDesc=""
       // this.docFormRS.docDescAuthor=false
 
-
       (this.docFormRS.docAboutSub = ""), (this.docFormRS.docAbout = "");
 
       this.fixDocFlag = false;
@@ -1684,9 +1844,9 @@ var b=a.replace(/】/g,"]")
     cancelFix() {
       this.keyWordEdit = false;
       this.docForm.keyword = "";
-           this.docForm .docDescNum=""
-      this.docForm .docDesc=""
-      this.docForm.docDescAuthor=false
+      this.docForm.docDescNum = "";
+      this.docForm.docDesc = "";
+      this.docForm.docDescAuthor = false;
 
       this.genId(6, 62);
       this.docForm.docDate.replace("-", "");
@@ -1724,10 +1884,10 @@ var b=a.replace(/】/g,"]")
         jobCode = 2;
       } else if (this.docFormRS.docAbout == "鉴定、考核、考察材料") {
         jobCode = 3;
-      } 
+      }
       // else if (this.docFormRS.docAbout == "学历学位、评聘专业职务材料") {
       //   jobCode = 4;
-      // } 
+      // }
       else if (this.docFormRS.docAbout == "政治历史情况审查材料") {
         jobCode = 6;
       } else if (this.docFormRS.docAbout == "入党入团材料") {
@@ -1789,7 +1949,7 @@ var b=a.replace(/】/g,"]")
         // dutyAuthor: this.docForm.dutyAuthor,
         // sortYear: this.docForm.sortYear,
       };
-       var keywordIssueJson
+      var keywordIssueJson;
 
       var pathToDoc = "/document/" + sessionStorage.getItem("docType");
       this.postRequest(
@@ -1815,21 +1975,22 @@ var b=a.replace(/】/g,"]")
                 table = resp.data.tables;
                 var key1 = this.docFormRS.keyword;
                 // var json1 = table;
-                                   keywordIssueJson=resp.data.keywordIssue
-                    if(keywordIssueJson==null){keywordIssueJson={}}
-                      keywordIssueJson[key1]=jobCode  //optRs
+                keywordIssueJson = resp.data.keywordIssue;
+                if (keywordIssueJson == null) {
+                  keywordIssueJson = {};
+                }
+                keywordIssueJson[key1] = jobCode; //optRs
 
                 if (table[key1] == null) {
                   table[key1] = "0";
                 }
-
               })
               .then((r) => {
                 var docAboutObj = {
                   authId: sessionStorage.getItem("authId"),
                   type: 41,
                   tables: table,
-                  keywordIssue:keywordIssueJson,
+                  keywordIssue: keywordIssueJson,
                 };
 
                 this.putRequest(
@@ -1850,24 +2011,23 @@ var b=a.replace(/】/g,"]")
           this.docFormRS.docPage = "";
           this.genId(6, 62);
           this.docFormRS.docDate.replace("-", "");
-
         });
     },
-    addDocTimer(){
-      this.addDocBtnFlg=false
-      var that=this
-      setTimeout(function(){
-        that.addDocBtnFlg=true  //???
-      },2000);
+    addDocTimer() {
+      this.addDocBtnFlg = false;
+      var that = this;
+      setTimeout(function () {
+        that.addDocBtnFlg = true; //???
+      }, 2000);
     },
     addDocRS() {
       this.tipShowFlag = false; //录入提示关闭
 
-      if(!this.addDocBtnFlg){
-        console.log(this.addDocBtnFlg)
-        return
+      if (!this.addDocBtnFlg) {
+        console.log(this.addDocBtnFlg);
+        return;
       }
-      this.addDocTimer()
+      this.addDocTimer();
 
       if (this.checkAddRS()) {
         this.showWaitingFlag = true;
@@ -1897,20 +2057,24 @@ var b=a.replace(/】/g,"]")
           searchPath,
           JSON.stringify(searchObj)
         ).then((resp) => {
-                    console.log("添加前检查是否重复");
+          console.log("添加前检查是否重复");
           console.log(resp);
-          var repeatArr=[]
-          for(var i in resp.data.content){
-            repeatArr.push(resp.data.content[i].docSequence)
+          var repeatArr = [];
+          for (var i in resp.data.content) {
+            repeatArr.push(resp.data.content[i].docSequence);
           }
-          
+
           if (resp.data.content.length != 0) {
- this.$confirm("请检查是否录入重复,检测到可能重复的识别号："+repeatArr, "提示", {
-              cancelButtonClass: "btn-custom-cancel",
-              confirmButtonText: "没有重复，录入此条",
-              cancelButtonText: "好的，暂不录入",
-              type: "warning",
-            })
+            this.$confirm(
+              "请检查是否录入重复,检测到可能重复的识别号：" + repeatArr,
+              "提示",
+              {
+                cancelButtonClass: "btn-custom-cancel",
+                confirmButtonText: "没有重复，录入此条",
+                cancelButtonText: "好的，暂不录入",
+                type: "warning",
+              }
+            )
               .then(() => {
                 //空白地方 点没重复，提交
                 this.optSubmitRS();
@@ -1931,41 +2095,43 @@ var b=a.replace(/】/g,"]")
       }
     },
     addDoc() {
-//  if(!this.docForm.docDescNum){
-//    alert(0)
-//  }
+      //  if(!this.docForm.docDescNum){
+      //    alert(0)
+      //  }
       // alert(this.docForm.docDescNum)
       // return
 
       this.tipShowFlag = false;
-            if(!this.addDocBtnFlg){
-        console.log(this.addDocBtnFlg)
+      if (!this.addDocBtnFlg) {
+        //防止连续点击
+        console.log(this.addDocBtnFlg);
 
-        return
+        return;
       }
-      this.addDocTimer()
+      this.addDocTimer();
       // var
       // this.optThreeWeightTable()
       // return
 
-      if (this.checkAdd()) {
+      if (this.checkAdd()&&this.checkDeadline()) {
         this.showWaitingFlag = true;
         // this.$store.state.alreadyDocs.unshift({  docKeyWord:this.docForm.docAbout||'无文件信息',
         //   docSequence:this.docForm.docSequence ,
         //   docNumber:''})
         var docDescNumTemp;
-        if(this.docForm.docDescAuthor){
+        if (this.docForm.docDescAuthor) {
           //有文号
-          if(!this.docForm.docDescNum||this.docForm.docDescNum==null||this.docForm.docDescNum==""){
-          docDescNumTemp=99998  //有文号，没有文号的数字
-
-          }          else{
-            docDescNumTemp=this.docForm.docDescNum
+          if (
+            !this.docForm.docDescNum ||
+            this.docForm.docDescNum == null ||
+            this.docForm.docDescNum == ""
+          ) {
+            docDescNumTemp = 99998; //有文号，没有文号的数字
+          } else {
+            docDescNumTemp = this.docForm.docDescNum;
           }
-
-        }
-        else{
-          docDescNumTemp=99999  //没有文号
+        } else {
+          docDescNumTemp = 99999; //没有文号
         }
         var docObj = {
           // userId:JSON.stringify(sessionStorage.getItem("userId")),
@@ -2023,17 +2189,21 @@ var b=a.replace(/】/g,"]")
         ).then((resp) => {
           console.log("添加前检查是否重复");
           console.log(resp);
-          var repeatArr=[]
-          for(var i in resp.data.content){
-            repeatArr.push(resp.data.content[i].docSequence)
+          var repeatArr = [];
+          for (var i in resp.data.content) {
+            repeatArr.push(resp.data.content[i].docSequence);
           }
           if (resp.data.content.length != 0) {
-            this.$confirm("请检查是否录入重复,检测到可能重复的识别号："+repeatArr, "提示", {
-              cancelButtonClass: "btn-custom-cancel",
-              confirmButtonText: "没有重复，录入此条",
-              cancelButtonText: "好的，暂不录入",
-              type: "warning",
-            })
+            this.$confirm(
+              "请检查是否录入重复,检测到可能重复的识别号：" + repeatArr,
+              "提示",
+              {
+                cancelButtonClass: "btn-custom-cancel",
+                confirmButtonText: "没有重复，录入此条",
+                cancelButtonText: "好的，暂不录入",
+                type: "warning",
+              }
+            )
               .then(() => {
                 var pathToDoc =
                   "/document/" + sessionStorage.getItem("docType");
@@ -2061,7 +2231,7 @@ var b=a.replace(/】/g,"]")
                       Object.assign({}, this.docForm)
                     );
                     this.keyWordEdit = false;
-                    this.docForm.docDescAuthor=false
+                    this.docForm.docDescAuthor = false;
                     this.docForm.keyword = "";
                     this.genId(6, 62);
                     this.docForm.docDate.replace("-", "");
@@ -2107,7 +2277,7 @@ var b=a.replace(/】/g,"]")
                 );
                 this.keyWordEdit = false;
                 this.docForm.keyword = "";
-                this.docForm.docDescAuthor = "0";
+                this.docForm.docDescAuthor = false;
                 this.genId(6, 62);
                 this.docForm.docDate.replace("-", "");
                 console.log(this.docForm);
@@ -2117,10 +2287,7 @@ var b=a.replace(/】/g,"]")
           }
         });
       } else {
-        this.$message({
-          type: "error",
-          message: "填写完整",
-        });
+          this.showWaitingFlag=false
       }
     },
     optThreeWeightTable1() {
@@ -2177,7 +2344,6 @@ var b=a.replace(/】/g,"]")
       var weightType3;
 
       var kwTemp = this.docForm.keyword;
- 
 
       // if (sessionStorage.getItem("docType") == "official") {
       // if (true) {
@@ -2289,7 +2455,9 @@ var b=a.replace(/】/g,"]")
 
           var table3;
           var keywordIssueJson;
-          this.getRequest("/weight/keywordSort/" + this.weightForm.docKeywordWig)
+          this.getRequest(
+            "/weight/keywordSort/" + this.weightForm.docKeywordWig
+          )
             .then((resp) => {
               //查询对应的权重表得到json
               table3 = resp.data.tables;
@@ -2302,7 +2470,6 @@ var b=a.replace(/】/g,"]")
               if (keywordIssueJson[key3] == null) {
                 keywordIssueJson[key3] = this.docForm.docAbout;
               } else {
-
                 // if (
                 //   keywordIssueJson[key3]
                 //     .split("|")
@@ -2311,7 +2478,6 @@ var b=a.replace(/】/g,"]")
                 //   //
                 //   keywordIssueJson[key3] =
                 //     keywordIssueJson[key3] + "|" + this.docForm.docAbout;
-
                 // }
               }
 
@@ -2420,7 +2586,9 @@ var b=a.replace(/】/g,"]")
 
           var table3;
           var keywordIssueJson;
-          this.getRequest("/weight/keywordSort/" + this.weightForm.busKeywordWig)
+          this.getRequest(
+            "/weight/keywordSort/" + this.weightForm.busKeywordWig
+          )
             .then((resp) => {
               //查询对应的权重表得到json
               table3 = resp.data.tables;
@@ -2548,7 +2716,9 @@ var b=a.replace(/】/g,"]")
 
           var table3;
           var keywordIssueJson;
-          this.getRequest("/weight/keywordSort/" + this.weightForm.tecKeywordWig)
+          this.getRequest(
+            "/weight/keywordSort/" + this.weightForm.tecKeywordWig
+          )
             .then((resp) => {
               //查询对应的权重表得到json
               table3 = resp.data.tables;
@@ -2601,7 +2771,7 @@ var b=a.replace(/】/g,"]")
 
     optThreeWeightTable2() {},
 
-    docAboutBlur() {
+    docAboutBlur1() {
       if (this.docForm.keyword != "" && this.docForm.docAbout != "") {
         //todo1  查询是否有关键字
 
@@ -2652,9 +2822,9 @@ var b=a.replace(/】/g,"]")
 
     aiInputFunc() {
       // alert(2)
-    var keywordIssueJson
+      var keywordIssueJson;
 
-/*
+      /*
       if (sessionStorage.getItem("docType") == "personnel") {
         this.getRequest("/weight/" + this.weightForm.perKeywordWig).then(
           (resp) => {
@@ -2690,80 +2860,72 @@ var b=a.replace(/】/g,"]")
               : null,
           },
           params: {
-            title: sessionStorage.getItem('docType')=='personnel'?this.docFormRS.docTitle:this.docForm.docTitle,
+            title:
+              sessionStorage.getItem("docType") == "personnel"
+                ? this.docFormRS.docTitle
+                : this.docForm.docTitle,
           },
         })
         .then((resp) => {
           this.matchedKV = [];
 
-          console.log(resp)
+          console.log(resp);
 
-
-
-
-
-           for (var attr in resp.data) {
-             if(resp.data==null){
-               resp.data=keywordIssueJson
-             }
+          for (var attr in resp.data) {
+            if (resp.data == null) {
+              resp.data = keywordIssueJson;
+            }
             var splitArr = resp.data[attr].split("|");
 
-             if (sessionStorage.getItem("docType") == "personnel") {
+            if (sessionStorage.getItem("docType") == "personnel") {
               console.log(2);
 
               for (var k in splitArr) {
-                console.log(splitArr[k])
+                console.log(splitArr[k]);
                 var i = this.getRsText(splitArr[k]);
-                console.log(i)
-                this.matchedKV.push([attr, this.rsDocTypeMain,i]);
+                console.log(i);
+                this.matchedKV.push([attr, this.rsDocTypeMain, i]);
               }
-                console.log(this.matchedKV);
-
+              console.log(this.matchedKV);
             } // 人事要找对照表
-
-
-       else{
-                       for (var k in splitArr) {
+            else {
+              for (var k in splitArr) {
                 this.matchedKV.push([attr, splitArr[k]]);
               }
-         
-       }
-              // 其他三种
-
+            }
+            // 其他三种
 
             if (this.matchedKV.length == 1) {
-              if(sessionStorage.getItem("docType") == "personnel"){
-                this.docFormRS.docAboutSub=this.matchedKV[0][2]
-                this.docFormRS.docAbout=this.matchedKV[0][1]
+              if (sessionStorage.getItem("docType") == "personnel") {
+                this.docFormRS.docAboutSub = this.matchedKV[0][2];
+                this.docFormRS.docAbout = this.matchedKV[0][1];
+              } else {
+                this.docForm.docAbout = this.matchedKV[0][1];
+                this.docForm.keyword = this.matchedKV[0][0];
               }
-              else{
-              this.docForm.docAbout = this.matchedKV[0][1];
-              this.docForm.keyword = this.matchedKV[0][0];
-              }
-
             } else {
               this.tipShowFlag = true;
             }
           }
 
- 
           // alert()
         });
     },
-    selectThisTip( item) {
+    selectThisTip(item) {
       this.docForm.docAbout = item[1];
       this.docForm.keyword = item[0];
 
-      if(sessionStorage.getItem('docType')=='personnel'){
-              this.docFormRS.docAbout = item[1];
-              this.docFormRS.docAboutSub = item[2];
-      this.docForm.keyword = item[0];
+      if (sessionStorage.getItem("docType") == "personnel") {
+        this.docFormRS.docAbout = item[1];
+        this.docFormRS.docAboutSub = item[2];
+        this.docForm.keyword = item[0];
       }
       this.tipShowFlag = false;
     },
     titleComplete() {
-      if(this.fixDocFlag){  //修改文档焦点离开不要发请求
-        return
+      if (this.fixDocFlag) {
+        //修改文档焦点离开不要发请求
+        return;
       }
       if (this.docForm.docTitle == "") {
         this.keyWordEdit = false;
@@ -2842,10 +3004,9 @@ var b=a.replace(/】/g,"]")
     },
 
     inputChange() {
-
       this.aiInput = !this.aiInput;
-            if(this.aiInput){
-                this.$message({
+      if (this.aiInput) {
+        this.$message({
           type: "success",
           message: "将根据历史记录进行快速录入",
         });
@@ -2860,7 +3021,7 @@ var b=a.replace(/】/g,"]")
     // }
     // console.log(jsonk)
     // return
-    window.scrollTo(0,0)
+    window.scrollTo(0, 0);
 
     this.docTimeDues = [];
     var deadlineJson = JSON.parse(sessionStorage.getItem("lastBox"));
@@ -2878,14 +3039,94 @@ var b=a.replace(/】/g,"]")
     this.getRequest("/organ/" + sessionStorage.getItem("authId")).then(
       (resp) => {
         this.weightForm = resp.data;
+        this.initNull()
+        // this.initTable()
         console.log(resp.data);
       }
-    );
-    //  this.getRequest("/work/"+sessionStorage.getItem('batchId')) //
-    //       .then((resp) => {
+    ).then(()=>{
+ var docAboutId;
+    var keywordId;
+    if (sessionStorage.getItem("docType")== "official") {
+      
+      docAboutId = this.weightForm.docIssueWig;
+      keywordId = this.weightForm.docKeywordWig;
 
-    //       })
+      this.levelkwToDeadlineTable=this.weightForm.officialLevelKeywordDeadline
+      this.descToAuthor=this.weightForm.officialDescAuthor
+      // console.log(docAboutId)
+    }
+    if (sessionStorage.getItem("docType")== "science") {
+      docAboutId = this.weightForm.tecProjectWig;
+      keywordId = this.weightForm.tecKeywordWig;
 
+            this.levelkwToDeadlineTable=this.weightForm.tecLevelKeywordDeadline
+      this.descToAuthor=this.weightForm.tecDescAuthor
+
+    }
+    if (sessionStorage.getItem("docType")== "business") {
+      docAboutId = this.weightForm.busProjectWig;
+      keywordId = this.weightForm.busKeywordWig;
+
+            this.levelkwToDeadlineTable=this.weightForm.busLevelKeywordDeadline
+      this.descToAuthor=this.weightForm.busDescAuthor
+
+    }
+    if (sessionStorage.getItem("docType")== "personnel") {
+      keywordId = this.weightForm.perKeywordWig;
+    }
+    console.log(docAboutId)
+    var dabJson = {};
+    var kwdJson = {};
+    if (sessionStorage.getItem("docType")!= "personnel") {
+      var that=this
+            Promise.all([
+        new Promise((resolve, reject) => {
+          that
+            .getRequest("/weight/" + docAboutId)
+            .then((resp) => {
+              dabJson= resp.data.tables;
+              resolve(resp);
+            });
+        }),
+
+        new Promise((resolve, reject) => {
+          that
+      .getRequest("/weight/" + keywordId).then((resp) => {
+        kwdJson = resp.data.tables;
+           resolve(resp);
+      });
+        }),
+      ])  .then((resp) => {
+  var attr;
+      for (attr in dabJson) {
+        this.docAboutTipArr.push(attr);
+      }
+
+      for (attr in dabJson) {
+        this.keywordTipArr.push(attr);
+      }
+      })
+
+
+      //  this.getRequest("/work/"+sessionStorage.getItem('batchId')) //
+      //       .then((resp) => {
+
+      //       })
+    
+    } //if非人事
+else{
+        this.getRequest("/weight/" + keywordId).then((resp) => {
+        kwdJson = resp.data.tables;
+      }).then(()=>{
+              for (attr in kwdJson) {
+        this.keywordTipArr.push(attr);
+      }
+      });
+      
+}
+
+    });
+   
 
     if (this.$store.state.tempDoc) {
       this.fixDocFlag = true;
@@ -2893,9 +3134,8 @@ var b=a.replace(/】/g,"]")
       this.docForm = Object.assign({}, this.$store.state.tempDoc);
       this.docFormRS = Object.assign({}, this.$store.state.tempDoc);
       this.$store.state.tempDoc = "";
-    }else{
-    this.genId(6, 62);
-
+    } else {
+      this.genId(6, 62);
     }
   },
 };
@@ -2904,42 +3144,40 @@ var b=a.replace(/】/g,"]")
 <style lang="scss">
 .el-textarea__inner {
   &::placeholder {
-color: rgb(155,155,155);; 
-
+    color: rgb(155, 155, 155);
   }
 
   &::-webkit-input-placeholder {
     /* WebKit browsers 适配谷歌 */
- color: rgb(155,155,155) !important;
+    color: rgb(155, 155, 155) !important;
   }
 
   &:-moz-placeholder {
     /* Mozilla Firefox 4 to 18 适配火狐 */
- color: rgb(155,155,155) !important;
+    color: rgb(155, 155, 155) !important;
   }
 
   &::-moz-placeholder {
     /* Mozilla Firefox 19+ 适配火狐 */
-  color: rgb(155,155,155) !important;
+    color: rgb(155, 155, 155) !important;
   }
 
   &:-ms-input-placeholder {
     /* Internet Explorer 10+  适配ie*/
- color: rgb(155,155,155) !important;
+    color: rgb(155, 155, 155) !important;
   }
 }
 .docInForm >>> .el-input__inner {
-     color: #000;
+  color: #000;
 
   border: 0.04rem solid #274596c5 !important;
 }
-.docInForm { .el-input__inner {
-     color: #000;
-
+.docInForm {
+  .el-input__inner {
+    color: #000;
+  }
 }
-}
 
- 
 .docInForm {
   .textArea {
     height: 5rem;
@@ -2954,27 +3192,27 @@ color: rgb(155,155,155);;
 
   .el-input__inner {
     &::placeholder {
-     color: rgb(155,155,155)
+      color: rgb(155, 155, 155);
     }
 
     &::-webkit-input-placeholder {
       /* WebKit browsers 适配谷歌 */
-    color: rgb(155,155,155)
+      color: rgb(155, 155, 155);
     }
 
     &:-moz-placeholder {
       /* Mozilla Firefox 4 to 18 适配火狐 */
-       color: rgb(155,155,155)
+      color: rgb(155, 155, 155);
     }
 
     &::-moz-placeholder {
       /* Mozilla Firefox 19+ 适配火狐 */
-  color: rgb(155,155,155)
+      color: rgb(155, 155, 155);
     }
 
     &:-ms-input-placeholder {
       /* Internet Explorer 10+  适配ie*/
-     color: rgb(155,155,155)
+      color: rgb(155, 155, 155);
     }
   }
 
@@ -3039,7 +3277,6 @@ color: rgb(155,155,155);;
   border-bottom: solid 0.2px #aaa;
 }
 .matchedDocClass {
-
   border-bottom: solid 0.2px #aaa;
 }
 .docSequenceTip {
@@ -3113,21 +3350,20 @@ color: rgb(155,155,155);;
   text-align: center;
 }
 .docInForm {
-    position: relative;
-    padding-top: 4rem;
-    top: 5rem;
-    left: 16%;
-    padding-bottom: 2rem;
-    width: 70rem;
-    padding-right: 5rem;
-    border: solid 1px;
+  position: relative;
+  padding-top: 4rem;
+  top: 5rem;
+  left: 16%;
+  padding-bottom: 2rem;
+  width: 70rem;
+  padding-right: 5rem;
+  border: solid 1px;
 }
 
 .wrapper {
   height: 150vh;
 
   position: relative;
-    background-color: rgb(240, 240, 243);
-
+  background-color: rgb(240, 240, 243);
 }
 </style>

@@ -1,5 +1,16 @@
 <template>
   <div>
+
+    <div v-show="showCenterPrint"  style="position:fixed;left:30rem;top:20rem;width:40rem;height:20rem;z-index:2000;background-color:#fff;
+      -webkit-box-shadow: 0 0 0.5rem #909399;
+  box-shadow: 0 0 0.5rem #909399;
+  border-radius: 1rem;">
+  <HidePrint v-show="!showPrint" style="margin-left:-30mm;position:absolute;left:50%"></HidePrint>
+
+<div style="position:absolute;right:0.5rem;top:0.1rem;font-size:1.5rem;cursor:pointer" @click="hideCenterPrintBtn"><i class="el-icon-remove"></i> </div>
+    </div>
+
+
     <div class="wrapper" style="padding-bottom: 50rem">
       <div style="height: 6.5rem"></div>
       <div
@@ -67,6 +78,7 @@
         <el-input
           size="normal"
           type="text"
+      
           v-model="searchForm.docTitle"
           auto-complete="off"
           placeholder="标题"
@@ -154,6 +166,7 @@
         <el-input
           size="normal"
           type="text"
+          @blur="likeDescComplete"
           v-model="searchForm.docDesc"
           auto-complete="off"
           placeholder="文号"
@@ -199,7 +212,7 @@
     top: 6rem;
     right: 0px;
     width: 35%;
-    background-color: rgb(240,240,243);"
+    background-color: rgb(243,243,243);"
         >
 
         <div  class="topTextButton" @click="ShowadvSearch"  style="float:right;margin-top:1rem">
@@ -734,7 +747,13 @@ import Utils from "../../utils/doc.js";
 import axios from "axios";
 import doc from '../../utils/doc.js';
 
+import HidePrint from "./print"
+
 export default {
+      components: {
+    HidePrint:HidePrint
+  },
+
   computed: {
     docType() {
       return sessionStorage.getItem("docType");
@@ -745,7 +764,8 @@ export default {
   },
   data() {
     return {
-
+      showCenterPrint:false,
+showPrint:false,
       reSend:true, //打印页面发过来文档，然后再从本页面printBtn(文档)，
       //改变setSessionStorage的一些值，但是这个变量false就不打开新的页面了，为了重用里面的一些设置值的代码
       
@@ -910,6 +930,18 @@ nameFilter:[],
     };
   },
   methods: {
+    hideCenterPrintBtn(){
+      this.showCenterPrint=false
+    },
+    showCenterPrintBtn(){},
+    likeDescComplete(){
+      
+      var a = this.searchForm.docDesc.replace(/【/g, "[");
+
+      var b = a.replace(/】/g, "]");
+
+      this.searchForm.docDesc = b;
+    },
     showFilterName(){
           this.filterNameFlag=true
 
@@ -1039,6 +1071,11 @@ console.log('preload')
        var lastb=item.lastBox
        this.deadlineFilter=[]
        this.isEnd=resp.data.end
+       if(resp.data.end==null){
+         this.isEnd=0
+       }
+       console.log(this.isEnd)
+       window.sessionStorage.setItem('isEnd',this.isEnd)
        for(var deadline in lastb){
          this.deadlineFilter.push(deadline)
        }
@@ -1304,7 +1341,7 @@ var path =
         advSearch(){
       this.showWaitingFlag=true
       var searchPath =
-        "/document/list/page/" +
+        "/document/list/like/" +
         sessionStorage.getItem("docType") +
         "?pageNow=0&pageSize=900000";
       // var docObj1 = {
@@ -1320,6 +1357,7 @@ var path =
           delete docObj[key];
         }
       }
+      // this.searchForm.pageTotal=-12
 
       this.postRequest(
         //注意防止重复提交
@@ -1769,7 +1807,86 @@ this.showWaitingFlag=true
                 
 
     },
+
     printBtn(item){
+
+
+      
+      if(sessionStorage.getItem("docType")=="personnel"){
+              if(item.personJob==4||item.personJob==5) //personJob字段用来存是哪种文档类型
+      {
+        window.sessionStorage.setItem('rsPrint',4)
+      window.sessionStorage.setItem('rsPrintSub',(item.personJob-3)+'-'+item.docNum)
+      }
+      if(item.personJob<4){
+        window.sessionStorage.setItem('rsPrint',item.personJob)
+        window.sessionStorage.setItem('rsPrintSub','-'+item.docNum)
+
+      }
+      else if(item.personJob<10){
+        window.sessionStorage.setItem('rsPrint',item.personJob-1)
+        window.sessionStorage.setItem('rsPrintSub','-'+item.docNum)
+      }
+      else if(item.personJob>9&&item.personJob<16){  //10-15
+                window.sessionStorage.setItem('rsPrint',item.personJob-9)
+        window.sessionStorage.setItem('rsPrintSub',(item.personJob-9)+'-'+item.docNum)
+      }else{
+                        window.sessionStorage.setItem('rsPrint',10)
+        window.sessionStorage.setItem('rsPrintSub','-'+item.docNum)
+      }
+    var ttt=sessionStorage.getItem('rsPrint')
+      window.sessionStorage.setItem('rsPrint',ttt+" ")
+      }//personnel
+      else if(sessionStorage.getItem("docType")=="official"||sessionStorage.getItem("docType")=="business"){
+        // alert(2)
+        window.sessionStorage.setItem('authCode',sessionStorage.getItem('authCode'))
+
+        window.sessionStorage.setItem('sortYear',item.sortYear)
+        window.sessionStorage.setItem('docNum',item.docNum)
+        window.sessionStorage.setItem('docAbout',item.docAbout)
+        window.sessionStorage.setItem('aboutTextNum',item.docAbout.length)
+        var y=item.deadline
+        // console.log(y)
+        if(this.isNumber(y)){
+          // alert(1)
+          console.log(y)
+          y=y+'年'
+        }
+        window.sessionStorage.setItem('timedue',y)
+
+
+        window.sessionStorage.setItem('docPage',item.docPage)
+
+
+      }
+
+      // else if(sessionStorage.getItem("docType")=="business") {
+      //   var t=sessionStorage.getItem('authCode')+ "-" 
+      //        +'-' +item.docAbout + "-"  +this.formatFourNum1(item.docNum)
+      //   window.sessionStorage.setItem('danghao',t)
+      // }
+      
+      else if(sessionStorage.getItem("docType")=="science"){
+        // alert(2)
+          // alert(2) 
+          var tauthcode=sessionStorage.getItem('authCode')
+              var c=tauthcode
+              // alert(tauthcode)
+    while(c.charAt(0)=='0') {
+      c=c.substring(1)
+    }
+        var kjdh=c+ "-"  
+             +  sessionStorage.getItem('docTypeCode') +'-'+
+               item.boxSeq
+    // alert(2)
+
+      window.sessionStorage.setItem("danghao1",kjdh)
+      window.sessionStorage.setItem("kjXuhao",item.docNum)
+      }
+Utils.$emit('sendInit',1);
+this.showCenterPrint=true
+    },
+    printBtn1(item){
       
       if(!this.reSend){
 var docs=this.$store.state.alreadyDocs
@@ -1784,7 +1901,8 @@ var docs=this.$store.state.alreadyDocs
       ).then((resp) => {
         console.log(resp)
         if(resp.code==0){
-          this.isEnd=true
+          this.isEnd=1
+          
         }
       })
 
@@ -1887,8 +2005,9 @@ this.reSend=true  //恢复默认
       window.localStorage.setItem("docs",JSON.stringify(docs))
 
       
-      if(this.isEnd!=1&&!this.onceFlag){
+      if(this.isEnd!=1){
 // alert(this.isEnd)
+this.isEnd=1
       this.onceFlag=true
               this.putRequest(
         "/work/"+sessionStorage.getItem("batchId")+"/1/end"

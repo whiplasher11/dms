@@ -1,9 +1,9 @@
 <template>
 <div>
-  <Hide v-show="false"></Hide>
+ 
   <div style="position:absolute;top:4cm;left:1cm" class="printSetBox">
 
-    <el-select
+    <el-select v-if="false"
             @blur="selectBlur"
             @change="selectSequenceChange"
             ref="authSelectref"
@@ -20,7 +20,8 @@
             ></el-option>
           </el-select>
 
-  <div style="position:absolute;top:0cm;left:20rem;width:3cm;text-align:center"  v-print="'#printArea'" id="printButton" class="topTextButton" >打印</div>
+  <div style="position:absolute;top:0cm;left:0cm;width:3cm;text-align:center"  @click="clickPrint"  class="topTextButton" >回车打印</div>
+  <div  v-print="'#printArea' " id="printButton"></div>
   </div>
   <!-- 人事 -->
   <div v-if="docType=='personnel'" id="printArea"  >  
@@ -132,20 +133,85 @@
 <script>
 
 import Utils from '../../utils/doc.js'
-import Hide from "./docInputDetail.vue";
+// import Hide from "./docInputDetail.vue";
 
 
 export default {
     components: {
-    Hide: Hide,
+    // Hide: Hide,
   },
 
    mounted() {
+    //  this.asd();
+    var that=this
+        Utils.$on("sendInit", function (doc) {
+      console.log("get")
+that.initData()
+      
+    });
+
+     var that=this
+     var b=document.getElementById("printButton")
+    document.onkeydown= function (e) {
+
+var theEvent = window.event || e;
+var code = theEvent.keyCode || theEvent.which;
+if (code == 13||code == 80) {
  
+  // alert(2)
+that.clickPrint();
+
+}
+
+}
+
 
   },
 
   methods:{
+
+    clickPrint(){  //点button
+    
+      if(sessionStorage.getItem("isEnd")!=1){
+      
+  this.$confirm(
+        "开始印章后将锁定该批文档不能修改",
+        {
+          cancelButtonClass: "btn-custom-cancel",
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning",
+        }
+      )
+        .then(() => {
+
+                              this.putRequest(
+        "/work/"+sessionStorage.getItem("batchId")+"/1/end"
+      ).then((resp) => {
+        console.log(resp)
+        if(resp.code==0){
+          this.isEnd=true
+          window.sessionStorage.setItem('isEnd',1)
+        }
+      })
+      var b=document.getElementById("printButton")
+      b.click()
+      return true
+        }
+          ).catch(()=>{
+            return false
+          })
+
+
+      }else{
+              var b=document.getElementById("printButton")
+      b.click()
+      }
+             
+
+
+    },
+    setPrinted(){},
       initData(){
         this.printDocs=JSON.parse(localStorage.getItem('docs'))
     var zishu=sessionStorage.getItem('aboutTextNum')
@@ -163,10 +229,10 @@ export default {
       this.leftPosAbout=-2.5
       this.size=0.67
     }
-      this.$message.warning({
-        duration:1000,
-        message:"请按 回车或P键 进行打印"
-      });
+      // this.$message.warning({
+      //   duration:1000,
+      //   message:"请按 回车或P键 进行打印"
+      // });
     
     // alert(this.rsPrint)
     // this.rsPrint=sessionStorage.getItem(rsPrint)
@@ -179,7 +245,6 @@ export default {
     this.docAbout=sessionStorage.getItem('docAbout')
     this.docPage=sessionStorage.getItem('docPage')
     this.timedue=sessionStorage.getItem('timedue')
-
 this.danghao=sessionStorage.getItem('danghao1')
 
 if(window.sessionStorage.getItem("docType")=='science'){
@@ -259,17 +324,7 @@ smaller:function(){
 
 
   created () {
-    var b=document.getElementById("printButton")
-    document.onkeydown= function (e) {
 
-var theEvent = window.event || e;
-var code = theEvent.keyCode || theEvent.which;
-if (code == 13||code == 80) {
-b.click();
-// alert(2)
-}
-
-}
 this.initData()
 // this.doc
     // this.$print(this.$refs.print1);//$refs的值要和html里的ref一致
@@ -311,4 +366,6 @@ this.initData()
     color: #333;
     font-size: 1.1rem;
 }
+
+
 </style>>

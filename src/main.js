@@ -83,6 +83,15 @@ Vue.filter('formatFourNum',function(value){
         return h
     }
 });
+
+Vue.filter('formatLevelKeyword',function(value){
+    // console.log(value)
+    if(value.split('~').length>0){
+        return value.split('~')[1]
+    }else return value
+    
+});
+
 Vue.filter('deadlineFormat',function(value){
     if(value=='永久'||value=='备查'||value=='长期') return value
     else return (value+'年')

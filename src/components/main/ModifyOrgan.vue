@@ -72,7 +72,7 @@
         v-if="presetNameShowFlag"
         class="windowStyle"
         style="
-          position: absolute;
+          position: fixed;
           top: 40vh;
           left: 50%;
           margin-left: -15rem;
@@ -144,7 +144,7 @@
         v-if="fixNameShow"
         class="windowStyle"
         style="
-          position: absolute;
+          position: fixed;
           top: 40vh;
           left: 50%;
           margin-left: -15rem;
@@ -219,7 +219,7 @@
     height: 5rem;
     line-height: 2rem;
     position: fixed;
-    background-color: rgb(240,240,243);
+    background-color: rgb(243,243,243);
     top: 4.5rem;
           "
         >
@@ -278,7 +278,7 @@
             style="border: none; font-size: 0.9rem"
             @click="fixThisOrgan(item)"
           >
-            修改优先级
+            修改对照表
           </div>
           <div
             class="organInfo hoverStyle"
@@ -308,7 +308,7 @@
 
       <div v-if="!organsShow">
       <div class="organIrem" style="height:4rem " ></div>
-      <div class="organIrem" style="height:4rem ;width:100%;position:fixed;background-color:rgb(240,240,243);top:4.5rem" ></div>
+      <div class="organIrem" style="height:4rem ;width:100%;position:fixed;background-color:rgb(243,243,243);top:4.5rem" ></div>
 
         <div class="organItem " style="border-bottom:none;   height: 2rem;
   line-height:2rem;
@@ -316,7 +316,7 @@
     position: fixed;
     border-bottom:solid;
     margin-left:2.5%;
-    background-color:rgb(240,240,243)
+    background-color:rgb(243,243,243)
   ">
   <div></div>
           <div class="BatchInfo">批次名</div>
@@ -718,6 +718,35 @@ this.presetNameShowFlag=false
 
 
 <style lang="scss">
+#user_topd {
+  position: absolute;
+
+  width: 0px;
+  height: 0px;
+  line-height: 0px; /*为了防止ie下出现题型*/
+  border-bottom: 0.5rem solid #909399;
+  border-left: 0.5rem solid rgba(255, 255, 255, 0);
+  border-right: 0.5rem solid rgba(255, 255, 255, 0);
+left: 4.8rem;
+    top: 0.8rem;
+}
+
+#user_top{
+  position: absolute;
+
+  width: 0px;
+  height: 0px;
+  line-height: 0px; /*为了防止ie下出现题型*/
+  border-top: 0.5rem solid #909399;
+  border-left: 0.5rem solid rgba(255, 255, 255, 0);
+  border-right: 0.5rem solid rgba(255, 255, 255, 0);
+ 
+  left: 4.8rem;
+    top: 0.8rem;
+}
+
+
+
 .el-form-item__content{
   font-size: 1rem !important;
   line-height: 2rem !important;
@@ -773,6 +802,29 @@ text-align: center;
 
   }
 
+   .topTextButtonBlueNoWidth{
+             
+          cursor: pointer;
+      z-index: 9;
+padding-left: 0.5rem;
+padding-right: 0.5rem;
+padding-bottom: 0.3rem;
+padding-top: 0.3rem;
+font-size: 0.9rem;
+text-align: center;
+          background-color: rgb(82, 81, 189);
+          -webkit-box-shadow: 0 0 0.5rem #909399;
+          box-shadow: 0 0 0.5rem #909399;
+          border-radius: 0.5rem;
+          color:#ddd !important;
+          // top:-2.8rem !important
+          margin-left: 0.5rem;
+  }
+
+  .topTextButtonBlueNoWidth:hover{
+          background-color: rgb(53, 78, 139);
+
+  }
 
 
 .organShowCheckbox{

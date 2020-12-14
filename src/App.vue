@@ -53,4 +53,8 @@ export default {
   z-index: 99999 !important;
   top:5rem !important;
 }
+.el-message-box{
+  z-index: 99999 !important;
+  top:10rem !important;
+}
 </style>
