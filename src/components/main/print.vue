@@ -170,9 +170,11 @@ that.clickPrint();
 
   methods:{
 
-    clickPrint(){  //点button
+    clickPrint(){  //点button 或者按键
+
     
       if(sessionStorage.getItem("isEnd")!=1){
+        
       
   this.$confirm(
         "开始印章后将锁定该批文档不能修改",
@@ -184,6 +186,8 @@ that.clickPrint();
         }
       )
         .then(() => {
+          
+
 
                               this.putRequest(
         "/work/"+sessionStorage.getItem("batchId")+"/1/end"
@@ -195,6 +199,8 @@ that.clickPrint();
         }
       })
       var b=document.getElementById("printButton")
+this.emitThisId()
+
       b.click()
       return true
         }
@@ -204,6 +210,8 @@ that.clickPrint();
 
 
       }else{
+this.emitThisId()
+
               var b=document.getElementById("printButton")
       b.click()
       }
@@ -265,6 +273,11 @@ if(window.sessionStorage.getItem("docType")=='science'){
           this.emitThisDoc(this.printDocs[i])
         }
       }
+    },
+    emitThisId(){
+      // alert("emit")
+        Utils.$emit('changeThePrint',1);
+
     },
         emitThisDoc(doc) {
       // console.log(doc)

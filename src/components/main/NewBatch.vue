@@ -325,15 +325,17 @@ export default {
         first: "keyword",
         second: "level",
         third: "author",
-        forth: "docDate",
-        fifth: "docDescNum",
+        forth: "docDesc",
+        fifth: "docDate",
+        six:"docDescNum"
       },
       priority: {
         first: "keyword",
         second: "level",
         third: "author",
-        forth: "docDate",
-        fifth: "docDescNum",
+        forth: "docDesc",
+        fifth: "docDate",
+        six:"docDescNum"
       },
       renshipriority: {
         first: "keyword",
@@ -564,7 +566,7 @@ for(  var i=0;i<this.jsonArray.length;i++){
       this.BatchForm.lastBox=jsonToCommit
       window.sessionStorage.setItem("lastBox",JSON.stringify(jsonToCommit))
 
-      var a = { first: "1", second: "2", third: "3", forth: "4", fifth: "5" };
+      var a = { first: "1", second: "2", third: "3", forth: "4", fifth: "5",six:"6" };
       let b = this.BatchForm.priority;
       // console.log(b)
 
@@ -885,14 +887,14 @@ var key91 = '工资情况材料';
         docTypetemp = "business";
       }
       this.BatchForm.priority=this.uploadpriority
-            var a = { first: "1", second: "2", third: "3", forth: "4", fifth: "5" };
+            var a = { first: "1", second: "2", third: "3", forth: "4", fifth: "5" ,six:"6"};
             let b = this.BatchForm.priority;
       for (var key in b) {
         var newKey = a[key];
         b[newKey] = b[key];
         delete b[key];
       }
-      console.log
+ 
       this.BatchForm.rule = b;
 
       sessionStorage.setItem("docType", docTypetemp);
@@ -1103,18 +1105,10 @@ setTimeout(() => {
     },
 
     selectBlur(e) {
-      var context = this.$refs["authSelectref"];
-      // console.log(text)
-      // console.log(this);
-      console.log("发出blur的e");
-      console.log(e);
-      // if(e.target.id=="selectAuth"){
-      // alert(e.target.value)
+
       var inputAuth = e.target.value;
       this.BatchForm.authName = inputAuth;
-      // }
-      // console.log('hew')
-      // console.log(e.target.value);
+
     },
     priorityChange() {
       //自定义优先级

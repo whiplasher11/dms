@@ -12,6 +12,7 @@ const now = new Date();
 const store = new Vuex.Store({
 
     state: {
+        noChufa:false,//修改文件时不要触发查找相似
         rsPrint:0,
         rsPrintSub:2,
         hi:2,
@@ -22,7 +23,7 @@ const store = new Vuex.Store({
         tempDocId:'',
         tempDoc:'',
         alreadyDocs:[],
-        sortedFlag:false,
+        sortedFlag:true,  //在排序后设置为true 新增修改  删除？ 后设置为false
         alreadyDocss:[
             {
                 userId:7,

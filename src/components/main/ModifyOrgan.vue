@@ -727,7 +727,7 @@ this.presetNameShowFlag=false
   border-bottom: 0.5rem solid #909399;
   border-left: 0.5rem solid rgba(255, 255, 255, 0);
   border-right: 0.5rem solid rgba(255, 255, 255, 0);
-left: 4.8rem;
+  right:0rem;
     top: 0.8rem;
 }
 
@@ -741,7 +741,8 @@ left: 4.8rem;
   border-left: 0.5rem solid rgba(255, 255, 255, 0);
   border-right: 0.5rem solid rgba(255, 255, 255, 0);
  
-  left: 4.8rem;
+  right:0rem;
+
     top: 0.8rem;
 }
 

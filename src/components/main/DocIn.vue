@@ -787,7 +787,7 @@ export default {
         //  console.log(this.docForm)
         var len = v.length;
         // console.log(len)
-        if (len > 5 && len < 9) {
+        if (len > 6 && len < 10) {
           // alert(2)
           this.likelyHoodQuery();
         }
@@ -858,9 +858,14 @@ export default {
       const replaceReg = new RegExp(highlight, "g");
       const replaceString = `<font color='#F14F4A'>${highlight}</font>`;
 
+   
       for (let i = 0; i < arr.length; i++) {
         // 开始替换
         arr[i].docTitle = arr[i].docTitle.replace(replaceReg, replaceString);
+        if(arr[i].batchId==sessionStorage.getItem('batchId')){
+          arr[i].docTitle=arr[i].docTitle+`<font color='#FF4F4A'>----注：本批重复文件！</font>`;
+        }
+
       }
 
       return arr;
@@ -1182,6 +1187,31 @@ export default {
       this.docForm.keyword = input;
       this.docFormRS.keyword = input;
 
+console.log(input)
+//防止添加的关键词和 对照表中关键词对应的问题不一样？？ 不需要
+      //  var weightId;
+      // if (sessionStorage.getItem("docType") == "official") {
+      //   weightId = this.weightForm.docKeywordWig;
+      // }
+      // if (sessionStorage.getItem("docType") == "science") {
+      //   weightId = this.weightForm.tecKeywordWig;
+
+      // }
+
+      // if (sessionStorage.getItem("docType") == "business") {
+      //     weightId = this.weightForm.busKeywordWig;
+
+      // }
+      // var docAboutOfKw
+
+      // this.getRequest("/weight/sort/" + weightId)
+      //             .then((resp) => {
+      //                 if(resp.code==0){
+      //                   docAboutOfKw=resp.data.keywordIssue[input]
+      //                 }
+      //             })
+                  
+
 this.levelAndKwToDeadline()
     },
     docAboutBlur(e){
@@ -1245,7 +1275,14 @@ this.levelAndKwToDeadline()
       if (!this.aiInput) {
         return;
       }
-      if (this.chufa == 0) {
+      if(this.$store.state.noChufa){
+        this.$store.state.noChufa=false
+        
+        return
+      }else{
+        this.$store.state.noChufa=false
+      }
+      if (this.chufa == 0) { //防止无法输入
         this.chufa = 1;
         return;
       }
@@ -1316,7 +1353,7 @@ var descText
 
       this.levelAndKwToDeadline()
     },
-    levelAndKwToDeadline(){
+    levelAndKwToDeadline(){  //根据级别和关键词识别期限
       var key=this.docForm.docLevel+"~"+this.docForm.keyword
       console.log(key)
       console.log(this.levelkwToDeadlineTable)
@@ -1460,7 +1497,7 @@ var descText
         return false;
       else return true;
     },
-    checkDeadline(){
+    checkDeadline(){  //检查期限 +检查在对照表里面 关键词是否对应问题
       // console.log(docTimeDues)
       var arr=this.docTimeDues
 
@@ -1472,6 +1509,10 @@ var descText
         return false
       }
       else return true
+    },
+
+    checkKeyword(){
+
     },
     checkAdd() {
 
@@ -1685,6 +1726,8 @@ else return true;
             // this.docForm.docTitle = "";
             // this.docForm.docPage = "";
           });
+      this.$store.state.sortedFlag=false  
+
       } else {
         this.showWaitingFlag = false;
         this.$message({
@@ -1804,10 +1847,13 @@ else return true;
 
             this.docForm.docPage = "";
           });
+      this.$store.state.sortedFlag=false
+
       } else {
         this.showWaitingFlag = false;
 
       }
+    
     },
     goDetail() {
       this.$router.push("/work/docInputd");
@@ -2087,12 +2133,16 @@ else return true;
             this.optSubmitRS();
           }
         });
+      this.$store.state.sortedFlag=false
+      
+      
       } else {
         this.$message({
           type: "error",
           message: "填写完整",
         });
       }
+
     },
     addDoc() {
       //  if(!this.docForm.docDescNum){
@@ -2286,9 +2336,12 @@ else return true;
               });
           }
         });
+      this.$store.state.sortedFlag=false
+
       } else {
           this.showWaitingFlag=false
       }
+
     },
     optThreeWeightTable1() {
       var weightType1;
@@ -3102,7 +3155,7 @@ else return true;
         this.docAboutTipArr.push(attr);
       }
 
-      for (attr in dabJson) {
+      for (attr in kwdJson) {
         this.keywordTipArr.push(attr);
       }
       })

@@ -598,6 +598,7 @@
           >
           <div class="topTextButtonBlueNoWidth" style="float:left"
             type="danger"
+            v-if="!saveBtnShow"
              
             @click="deleteKV($event, item)"
             >删除 </div
@@ -617,6 +618,16 @@
             v-if="!saveBtnShow && showKeyWord && !backToDocAboutShow"
             >关键词对应表 </div
           >
+
+          
+          <div class="topTextButtonBlueNoWidth" style="float:left"
+            type=""
+             
+            @click="thisDocAboutDesc($event, item)"
+            v-if="!saveBtnShow && showKeyWord && !backToDocAboutShow"
+            >文号对应表 </div
+          >
+
 
           <div class="topTextButtonBlueNoWidth" style="float:left"
             type=""
@@ -680,6 +691,8 @@ export default {
   },
 
   created() {
+      this.setDescKVFlag=false  //进入页面时设置为false 与关键词优先级设置区分
+    
     window.scrollTo(0, 0);
     var js = {};
     var k = 3;
@@ -695,7 +708,17 @@ export default {
         this.authName = resp.data.authName;
         console.log("加载keyWM页面时某个特定单位的权重表对应的id");
 
+      if(this.weightForm.officialDescWig==null){
+this.weightForm.officialDescWig={}
+      }
 
+            if(this.weightForm.busDescWig==null){
+this.weightForm.busDescWig={}
+      }
+
+            if(this.weightForm.tecDescWig==null){
+this.weightForm.tecDescWig={}
+      }
       if(this.weightForm.officialDescAuthor==null){
           this.weightForm.officialDescAuthor={}
       }
@@ -766,9 +789,7 @@ export default {
       this.filterLevelFlag=true;
     },
 
-    preSetLevelDicButton(){
-
-    },
+ 
     getAuth(){
       
     this.getRequest("/organ/" + sessionStorage.getItem("authId")).then(
@@ -845,6 +866,7 @@ export default {
 
     },
     docTypeChange(){
+      this.selectedTableType=""
       if(this.selectedDoctype=='文书类')
       this.tableTypes=[
         "文书类档案问题(机构)优先级表",
@@ -894,12 +916,85 @@ export default {
       }
       if (this.typeNum == 41) return 41;
     },
+    setDescToWeightForm(){  //set直接set descJson  getDescJsonTableFromWeightForm会根据weightform重置descJson
 
+      //       var jsonToCommit = {}; /**将修改提交 jsonTable是数组*/
+      // for (var i = 0; i < this.jsonTable.length; i++) {
+       
+      //   jsonToCommit[this.jsonTable[i][0]] = this.jsonTable[i][1];
+      // }
+      // this.descJson=jsonToCommit
+console.log(this.descJson)
+      var descString=JSON.stringify(this.descJson)
+
+         if(sessionStorage.getItem("docType")=="official"){
+
+           this.weightForm.officialDescWig[this.deepInThisDocAbout]=descString
+    }
+    if(sessionStorage.getItem("docType")=="business"){
+           this.weightForm.busDescWig[this.deepInThisDocAbout]=descString
+
+    }
+    if(sessionStorage.getItem("docType")=="science"){
+           this.weightForm.tecDescWig[this.deepInThisDocAbout]=descString
+    }
+    },
+    getDescJsonTableFromWeightForm(){  //显示 并且 设置descJson 这个是文号优先级json
+         var organForm=this.weightForm
+    var docAboutDescJson
+    this.jsonTable=[]
+    if(sessionStorage.getItem("docType")=="official"){
+docAboutDescJson=organForm.officialDescWig
+    }
+    if(sessionStorage.getItem("docType")=="business"){
+docAboutDescJson=organForm.busDescWig
+
+    }
+    if(sessionStorage.getItem("docType")=="science"){
+docAboutDescJson=organForm.tecDescWig
+
+    }
+    if(docAboutDescJson==null){
+      docAboutDescJson={}
+    }
+
+    var descJsonString=docAboutDescJson[this.deepInThisDocAbout]
+console.log(descJsonString)
+
+    if(descJsonString==null){
+      descJsonString="{}"
+    }
+ 
+    descJsonString=JSON.parse(descJsonString)
+
+              var attr
+      for ( attr in descJsonString) {
+            this.jsonTable.push([attr, descJsonString[attr]]);
+          }
+  this.jsonTable=this.jsonTable.sort(function(a,b){
+      return parseInt(b[1]) -parseInt(a[1]);
+    })
+    
+    this.descJson=descJsonString
+console.log(this.descJson)
+console.log(this.jsonTable)
+    },
+
+thisDocAboutDesc(e, item){
+  this.setDescKVFlag=true //区别设置问题下的关键词
+     this.showWaitingFlag = true;
+      this.deepInThisDocAbout = item[0];
+      this.backToDocAboutShow = true;
+this.getDescJsonTableFromWeightForm();
+
+ 
+    this.showWaitingFlag=false
+},
     thisDocAbout(e, item) {
       this.showWaitingFlag = true;
       this.deepInThisDocAbout = item[0];
       this.backToDocAboutShow = true;
-
+      this.setDescKVFlag=false  //进入某个问题时设置为false 与关键词优先级设置区分
       var keywordJson;
       var keywordIssueJson;
       var that = this;
@@ -1047,6 +1142,8 @@ export default {
       //       })
     },
     backToDocAbout() {
+      this.setDescKVFlag=false  //进入某个问题时设置为false 与关键词优先级设置区分
+
       console.log(this.issueTable)
       this.saveBtnShow = false;
       this.jsonTable = this.level1JsonTable;
@@ -1292,9 +1389,10 @@ export default {
     },
     doPreset() {
       console.log(this.weightForm)
-      if(this.typeNum%5==0||(this.typeNum-6)%10==0){  //对照表
+{//对照表的预设
+        if(this.typeNum%5==0||(this.typeNum-6)%10==0){  //对照表
       var levelkw=this.selectedLevel+"~"+this.keyToSet
-      if(this.weightForm[this.selectedTableTypeName][this.keyToSet]!=null||
+      if(this.weightForm[this.selectedTableTypeName][this.keyToSet]!=null||   //这两个表互不相关
       this.weightForm[this.selectedTableTypeName][levelkw]!=null){
                   
               this.$message({
@@ -1372,6 +1470,7 @@ console.log(this.weightForm.officialLevelKeywordDeadline)
       this.showWaitingFlag=false
         return
       }
+}
 
 
       if (!this.isNumber(this.valueToSet)) {
@@ -1382,11 +1481,50 @@ console.log(this.weightForm.officialLevelKeywordDeadline)
         return;
       }
 
+if(this.setDescKVFlag)
+      { // 这块代码 ：文号优先级的设置
+      this.showWaitingFlag=true
+      if(this.descJson[this.keyToSet]!=null){
+          this.$message({
+                type: "warning",
+                message:
+                  "该文号已存在：" +
+                 this.keyToSet
+              });
+      this.showWaitingFlag=false
+
+              return
+      }
+        this.descJson[this.keyToSet]=this.valueToSet
+        console.log(this.descJson)
+        this.setDescToWeightForm();
+              this.putRequest(
+        //注意防止重复提交
+        "/organ/" + sessionStorage.getItem("authId"),
+        JSON.stringify(this.weightForm)
+      ).then((resp) => {
+        this.weightForm=resp.data
+        this.getDescJsonTableFromWeightForm()
+        this.showKVPreset=false
+      })
+        // var descObj={}
+        // if(this.jsonTable.length==0){  //问题下没有文号优先级
+        //   var descObj={}
+        //   descObj[this.keyToSet]=this.valueToSet
+        // }
+        // else{
+          
+        // }
+      this.showWaitingFlag=false
+
+        return
+      }
+
       this.showWaitingFlag = true;
       this.showKVPreset = false;
       // alert(this.valueToSet)
       // alert(this.typeNum)
-      if (this.backToDocAboutShow) {
+      if (this.backToDocAboutShow) { //关键词
         //关键词重复
         this.getRequest("/weight/keywordSort/" + this.keywordWigId).then(
           (resp) => {
@@ -1612,8 +1750,9 @@ this.checkFromThisTableType(num)
     },
     saveKeyValue() {
       console.log("save");
-
       console.log(this.jsonTable);
+
+
       this.submitFixFromQianDuan();
       // var jsonToCommit = {};
       // for (var i = 0; i < this.jsonTable.length; i++) {
@@ -1772,6 +1911,32 @@ console.log(this.weightForm.officialLevelKeywordDeadline)
         return;
       }
 
+      if(this.setDescKVFlag){
+               this.descJson[this.keyToFix]=this.valueToFix
+        console.log(this.descJson)
+        this.setDescToWeightForm();
+              this.putRequest(
+        //注意防止重复提交
+        "/organ/" + sessionStorage.getItem("authId"),
+        JSON.stringify(this.weightForm)
+      ).then((resp) => {
+        this.weightForm=resp.data
+        this.getDescJsonTableFromWeightForm()
+        this.showKVFix=false
+      })
+        // var descObj={}
+        // if(this.jsonTable.length==0){  //问题下没有文号优先级
+        //   var descObj={}
+        //   descObj[this.keyToSet]=this.valueToSet
+        // }
+        // else{
+          
+        // }
+      this.showWaitingFlag=false
+
+        return
+      }
+
       var _arr = this.jsonTable;
       var length = _arr.length;
 
@@ -1795,6 +1960,28 @@ console.log(this.weightForm.officialLevelKeywordDeadline)
       for (var i = 0; i < this.jsonTable.length; i++) {
         // console.log(this.jsonTable[i][0]);
         jsonToCommit[this.jsonTable[i][0]] = this.jsonTable[i][1];
+      }
+      this.descJson=jsonToCommit
+
+      if(this.setDescKVFlag&&this.backToDocAboutShow){
+        this.setDescToWeightForm();
+ this.putRequest(
+        //注意防止重复提交
+        "/organ/" + sessionStorage.getItem("authId"),
+        JSON.stringify(this.weightForm)
+      ).then((resp) => {
+        if(resp.code==0){
+                        this.$message({
+                type: "warning",
+                message: "操作成功",
+              });
+              this.weightForm=resp.data
+        }
+      }).then(()=>{
+        this.getDescJsonTableFromWeightForm();
+      })
+
+      return
       }
 
       if (!this.backToDocAboutShow) {
@@ -2013,7 +2200,7 @@ console.log(this.weightForm.officialLevelKeywordDeadline)
         if(resp.code==0){
                   this.$message({
           type: "success",
-          message: "删除",
+          message: "删除成功",
         });
           var json=resp.data
           var attr
@@ -2030,6 +2217,33 @@ console.log(this.weightForm.officialLevelKeywordDeadline)
         return
       }
 
+{ //文号优先级
+if(this.setDescKVFlag){
+          //   for (var i = 0; i < this.jsonTable.length; i++) {
+          //   if (this.jsonTable[i][0] == item[0]) {
+          //     this.jsonTable = this.jsonTable.splice(i, 1); //删除下标为i的元素  返回的是数组，长度为1
+          //     break; //不break的话会报错，因为外层循环还在继续，数组已经少了一个了
+          //   }
+          // }
+delete this.descJson[item[0]]
+this.setDescToWeightForm();
+              this.putRequest(
+        "/organ/" + sessionStorage.getItem("authId"),
+        JSON.stringify(this.weightForm)
+      ).then((resp) => {
+                    this.$message({
+              type: "success",
+              message: "删除成功",
+            });
+        this.weightForm=resp.data
+      }).then(()=>{
+this.getDescJsonTableFromWeightForm()
+
+      })
+return
+}
+
+}
       var keywordTodelete = {};
       this.$confirm(
         "确定要删除该条不再使用吗，若某批次录入中有该词条可能导致排序失败",
@@ -2225,8 +2439,11 @@ console.log(this.weightForm.officialLevelKeywordDeadline)
 
 
   },
-  data() {
+  data() {  //jsonTable 是用来显示的kv数组
     return {
+  setDescKVFlag:false, //区别设置问题下的关键词
+  descJson:{},
+
       tempTable:[],//级别+关键词对应期限那里 级别筛选时暂存完整的对照表
 
       descAuthorFlag:false, //是否是文号责任者对照表

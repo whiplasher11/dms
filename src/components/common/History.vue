@@ -101,6 +101,7 @@ export default {
     },
     emitThisDoc(doc) {
       // console.log(doc)
+      this.$store.state.noChufa=true
         Utils.$emit('changeThisDoc',doc);
     },
 

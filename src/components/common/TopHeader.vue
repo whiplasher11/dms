@@ -706,15 +706,9 @@ t=this.fomatTime(t)
 
 #user_top {
   position: absolute;
-
-  width: 0px;
-  height: 0px;
-  line-height: 0px; /*为了防止ie下出现题型*/
-  border-bottom: 0.5vw solid #909399;
-  border-left: 0.5vw solid rgba(255, 255, 255, 0);
-  border-right: 0.5vw solid rgba(255, 255, 255, 0);
+ 
   left: 44%;
-  top: -0.5vw;
+  top: -0.3rem;
 }
 .userinfo_items {
   z-index: 99;
