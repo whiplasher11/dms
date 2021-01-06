@@ -96,7 +96,7 @@ export default {
     goDetail(){
       this.$store.state.alreadyDocs=[]
 
-           this.$router.push("/work/docInputd")
+           this.$router.replace("/work/docInputd")
       
     },
     emitThisDoc(doc) {

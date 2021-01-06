@@ -64,7 +64,7 @@
         },
         methods: {
             goChat() {
-                this.$router.push("/chat");
+                this.$router.replace("/chat");
             },
             commandHandler(cmd) {
                 if (cmd == 'logout') {
@@ -84,7 +84,7 @@
                         });
                     });
                 }else if (cmd == 'userinfo') {
-                    this.$router.push('/hrinfo');
+                    this.$router.replace('/hrinfo');
                 }
             }
         }

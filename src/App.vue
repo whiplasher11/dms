@@ -21,6 +21,23 @@ export default {
     }
   },
   methods:{
+     fullScreen(){
+            var el = document.documentElement;
+            var rfs = el.requestFullScreen || el.webkitRequestFullScreen || el.mozRequestFullScreen || el.msRequestFullscreen;      
+                if(typeof rfs != "undefined" && rfs) {
+                    rfs.call(el);
+                };
+              return;
+        },
+ isIE() { //ie?
+     if ( !! window.ActiveXObject || "ActiveXObject" in window) {
+         var script = document.createElement("script");
+         script.type = "text/javascript";
+         script.src = "/js/unity/bluebird.js";
+         document.getElementsByTagName('head')[0].appendChild(script);
+     }
+ },
+
     optHeader:function(bool) {
         this.header_show = bool;
       },
@@ -43,7 +60,8 @@ export default {
   },
  mounted(){
    this.setRootFontSize();
-
+  this.isIE();
+  this.fullScreen();
  }
 }
 </script>

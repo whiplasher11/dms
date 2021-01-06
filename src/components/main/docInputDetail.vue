@@ -15,9 +15,9 @@
         border-radius: 1rem;
       "
     >
-      <HidePrint
+      <HidePrint v-bind:printDoc="printDoc"
         v-show="!showPrint"
-        style="margin-left: -30mm; position: absolute; left: 50%"
+        style="margin-left: -30mm; position: relative;width:80%; left: 50%"
       ></HidePrint>
 
       <div
@@ -271,7 +271,7 @@
             top: 6rem;
             right: 0px;
             width: 35%;
-            background-color: rgb(243, 243, 243);
+            background-color: rgb(255, 255, 255);
           "
         >
           <div
@@ -340,7 +340,7 @@
             height: 9rem;
             width: 100%;
             position: fixed;
-            background-color: rgb(240, 240, 243);
+            background-color: rgb(255, 255, 255);
             top: 3rem;
           "
         ></div>
@@ -443,6 +443,35 @@
           >
             下载表格
           </div>
+                    <div
+            style="
+         float:left
+         width:5rem
+         text-align:center
+         margin-left:1rem !important
+          "
+            class="hoverStyle topTextButton"
+            @click="lockThisBatch"
+                        v-if="!isEnd"
+
+          >
+            锁定本批
+          </div>
+                    <div
+            style="
+         float:left
+         width:5rem
+         text-align:center
+         margin-left:1rem !important
+          "
+            class="hoverStyle topTextButton"
+            @click="unLockThisBatch"
+                        v-if="isEnd"
+          >
+            解除锁定
+          </div>
+
+ 
           <div
             style="         float:left
          width:5rem;
@@ -663,6 +692,7 @@
             >
               所有文件
             </div>
+
           </div>
         </div>
         <!-- <div
@@ -998,6 +1028,8 @@ export default {
   },
   data() {
     return {
+      printDoc:false,
+
       deadlineReq: "期限",
       yearReq: "年度",
       docAboutReq: "机构",
@@ -1171,6 +1203,29 @@ export default {
     };
   },
   methods: {
+    lockThisBatch(){
+                                    this.putRequest(
+        "/work/"+sessionStorage.getItem("batchId")+"/1/end"
+      ).then((resp) => {
+        console.log(resp)
+        if(resp.code==0){
+          this.isEnd=true
+          window.sessionStorage.setItem('isEnd',1)
+        }
+      })
+    },
+
+    unLockThisBatch(){
+                                    this.putRequest(
+        "/work/"+sessionStorage.getItem("batchId")+"/0/end"
+      ).then((resp) => {
+        console.log(resp)
+        if(resp.code==0){
+          this.isEnd=false
+          window.sessionStorage.setItem('isEnd',0)
+        }
+      })
+    },
     sortYearCheckChange() {
       // alert(this.sortYearCheck)
       // if(!this.sortYearCheck){}
@@ -1390,6 +1445,26 @@ export default {
       console.log("preload");
       var f = false;
       this.$store.state.alreadyDocs = [];
+      var sortedDocs=[]
+  this.getRequest("/work/sorted/"+sessionStorage.getItem("batchId")).then((resp) => {
+     var item=resp.data
+
+          if (item.sorted != null && !this.nullJson(item.sorted) &&this.$store.state.sortedFlag ) {
+            //该批已经排好序
+            console.log("sorted！");
+            var sorted = JSON.parse(item.sorted.sorted);
+            console.log(sorted);
+            this.$store.state.alreadyDocs = sorted;
+            this.filterAlreadyDocs(); //已经排好
+
+          } else {
+            console.log("no sorted");
+            this.loadDocs();
+          }
+
+                })
+
+
       this.getRequest("/work/" + sessionStorage.getItem("batchId"))
         .then((resp) => {
           var item = resp.data;
@@ -1404,27 +1479,14 @@ export default {
           for (var deadline in lastb) {
             this.deadlineFilter.push(deadline);
           }
-          if (item.sorted != null && !this.nullJson(item.sorted) &&this.$store.state.sortedFlag ) {
-            //该批已经排好序
-            console.log("sorted！");
-            var sorted = JSON.parse(item.sorted.sorted);
-            console.log(sorted);
-            this.$store.state.alreadyDocs = sorted;
-            this.filterAlreadyDocs(); //已经排好
-            //       for (var i = 0; i < sorted.length; i++) {
-            //   for (var j = 0; j < sorted[i].length; j++) {
-            //     this.$store.state.alreadyDocs.push(sorted[i][j]);
-            //     //
-            //   }
-            // }
-          } else {
-            console.log("no sorted");
-            this.loadDocs();
-          }
+
+
+        }).then(()=>{
+
         })
-        .then(() => {
-          this.store;
-        });
+        // .then(() => {
+        //   this.store;
+        // });
     },
     loadDocs() {
       console.log("load");
@@ -1506,7 +1568,7 @@ export default {
             // }
           }
 
-          // this.$router.push('/work/docInputD')
+          // this.$router.replace('/work/docInputD')
         })
         .then(() => {
           this.filterAlreadyDocs(); //获取时
@@ -1623,7 +1685,7 @@ export default {
             }
           }
 
-          // this.$router.push('/work/docInputD')
+          // this.$router.replace('/work/docInputD')
         });
     },
     putInContent() {
@@ -1637,7 +1699,12 @@ export default {
       // if (this.searchContent != "输入识别号") {
       if (true) {
         this.searchContent = "输入识别号";
-        this.preLoadDocs();
+      if (this.alreadyDocsRestore.length > 0) {
+        this.$store.state.alreadyDocs = this.alreadyDocsRestore;
+      }else{
+      this.preLoadDocs();
+
+      }
       }
     },
     goSetRule() {
@@ -1645,12 +1712,18 @@ export default {
       // if(this.docType=='')
       // this.$store.state.whichRuleSet=
       // this.$store.state.whichRuleSet=sessionStorage.getItem('auth')
-      this.$router.push("/work/keyWM");
+      this.$store.state.backToDetailFlag=true
+      this.$router.replace("/work/keyWM");
     },
 
     hideAdvSearch() {
       this.advSearchShow = false;
+      if (this.alreadyDocsRestore.length > 0) {
+        this.$store.state.alreadyDocs = this.alreadyDocsRestore;
+      }else{
       this.preLoadDocs();
+
+      }
     },
     hideAdvSearchNoReload() {
       this.advSearchShow = false;
@@ -1686,6 +1759,7 @@ export default {
       ).then((resp) => {
         // console.log(resp);
         this.showWaitingFlag = false;
+        this.alreadyDocsRestore= this.$store.state.alreadyDocs 
         this.$store.state.alreadyDocs = resp.data.content;
 
         // if(sessionStorage.getItem('docType')=='personnel'){
@@ -1724,6 +1798,7 @@ export default {
       ).then((resp) => {
         // console.log(resp);
         this.showWaitingFlag = false;
+        this.alreadyDocsRestore=this.$store.state.alreadyDocs
         this.$store.state.alreadyDocs = resp.data.content;
 
         // if(sessionStorage.getItem('docType')=='personnel'){
@@ -1888,7 +1963,7 @@ export default {
         });
         return;
       }
-      this.$router.push("/work/docInput");
+      this.$router.replace("/work/docInput");
     },
     reloadTable() {
       var path =
@@ -1912,12 +1987,12 @@ export default {
           console.log(resp);
 
           this.$store.state.alreadyDocs = resp.data.content;
-          // this.$router.push('/work/docInputD')
+          // this.$router.replace('/work/docInputD')
         });
     },
 
     backToOrgans() {
-      this.$router.push("/work/modifyOrgan");
+      this.$router.replace("/work/modifyOrgan");
     },
     focusOnThis(e) {},
 
@@ -2087,7 +2162,7 @@ export default {
 
       if (
         item.docDescAuthor == "true" ||
-        item.docDescAuthor == 1 ||
+        item.docDescAuthor  ||
         item.docDescAuthor == "1"
       ) {
         item.docDescAuthor = true;
@@ -2107,13 +2182,16 @@ export default {
       this.$store.state.tempDocSeq = item.docSequence;
       this.sortedTemp = [];
 
-      this.$router.push("/work/docInput");
+      this.$router.replace("/work/docInput");
     },
     aaa() {},
 
     printReal() {},
 
     printBtn(item) {
+      this.$store.state.printDoc=item
+      console.log( this.$store.state.printDoc)
+
       window.sessionStorage.setItem('docId',item.id)
       
       if (sessionStorage.getItem("docType") == "personnel") {
@@ -2192,238 +2270,243 @@ export default {
         window.sessionStorage.setItem("danghao1", kjdh);
         window.sessionStorage.setItem("kjXuhao", item.docNum);
       }
-      Utils.$emit("sendInit", 1);
+      // Utils.$emit("sendInit", 1);
+      this.printDoc=!this.printDoc
+
       this.showCenterPrint = true;
-    },
-    printBtn1(item) {
-      if (!this.reSend) {
-        var docs = this.$store.state.alreadyDocs;
+      var docs = this.$store.state.alreadyDocs;
         window.localStorage.setItem("docs", JSON.stringify(docs));
-
-        if (this.isEnd != 1 && !this.onceFlag) {
-          // alert(this.isEnd)
-          this.onceFlag = true;
-          this.putRequest(
-            "/work/" + sessionStorage.getItem("batchId") + "/1/end"
-          ).then((resp) => {
-            console.log(resp);
-            if (resp.code == 0) {
-              this.isEnd = 1;
-            }
-          });
-        }
-        if (sessionStorage.getItem("docType") == "personnel") {
-          if (item.personJob == 4 || item.personJob == 5) {
-            //personJob字段用来存是哪种文档类型
-            window.sessionStorage.setItem("rsPrint", 4);
-            window.sessionStorage.setItem(
-              "rsPrintSub",
-              item.personJob - 3 + "-" + item.docNum
-            );
-          }
-          if (item.personJob < 4) {
-            window.sessionStorage.setItem("rsPrint", item.personJob);
-            window.sessionStorage.setItem("rsPrintSub", "-" + item.docNum);
-          } else if (item.personJob < 10) {
-            window.sessionStorage.setItem("rsPrint", item.personJob - 1);
-            window.sessionStorage.setItem("rsPrintSub", "-" + item.docNum);
-          } else if (item.personJob > 9 && item.personJob < 16) {
-            //10-15
-            window.sessionStorage.setItem("rsPrint", item.personJob - 9);
-            window.sessionStorage.setItem(
-              "rsPrintSub",
-              item.personJob - 9 + "-" + item.docNum
-            );
-          } else {
-            window.sessionStorage.setItem("rsPrint", 10);
-            window.sessionStorage.setItem("rsPrintSub", "-" + item.docNum);
-          }
-          var ttt = sessionStorage.getItem("rsPrint");
-          window.sessionStorage.setItem("rsPrint", ttt + " ");
-        } //personnel
-        else if (
-          sessionStorage.getItem("docType") == "official" ||
-          sessionStorage.getItem("docType") == "business"
-        ) {
-          // alert(2)
-          window.sessionStorage.setItem(
-            "authCode",
-            sessionStorage.getItem("authCode")
-          );
-
-          window.sessionStorage.setItem("sortYear", item.sortYear);
-          window.sessionStorage.setItem("docNum", item.docNum);
-          window.sessionStorage.setItem("docAbout", item.docAbout);
-          window.sessionStorage.setItem("aboutTextNum", item.docAbout.length);
-          var y = item.deadline;
-          // console.log(y)
-          if (this.isNumber(y)) {
-            // alert(1)
-            console.log(y);
-            y = y + "年";
-          }
-          window.sessionStorage.setItem("timedue", y);
-
-          window.sessionStorage.setItem("docPage", item.docPage);
-        }
-
-        // else if(sessionStorage.getItem("docType")=="business") {
-        //   var t=sessionStorage.getItem('authCode')+ "-"
-        //        +'-' +item.docAbout + "-"  +this.formatFourNum1(item.docNum)
-        //   window.sessionStorage.setItem('danghao',t)
-        // }
-        else if (sessionStorage.getItem("docType") == "science") {
-          // alert(2)
-          // alert(2)
-          var tauthcode = sessionStorage.getItem("authCode");
-          var c = tauthcode;
-          // alert(tauthcode)
-          while (c.charAt(0) == "0") {
-            c = c.substring(1);
-          }
-          var kjdh =
-            c + "-" + sessionStorage.getItem("docTypeCode") + "-" + item.boxSeq;
-          // alert(2)
-
-          window.sessionStorage.setItem("danghao1", kjdh);
-          window.sessionStorage.setItem("kjXuhao", item.docNum);
-        }
-
-        let { href } = this.$router.resolve({ path: "/work/print" });
-        if (this.reSend) {
-          //false为不打开
-          window.open(href, "_blank");
-        }
-
-        this.reSend = true; //恢复默认
-      } //不打开空页不提醒  很奇怪，把内容抽象成函数就出错
-      else {
-        this.$confirm("开始印章后将锁定该批文档不能修改", {
-          cancelButtonClass: "btn-custom-cancel",
-          confirmButtonText: "确定",
-          cancelButtonText: "取消",
-          type: "warning",
-        })
-          .then(() => {
-            {
-              var docs = this.$store.state.alreadyDocs;
-              window.localStorage.setItem("docs", JSON.stringify(docs));
-
-              if (this.isEnd != 1) {
-                // alert(this.isEnd)
-                this.isEnd = 1;
-                this.onceFlag = true;
-                this.putRequest(
-                  "/work/" + sessionStorage.getItem("batchId") + "/1/end"
-                ).then((resp) => {
-                  console.log(resp);
-                });
-              }
-              if (sessionStorage.getItem("docType") == "personnel") {
-                if (item.personJob == 4 || item.personJob == 5) {
-                  //personJob字段用来存是哪种文档类型
-                  window.sessionStorage.setItem("rsPrint", 4);
-                  window.sessionStorage.setItem(
-                    "rsPrintSub",
-                    item.personJob - 3 + "-" + item.docNum
-                  );
-                }
-                if (item.personJob < 4) {
-                  window.sessionStorage.setItem("rsPrint", item.personJob);
-                  window.sessionStorage.setItem(
-                    "rsPrintSub",
-                    "-" + item.docNum
-                  );
-                } else if (item.personJob < 10) {
-                  window.sessionStorage.setItem("rsPrint", item.personJob - 1);
-                  window.sessionStorage.setItem(
-                    "rsPrintSub",
-                    "-" + item.docNum
-                  );
-                } else if (item.personJob > 9 && item.personJob < 16) {
-                  //10-15
-                  window.sessionStorage.setItem("rsPrint", item.personJob - 9);
-                  window.sessionStorage.setItem(
-                    "rsPrintSub",
-                    item.personJob - 9 + "-" + item.docNum
-                  );
-                } else {
-                  window.sessionStorage.setItem("rsPrint", 10);
-                  window.sessionStorage.setItem(
-                    "rsPrintSub",
-                    "-" + item.docNum
-                  );
-                }
-                var ttt = sessionStorage.getItem("rsPrint");
-                window.sessionStorage.setItem("rsPrint", ttt + " ");
-              } //personnel
-              else if (
-                sessionStorage.getItem("docType") == "official" ||
-                sessionStorage.getItem("docType") == "business"
-              ) {
-                // alert(2)
-                window.sessionStorage.setItem(
-                  "authCode",
-                  sessionStorage.getItem("authCode")
-                );
-
-                window.sessionStorage.setItem("sortYear", item.sortYear);
-                window.sessionStorage.setItem("docNum", item.docNum);
-                window.sessionStorage.setItem("docAbout", item.docAbout);
-                window.sessionStorage.setItem(
-                  "aboutTextNum",
-                  item.docAbout.length
-                );
-                var y = item.deadline;
-                // console.log(y)
-                if (this.isNumber(y)) {
-                  // alert(1)
-                  console.log(y);
-                  y = y + "年";
-                }
-                window.sessionStorage.setItem("timedue", y);
-
-                window.sessionStorage.setItem("docPage", item.docPage);
-              }
-
-              // else if(sessionStorage.getItem("docType")=="business") {
-              //   var t=sessionStorage.getItem('authCode')+ "-"
-              //        +'-' +item.docAbout + "-"  +this.formatFourNum1(item.docNum)
-              //   window.sessionStorage.setItem('danghao',t)
-              // }
-              else if (sessionStorage.getItem("docType") == "science") {
-                // alert(2)
-                // alert(2)
-                var tauthcode = sessionStorage.getItem("authCode");
-                var c = tauthcode;
-                // alert(tauthcode)
-                while (c.charAt(0) == "0") {
-                  c = c.substring(1);
-                }
-                var kjdh =
-                  c +
-                  "-" +
-                  sessionStorage.getItem("docTypeCode") +
-                  "-" +
-                  item.boxSeq;
-                // alert(2)
-
-                window.sessionStorage.setItem("danghao1", kjdh);
-                window.sessionStorage.setItem("kjXuhao", item.docNum);
-              }
-
-              let { href } = this.$router.resolve({ path: "/work/print" });
-              if (this.reSend) {
-                //false为不打开
-                window.open(href, "_blank");
-              }
-
-              this.reSend = true; //恢复默认
-            }
-          })
-          .catch(() => {});
-      }
     },
+    // printBtn1(item) {
+    //   if (!this.reSend) {
+    //     var docs = this.$store.state.alreadyDocs;
+    //     window.localStorage.setItem("docs", JSON.stringify(docs));
+
+    //     if (this.isEnd != 1 && !this.onceFlag) {
+    //       // alert(this.isEnd)
+    //       this.onceFlag = true;
+    //       this.putRequest(
+    //         "/work/" + sessionStorage.getItem("batchId") + "/1/end"
+    //       ).then((resp) => {
+    //         console.log(resp);
+    //         if (resp.code == 0) {
+    //           this.isEnd = 1;
+    //         }
+    //       });
+    //     }
+    //     if (sessionStorage.getItem("docType") == "personnel") {
+    //       if (item.personJob == 4 || item.personJob == 5) {
+    //         //personJob字段用来存是哪种文档类型
+    //         window.sessionStorage.setItem("rsPrint", 4);
+    //         window.sessionStorage.setItem(
+    //           "rsPrintSub",
+    //           item.personJob - 3 + "-" + item.docNum
+    //         );
+    //       }
+    //       if (item.personJob < 4) {
+    //         window.sessionStorage.setItem("rsPrint", item.personJob);
+    //         window.sessionStorage.setItem("rsPrintSub", "-" + item.docNum);
+    //       } else if (item.personJob < 10) {
+    //         window.sessionStorage.setItem("rsPrint", item.personJob - 1);
+    //         window.sessionStorage.setItem("rsPrintSub", "-" + item.docNum);
+    //       } else if (item.personJob > 9 && item.personJob < 16) {
+    //         //10-15
+    //         window.sessionStorage.setItem("rsPrint", item.personJob - 9);
+    //         window.sessionStorage.setItem(
+    //           "rsPrintSub",
+    //           item.personJob - 9 + "-" + item.docNum
+    //         );
+    //       } else {
+    //         window.sessionStorage.setItem("rsPrint", 10);
+    //         window.sessionStorage.setItem("rsPrintSub", "-" + item.docNum);
+    //       }
+    //       var ttt = sessionStorage.getItem("rsPrint");
+    //       window.sessionStorage.setItem("rsPrint", ttt + " ");
+    //     } //personnel
+    //     else if (
+    //       sessionStorage.getItem("docType") == "official" ||
+    //       sessionStorage.getItem("docType") == "business"
+    //     ) {
+    //       // alert(2)
+    //       window.sessionStorage.setItem(
+    //         "authCode",
+    //         sessionStorage.getItem("authCode")
+    //       );
+
+    //       window.sessionStorage.setItem("sortYear", item.sortYear);
+    //       window.sessionStorage.setItem("docNum", item.docNum);
+    //       window.sessionStorage.setItem("docAbout", item.docAbout);
+    //       window.sessionStorage.setItem("aboutTextNum", item.docAbout.length);
+    //       var y = item.deadline;
+    //       // console.log(y)
+    //       if (this.isNumber(y)) {
+    //         // alert(1)
+    //         console.log(y);
+    //         y = y + "年";
+    //       }
+    //       window.sessionStorage.setItem("timedue", y);
+
+    //       window.sessionStorage.setItem("docPage", item.docPage);
+    //     }
+
+    //     // else if(sessionStorage.getItem("docType")=="business") {
+    //     //   var t=sessionStorage.getItem('authCode')+ "-"
+    //     //        +'-' +item.docAbout + "-"  +this.formatFourNum1(item.docNum)
+    //     //   window.sessionStorage.setItem('danghao',t)
+    //     // }
+    //     else if (sessionStorage.getItem("docType") == "science") {
+    //       // alert(2)
+    //       // alert(2)
+    //       var tauthcode = sessionStorage.getItem("authCode");
+    //       var c = tauthcode;
+    //       // alert(tauthcode)
+    //       while (c.charAt(0) == "0") {
+    //         c = c.substring(1);
+    //       }
+    //       var kjdh =
+    //         c + "-" + sessionStorage.getItem("docTypeCode") + "-" + item.boxSeq;
+    //       // alert(2)
+
+    //       window.sessionStorage.setItem("danghao1", kjdh);
+    //       window.sessionStorage.setItem("kjXuhao", item.docNum);
+    //     }
+
+    //     let { href } = this.$router.resolve({ path: "/work/print" });
+    //     if (this.reSend) {
+    //       //false为不打开
+    //       window.open(href, "_blank");
+    //     }
+
+    //     this.reSend = true; //恢复默认
+      
+    //   } //不打开空页不提醒  很奇怪，把内容抽象成函数就出错
+    //   else {
+    //     this.$confirm("开始印章后将锁定该批文档不能修改", {
+    //       cancelButtonClass: "btn-custom-cancel",
+    //       confirmButtonText: "确定",
+    //       cancelButtonText: "取消",
+    //       type: "warning",
+    //     })
+    //       .then(() => {
+    //         {
+    //           var docs = this.$store.state.alreadyDocs;
+    //           window.localStorage.setItem("docs", JSON.stringify(docs));
+
+    //           if (this.isEnd != 1) {
+    //             // alert(this.isEnd)
+    //             this.isEnd = 1;
+    //             this.onceFlag = true;
+    //             this.putRequest(
+    //               "/work/" + sessionStorage.getItem("batchId") + "/1/end"
+    //             ).then((resp) => {
+    //               console.log(resp);
+    //             });
+    //           }
+    //           if (sessionStorage.getItem("docType") == "personnel") {
+    //             if (item.personJob == 4 || item.personJob == 5) {
+    //               //personJob字段用来存是哪种文档类型
+    //               window.sessionStorage.setItem("rsPrint", 4);
+    //               window.sessionStorage.setItem(
+    //                 "rsPrintSub",
+    //                 item.personJob - 3 + "-" + item.docNum
+    //               );
+    //             }
+    //             if (item.personJob < 4) {
+    //               window.sessionStorage.setItem("rsPrint", item.personJob);
+    //               window.sessionStorage.setItem(
+    //                 "rsPrintSub",
+    //                 "-" + item.docNum
+    //               );
+    //             } else if (item.personJob < 10) {
+    //               window.sessionStorage.setItem("rsPrint", item.personJob - 1);
+    //               window.sessionStorage.setItem(
+    //                 "rsPrintSub",
+    //                 "-" + item.docNum
+    //               );
+    //             } else if (item.personJob > 9 && item.personJob < 16) {
+    //               //10-15
+    //               window.sessionStorage.setItem("rsPrint", item.personJob - 9);
+    //               window.sessionStorage.setItem(
+    //                 "rsPrintSub",
+    //                 item.personJob - 9 + "-" + item.docNum
+    //               );
+    //             } else {
+    //               window.sessionStorage.setItem("rsPrint", 10);
+    //               window.sessionStorage.setItem(
+    //                 "rsPrintSub",
+    //                 "-" + item.docNum
+    //               );
+    //             }
+    //             var ttt = sessionStorage.getItem("rsPrint");
+    //             window.sessionStorage.setItem("rsPrint", ttt + " ");
+    //           } //personnel
+    //           else if (
+    //             sessionStorage.getItem("docType") == "official" ||
+    //             sessionStorage.getItem("docType") == "business"
+    //           ) {
+    //             // alert(2)
+    //             window.sessionStorage.setItem(
+    //               "authCode",
+    //               sessionStorage.getItem("authCode")
+    //             );
+
+    //             window.sessionStorage.setItem("sortYear", item.sortYear);
+    //             window.sessionStorage.setItem("docNum", item.docNum);
+    //             window.sessionStorage.setItem("docAbout", item.docAbout);
+    //             window.sessionStorage.setItem(
+    //               "aboutTextNum",
+    //               item.docAbout.length
+    //             );
+    //             var y = item.deadline;
+    //             // console.log(y)
+    //             if (this.isNumber(y)) {
+    //               // alert(1)
+    //               console.log(y);
+    //               y = y + "年";
+    //             }
+    //             window.sessionStorage.setItem("timedue", y);
+
+    //             window.sessionStorage.setItem("docPage", item.docPage);
+    //           }
+
+    //           // else if(sessionStorage.getItem("docType")=="business") {
+    //           //   var t=sessionStorage.getItem('authCode')+ "-"
+    //           //        +'-' +item.docAbout + "-"  +this.formatFourNum1(item.docNum)
+    //           //   window.sessionStorage.setItem('danghao',t)
+    //           // }
+    //           else if (sessionStorage.getItem("docType") == "science") {
+    //             // alert(2)
+    //             // alert(2)
+    //             var tauthcode = sessionStorage.getItem("authCode");
+    //             var c = tauthcode;
+    //             // alert(tauthcode)
+    //             while (c.charAt(0) == "0") {
+    //               c = c.substring(1);
+    //             }
+    //             var kjdh =
+    //               c +
+    //               "-" +
+    //               sessionStorage.getItem("docTypeCode") +
+    //               "-" +
+    //               item.boxSeq;
+    //             // alert(2)
+
+    //             window.sessionStorage.setItem("danghao1", kjdh);
+    //             window.sessionStorage.setItem("kjXuhao", item.docNum);
+    //           }
+
+    //           let { href } = this.$router.resolve({ path: "/work/print" });
+    //           if (this.reSend) {
+    //             //false为不打开
+    //             window.open(href, "_blank");
+    //           }
+
+    //           this.reSend = true; //恢复默认
+    //         }
+    //       })
+    //       .catch(() => {});
+    //   }
+    // },
     formatFourNum1(value) {
       var tvalue = value + "";
       if (tvalue == undefined || tvalue == "null" || !tvalue || tvalue == "") {
@@ -2547,7 +2630,7 @@ export default {
   },
   created() {
     this.sortedTemp = [];
-
+    this.alreadyDocsRestore=[];
     // this
     // var c="adsd"
     // if(c.charAt(0)=='a') c=c.substring(1)
@@ -2563,24 +2646,29 @@ export default {
 
   mounted() {
     var that = this;
-        Utils.$on("changeThePrint", function (doc) {
-      console.log("get改变已经印了");
-      var idd=sessionStorage.getItem("docId")
-        for(var i in that.$store.state.alreadyDocs){
-          if(that.$store.state.alreadyDocs[i].id==idd){
-          that.$store.state.alreadyDocs[i].printed=1
+    //     Utils.$on("changeThePrint", function (doc) {
+    //   console.log("get改变已经印了");
+    //   var idd=sessionStorage.getItem("docId")
+    //     for(var i in that.$store.state.alreadyDocs){
+    //       if(that.$store.state.alreadyDocs[i].id==idd){
+    //       that.$store.state.alreadyDocs[i].printed=1
 
-          }
-        }
-    });
-
+    //       }
+    //     }
+    // });
+    
+  var that=this
     Utils.$on("printBackThisDoc", function (doc) {
-      console.log("get");
-      console.log(doc);
-      that.reSend = false; //不打开新页面
-      that.printBtn(doc);
+      // console.log("父页面get下拉的");
+      // var that=this
+      that.$store.state.printDoc=doc
+      console.log(doc.id+"!!!!")
     });
   },
+  destroyed(){
+    console.log("destory")
+    this.$.destory()
+  }
 };
 </script>
 
@@ -2672,7 +2760,7 @@ export default {
   cursor: pointer;
 }
 .wrapper {
-  background-color: rgb(240, 240, 243);
+  background-color: rgb(255, 255, 255);
 
   // height: 120vh;
   position: relative;
@@ -2684,7 +2772,7 @@ export default {
   top: 3rem;
   // padding-bottom: 50rem;
   .detailItemTitle {
-    background-color: rgb(240, 240, 243);
+    background-color: rgb(255, 255, 255);
     position: fixed;
     width: 100%;
     top: 11.5rem;

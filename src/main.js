@@ -159,18 +159,19 @@ Vue.filter('formatAuthCode',function(value){
     return h
     
 });
-// router.beforeEach((to, from, next) => {
-//     if (to.path == '/') {
-//         next();
-//     }else {
-//         if (window.sessionStorage.getItem("user")) {
-//             initMenu(router, store);
-//             next();
-//         }else{
-//             next('/?redirect='+to.path);
-//         }
-//     }
-// })
+router.beforeEach((to, from, next) => {
+    if (true) {
+        next({replace:true});
+        
+    }else {
+        if (window.sessionStorage.getItem("user")) {
+            initMenu(router, store);
+            next();
+        }else{
+            next('/?redirect='+to.path);
+        }
+    }
+})
 // Vue.prototype.baseurl="http://101.200.243.57:8080"
 
 new Vue({

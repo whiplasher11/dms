@@ -268,7 +268,7 @@ t=this.fomatTime(t)
           });
           }
           window.sessionStorage.setItem("userId", "");
-          window.window.localStorage.setItem("token", "");
+          window.localStorage.setItem("token", "");
           window.sessionStorage.setItem("admin", "");
           this.$store.state.username = "";
           this.$store.state.admin = "0";
@@ -280,10 +280,10 @@ t=this.fomatTime(t)
       });
     },
     goKWM() {
-      this.$router.push("/work/keyWM");
+      this.$router.replace("/work/keyWM");
     },
     goCheckHistoryBat() {
-      this.$router.push("/work/modifyOrgan");
+      this.$router.replace("/work/modifyOrgan");
     },
     fixTheTopHeader() {
       this.topHeaderFix = !this.topHeaderFix;
@@ -297,18 +297,18 @@ t=this.fomatTime(t)
     },
 
     goDocIn() {
-      this.$router.push("/work/newBatch");
+      this.$router.replace("/work/newBatch");
     },
 
     goRecovery() {
-      this.$router.push("/recovery");
+      this.$router.replace("/recovery");
     },
     gologin() {
       this.$router.replace("/login");
     },
     goHome() {
       //  alert("home")
-      this.$router.push("/home");
+      this.$router.replace("/home");
     },
     unLogin() {
       //  alert(1);
@@ -328,7 +328,7 @@ t=this.fomatTime(t)
 
           sessionStorage.removeItem("user");
 
-          this.$router.push("/login");
+          this.$router.replace("/login");
         })
         .catch(() => {
           // this.$message({
@@ -340,18 +340,18 @@ t=this.fomatTime(t)
 
     toHistory() {
       if (localStorage.getItem("token")) {
-        this.$router.push("/history");
+        this.$router.replace("/history");
       } else {
         this.$message({
           type: "info",
           message: "请登录",
         });
-        this.$router.push("/login");
+        this.$router.replace("/login");
       }
     },
 
     toIllManage() {
-      this.$router.push("/illManage");
+      this.$router.replace("/illManage");
     },
 
     getUserInfo() {
@@ -359,7 +359,11 @@ t=this.fomatTime(t)
       //   this.userInfo = this.$store.state.userInfo;
       //   return;
       // }
-      if (localStorage.getItem("token")) {
+      var u=sessionStorage.getItem('userId')
+        console.log(u)
+
+      if (localStorage.getItem("token")&&u) {
+        console.log(u)
      this.postRequest(
           //注意防止重复提交
           "/getUserInfo",
@@ -385,7 +389,7 @@ t=this.fomatTime(t)
       } else {
         // setTimeout(() => {
         //   this.$message.warning("登录信息已过期，请重新登录");
-        //   this.$router.push("/login");
+        //   this.$router.replace("/login");
         // }, 1500);
       }
     },
@@ -447,7 +451,7 @@ t=this.fomatTime(t)
   //         message: "注销成功!"
   //       });
   //       localStorage.removeItem("token");
-  //       this.$router.push("/login");
+  //       this.$router.replace("/login");
   //     })
   //     .catch(() => {
   //       // this.$message({

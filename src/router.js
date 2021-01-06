@@ -14,6 +14,7 @@ import KeyWordManage from './components/main/KeyWordManage.vue'
 import DocInputDetail from './components/main/docInputDetail.vue'
 import Manage from './components/main/Manage.vue'
 import Print from './components/main/print.vue'
+import { resolve } from 'core-js/fn/promise'
 
 Vue.use(Router)
 
@@ -37,7 +38,7 @@ export default new Router({
         {
             path: '/admin/userManage',
             name: 'hsit',
-            component: Manage,
+            component: resolve => require(['./components/main/Manage.vue'],resolve),
             hidden: true
         }, 
         {
@@ -52,32 +53,35 @@ export default new Router({
         {
             path: '/work/docInputd',
             name: 'docInputd',
-            component: DocInputDetail,
+            component: resolve => require(['./components/main/docInputDetail.vue'],resolve),
             hidden: true,
 
         }, 
         {
             path: '/work/modifyOrgan',
             name: 'modifyOrgan',
-            component: ModifyOrgan,
+            component: resolve => require(['./components/main/ModifyOrgan.vue'],resolve),
             hidden: true
         }, 
         {
             path: '/work/newBatch',
             name: 'ma',
-            component: newBatch,
+            component: resolve => require(['./components/main/NewBatch.vue'],resolve),
+
  
         },
 
         {
             path: '/work/docInput',
             name: 'docInput',
-            component: DocIn,
+            component: resolve => require(['./components/main/DocIn.vue'],resolve),
+
         },
         {
             path: '/work/keyWM',
             name: 'ma',
-            component: KeyWordManage,
+            component: resolve => require(['./components/main/KeyWordManage.vue'],resolve),
+
  
         },
 

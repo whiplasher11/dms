@@ -47,7 +47,7 @@
       <div
         style="font-size: 1rem; height: 2rem; width: 100%; text-align: center"
       >
-        智能匹配:
+        历史匹配:
       </div>
       <!-- <div style="font-size:1rem;text-align:center;width:100%;line-height:2rem">
             关键词 : 问题/机构/项目
@@ -134,7 +134,7 @@
             关键词 : 问题/机构/项目
           </div> -->
       <div
-        v-for="(item, index) in replaceval"
+        v-for="(item, index) in matchedDoc"
         :key="index"
         class="matchedDocClass"
       >
@@ -152,7 +152,7 @@
           <font v-html="item.docTitle"> </font> -
           <font style="font-size: 1.1rem; color: #abc">
             {{ item.docAbout }} </font
-          >-{{ item.docDate }}
+          >-{{ item.keyword }}
         </div>
       </div>
     </div>
@@ -176,9 +176,9 @@
     >
       <!-- <div class="docTypeTitle">sessionStorage批次</div> -->
       <div class="docSequenceTip">
-        该批次文件唯一识别号：{{ this.docForm.docSequence }}
+        该批次文件唯一识别号：<div style="display:inline-block">{{ this.docForm.docSequence }}</div>  
       </div>
-
+<!-- contenteditable="true" @focus="sequenceFocus" @blur="sequenceBlur"  -->
       <el-checkbox
         style="position: absolute; right: 1rem; top: 1rem"
         v-if="true"
@@ -210,9 +210,10 @@
               @change="docDescChange"
               false-label="false"
               true-label="true"
-              :checked="false"
+              :checked="true"
               v-model="docForm.docDescAuthor"
             ></el-checkbox>
+            
           </el-form-item>
         </el-col>
 
@@ -222,6 +223,7 @@
             v-if="docForm.docDescAuthor"
             label="文号："
           >
+
             <el-input
               size="normal"
               type="text"
@@ -250,7 +252,97 @@
         </el-col>
       </el-row>
       <el-row :gutter="24">
+        <el-col :span="12" v-if="isKJ">
+          <!-- <el-form-item prop="batchName" label="项目:">
+            <el-input
+              @blur="docAboutBlur"
+              size="normal"
+              type="text"
+              v-model="docForm.docAbout"
+              auto-complete="off"
+              placeholder="根据文件填写"
+            ></el-input>
+          </el-form-item> -->
+          
+
+                    <el-form-item prop="historyAuth" label="项目：">
+            <el-select
+              ref="authSelectref"
+              filterable
+              @blur="docAboutBlur"
+            @change="docAboutChange"
+
+              v-model="docForm.docAbout"
+              placeholder="填写或选择问题/机构"
+            >
+              <el-option
+                v-for="item in docAboutTipArr"
+                :key="item"
+                :label="item"
+                :value="item"
+              ></el-option>
+            </el-select>
+          </el-form-item>
+
+        </el-col>
+
+        <el-col :span="12" v-if="!isKJ">
+          <!-- <el-form-item prop="batchName" label="机构/问题：">
+            <el-input
+              @blur="docAboutBlur"
+              size="normal"
+              type="text"
+              v-model="docForm.docAbout"
+              auto-complete="off"
+              placeholder="根据文件填写"
+            ></el-input>
+          </el-form-item> -->
+
+          <el-form-item prop="historyAuth" label="机构/问题：">
+            <el-select
+              ref="authSelectref"
+              filterable
+              @blur="docAboutBlur"
+            @change="docAboutChange"
+              v-model="docForm.docAbout"
+              placeholder="填写或选择问题/机构"
+            >
+              <el-option
+                v-for="item in docAboutTipArr"
+                :key="item"
+                :label="item"
+                :value="item"
+              ></el-option>
+            </el-select>
+          </el-form-item>
+        </el-col>
+
         <el-col :span="12">
+                              <el-form-item prop="historyAuth" label="关键词：">
+            <el-select
+              ref="authSelectref"
+              @blur="keywordBlur"
+              @change="keywordComplete"
+              filterable
+              v-model="docForm.keyword"
+              placeholder="选择或填写关键词"
+              
+            >
+              <el-option
+                v-for="item in keywordTipArr"
+                :key="item"
+                :label="item"
+                :value="item"
+              ></el-option>
+            </el-select>
+          </el-form-item>
+
+
+
+        </el-col>
+      </el-row>
+      <el-row :gutter="24">
+                <el-col :span="12">
           <el-form-item prop="batchName" label="文件级别：">
             <el-select
               v-model="docForm.docLevel"
@@ -267,40 +359,47 @@
             </el-select>
           </el-form-item>
         </el-col>
+
+
         <el-col :span="12">
-                              <el-form-item prop="historyAuth" label="关键词：">
-            <el-select
-              ref="authSelectref"
-              @blur="keywordBlur"
-              @change="keywordComplete"
-              filterable
-              v-model="docForm.keyword"
-              placeholder="选择或填写关键词"
-            >
+          <el-form-item prop="batchName" label="文件期限(年)：">
+            <el-select v-model="docForm.deadline" placeholder="选择文件期限">
               <el-option
-                v-for="item in keywordTipArr"
+                v-for="item in docTimeDues"
                 :key="item"
                 :label="item"
                 :value="item"
               ></el-option>
             </el-select>
           </el-form-item>
-
-
-
         </el-col>
+
       </el-row>
 
       <el-row :gutter="24">
         <el-col :span="24">
+          
           <el-form-item prop="batchName" label="责任者：">
-            <el-input
-              size="normal"
-              type="text"
+                        <el-select
+              ref="authSelectref"
+              @blur="dutyAuthorBlur"
+              @change="dutyAuthorComplete"
+              filterable
+ 
               v-model="docForm.dutyAuthor"
               auto-complete="off"
               placeholder="输入档案责任者"
-            ></el-input>
+              
+            >
+              <el-option
+                v-for="item in dutyAuthorTipArr"
+                :key="item"
+                :label="item"
+                :value="item"
+              ></el-option>
+            </el-select>
+
+ 
           </el-form-item>
         </el-col>
       </el-row>
@@ -344,99 +443,8 @@
             ></el-input>
           </el-form-item>
         </el-col> -->
-        <el-col :span="12">
-          <el-form-item prop="batchName" label="文件期限(年)：">
-            <el-select v-model="docForm.deadline" placeholder="选择文件期限">
-              <el-option
-                v-for="item in docTimeDues"
-                :key="item"
-                :label="item"
-                :value="item"
-              ></el-option>
-            </el-select>
-          </el-form-item>
-        </el-col>
 
-        <el-col :span="12">
-          <el-form-item prop="batchName" label="整档年度：">
-            <el-date-picker
-              type="year"
-              placeholder="选择整档年度"
-              v-model="docForm.sortYear"
-              value-format="yyyy"
-              :picker-options="pickerOptions"
-              @change="selectDateChange"
-            ></el-date-picker>
-          </el-form-item>
-        </el-col>
-      </el-row>
-
-      <el-row :gutter="24">
-        <el-col :span="12" v-if="isKJ">
-          <!-- <el-form-item prop="batchName" label="项目:">
-            <el-input
-              @blur="docAboutBlur"
-              size="normal"
-              type="text"
-              v-model="docForm.docAbout"
-              auto-complete="off"
-              placeholder="根据文件填写"
-            ></el-input>
-          </el-form-item> -->
-          
-
-                    <el-form-item prop="historyAuth" label="项目：">
-            <el-select
-              ref="authSelectref"
-              filterable
-              @blur="docAboutBlur"
-
-              v-model="docForm.docAbout"
-              placeholder="填写或选择问题/机构"
-            >
-              <el-option
-                v-for="item in docAboutTipArr"
-                :key="item"
-                :label="item"
-                :value="item"
-              ></el-option>
-            </el-select>
-          </el-form-item>
-
-        </el-col>
-
-        <el-col :span="12" v-if="!isKJ">
-          <!-- <el-form-item prop="batchName" label="机构/问题：">
-            <el-input
-              @blur="docAboutBlur"
-              size="normal"
-              type="text"
-              v-model="docForm.docAbout"
-              auto-complete="off"
-              placeholder="根据文件填写"
-            ></el-input>
-          </el-form-item> -->
-
-          <el-form-item prop="historyAuth" label="机构/问题：">
-            <el-select
-              ref="authSelectref"
-              filterable
-              @blur="docAboutBlur"
-
-              v-model="docForm.docAbout"
-              placeholder="填写或选择问题/机构"
-            >
-              <el-option
-                v-for="item in docAboutTipArr"
-                :key="item"
-                :label="item"
-                :value="item"
-              ></el-option>
-            </el-select>
-          </el-form-item>
-        </el-col>
-
-        <el-col :span="12">
+                <el-col :span="12">
           <!-- <el-form-item prop="batchName" label="关键词：">
  
             <el-input
@@ -461,7 +469,22 @@
           </el-form-item>
 
         </el-col>
+
+        <el-col :span="12">
+          <el-form-item prop="batchName" label="整档年度：">
+            <el-date-picker
+              type="year"
+              placeholder="选择整档年度"
+              v-model="docForm.sortYear"
+              value-format="yyyy"
+              :picker-options="pickerOptions"
+              @change="selectDateChange"
+            ></el-date-picker>
+          </el-form-item>
+        </el-col>
       </el-row>
+
+
 
       <el-form-item class="textArea" prop="batchName" label="备注信息：">
         <el-input
@@ -575,6 +598,8 @@
               filterable
               v-model="docFormRS.keyword"
               placeholder="选择或填写关键词"
+                            @blur="keywordBlur"
+
             >
               <el-option
                 v-for="item in keywordTipArr"
@@ -746,6 +771,12 @@ export default {
   components: {
     Left: Left,
   },
+    destroyed(){
+    console.log("destory！！！！！！！！！！！！！！！！！！！！！！！！！！！")
+    console.log(vm)
+    vm=null
+    this.$.destory()
+  },
   mounted() {
     var that = this;
     Utils.$on("changeThisDoc", function (doc) {
@@ -761,6 +792,24 @@ export default {
 
       // alert(that.TempdocSequence)
     });
+
+
+        if (this.$store.state.tempDoc) {  //从详情页跳转，  checked属性会在created后，
+        //在mounted之前 所以这段不能放在created里 这段是根据跳转来的doc设置form，使得修改时checkbox正常显示
+    console.log('详情页得到的')
+    console.log(this.$store.state.tempDoc)
+      this.fixDocFlag = true;
+      console.log(this.$store.state.tempDoc);
+      this.docForm = Object.assign({}, this.$store.state.tempDoc);
+      this.docFormRS = Object.assign({}, this.$store.state.tempDoc);
+      this.docForm.docDescAuthor=this.$store.state.tempDoc.docDescAuthor
+      
+      this.$store.state.tempDoc = "";
+    } else {
+      
+      this.genId(6, 62); //1
+    }
+
   },
   watch: {
     edocFormRSJS: {
@@ -782,19 +831,17 @@ export default {
     },
     docFormJS: {
       handler(v, o) {
+        return
         // console.log(v)
         this.wordsNum = v.length;
         //  console.log(this.docForm)
         var len = v.length;
         // console.log(len)
-        if (len > 6 && len < 10) {
+        if (len > 10 && len < 15) {
           // alert(2)
           this.likelyHoodQuery();
         }
-
-        if (len > 12 && len < 16) {
-          // alert(2)
-
+        if (len > 20 && len < 25) {
           this.likelyHoodQuery();
         }
       },
@@ -852,7 +899,9 @@ export default {
   },
 
   computed: {
+
     replaceval() {
+      return
       var highlight = this.docForm.docTitle;
       const arr = JSON.parse(JSON.stringify(this.matchedDoc));
       const replaceReg = new RegExp(highlight, "g");
@@ -862,9 +911,9 @@ export default {
       for (let i = 0; i < arr.length; i++) {
         // 开始替换
         arr[i].docTitle = arr[i].docTitle.replace(replaceReg, replaceString);
-        if(arr[i].batchId==sessionStorage.getItem('batchId')){
-          arr[i].docTitle=arr[i].docTitle+`<font color='#FF4F4A'>----注：本批重复文件！</font>`;
-        }
+        // if(arr[i].batchId==sessionStorage.getItem('batchId')){
+        //   arr[i].docTitle=arr[i].docTitle+`<font color='#FF4F4A'>----注：可能是本批重复文件！</font>`;
+        // }
 
       }
 
@@ -889,9 +938,17 @@ export default {
 
   data() {
     return {
+
+      docSequenceLock:0, //会出现识别号重复的问题
+
+      selectDocNoTable:false,
+      /**下拉框初始化 */
       docAboutTipArr: [],
       keywordTipArr: [],
+      dutyAuthorTipArr:[],
 
+      docAbout_KeywordArrJson:{},
+keyword_docAboutJson:{},
       chufa: 1, //点击相似文档后不要触发了
       likelyTipShowFlag: false,
       matchedDoc: [],
@@ -1128,8 +1185,8 @@ export default {
         docSequence: "", //序列号，标识文件
         docType: "",
         docTitle: "请填写文件标题", //标题
-        docAbout: "填写",
-        keyword: "关键词", //关键字
+        docAbout: "",
+        keyword: "", //关键字
         docDesc: "", //文号
         sortYear: "2019",
         docDate: "20190808",
@@ -1143,7 +1200,7 @@ export default {
         remark: "", //备注
         docNum: "", //件号
         boxNumber: "", //盒号
-        docDescAuthor: false, //文号中的序号
+        docDescAuthor: true, //是否有文号
       },
 
       docFormKong: {
@@ -1181,6 +1238,39 @@ export default {
     };
   },
   methods: {
+    sequenceFocus(){
+            //       this.$confirm(
+            //   "确定要手动修改吗：",
+            //   "提示",
+            //   {
+            //     cancelButtonClass: "btn-custom-cancel",
+            //     confirmButtonText: "是的",
+            //     cancelButtonText: "否",
+            //     type: "warning",
+            //   }
+            // ).then(()=>{
+
+            // }).catch(()=>{
+
+            // }
+            // )
+    },
+    // sequenceBlur(){
+    //   // var orig=this.doc
+      
+    //   this.docForm.docSequence=
+    // },
+    docAboutChange(){
+      console.log(this.keywordTipArr)
+      console.log(this.docAbout_KeywordArrJson)
+      this.keywordTipArr=this.docAbout_KeywordArrJson[this.docForm.docAbout]
+    },
+    dutyAuthorBlur(e){
+      
+      var input = e.target.value;
+      this.docForm.dutyAuthor = input;
+      // this.docFormRS.dutyAuthor = input;
+    },
         keywordBlur(e) {
 
       var input = e.target.value;
@@ -1244,10 +1334,15 @@ this.levelAndKwToDeadline()
       }
     },
     closeDocTip() {
+            this.matchKvFunc();
+
+
+
       this.likelyTipShowFlag = false;
     },
 
     selectThisDoc(item) {
+      this.selectDocNoTable=true //选了历史文件就不要根据对照表识别关键词和问题了
       var itemId = item.id;
       var docToSet;
       for (var i in this.matchedDoc) {
@@ -1255,72 +1350,123 @@ this.levelAndKwToDeadline()
           docToSet = this.matchedDoc[i];
         }
       }
+      var docTitleTemp=this.docForm.docTitle
+      var docTitleTemp1=this.docFormRS.docTitle
+
       this.resetDocInRS();
       this.resetDocIn()
-
+      
+      this.docForm.docTitle=docTitleTemp
       this.docForm.deadline=docToSet.deadline
       this.docForm.keyword=docToSet.keyword
       this.docForm.docAbout=docToSet.docAbout
+      this.docForm.dutyAuthor=docToSet.dutyAuthor
+      this.docForm.docLevel=docToSet.docLevel
+
+      this.docFormRS.docTitle=docTitleTemp1
 
       this.docFormRS.personName=docToSet.personName
       this.docFormRS.keyword=docToSet.keyword
       
       // this.docForm.
-      this.genId(6, 62);
+      this.genId(6, 62);//1
+
 
       this.likelyTipShowFlag = false;
     },
 
     likelyHoodQuery() {
+      //  this.postRequest(
+      //   //注意防止重复提交
+      //   "/document/list/fulltext/"+sessionStorage.getItem("docType"),
+      //   this.docForm.docTitle
+      // ).then((resp) => {
+      //   console.log(resp)
+      // });
+      // return
+
+              
+
+
       if (!this.aiInput) {
         return;
       }
-      if(this.$store.state.noChufa){
+      if(this.$store.state.noChufa){  //修改不触发
         this.$store.state.noChufa=false
         
         return
-      }else{
-        this.$store.state.noChufa=false
       }
-      if (this.chufa == 0) { //防止无法输入
+      /*
+      if (this.chufa == 0) { //防止无法输入  间断触发
         this.chufa = 1;
         return;
       }
       if (this.chufa == 1) {
         this.chufa = 0;
       }
-
-      var docObj = {
-        // userId:sessionStorage.getItem
-        docType: sessionStorage.getItem("docType"),
-        authId: sessionStorage.getItem("authId"),
-        docTitle:
-          sessionStorage.getItem("docType") == "personnel"
-            ? this.docFormRS.docTitle
-            : this.docForm.docTitle,
-        // docSequence:4
-      };
-
-      var pathToDoc =
-        "/document/list/like/" +
-        sessionStorage.getItem("docType") +
-        "?pageNow=0&pageSize=900000";
-      this.postRequest(
+      //这段是 连续输入的时候
+*/
+       this.postRequest(
         //注意防止重复提交
-        pathToDoc,
-        JSON.stringify(docObj)
+        "/document/list/fulltext/"+sessionStorage.getItem("docType"),
+        this.docForm.docTitle
       ).then((resp) => {
-        if (resp.data.content.length != 0) {
+        if(resp.code==0&&resp.data.length>0){
           this.likelyTipShowFlag = true;
-          this.matchedDoc = resp.data.content;
+          this.matchedDoc = resp.data;
+
+                                  this.$message({
+          type: "success",
+          message: "识别出可能匹配的文件，助您快速录入，请选择后检查是否需要修改",
+        });
+
+        }
+
+        else if(resp.code==0&&resp.data.length==0){
+          this.matchKvFunc()
         }
       });
+ 
+
+      // var docObj = {
+      //   // userId:sessionStorage.getItem
+      //   docType: sessionStorage.getItem("docType"),
+      //   authId: sessionStorage.getItem("authId"),
+      //   docTitle:
+      //     sessionStorage.getItem("docType") == "personnel"
+      //       ? this.docFormRS.docTitle
+      //       : this.docForm.docTitle,
+      //   // docSequence:4
+      // };
+ 
+
+      // var pathToDoc =
+      //   "/document/list/like/" +
+      //   sessionStorage.getItem("docType") +
+      //   "?pageNow=0&pageSize=900000";
+      // this.postRequest(
+      //   //注意防止重复提交
+      //   pathToDoc,
+      //   JSON.stringify(docObj)
+      // ).then((resp) => {
+      //   if (resp.data.content.length != 0) {
+      //     this.likelyTipShowFlag = true;
+      //     this.matchedDoc = resp.data.content;
+      //   }
+      // });
     },
     titleInput() {
       console.log(this.docForm.docTitle);
     },
 
     docDescComplete() {
+      if(this.docForm.docDesc==""){
+        return
+      }
+      if(this.docForm.docDesc.length<2){
+        return
+      }
+
       console.log(this.docForm.docDesc);
 
       var a = this.docForm.docDesc.replace(/【/g, "[");
@@ -1328,6 +1474,47 @@ this.levelAndKwToDeadline()
       var b = a.replace(/】/g, "]");
 
       this.docForm.docDesc = b;
+              var searchPath =
+          "/document/list/page/" +
+          sessionStorage.getItem("docType") +
+          "?pageNow=0&pageSize=900000";
+
+
+        var searchObj=    {
+        batchId: sessionStorage.getItem("batchId"),
+        docDesc: this.docForm.docDesc,
+        docType: sessionStorage.getItem("docType"),
+      }
+
+        this.postRequest(
+          //注意防止重复提交
+          searchPath,
+          JSON.stringify(searchObj)
+        ).then((resp) => {
+          console.log("输完文号后检查是否重复");
+          console.log(resp);
+          var repeatArr = [];
+          for (var i in resp.data.content) {
+            if(resp.data.content[i].docSequence!=this.docForm.docSequence){
+              repeatArr.push(resp.data.content[i].docSequence);
+            }
+          }
+
+          if (resp.data.content.length != 0) {
+            this.$confirm(
+              "请检查是否录入重复,检测到文号可能重复的识别号：" + repeatArr,
+              "提示",
+              {
+                cancelButtonClass: "btn-custom-cancel",
+                confirmButtonText: "没有重复，继续录入",
+                cancelButtonText: "好的",
+                type: "warning",
+              }
+            )
+            
+            }
+        })
+
 var descText
       if(b.indexOf('[')>0){
         descText=b.split("[")[0]
@@ -1345,6 +1532,14 @@ var descText
     keywordComplete(){
       console.log(this.levelkwToDeadlineTable)
       this.levelAndKwToDeadline()
+      if(this.docForm.docAbout!=this.keyword_docAboutJson[this.docForm.keyword]){
+                                this.$message({
+          type: "success",
+          message: "系统根据对照表识别出问题",
+        });
+        this.docForm.docAbout=this.keyword_docAboutJson[this.docForm.keyword]
+      }
+
     },
     levelCompelete() {
       if (this.docForm.docLevel == "本级") {
@@ -1514,7 +1709,14 @@ var descText
     checkKeyword(){
 
     },
+    dutyAuthorComplete(){
+
+    },
     checkAdd() {
+      var bindedDocAbout=this.keyword_docAboutJson[this.docForm.keyword]
+      console.log(this.keyword_docAboutJson)
+      console.log(bindedDocAbout)
+
 
       if (
         this.docForm.docTitle == "" ||
@@ -1532,9 +1734,25 @@ var descText
           type: "error",
           message: "填写完整",
         });
+ 
                 return false;
       
       }
+             else if(this.docForm.docDescAuthor&& this.docForm.docDesc==""){
+                               this.$message({
+          type: "error",
+          message: "填写文号",
+        });
+        return false
+        }
+        
+        else if(bindedDocAbout&&bindedDocAbout!=this.docForm.docAbout){ //关键词已经绑定了
+                                       this.$message({
+          type: "error",
+          message: "关键词和问题与对照表不符合，请修改或前往对照表修改",
+        });
+        return false
+        }
 
 else return true;
 
@@ -1710,10 +1928,10 @@ else return true;
             // this.docFormRS.id = resp.data.id;  //修改文件用
           })
           .then((r) => {
-            this.getRequest("/work/" + sessionStorage.getItem("batchId")) //
-              .then((resp) => {
-                // this.
-              });
+            // this.getRequest("/work/" + sessionStorage.getItem("batchId")) //
+            //   .then((resp) => {
+            //     // this.
+            //   });
 
             this.docFormRS.docTitle = "";
             this.docFormRS.docPage = "";
@@ -1801,6 +2019,11 @@ else return true;
           dutyAuthor: this.docForm.dutyAuthor,
           sortYear: this.docForm.sortYear,
         };
+
+        if(this.docForm.docDescAuthor!=true){
+          docObj.docDesc=""
+          docObj.docDescNum=99999
+        }
         var pathToDoc =
           "/document/" +
           sessionStorage.getItem("docType") +
@@ -1833,17 +2056,27 @@ else return true;
               this.fixDocFlag = false;
               this.showWaitingFlag = false;
 
-              this.optThreeWeightTable();
+                    this.keywordTemp = this.docForm.keyword;
+                    this.dutyAuthorTemp=this.docForm.dutyAuthor
+                    this.docAboutTemp=this.docForm.docAbout
+
+              this.optThreeWeightTable();  //里面三个异步提交
             }
           })
           .then(() => {
+                    this.docForm.docAbout=""
+                    this.docForm.deadline=""
+                    this.docForm.docLevel=""
+                    this.docForm.dutyAuthor=""
             this.keyWordEdit = false;
             this.docForm.keyword = "";
-            this.genId(6, 62);
+            this.genId(6, 62);  //修改成功后产生新的识别号
             this.docForm.docDate.replace("-", "");
             this.docForm.docTitle = "";
-            this.docForm.docDescAuthor = false;
+            this.docForm.docDescAuthor = true;
             this.docForm.docDescNum = "";
+                    this.docForm.docDesc=""
+
 
             this.docForm.docPage = "";
           });
@@ -1856,7 +2089,7 @@ else return true;
     
     },
     goDetail() {
-      this.$router.push("/work/docInputd");
+      this.$router.replace("/work/docInputd");
     },
     docDescChange(e) {
       // console.log(e)
@@ -1888,12 +2121,13 @@ else return true;
       this.fixDocFlag = false;
     },
     cancelFix() {
+      this.fixDocFlag = false;
+
       this.keyWordEdit = false;
       this.docForm.keyword = "";
       this.docForm.docDescNum = "";
       this.docForm.docDesc = "";
-      this.docForm.docDescAuthor = false;
-
+      this.docForm.docDescAuthor = true;
       this.genId(6, 62);
       this.docForm.docDate.replace("-", "");
       console.log(this.docForm);
@@ -2091,7 +2325,7 @@ else return true;
         this.searchForm.dutyAuthor = "";
         this.searchForm.docDesc = "";
 
-        var searchObj = this.searchForm;
+        var searchObj =  Object.assign({}, this.searchForm);
         for (var key in searchObj) {
           if (searchObj[key] == "") {
             delete searchObj[key];
@@ -2150,6 +2384,7 @@ else return true;
       //  }
       // alert(this.docForm.docDescNum)
       // return
+      this.selectDocNoTable=false //在选择历史匹配后会变为true 并且不触发（return）根据标题中的关键字匹配问题
 
       this.tipShowFlag = false;
       if (!this.addDocBtnFlg) {
@@ -2159,11 +2394,13 @@ else return true;
         return;
       }
       this.addDocTimer();
+      
       // var
       // this.optThreeWeightTable()
       // return
 
       if (this.checkAdd()&&this.checkDeadline()) {
+
         this.showWaitingFlag = true;
         // this.$store.state.alreadyDocs.unshift({  docKeyWord:this.docForm.docAbout||'无文件信息',
         //   docSequence:this.docForm.docSequence ,
@@ -2220,12 +2457,13 @@ else return true;
         {
           this.searchForm.docTitle = this.docForm.docTitle;
           // this.searchForm.docSequence=this.docForm.docSequence
-          this.searchForm.docDesc = this.docForm.docDesc;
+          // this.searchForm.docDesc = this.docForm.docDesc;
           this.searchForm.docDate = this.docForm.docDate;
           this.searchForm.dutyAuthor = this.docForm.dutyAuthor;
           this.searchForm.personName = "";
         }
-        var searchObj = this.searchForm;
+        var searchObj =  Object.assign({}, this.searchForm);
+ 
         for (var key in searchObj) {
           if (searchObj[key] == "") {
             delete searchObj[key];
@@ -2275,26 +2513,36 @@ else return true;
                     // if(r)
                     //保证提交完返回id后再执行后续操作
                     this.keywordTemp = this.docForm.keyword;
+                    this.dutyAuthorTemp=this.docForm.dutyAuthor
+                    this.docAboutTemp=this.docForm.docAbout
                     this.optThreeWeightTable();
 
                     this.$store.state.alreadyDocs.unshift(
                       Object.assign({}, this.docForm)
                     );
+
                     this.keyWordEdit = false;
-                    this.docForm.docDescAuthor = false;
+                    this.docForm.docDescAuthor = true;
                     this.docForm.keyword = "";
-                    this.genId(6, 62);
+                    this.docForm.docAbout=""
+                    this.docForm.deadline=""
+                    this.docForm.docLevel=""
+                    this.docForm.dutyAuthor=""
+
+                    this.genId(6, 62);//提交文件成功后产生新的识别号
                     this.docForm.docDate.replace("-", "");
                     console.log(this.docForm);
                     this.docForm.docTitle = "";
                     this.docForm.docPage = "";
+                    this.docForm.docDesc=""
+
                   });
               })
               .catch(() => {
                 this.showWaitingFlag = false;
                 return; //点击好的，然后不提交
               });
-          } // 重复，不提交 或 仍要提交
+          } // 重复，不提交(cathc) 和 仍要提交(then)
           else {
             //不重复
 
@@ -2316,19 +2564,25 @@ else return true;
               .then((r) => {
                 // if(r)
                 //保证提交完返回id后再执行后续操作
-                this.keywordTemp = this.docForm.keyword;
-                this.optThreeWeightTable();
+                    this.keywordTemp = this.docForm.keyword;
+                    this.dutyAuthorTemp=this.docForm.dutyAuthor
+                    this.docAboutTemp=this.docForm.docAbout
+                    this.optThreeWeightTable();
 
-                this.getRequest("/work/" + sessionStorage.getItem("batchId")) //
-                  .then((resp) => {});
+                    this.$store.state.alreadyDocs.unshift(
+                      Object.assign({}, this.docForm)
+                    );
 
-                this.$store.state.alreadyDocs.unshift(
-                  Object.assign({}, this.docForm)
-                );
-                this.keyWordEdit = false;
-                this.docForm.keyword = "";
-                this.docForm.docDescAuthor = false;
-                this.genId(6, 62);
+                    this.keyWordEdit = false;
+                    this.docForm.docDescAuthor = true;
+                    this.docForm.keyword = "";
+                    this.docForm.docAbout=""
+                    this.docForm.deadline=""
+                    this.docForm.docLevel=""
+                    this.docForm.dutyAuthor=""
+                    this.docForm.docDesc=""
+                    
+                this.genId(6, 62); //提交文件成功后gen
                 this.docForm.docDate.replace("-", "");
                 console.log(this.docForm);
                 this.docForm.docTitle = "";
@@ -2343,32 +2597,7 @@ else return true;
       }
 
     },
-    optThreeWeightTable1() {
-      var weightType1;
-      var weightType2;
-      var weightType3;
 
-      var kwTemp = this.docForm.keyword;
-
-      // if (sessionStorage.getItem("docType") == "official") {
-      // if (true) {
-      if (sessionStorage.getItem("docType") == "official") {
-        weightType1 = 11; //文书问题
-        weightType2 = 12;
-        weightType3 = 13;
-      }
-      if (sessionStorage.getItem("docType") == "science") {
-        weightType1 = 21;
-        weightType2 = 22;
-        weightType3 = 23;
-      }
-
-      if (sessionStorage.getItem("docType") == "business") {
-        weightType1 = 31;
-        weightType2 = 32;
-        weightType3 = 33;
-      }
-    },
 
     //  setTheJsonWigTable(reqId,key,value){
     //          var table
@@ -2396,7 +2625,7 @@ else return true;
       var weightType2;
       var weightType3;
 
-      var kwTemp = this.docForm.keyword;
+      var keywordTemp = this.docForm.keyword;
 
       // if (sessionStorage.getItem("docType") == "official") {
       // if (true) {
@@ -2427,7 +2656,7 @@ else return true;
               // alert(0)
               //查询对应的权重表得到json
               table = resp.data.tables;
-              var key1 = this.docForm.docAbout;
+              var key1 = this.docAboutTemp;
               // var json1 = table;
               if (table[key1] == null) {
                 table[key1] = "0";
@@ -2438,11 +2667,11 @@ else return true;
 
               if (issueKeywordArrJson[key1] == null) {
                 var arrtemp = [];
-                arrtemp.push(kwTemp);
+                arrtemp.push(keywordTemp);
                 issueKeywordArrJson[key1] = arrtemp;
               } else {
-                if (issueKeywordArrJson[key1].indexOf(kwTemp) < 0) {
-                  issueKeywordArrJson[key1].push(kwTemp);
+                if (issueKeywordArrJson[key1].indexOf(keywordTemp) < 0) {
+                  issueKeywordArrJson[key1].push(keywordTemp);
                 }
               }
             })
@@ -2451,7 +2680,7 @@ else return true;
               // var issueKeyword={}
               // if(true){//假设不包含这个问题
               //   var docAboutKeyWordArr=[]
-              //   docAboutKeyWordArr.push(kwTemp) //因为异步执行，表格已经刷新，kwTemp暂存的关键字
+              //   docAboutKeyWordArr.push(keywordTemp) //因为异步执行，表格已经刷新，kwTemp暂存的关键字
               //   console.log(docAboutKeyWordArr)
               //   issueKeyword[this.docForm.docAbout]=docAboutKeyWordArr
               // }
@@ -2482,7 +2711,7 @@ else return true;
             .then((resp) => {
               //查询对应的权重表得到json
               table2 = resp.data.tables;
-              var key2 = this.docForm.dutyAuthor;
+              var key2 = this.dutyAuthorTemp;
               // var json1 = table;
               if (table2[key2] == null) {
                 table2[key2] = "0";
@@ -2515,13 +2744,13 @@ else return true;
               //查询对应的权重表得到json
               table3 = resp.data.tables;
               keywordIssueJson = resp.data.keywordIssue;
-              var key3 = kwTemp; //docForm里的会被刷新
+              var key3 = keywordTemp; //docForm里的会被刷新
               // var json1 = table;
               if (table3[key3] == null) {
                 table3[key3] = "0";
               }
               if (keywordIssueJson[key3] == null) {
-                keywordIssueJson[key3] = this.docForm.docAbout;
+                keywordIssueJson[key3] = this.docAboutTemp
               } else {
                 // if (
                 //   keywordIssueJson[key3]
@@ -2570,7 +2799,7 @@ else return true;
               // alert(0)
               //查询对应的权重表得到json
               table = resp.data.tables;
-              var key1 = this.docForm.docAbout;
+              var key1 = this.docAboutTemp
               // var json1 = table;
               if (table[key1] == null) {
                 table[key1] = "0";
@@ -2578,11 +2807,11 @@ else return true;
               issueKeywordArrJson = resp.data.issueKeyword;
               if (issueKeywordArrJson[key1] == null) {
                 var arrtemp = [];
-                arrtemp.push(kwTemp);
+                arrtemp.push(keywordTemp);
                 issueKeywordArrJson[key1] = arrtemp;
               } else {
-                if (issueKeywordArrJson[key1].indexOf(kwTemp) < 0) {
-                  issueKeywordArrJson[key1].push(kwTemp);
+                if (issueKeywordArrJson[key1].indexOf(keywordTemp) < 0) {
+                  issueKeywordArrJson[key1].push(keywordTemp);
                 }
               }
             })
@@ -2613,7 +2842,7 @@ else return true;
             .then((resp) => {
               //查询对应的权重表得到json
               table2 = resp.data.tables;
-              var key2 = this.docForm.dutyAuthor;
+              var key2 = this.dutyAuthorTemp;
               // var json1 = table;
               if (table2[key2] == null) {
                 table2[key2] = "0";
@@ -2646,13 +2875,13 @@ else return true;
               //查询对应的权重表得到json
               table3 = resp.data.tables;
               keywordIssueJson = resp.data.keywordIssue;
-              var key3 = kwTemp; //docForm里的会被刷新
+              var key3 = keywordTemp; //docForm里的会被刷新
               // var json1 = table;
               if (table3[key3] == null) {
                 table3[key3] = "0";
               }
               if (keywordIssueJson[key3] == null) {
-                keywordIssueJson[key3] = this.docForm.docAbout;
+                keywordIssueJson[key3] = this.docAboutTemp
               } else {
                 // if (
                 //   keywordIssueJson[key3]
@@ -2700,7 +2929,7 @@ else return true;
               // alert(0)
               //查询对应的权重表得到json
               table = resp.data.tables;
-              var key1 = this.docForm.docAbout;
+              var key1 = this.docAboutTemp
               // var json1 = table;
               if (table[key1] == null) {
                 table[key1] = "0";
@@ -2708,11 +2937,11 @@ else return true;
               issueKeywordArrJson = resp.data.issueKeyword;
               if (issueKeywordArrJson[key1] == null) {
                 var arrtemp = [];
-                arrtemp.push(kwTemp);
+                arrtemp.push(keywordTemp);
                 issueKeywordArrJson[key1] = arrtemp;
               } else {
-                if (issueKeywordArrJson[key1].indexOf(kwTemp) < 0) {
-                  issueKeywordArrJson[key1].push(kwTemp);
+                if (issueKeywordArrJson[key1].indexOf(keywordTemp) < 0) {
+                  issueKeywordArrJson[key1].push(keywordTemp);
                 }
               }
             })
@@ -2743,7 +2972,7 @@ else return true;
             .then((resp) => {
               //查询对应的权重表得到json
               table2 = resp.data.tables;
-              var key2 = this.docForm.dutyAuthor;
+              var key2 = this.dutyAuthorTemp;
               // var json1 = table;
               if (table2[key2] == null) {
                 table2[key2] = "0";
@@ -2776,13 +3005,13 @@ else return true;
               //查询对应的权重表得到json
               table3 = resp.data.tables;
               keywordIssueJson = resp.data.keywordIssue;
-              var key3 = kwTemp; //docForm里的会被刷新
+              var key3 = keywordTemp; //docForm里的会被刷新
               // var json1 = table;
               if (table3[key3] == null) {
                 table3[key3] = "0";
               }
               if (keywordIssueJson[key3] == null) {
-                keywordIssueJson[key3] = this.docForm.docAbout;
+                keywordIssueJson[key3] = this.docAboutTemp
               } else {
                 // if (
                 //   keywordIssueJson[key3]
@@ -2847,7 +3076,7 @@ else return true;
               }
             )
               .then(() => {
-                this.$router.push("/work/keyWM");
+                this.$router.replace("/work/keyWM");
 
                 // this.$message({
                 //   type: "success",
@@ -2873,7 +3102,7 @@ else return true;
       }
     },
 
-    aiInputFunc() {
+    matchKvFunc() {  //
       // alert(2)
       var keywordIssueJson;
 
@@ -2921,14 +3150,15 @@ else return true;
         })
         .then((resp) => {
           this.matchedKV = [];
-
-          console.log(resp);
-
-          for (var attr in resp.data) {
             if (resp.data == null) {
               resp.data = keywordIssueJson;
             }
-            var splitArr = resp.data[attr].split("|");
+          console.log(resp);
+
+          for (var attr in resp.data) {
+
+            // var splitArr = resp.data[attr].split("|"); //一个关键词只对应一个问题，不需要了
+
 
             if (sessionStorage.getItem("docType") == "personnel") {
               console.log(2);
@@ -2942,13 +3172,20 @@ else return true;
               console.log(this.matchedKV);
             } // 人事要找对照表
             else {
-              for (var k in splitArr) {
-                this.matchedKV.push([attr, splitArr[k]]);
-              }
+              // for (var k in splitArr) {
+              //   this.matchedKV.push([attr, splitArr[k]]);
+              // }
+              this.matchedKV.push([attr,resp.data[attr]])
             }
-            // 其他三种
+          }
+          {
+            console.log(this.matchedKV)
+            console.log(this.matchedKV.length)
+
 
             if (this.matchedKV.length == 1) {
+            console.log('zhiyou1ge')
+
               if (sessionStorage.getItem("docType") == "personnel") {
                 this.docFormRS.docAboutSub = this.matchedKV[0][2];
                 this.docFormRS.docAbout = this.matchedKV[0][1];
@@ -2956,13 +3193,20 @@ else return true;
                 this.docForm.docAbout = this.matchedKV[0][1];
                 this.docForm.keyword = this.matchedKV[0][0];
               }
-            } else {
+            } else if(this.matchedKV.length>1) {
               this.tipShowFlag = true;
             }
           }
 
           // alert()
         });
+if(this.matchedKV.length>0){
+                                                this.$message({
+          type: "success",
+          message: "没有合适的历史文件匹配，根据您的对照表匹配了关键词",
+        });
+}
+        
     },
     selectThisTip(item) {
       this.docForm.docAbout = item[1];
@@ -2976,15 +3220,23 @@ else return true;
       this.tipShowFlag = false;
     },
     titleComplete() {
+this.matchedDoc=[]
       if (this.fixDocFlag) {
         //修改文档焦点离开不要发请求
         return;
       }
+
       if (this.docForm.docTitle == "") {
         this.keyWordEdit = false;
       } else this.keyWordEdit = true;
 
-      this.aiInputFunc();
+          this.likelyHoodQuery(); //历史匹配
+
+      // if(this.selectDocNoTable){
+      //   return
+      // }
+
+
       // this.getRequest(   //查标题
 
       //             "/weight/map/"+this.weightFormKeywordCode(),{
@@ -3017,13 +3269,23 @@ else return true;
     genId(len, radix) {
       this.getRequest("/work/" + sessionStorage.getItem("batchId")).then(
         (resp) => {
-          if (resp) {
+
+          if (resp&&resp.code==0) {
+            // if(sessionStorage.getItem('docType')=="personnel"){}
             this.docForm.docSequence = resp.data.doc_number;
             this.docFormRS.docSequence = resp.data.doc_number;
           }
+          else{
+                    this.$message({
+          type: "success",
+          message: "网络中断，请检查网络",
+        });
+      this.$router.replace("/work/docInputd");
+        
+          }
         }
       );
-      return;
+     return
 
       var chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz".split(
         ""
@@ -3067,6 +3329,10 @@ else return true;
     },
   },
   created() {
+    
+    if(""){
+      alert(1)
+    }
     // var jsonk={}
     // var aa='aa'
     // if(jsonk[aa]==null){
@@ -3099,11 +3365,12 @@ else return true;
     ).then(()=>{
  var docAboutId;
     var keywordId;
+    var dutyAuthorId;
     if (sessionStorage.getItem("docType")== "official") {
       
       docAboutId = this.weightForm.docIssueWig;
       keywordId = this.weightForm.docKeywordWig;
-
+dutyAuthorId=this.weightForm.docAuthorWig
       this.levelkwToDeadlineTable=this.weightForm.officialLevelKeywordDeadline
       this.descToAuthor=this.weightForm.officialDescAuthor
       // console.log(docAboutId)
@@ -3111,6 +3378,7 @@ else return true;
     if (sessionStorage.getItem("docType")== "science") {
       docAboutId = this.weightForm.tecProjectWig;
       keywordId = this.weightForm.tecKeywordWig;
+dutyAuthorId=this.weightForm.tecAuthorWig
 
             this.levelkwToDeadlineTable=this.weightForm.tecLevelKeywordDeadline
       this.descToAuthor=this.weightForm.tecDescAuthor
@@ -3119,6 +3387,7 @@ else return true;
     if (sessionStorage.getItem("docType")== "business") {
       docAboutId = this.weightForm.busProjectWig;
       keywordId = this.weightForm.busKeywordWig;
+dutyAuthorId=this.weightForm.busAuthorWig
 
             this.levelkwToDeadlineTable=this.weightForm.busLevelKeywordDeadline
       this.descToAuthor=this.weightForm.busDescAuthor
@@ -3127,9 +3396,9 @@ else return true;
     if (sessionStorage.getItem("docType")== "personnel") {
       keywordId = this.weightForm.perKeywordWig;
     }
-    console.log(docAboutId)
     var dabJson = {};
     var kwdJson = {};
+    var autJson={}
     if (sessionStorage.getItem("docType")!= "personnel") {
       var that=this
             Promise.all([
@@ -3138,6 +3407,7 @@ else return true;
             .getRequest("/weight/" + docAboutId)
             .then((resp) => {
               dabJson= resp.data.tables;
+              this.docAbout_KeywordArrJson=resp.data.issueKeyword
               resolve(resp);
             });
         }),
@@ -3146,9 +3416,23 @@ else return true;
           that
       .getRequest("/weight/" + keywordId).then((resp) => {
         kwdJson = resp.data.tables;
+        console.log('关键词jsontable')
+        this.keyword_docAboutJson=resp.data.keywordIssue
+    
            resolve(resp);
       });
         }),
+
+                new Promise((resolve, reject) => {
+          that
+            .getRequest("/weight/" + dutyAuthorId)
+            .then((resp) => {
+              autJson= resp.data.tables;
+              resolve(resp);
+            });
+        }),
+
+
       ])  .then((resp) => {
   var attr;
       for (attr in dabJson) {
@@ -3157,6 +3441,10 @@ else return true;
 
       for (attr in kwdJson) {
         this.keywordTipArr.push(attr);
+      }
+
+      for (attr in autJson) {
+        this.dutyAuthorTipArr.push(attr);
       }
       })
 
@@ -3181,15 +3469,7 @@ else{
     });
    
 
-    if (this.$store.state.tempDoc) {
-      this.fixDocFlag = true;
-      console.log(this.$store.state.tempDoc);
-      this.docForm = Object.assign({}, this.$store.state.tempDoc);
-      this.docFormRS = Object.assign({}, this.$store.state.tempDoc);
-      this.$store.state.tempDoc = "";
-    } else {
-      this.genId(6, 62);
-    }
+
   },
 };
 </script>
@@ -3417,6 +3697,6 @@ else{
   height: 150vh;
 
   position: relative;
-  background-color: rgb(240, 240, 243);
+  background-color: rgb(255, 255, 255);
 }
 </style>

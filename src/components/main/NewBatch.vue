@@ -375,6 +375,7 @@ export default {
     };
   },
   created() {
+    window.scrollTo(0,0)
 
 //  this.getRequest("/organ/" + sessionStorage.getItem("authId")).then(
 //       (resp) => {
@@ -402,7 +403,7 @@ export default {
           type: "error",
           message: resp.data.message,
         });
-        this.$router.push("/login");
+        this.$router.replace("/login");
       }
 
       console.log(resp);
@@ -493,7 +494,7 @@ export default {
 
     },
     modifyOrgan() {
-      this.$router.push("/work/modifyOrgan");
+      this.$router.replace("/work/modifyOrgan");
     },
 
     huiche() {
@@ -602,7 +603,7 @@ for(  var i=0;i<this.jsonArray.length;i++){
       //     if (resp) {
       //       //新建单位后拿到单位id存入session  （已存在的时候 code=1202 ,data 有问题）
       //       if (resp.code == 1107) {
-      //         this.$router.push("/home");
+      //         this.$router.replace("/home");
       //       }
       //       if (resp.code == 0) {
       //         window.sessionStorage.setItem("authId", resp.data.id);
@@ -648,7 +649,7 @@ for(  var i=0;i<this.jsonArray.length;i++){
       ).then((resp) => {
         if (resp.data && resp.code == 0) {
           window.sessionStorage.setItem("batchId", resp.data.id);
-          this.$router.push("/work/docInput");
+          this.$router.replace("/work/docInput");
         }
       });
 
@@ -929,7 +930,7 @@ var key91 = '工资情况材料';
 
 
                  
-          this.$router.push("/work/docInput");
+          this.$router.replace("/work/docInput");
 
 
       });
@@ -1205,7 +1206,7 @@ setTimeout(() => {
 
 .wrapper {
   height: 150vh;
-  background-color: rgb(240, 240, 243);
+  background-color: rgb(255, 255, 255);
 
 
 }

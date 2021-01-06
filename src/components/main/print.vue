@@ -1,9 +1,8 @@
 <template>
 <div>
  
-  <div style="position:absolute;top:4cm;left:1cm" class="printSetBox">
-
-    <el-select v-if="false"
+  <div style="position:absolute;width:10cm;top:5cm;left:1cm" class="printSetBox">
+    <el-select style="width:7cm;position:absolute;left:-50%" v-if="true"
             @blur="selectBlur"
             @change="selectSequenceChange"
             ref="authSelectref"
@@ -20,12 +19,17 @@
             ></el-option>
           </el-select>
 
-  <div style="position:absolute;top:0cm;left:0cm;width:3cm;text-align:center"  @click="clickPrint"  class="topTextButton" >回车打印</div>
+          <div style="position:relative;left:-50%;bottom:0;width:2cm;height:2cm">
+  <div style="position:absolute;top:0cm;left:8cm;width:3cm;text-align:center"  @click="clickPrint"  class="topTextButton" >回车打印</div>
+
+
+          </div>
+
   <div  v-print="'#printArea' " id="printButton"></div>
   </div>
   <!-- 人事 -->
   <div v-if="docType=='personnel'" id="printArea"  >  
-  <div ref="print1" style="position:relative;top:1cm;left:1cm;border:solid;height:1.5cm;width:30mm">
+  <div ref="print1" style="position:relative;top:1cm;border:solid;height:1.5cm;width:30mm;left:1cm">
     <div  style="float:left;width:0.7cm;border-right:solid 0.5mm;line-height:0.75cm;height:1.5cm;text-align:center">
       正本
     </div>
@@ -44,7 +48,7 @@
 
   <!-- 文书 -->
   <div v-if="docType=='official'||docType=='business'" id="printArea">
-      <div ref="print1" style="position:relative;top:1cm;left:1cm;border:solid;height:1.6cm;width:45mm"  @mouseover="showAdjPos" @mouseleave="hideAdjPos" >
+      <div ref="print1" style="position:relative;top:1cm;border:solid;height:1.6cm;width:45mm;left:1cm"  @mouseover="showAdjPos" @mouseleave="hideAdjPos" >
     <div class="clickSmall"   style="font-size:15px;cursor:pointer;float:left;width:14.5mm;border-bottom:solid 0.5mm;border-right:solid 0.5mm;line-height:0.8cm;height:7.75mm;text-align:center">
       {{this.authCode||""}}
     </div>
@@ -86,7 +90,7 @@
 
   <!-- 科技   -->
     <div v-if="docType=='science'" id="printArea">
-      <div ref="print1" style="position:relative;top:1cm;left:1cm;border:solid;height:2cm;width:50mm"  @mouseover="showAdjPos" @mouseleave="hideAdjPos">
+      <div ref="print1" style="position:relative;left:1cm;top:1cm;border:solid;height:2cm;width:50mm"  @mouseover="showAdjPos" @mouseleave="hideAdjPos">
         
     <div  style="float:left;width:35mm;border-bottom:0.5mm;border-bottom:0.5mm solid;border-right:solid 0.5mm;line-height:1cm;height:10mm;text-align:center">
       档号
@@ -140,12 +144,19 @@ export default {
     components: {
     // Hide: Hide,
   },
+  props:{
+    printDoc:{
+
+      required:true
+    }
+  },
 
    mounted() {
     //  this.asd();
     var that=this
         Utils.$on("sendInit", function (doc) {
-      console.log("get")
+          console
+      console.log("子getfrom父信号")
 that.initData()
       
     });
@@ -221,6 +232,7 @@ this.emitThisId()
     },
     setPrinted(){},
       initData(){
+        console.log("initData")
         this.printDocs=JSON.parse(localStorage.getItem('docs'))
     var zishu=sessionStorage.getItem('aboutTextNum')
     if(zishu==2){
@@ -318,7 +330,21 @@ if(window.sessionStorage.getItem("docType")=='science'){
 
     },
   },
+    watch: {
+printJS: {
+      handler(v, o) {
+        this.initData()
+      },
+      deep: true,
+    },
+
+    },
   computed: {
+        printJS() {
+          
+        return this.$store.state.printDoc;
+      
+    },
     leftAbout:function(){
       return this.leftPosAbout+'mm'
     },
@@ -347,6 +373,7 @@ this.initData()
 
   data(){
     return{
+      printDoc:true,
       selectedDocSequence:0,
       printDocs:[],
       authCode:88888,

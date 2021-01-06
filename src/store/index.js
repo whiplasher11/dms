@@ -12,6 +12,8 @@ const now = new Date();
 const store = new Vuex.Store({
 
     state: {
+        printDoc:{},
+        backToDetailFlag:false,//权重表页面是否返回详细信息页面
         noChufa:false,//修改文件时不要触发查找相似
         rsPrint:0,
         rsPrintSub:2,

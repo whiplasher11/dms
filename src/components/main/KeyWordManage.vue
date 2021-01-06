@@ -23,12 +23,19 @@
       <div
         class="topTextButtonBlue"
         style="position: absolute; top: 7.5rem; right: 20rem; z-index: 123"
-        v-if="selectShow"
+        v-if="selectShow&&!backCompute"
         @click="backToOrgans"
       >
         返回单位表
       </div>
-
+      <div
+        class="topTextButtonBlue"
+        style="position: absolute; top: 7.5rem; right: 20rem; z-index: 123"
+        v-if="selectShow&&backCompute"
+        @click="backToDetail"
+      >
+        返回预览
+      </div>
       <div
         class="topTextButton"
         style="position: absolute; top: 7.5rem; right: 20rem; z-index: 123"
@@ -264,7 +271,7 @@
           font-size: 1.5rem;
           width: 30rem;
           height: 10rem;
-          background-color: rgb(240, 240, 240);
+          background-color: rgb(255, 255, 255);
           -webkit-box-shadow: 0 0 0.5rem #909399;
           box-shadow: 0 0 0.5rem #909399;
           border-radius: 1rem;
@@ -671,8 +678,8 @@ export default {
       }
       else return false
     },
-    user() {
-      //   return this.$store.state.user;
+    backCompute() {
+        return this.$store.state.backToDetailFlag;
     },
     getAuthName(){
 
@@ -1150,8 +1157,12 @@ this.getDescJsonTableFromWeightForm();
       this.backToDocAboutShow = false;
       // this.checkFromThisType(this.typeNum);
     },
+    backToDetail(){
+      this.$router.replace("/work/docInputD");
+      this.$store.state.backToDetailFlag=false
+    },
     backToOrgans() {
-      this.$router.push("/work/modifyOrgan");
+      this.$router.replace("/work/modifyOrgan");
     },
     backToSelect() {
       this.saveBtnShow = false;
@@ -1392,8 +1403,8 @@ this.getDescJsonTableFromWeightForm();
 {//对照表的预设
         if(this.typeNum%5==0||(this.typeNum-6)%10==0){  //对照表
       var levelkw=this.selectedLevel+"~"+this.keyToSet
-      if(this.weightForm[this.selectedTableTypeName][this.keyToSet]!=null||   //这两个表互不相关
-      this.weightForm[this.selectedTableTypeName][levelkw]!=null){
+      if(this.weightForm[this.selectedTableTypeName][this.keyToSet]!=null   
+      ){
                   
               this.$message({
                 type: "warning",
@@ -2676,7 +2687,7 @@ levelFilter:[
   background-color: rgb(18, 71, 78);
 }
 .wrapper {
-  background-color: rgb(240, 240, 243);
+  background-color: rgb(255, 255, 255);
 
   // height: 150vh;
   padding-bottom: 100vh;
@@ -2687,7 +2698,7 @@ levelFilter:[
   -webkit-box-shadow: 0 0 0.5rem #909399;
   box-shadow: 0 0 0.5rem #909399;
   border-radius: 1rem;
-  background-color: rgb(240, 240, 243);
+  background-color: rgb(255, 255, 255);
   position: relative;
   top: 8rem;
   left: 50%;

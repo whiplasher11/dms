@@ -181,7 +181,7 @@
         },
         methods: {
             goRegister(){
-                 this.$router.push("/login")
+                 this.$router.replace("/login")
                 
             },
             pRegister(){

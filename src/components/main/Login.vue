@@ -319,7 +319,7 @@ export default {
                         message: "登录成功!"
                       });
 
-                      this.$router.push('/work/newBatch')
+                      this.$router.replace('/work/newBatch')
                 }
                 
                 // else if(){}
@@ -409,7 +409,7 @@ export default {
 
 <style lang="scss" scoped>
 .Loginwrapper {
-  background-color: rgb(240, 240, 243);
+  background-color: rgb(255, 255, 255);
 
   height: 150vh;
 

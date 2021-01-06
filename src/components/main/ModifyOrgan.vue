@@ -219,7 +219,7 @@
     height: 5rem;
     line-height: 2rem;
     position: fixed;
-    background-color: rgb(243,243,243);
+    background-color: rgb(255,255,255);
     top: 4.5rem;
           "
         >
@@ -308,7 +308,7 @@
 
       <div v-if="!organsShow">
       <div class="organIrem" style="height:4rem " ></div>
-      <div class="organIrem" style="height:4rem ;width:100%;position:fixed;background-color:rgb(243,243,243);top:4.5rem" ></div>
+      <div class="organIrem" style="height:4rem ;width:100%;position:fixed;background-color:rgb(255,255,255);top:4.5rem" ></div>
 
         <div class="organItem " style="border-bottom:none;   height: 2rem;
   line-height:2rem;
@@ -316,7 +316,7 @@
     position: fixed;
     border-bottom:solid;
     margin-left:2.5%;
-    background-color:rgb(243,243,243)
+    background-color:rgb(255,255,255)
   ">
   <div></div>
           <div class="BatchInfo">批次名</div>
@@ -393,6 +393,7 @@ export default {
       }
     },
     showUsusal(){
+      window.scrollTo(0,0)
       // if()
       this.organsOrigin=JSON.parse(JSON.stringify(this.organs))
       this.usualOrgans=[]
@@ -404,6 +405,7 @@ export default {
       this.organs=JSON.parse(JSON.stringify(this.usualOrgans))
     },
     showAll(){
+      window.scrollTo(0,0)
       this.organs=JSON.parse(JSON.stringify(this.organsOrigin))
     },
     deleteTheBatch(item) {
@@ -590,7 +592,7 @@ this.presetNameShowFlag=false
       // batchId
 }
 
-      this.$router.push("/work/docInputD");
+      this.$router.replace("/work/docInputD");
 
 
     },
@@ -668,6 +670,7 @@ this.presetNameShowFlag=false
     loseThis(e) {},
   },
   created() {
+    window.scrollTo(0,0)
     // alert(this.tempOrganName)
 
     // var json2 = {
@@ -849,7 +852,15 @@ text-align: center;
   height: 1rem !important;
   border: 0.06rem solid #DCDFE6 !important;
 
+
 }
+.el-checkbox__inner::after{
+height: 0.437rem !important;
+    left: 0.25rem !important;
+    top:0.0625rem  !important;
+    width:0.1875rem  !important;
+}
+
 
 /**el-checkbox */
 
@@ -916,12 +927,12 @@ padding: 0.3rem;
   }
   .topFix{
     color: #222;
-    background-color: rgba(240, 240, 243, 1);
+    background-color: rgba(255, 255, 255, 1);
   }
   
 .wrapper {
   // background-color: rgb(209, 218, 243);
-  background-color: rgb(240, 240, 243);
+  background-color: rgb(255, 255, 255);
 
   // height: 120vh;
   padding-bottom: 100vh;

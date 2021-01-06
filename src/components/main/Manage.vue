@@ -312,7 +312,7 @@ export default {
 }
 
 .wrapper {
-  background-color: rgb(240, 240, 243);
+  background-color: rgb(255, 255, 255);
 
   // height: 120vh;
   padding-bottom: 100vh;
