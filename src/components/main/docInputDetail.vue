@@ -1444,9 +1444,8 @@ export default {
     preLoadDocs() {
       console.log("preload");
       var f = false;
-      this.$store.state.alreadyDocs = [];
-      var sortedDocs=[]
-  this.getRequest("/work/sorted/"+sessionStorage.getItem("batchId")).then((resp) => {
+      if(this.$store.state.alreadyDocs.length==0){
+          this.getRequest("/work/sorted/"+sessionStorage.getItem("batchId")).then((resp) => {
      var item=resp.data
 
           if (item.sorted != null && !this.nullJson(item.sorted) &&this.$store.state.sortedFlag ) {
@@ -1463,8 +1462,11 @@ export default {
           }
 
                 })
+      }
 
 
+//设置期限筛选条件 需要获取批次信息
+{
       this.getRequest("/work/" + sessionStorage.getItem("batchId"))
         .then((resp) => {
           var item = resp.data;
@@ -1484,6 +1486,7 @@ export default {
         }).then(()=>{
 
         })
+}
         // .then(() => {
         //   this.store;
         // });
@@ -2271,8 +2274,6 @@ export default {
         window.sessionStorage.setItem("kjXuhao", item.docNum);
       }
       // Utils.$emit("sendInit", 1);
-      this.printDoc=!this.printDoc
-
       this.showCenterPrint = true;
       var docs = this.$store.state.alreadyDocs;
         window.localStorage.setItem("docs", JSON.stringify(docs));
@@ -2662,7 +2663,8 @@ export default {
       // console.log("父页面get下拉的");
       // var that=this
       that.$store.state.printDoc=doc
-      console.log(doc.id+"!!!!")
+      console.log(doc.id+"收到并且设置!!!!")
+      that.printBtn(doc)
     });
   },
   destroyed(){

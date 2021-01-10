@@ -144,12 +144,6 @@ export default {
     components: {
     // Hide: Hide,
   },
-  props:{
-    printDoc:{
-
-      required:true
-    }
-  },
 
    mounted() {
     //  this.asd();
@@ -237,9 +231,11 @@ this.emitThisId()
     var zishu=sessionStorage.getItem('aboutTextNum')
     if(zishu==2){
       this.leftPosAbout=3
+      this.size=1
     }
     if(zishu==3){
       this.leftPosAbout=1.4
+      this.size=1
     }
     if(zishu==4){
       this.leftPosAbout=-0.8
@@ -276,13 +272,15 @@ if(window.sessionStorage.getItem("docType")=='science'){
     selectBlur(e){
             var seq = e.target.value;
       this.selectedDocSequence = seq;
-      this.selectSequenceChange();
+      // this.selectSequenceChange();
     },
     selectSequenceChange(){
       console.log(this.selectedDocSequence)
       for(var i in this.printDocs){
         if(this.printDocs[i].docSequence==this.selectedDocSequence){
           this.emitThisDoc(this.printDocs[i])
+          this.$store.state.printDoc=this.printDocs[i]
+          console.log(this.$store.state.printDoc)
         }
       }
     },
@@ -333,6 +331,7 @@ if(window.sessionStorage.getItem("docType")=='science'){
     watch: {
 printJS: {
       handler(v, o) {
+        console.log("检测变动后init")
         this.initData()
       },
       deep: true,
@@ -341,9 +340,7 @@ printJS: {
     },
   computed: {
         printJS() {
-          
         return this.$store.state.printDoc;
-      
     },
     leftAbout:function(){
       return this.leftPosAbout+'mm'

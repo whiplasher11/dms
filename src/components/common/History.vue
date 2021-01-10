@@ -94,8 +94,6 @@ export default {
           })
     },
     goDetail(){
-      this.$store.state.alreadyDocs=[]
-
            this.$router.replace("/work/docInputd")
       
     },

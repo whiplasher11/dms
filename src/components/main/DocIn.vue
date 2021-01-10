@@ -938,7 +938,8 @@ export default {
 
   data() {
     return {
-
+      DescWigArr:[],
+levelTemp:'',  //暂存的提交级别 因此异步提交不会在提交时被清空
       docSequenceLock:0, //会出现识别号重复的问题
 
       selectDocNoTable:false,
@@ -1472,6 +1473,10 @@ this.levelAndKwToDeadline()
       var a = this.docForm.docDesc.replace(/【/g, "[");
 
       var b = a.replace(/】/g, "]");
+      b = b.replace(/{/g, "[");
+      b = b.replace(/}/g, "]");
+
+
 
       this.docForm.docDesc = b;
               var searchPath =
@@ -1679,8 +1684,16 @@ var descText
       this.docForm = Object.assign({}, this.docFormKong);
       // console.log(this.docFormKong);
     },
+        isNumber(value) {
+      if (isNaN(value)) {
+        return false;
+      } else {
+        return true;
+      }
+    },
     checkAddRS() {
       if (
+        !isNumber(this.docFormRS.docPage)||
         this.docFormRS.personName == "" ||
         this.docFormRS.docPage == "" ||
         this.docFormRS.docDate == "" ||
@@ -1719,6 +1732,7 @@ var descText
 
 
       if (
+        !this.isNumber(this.docForm.docPage)||
         this.docForm.docTitle == "" ||
         this.docForm.keyword == "" ||
         this.docForm.sortYear == "" ||
@@ -1732,7 +1746,7 @@ var descText
       ){
                 this.$message({
           type: "error",
-          message: "填写完整",
+          message: "填写检查",
         });
  
                 return false;
@@ -1950,7 +1964,7 @@ else return true;
         this.showWaitingFlag = false;
         this.$message({
           type: "error",
-          message: "填写完整",
+          message: "填写检查",
         });
       }
     },
@@ -2049,6 +2063,8 @@ else return true;
                   break;
                 }
               }
+              this.docForm.docNum="暂无"
+              this.docForm.boxSeq="暂无"
               this.$store.state.alreadyDocs.unshift(
                 Object.assign({}, this.docForm)
               );
@@ -2058,6 +2074,7 @@ else return true;
 
                     this.keywordTemp = this.docForm.keyword;
                     this.dutyAuthorTemp=this.docForm.dutyAuthor
+                    this.levelTemp=this.docForm.docLevel
                     this.docAboutTemp=this.docForm.docAbout
 
               this.optThreeWeightTable();  //里面三个异步提交
@@ -2514,6 +2531,7 @@ else return true;
                     //保证提交完返回id后再执行后续操作
                     this.keywordTemp = this.docForm.keyword;
                     this.dutyAuthorTemp=this.docForm.dutyAuthor
+                    this.levelTemp=this.docForm.docLevel
                     this.docAboutTemp=this.docForm.docAbout
                     this.optThreeWeightTable();
 
@@ -2566,6 +2584,7 @@ else return true;
                 //保证提交完返回id后再执行后续操作
                     this.keywordTemp = this.docForm.keyword;
                     this.dutyAuthorTemp=this.docForm.dutyAuthor
+                    this.levelTemp=this.docForm.docLevel
                     this.docAboutTemp=this.docForm.docAbout
                     this.optThreeWeightTable();
 
@@ -2619,6 +2638,42 @@ else return true;
     //               issueKeyword:issueKeyword
     //             };
     //  },
+
+    optDescTable(wigType){
+             var docDescText=""
+        if(this.docForm.docDescAuthor==true||this.docForm.docDescAuthor=="true"){
+            console.log("文号有！")
+// console.log(this.docForm.docDesc)
+// console.log(this.docForm.docDesc.split("["))
+// console.log(this.docForm.docDesc.split("[").length)
+          if(this.docForm.docDesc.split("[").length>1){
+            console.log("分割[得到两段")
+            docDescText=this.docForm.docDesc.split("[")[0]
+          }
+        }
+        console.log(docDescText)
+        if(docDescText.length<1){return}
+
+              var descJson=this.weightForm[wigType]
+        if(descJson==null){
+          descJson={}
+        }
+        var len=Object.keys(descJson).length
+        if(descJson[docDescText]==null){
+          descJson[docDescText]=len+1+""
+           this.putRequest(
+        //注意防止重复提交
+        "/organ/" + sessionStorage.getItem("authId"),
+        JSON.stringify(this.weightForm)
+      ).then((resp) => {
+          console.log("修改单位表的文号权重表")
+      })
+        }
+        else{
+
+        }
+    },
+
     optThreeWeightTable() {
       //操作三种类型的权重表，前提是已知weightForm即单位信息，第一次则先get 不是第一次则
       var weightType1;
@@ -2646,7 +2701,46 @@ else return true;
         weightType3 = 33;
       }
 
+
+
+
+
+
       if (sessionStorage.getItem("docType") == "official") {
+
+
+        //文号
+
+        this.optDescTable("officialDescWig")
+
+        
+
+
+        // {
+        //   var str=this.weightForm.officialDescWig[this.docForm.keyword]
+        //   if(str==null){
+        //     str=JSON.stringify({})
+        //     this.weightForm.officialDescWig[this.docForm.keyword]=str
+        //   }
+        //   else{
+        //     js=JSON.parse(str)
+        //     js[this]
+        //   }
+        //   this.weightForm.officialDescWig[this.docForm.keyword]=
+        //   this.weightForm.officialDescWig[this.docForm.keyword]==null?JSON.stringify({}):this.weightForm.officialDescWig[this.docForm.keyword]
+          
+
+
+        //             this.putRequest(
+        //     //注意防止重复提交
+        //     "/organ/" + sessionStorage.getItem("authId"),
+        //     JSON.stringify(this.weightForm)
+        //   ).then((resp) => {
+
+        //   })
+        // }
+
+
         var table;
         var issueKeywordArrJson;
         if (this.weightForm.docIssueWig) {
@@ -2706,7 +2800,7 @@ else return true;
            */
           var table2;
           // this.getRequest("/weight/sort/" + this.weightForm.docAuthorWig)
-          this.getRequest("/weight/sort/" + this.weightForm.docAuthorWig)
+          this.getRequest("/weight/" + this.weightForm.docAuthorWig)
 
             .then((resp) => {
               //查询对应的权重表得到json
@@ -2714,7 +2808,14 @@ else return true;
               var key2 = this.dutyAuthorTemp;
               // var json1 = table;
               if (table2[key2] == null) {
-                table2[key2] = "0";
+                table2[key2] ={};
+                console.log(table2)
+                table2[key2].value = "1";
+                table2[key2].level = this.levelTemp;
+                table2[key2]=JSON.stringify(table2[key2])
+                console.log(table2)
+
+                
               }
             })
             .then((r) => {
@@ -2790,6 +2891,8 @@ else return true;
       } //doctype==official if
 
       if (sessionStorage.getItem("docType") == "business") {
+        this.optDescTable("busDescWig")
+
         var table;
         var issueKeywordArrJson;
         if (this.weightForm.busProjectWig) {
@@ -2845,7 +2948,13 @@ else return true;
               var key2 = this.dutyAuthorTemp;
               // var json1 = table;
               if (table2[key2] == null) {
-                table2[key2] = "0";
+                table2[key2] ={};
+                console.log(table2)
+                table2[key2].value = "1";
+                table2[key2].level = this.levelTemp;
+                table2[key2]=JSON.stringify(table2[key2])
+                console.log(table2)
+
               }
             })
             .then((r) => {
@@ -2920,6 +3029,8 @@ else return true;
       } //doctype==business if
 
       if (sessionStorage.getItem("docType") == "science") {
+        this.optDescTable("tecDescWig")
+
         var table;
         var issueKeywordArrJson;
         if (this.weightForm.tecProjectWig) {
@@ -2975,7 +3086,12 @@ else return true;
               var key2 = this.dutyAuthorTemp;
               // var json1 = table;
               if (table2[key2] == null) {
-                table2[key2] = "0";
+                table2[key2] ={};
+                console.log(table2)
+                table2[key2].value = "1";
+                table2[key2].level = this.levelTemp;
+                table2[key2]=JSON.stringify(table2[key2])
+                console.log(table2)
               }
             })
             .then((r) => {
@@ -3267,6 +3383,7 @@ this.matchedDoc=[]
     },
 
     genId(len, radix) {
+      this.showWaitingFlag=true
       this.getRequest("/work/" + sessionStorage.getItem("batchId")).then(
         (resp) => {
 
@@ -3274,6 +3391,7 @@ this.matchedDoc=[]
             // if(sessionStorage.getItem('docType')=="personnel"){}
             this.docForm.docSequence = resp.data.doc_number;
             this.docFormRS.docSequence = resp.data.doc_number;
+            this.showWaitingFlag=false
           }
           else{
                     this.$message({
@@ -3358,6 +3476,7 @@ this.matchedDoc=[]
     this.getRequest("/organ/" + sessionStorage.getItem("authId")).then(
       (resp) => {
         this.weightForm = resp.data;
+       
         this.initNull()
         // this.initTable()
         console.log(resp.data);
@@ -3370,7 +3489,7 @@ this.matchedDoc=[]
       
       docAboutId = this.weightForm.docIssueWig;
       keywordId = this.weightForm.docKeywordWig;
-dutyAuthorId=this.weightForm.docAuthorWig
+      dutyAuthorId=this.weightForm.docAuthorWig
       this.levelkwToDeadlineTable=this.weightForm.officialLevelKeywordDeadline
       this.descToAuthor=this.weightForm.officialDescAuthor
       // console.log(docAboutId)

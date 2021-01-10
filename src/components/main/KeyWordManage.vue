@@ -23,7 +23,7 @@
       <div
         class="topTextButtonBlue"
         style="position: absolute; top: 7.5rem; right: 20rem; z-index: 123"
-        v-if="selectShow&&!backCompute"
+        v-if="selectShow && !backCompute"
         @click="backToOrgans"
       >
         返回单位表
@@ -31,7 +31,7 @@
       <div
         class="topTextButtonBlue"
         style="position: absolute; top: 7.5rem; right: 20rem; z-index: 123"
-        v-if="selectShow&&backCompute"
+        v-if="selectShow && backCompute"
         @click="backToDetail"
       >
         返回预览
@@ -53,10 +53,20 @@
       >
         &nbsp; 返回 &nbsp;
       </div>
+
+            <div
+        class="topTextButton"
+        style="position: absolute; top: 7.5rem; right: 20rem; z-index: 123"
+        v-if="false&&!selectShow &&  backToKeyWordShow"
+        @click="backToKeyWord"
+      >
+        &nbsp; 返回g &nbsp;
+      </div>
+
       <div style="height: 4.5rem"></div>
 
       <div
-        v-if="!selectShow && !backToDocAboutShow"
+        v-if="!selectShow && !backToDocAboutShow && !backToKeyWordShow"
         style="
           position: absolute;
           top: 6rem;
@@ -65,7 +75,7 @@
           text-align: center;
         "
       >
-        {{getAuthName}}的对照表规则
+        {{ getAuthName }}的对照表规则
       </div>
 
       <div
@@ -78,11 +88,11 @@
           text-align: center;
         "
       >
-        选择设置本单位规则：{{getAuthName}}
+        选择设置本单位规则：{{ getAuthName }}
       </div>
-<!-- {{sessionStorage.getItem("authCode")}} -->
+      <!-- {{sessionStorage.getItem("authCode")}} -->
       <div
-        v-if="backToDocAboutShow"
+        v-if="backToDocAboutShow && !this.backToKeyWordShow"
         style="
           position: absolute;
           top: 6rem;
@@ -94,8 +104,108 @@
         {{ true ? this.deepInThisDocAbout : getAuthName }}-优先级规则设置
       </div>
 
+            <div
+        v-if="backToKeyWordShow"
+        style="
+          position: absolute;
+          top: 6rem;
+          font-size: 1.5rem;
+          width: 100%;
+          text-align: center;
+        "
+      >
+        {{ this.deepInThisKeyWord }}-文号优先级规则设置
+      </div>
+<!-- 修改的card   并且带级别 -->
       <div
-        v-if="showKVFix"
+        v-if="showKVFix&&computeTypeNumIsAuthor"
+        style="
+          position: absolute;
+          top: 40vh;
+          left: 50%;
+          margin-left: -15rem;
+          z-index: 122;
+          padding-top: 1rem;
+          color: #333;
+          font-size: 1.5rem;
+          width: 40rem;
+          height: 10rem;
+          background-color: rgb(209, 218, 243);
+          -webkit-box-shadow: 0 0 0.5rem #909399;
+          box-shadow: 0 0 0.5rem #909399;
+          border-radius: 1rem;
+        "
+      >
+        <div
+          style="
+            font-size: 1rem;
+            width: 20rem;
+            text-align: center;
+            margin-left: 10rem;
+            color: #333;
+          "
+        >
+          请按提示输入
+        </div>
+        <input
+          type="text"
+          style="
+            height: 1.5rem;
+            margin-left: 6rem;
+            margin-top: 2rem;
+            width: 7rem;
+          "
+          disabled="true"
+          v-model="keyToFix"
+        />&nbsp;&nbsp;&nbsp;:
+        <input
+          type="text"
+          style="height: 1.5rem; margin-left: 1rem; width: 7rem"
+          v-model="valueToFix"
+        />
+
+                <select
+          v-model="levelToSet"
+          name=""
+          id=""
+          style="height: 2rem; margin-left: 2rem; width: 9rem"
+        >
+          <option value="乡级">乡级</option>
+
+          <option value="本级">本级</option>
+          <option value="县级">县级</option>
+          <option value="市级">市级</option>
+          <option value="省级">省级</option>
+          <option value="部级">部级</option>
+
+        </select>
+
+        <div
+          class="textButton"
+          @click="clearKV"
+          style="position: absolute; left: 10rem; color: #333"
+        >
+          取消
+        </div>
+        <div
+          @click="fixTheKV"
+          style="
+            color: #333;
+            cursor: pointer;
+            position: absolute;
+            margin-top: 1.5rem;
+
+            font-size: 1.2rem;
+            margin-left: 15rem;
+          "
+        >
+          确定
+        </div>
+      </div>
+
+
+      <div
+        v-if="showKVFix&&!computeTypeNumIsAuthor"
         style="
           position: absolute;
           top: 40vh;
@@ -131,7 +241,6 @@
             margin-left: 6rem;
             margin-top: 2rem;
             width: 7rem;
-            
           "
           disabled="true"
           v-model="keyToFix"
@@ -258,8 +367,93 @@
         </div>
       </div>
 
+
       <div
-        v-if="showKVPreset"
+        v-if="showKVPreset&&computeTypeNumIsAuthor"
+        style="
+          position: fixed;
+          top: 40vh;
+          left: 50%;
+          margin-left: -15rem;
+          z-index: 122;
+          padding-top: 1rem;
+          color: #333;
+          font-size: 1.5rem;
+          width: 40rem;
+          height: 10rem;
+          background-color: rgb(255, 255, 255);
+          -webkit-box-shadow: 0 0 0.5rem #909399;
+          box-shadow: 0 0 0.5rem #909399;
+          border-radius: 1rem;
+        "
+      >
+        <div
+          style="
+            font-size: 1rem;
+            width: 20rem;
+            text-align: center;
+            margin-left: 10rem;
+            color: #333;
+          "
+        >
+          请按提示输入
+        </div>
+        <input
+          type="text"
+          style="
+            height: 1.5rem;
+            margin-left: 6rem;
+            margin-top: 2rem;
+            width: 7rem;
+          "
+          v-model="keyToSet"
+        />&nbsp;&nbsp;&nbsp;:
+        <input
+          type="text"
+          style="height: 1.5rem; margin-left: 1rem; width: 7rem"
+          v-model="valueToSet"
+        />
+        <div
+          class="textButton"
+          @click="clearPreset"
+          style="position: absolute; left: 10rem; color: #333"
+        >
+          取消
+        </div>
+                <select
+          v-model="levelToSet"
+          name=""
+          id=""
+          style="height: 2rem; margin-left: 2rem; width: 9rem"
+        >
+          <option value="乡级">乡级</option>
+
+          <option value="本级">本级</option>
+          <option value="县级">县级</option>
+          <option value="市级">市级</option>
+          <option value="省级">省级</option>
+          <option value="部级">部级</option>
+
+        </select>
+
+        <div
+          @click="doPreset"
+          style="
+            color: #333;
+            cursor: pointer;
+            position: absolute;
+            margin-top: 1.5rem;
+
+            font-size: 1.2rem;
+            margin-left: 15rem;
+          "
+        >
+          确定
+        </div>
+      </div>
+
+      <div
+        v-if="showKVPreset&&!computeTypeNumIsAuthor"
         style="
           position: fixed;
           top: 40vh;
@@ -328,47 +522,48 @@
       </div>
 
       <div class="Card printSetBox" v-if="selectShow">
-              <div class="newTip">选择对照表进行设置</div>
-    <el-select
-    @change="docTypeChange"
+        <div class="newTip">选择对照表进行设置</div>
+        <el-select
+          @change="docTypeChange"
           class="tableSelectStyle"
-            ref="authSelectref"
-            id="selectAuth"
-            filterable
-            v-model="selectedDoctype"
-            placeholder="选择档案类型"
-          >
-            <el-option
-              v-for="item in docTypes"
-              :key="item"
-              :label="item"
-              :value="item"
-            ></el-option>
-
-    </el-select>
-    <el-select
+          ref="authSelectref"
+          id="selectAuth"
+          filterable
+          v-model="selectedDoctype"
+          placeholder="选择档案类型"
+        >
+          <el-option
+            v-for="item in docTypes"
+            :key="item"
+            :label="item"
+            :value="item"
+          ></el-option>
+        </el-select>
+        <el-select
           class="tableSelectStyle"
-          style="top:10rem"
-
-            ref="authSelectref"
-            id="selectAuth"
-            filterable
-            v-model="selectedTableType"
-            placeholder="选择对照表"
-          > 
-           <el-option
-              v-for="item in tableTypes"
-              :key="item"
-              :label="item"
-              :value="item"
-            ></el-option>
-    </el-select>
-    <div class="topTextButtonBlue" @click="selectDone" style="width:3rem;position:absolute;top:10rem;left:29rem">
-      确定
-    </div>
-
+          style="top: 10rem"
+          ref="authSelectref"
+          id="selectAuth"
+          filterable
+          v-model="selectedTableType"
+          placeholder="选择对照表"
+        >
+          <el-option
+            v-for="item in tableTypes"
+            :key="item"
+            :label="item"
+            :value="item"
+          ></el-option>
+        </el-select>
+        <div
+          class="topTextButtonBlue"
+          @click="selectDone"
+          style="width: 3rem; position: absolute; top: 10rem; left: 29rem"
+        >
+          确定
+        </div>
       </div>
-<!-- selectShow -->
+      <!-- selectShow -->
       <div class="typeSelect" v-if="false">
         <div style="width: 3rem; height: 2rem"></div>
 
@@ -409,7 +604,7 @@
       <!-- 选择类型 -->
 
       <!-- 对照表的设置table -->
-   <div class="keyValueBox" @click="boxClick" v-if="!selectShow&&dicShow">  
+      <div class="keyValueBox" @click="boxClick" v-if="!selectShow && dicShow">
         <div
           style="
             position: absolute;
@@ -423,11 +618,10 @@
           @click="preSetDicButton"
           v-if="!computeIsLevel"
         >
-
           点击预设对照规则
         </div>
 
-                <div
+        <div
           style="
             position: absolute;
             right: 0;
@@ -443,35 +637,57 @@
           点击预设对照规则
         </div>
 
-                  <div style="float:left;;width:7rem;text-align:center;position:absolute;z-index:1333" v-if="computeIsLevel&&!selectShow" v-on:mouseover="showFilterLevel()" @mouseleave="hideFilterLevel">
-          {{selectedLevel}}            <div style="width: 0.7rem; height: 0.7rem;positon:relative" v-if="!filterLevelFlag">
-             
+        <div
+          style="
+            float: left;
+            width: 7rem;
+            text-align: center;
+            position: absolute;
+            z-index: 1333;
+          "
+          v-if="computeIsLevel && !selectShow"
+          v-on:mouseover="showFilterLevel()"
+          @mouseleave="hideFilterLevel"
+        >
+          {{ selectedLevel }}
+          <div
+            style="width: 0.7rem; height: 0.7rem; positon: relative"
+            v-if="!filterLevelFlag"
+          >
             <span id="user_top"></span>
-
           </div>
-            <div style="width: 0.7rem; height: 0.7rem;positon:relative" v-if="filterLevelFlag">
-             
-            <span id="user_topd" ></span>
-
+          <div
+            style="width: 0.7rem; height: 0.7rem; positon: relative"
+            v-if="filterLevelFlag"
+          >
+            <span id="user_topd"></span>
           </div>
-          
-                     <div class="filterStyle"  v-on:mouseover="showFilterLevel()" @mouseleave="hideFilterLevel"  v-if="filterLevelFlag ">
-                <div v-for="(item, index) in this.levelFilter" :key="index" @click="filterThisRequest('level',item)" class="filterItemStyle">{{item}}</div>
-              </div>
+
+          <div
+            class="filterStyle"
+            v-on:mouseover="showFilterLevel()"
+            @mouseleave="hideFilterLevel"
+            v-if="filterLevelFlag"
+          >
+            <div
+              v-for="(item, index) in this.levelFilter"
+              :key="index"
+              @click="filterThisRequest('level', item)"
+              class="filterItemStyle"
+            >
+              {{ item }}
+            </div>
+          </div>
         </div>
 
-        <div class="keyValueItem ">
-          
-          
+        <div class="keyValueItem">
           <div class="keyValueInfo" style="border: none; position: relative">
-            {{computeKeyTitle}}
- 
+            {{ computeKeyTitle }}
           </div>
 
-
-
-
-          <div class="keyValueInfo" style="border: none">{{computeValueTitle}}</div>
+          <div class="keyValueInfo" style="border: none">
+            {{ computeValueTitle }}
+          </div>
 
           <div class="keyValueInfo" style="border: none">操作</div>
         </div>
@@ -484,14 +700,14 @@
           draggable="false"
         >
           <div
-          v-if="computeIsLevel"
+            v-if="computeIsLevel"
             v-bind:class="[{ keyValueInfo: true }, { hideText: false }]"
             style="border: none"
           >
-            {{ item[0]|formatLevelKeyword }}
+            {{ item[0] | formatLevelKeyword }}
           </div>
-                    <div
-                    v-if="!computeIsLevel"
+          <div
+            v-if="!computeIsLevel"
             v-bind:class="[{ keyValueInfo: true }, { hideText: false }]"
             style="border: none"
           >
@@ -509,32 +725,30 @@
           </div>
 
           <div style="width: 0; position: absolute">{{ item.id }}</div>
- 
-  
-          <div class="topTextButtonBlueNoWidth" style="float:left;margin-left:10rem"
+
+          <div
+            class="topTextButtonBlueNoWidth"
+            style="float: left; margin-left: 10rem"
             type="primary"
-             
             @click="fixKv($event, item)"
             v-if="!saveBtnShow"
-            >修改 </div
           >
-        <div class="topTextButtonBlueNoWidth" style="float:left"
+            修改
+          </div>
+          <div
+            class="topTextButtonBlueNoWidth"
+            style="float: left"
             type="danger"
-             
             @click="deleteKV($event, item)"
-            >删除 </div
           >
-
-          
-
-
+            删除
+          </div>
         </div>
 
         <div style="clear: both"></div>
       </div>
 
-
-      <div class="keyValueBox" @click="boxClick" v-if="!selectShow&&!dicShow">
+      <div class="keyValueBox" @click="boxClick" v-if="!selectShow && !dicShow ">
         <div
           style="
             position: absolute;
@@ -546,20 +760,68 @@
             line-height: 2rem;
           "
           @click="preSetButton"
+          v-if=" !backToKeyWordShow"
         >
           点击预设优先级
         </div>
-        <div class="keyValueItem infoItemHighlight">
-          <div class="keyValueInfo" style="border: none; position: relative">
+        <div class="keyValueItem">
+          <!-- 优先级表的责任者表里的级别筛选 start -->
+          <div
+            style="
+              float: left;
+              width: 7rem;
+              text-align: center;
+              position: absolute;
+              z-index: 1333;
+            "
+            v-if="computeTypeNumIsAuthor&&!selectShow"
+            v-on:mouseover="showFilterLevel()"
+            @mouseleave="hideFilterLevel"
+          >
+            {{ selectedLevel }}
+            <div
+              style="width: 0.7rem; height: 0.7rem; positon: relative"
+              v-if="!filterLevelFlag"
+            >
+              <span id="user_top"></span>
+            </div>
+            <div
+              style="width: 0.7rem; height: 0.7rem; positon: relative"
+              v-if="filterLevelFlag"
+            >
+              <span id="user_topd"></span>
+            </div>
+
+            <div
+              class="filterStyle"
+              v-on:mouseover="showFilterLevel()"
+              @mouseleave="hideFilterLevel"
+              v-if="filterLevelFlag"
+            >
+              <div
+                v-for="(item, index) in this.levelFilter"
+                :key="index"
+                @click="filterLevelFromAuthor(item)"
+                class="filterItemStyle"
+              >
+                {{ item }}
+              </div>
+            </div>
+          </div>
+          <!-- 优先级表的责任者表里的级别筛选 end-->
+
+
+          <div class="keyValueInfo" style="border: none;z-index:1334; position: relative;margin-left:5rem">
             优先级(越大越靠前）
-            <div class="topTextButtonBlueNoWidth" style="float:left"
+            <div
+              class="topTextButtonBlueNoWidth"
+              style="float: left;margin-left:2.5rem"
               @click="saveKeyValue"
               type="success"
-               
-           
               v-if="saveBtnShow"
-              >保存修改 </div
             >
+              保存修改
+            </div>
           </div>
           <div class="keyValueInfo" style="border: none">词</div>
 
@@ -575,7 +837,7 @@
         >
           <div
             v-bind:class="[{ keyValueInfo: true }, { hideText: false }]"
-            style="border: none"
+            style="border: none;margin-left:5rem"
           >
             {{ item[1] }}
           </div>
@@ -590,59 +852,73 @@
           </div>
 
           <div style="width: 0; position: absolute">{{ item.id }}</div>
-          <div class="topTextButtonBlueNoWidth" style="float:left;margin-left:5rem"
+          <div
+            class="topTextButtonBlueNoWidth"
+            style="float: left; margin-left: 5rem"
             type="success"
-             
             @click="upClick($event, item)"
-           
-            >上调 </div
           >
-          <div class="topTextButtonBlueNoWidth" style="float:left"
+            上调
+          </div>
+          <div
+            class="topTextButtonBlueNoWidth"
+            style="float: left"
             type="warning"
-             
             @click="downClick($event, item)"
-            >下调 </div
           >
-          <div class="topTextButtonBlueNoWidth" style="float:left"
+            下调
+          </div>
+          <div
+            class="topTextButtonBlueNoWidth"
+            style="float: left"
             type="danger"
             v-if="!saveBtnShow"
-             
             @click="deleteKV($event, item)"
-            >删除 </div
           >
-          <div class="topTextButtonBlueNoWidth" style="float:left"
+            删除
+          </div>
+          <div
+            class="topTextButtonBlueNoWidth"
+            style="float: left"
             type="primary"
-             
             @click="fixKv($event, item)"
             v-if="!saveBtnShow"
-            >修改值 </div
           >
+            修改值
+          </div>
 
-          <div class="topTextButtonBlueNoWidth" style="float:left"
+          <div
+            class="topTextButtonBlueNoWidth"
+            style="float: left"
             type=""
-             
             @click="thisDocAbout($event, item)"
             v-if="!saveBtnShow && showKeyWord && !backToDocAboutShow"
-            >关键词对应表 </div
           >
-
-          
-          <div class="topTextButtonBlueNoWidth" style="float:left"
+            关键词优先级表
+          </div>
+<!-- showKeyWord:问题表设置
+    backToDocAbout ：关键词表设置
+    backtoKeyword：文号表设置
+ -->
+          <div
+            class="topTextButtonBlueNoWidth"
+            style="float: left"
             type=""
-             
-            @click="thisDocAboutDesc($event, item)"
-            v-if="!saveBtnShow && showKeyWord && !backToDocAboutShow"
-            >文号对应表 </div
+            @click="thisKeyWordDesc($event, item)"
+            v-if="!saveBtnShow && showKeyWord && backToDocAboutShow && !backToKeyWordShow&&false"
           >
+            文号优先级表
+          </div>
 
-
-          <div class="topTextButtonBlueNoWidth" style="float:left"
+          <div
+            class="topTextButtonBlueNoWidth"
+            style="float: left"
             type=""
-             
             @click="rsKeywordToDocAbout($event, item)"
             v-if="rsKeywordPage"
-            >设置对应材料类别 </div
           >
+            设置对应材料类别
+          </div>
 
           <!-- <div style="float:left;width:2rem;background-color:red;height:1.5rem">1</div> -->
         </div>
@@ -656,50 +932,64 @@
 <script>
 import axios from "axios";
 import messageVue from "../chat/message.vue";
- 
 
 export default {
   computed: {
-    computeKeyTitle(){
-      if((this.typeNum-6)%10==0){
-        return "关键词"
-      }
-      else return "文号(不包括数字)"
+    computeKeyTitle() {
+      if ((this.typeNum - 6) % 10 == 0) {
+        return "关键词";
+      } else return "文号(不包括数字)";
     },
-    computeValueTitle(){
-            if((this.typeNum-6)%10==0){
-        return "期限"
-      }
-      else return "责任者"
+    computeValueTitle() {
+      if ((this.typeNum - 6) % 10 == 0) {
+        return "期限";
+      } else return "责任者";
     },
-        computeIsLevel(){
-            if((this.typeNum-6)%10==0){
-        return true
-      }
-      else return false
+    computeIsLevel() {
+      if ((this.typeNum - 6) % 10 == 0) {
+        return true;
+      } else return false;
     },
     backCompute() {
-        return this.$store.state.backToDetailFlag;
+      return this.$store.state.backToDetailFlag;
     },
-    getAuthName(){
 
-      return sessionStorage.getItem('authName')
+    computeTypeNumIsAuthor() {
+      return this.typeNum == 12 || this.typeNum == 22 || this.typeNum == 32;
+    },
+    getAuthName() {
+      return sessionStorage.getItem("authName");
     },
     rsKeywordPage() {
       return this.typeNum == 41;
     },
     showKeyWord() {
-      return (
-        this.typeNum == 11 ||
-        this.typeNum == 21 ||
-        this.typeNum == 31
-      );
+      return this.typeNum == 11 || this.typeNum == 21 || this.typeNum == 31;
     },
   },
 
   created() {
-      this.setDescKVFlag=false  //进入页面时设置为false 与关键词优先级设置区分
-    
+  // this.$confirm(
+  //       "确定要删除该条不再使用吗，若某批次录入中有该词条可能导致排序失败",
+  //       {
+  //         cancelButtonClass: "btn-custom-cancel",
+  //         confirmButtonText: "确定",
+  //         cancelButtonText: "取消",
+  //         type: "warning",
+  //       }
+  //     ).then(()=>{
+  //       return
+  //       console.log("asdasdasdsadasdsadasd")
+  //     })
+  //       console.log("asdasdasdsadasdsadasd2")
+
+//     var t=['d','2','a']
+//     for(var i in t){
+//       console.log(i)
+//     }
+// return
+    this.setDescKVFlag = false; //进入页面时设置为false 与关键词优先级设置区分
+
     window.scrollTo(0, 0);
     var js = {};
     var k = 3;
@@ -715,46 +1005,42 @@ export default {
         this.authName = resp.data.authName;
         console.log("加载keyWM页面时某个特定单位的权重表对应的id");
 
-      if(this.weightForm.officialDescWig==null){
-this.weightForm.officialDescWig={}
-      }
+        if (this.weightForm.officialDescWig == null) {
+          this.weightForm.officialDescWig = {};
+        }
 
-            if(this.weightForm.busDescWig==null){
-this.weightForm.busDescWig={}
-      }
+        if (this.weightForm.busDescWig == null) {
+          this.weightForm.busDescWig = {};
+        }
 
-            if(this.weightForm.tecDescWig==null){
-this.weightForm.tecDescWig={}
-      }
-      if(this.weightForm.officialDescAuthor==null){
-          this.weightForm.officialDescAuthor={}
-      }
-            if(this.weightForm.officialLevelKeywordDeadline==null){
-          this.weightForm.officialLevelKeywordDeadline={}
-
-      }
-            if(this.weightForm.tecDescAuthor==null){
-          this.weightForm.tecDescAuthor={}
-
-      }
-            if(this.weightForm.tecLevelKeywordDeadline==null){
-          this.weightForm.tecLevelKeywordDeadline={}
-      }
-                  if(this.weightForm.busDescAuthor==null){
-          this.weightForm.busDescAuthor={}
-      }
-                  if(this.weightForm.busLevelKeywordDeadline==null){
-          this.weightForm.busLevelKeywordDeadline={}
-      }
-              if (this.weightForm) {
+        if (this.weightForm.tecDescWig == null) {
+          this.weightForm.tecDescWig = {};
+        }
+        if (this.weightForm.officialDescAuthor == null) {
+          this.weightForm.officialDescAuthor = {};
+        }
+        if (this.weightForm.officialLevelKeywordDeadline == null) {
+          this.weightForm.officialLevelKeywordDeadline = {};
+        }
+        if (this.weightForm.tecDescAuthor == null) {
+          this.weightForm.tecDescAuthor = {};
+        }
+        if (this.weightForm.tecLevelKeywordDeadline == null) {
+          this.weightForm.tecLevelKeywordDeadline = {};
+        }
+        if (this.weightForm.busDescAuthor == null) {
+          this.weightForm.busDescAuthor = {};
+        }
+        if (this.weightForm.busLevelKeywordDeadline == null) {
+          this.weightForm.busLevelKeywordDeadline = {};
+        }
+        if (this.weightForm) {
           this.showWaitingFlag = false;
         }
         console.log(this.weightForm);
-// var a='officialDescAuthor'
-// console.log(this.weightForm[a])
+        // var a='officialDescAuthor'
+        // console.log(this.weightForm[a])
       }
-
-
     );
 
     // var json3 = {};
@@ -767,142 +1053,195 @@ this.weightForm.tecDescWig={}
     // console.log(this.jsonTable);
   },
   methods: {
-        filterThisRequest(str,item){
-          this.selectedLevel=item
-      window.scrollTo(0,0)
+    backToKeyWord(){
+      this.backToDocAboutShow=true
+      this.backToKeyWordShow=false
+                            var e = 1;
+                      var tempp = [];
+                      tempp.push(this.deepInThisDocAbout); //为了再查一次这个问题
+                      this.thisDocAbout(e, tempp);
+    },
+    levelAuthorInit(){
+      console.log("init")
+                  for (var attr in this.authorJson) {
+              console.log(attr);
+              this.jsonTable.push([attr, JSON.parse(this.authorJson[attr]).value, JSON.parse(this.authorJson[attr]).level]);
+            }
 
-      if(str=='level'){
+      var temArr=[]
+      var levelArr=['乡级','本级','县级','市级','省级','部级']
+      for (var level in levelArr){
+        console.log(level)
+              temArr = this.jsonTable.filter(function (element, index, self) {
+          return element[2] == levelArr[level];
+        });
+        console.log(temArr)
+          for(var i in temArr){
+      var n=temArr.length-i
+    //  temArr[i][1]=n
+     var aJson=JSON.parse(this.authorJson[temArr[i][0]])
+     console.log(aJson)
+   aJson.value=n
+   var aJsonString=JSON.stringify(aJson)
+   this.authorJson[temArr[i][0]]=aJsonString
+    }
+      }
+
+console.log(this.authorJson)
+this.jsonTable=[]
+                  for (var attr in this.authorJson) {
+              console.log(attr);
+              this.jsonTable.push([attr, JSON.parse(this.authorJson[attr]).value, JSON.parse(this.authorJson[attr]).level]);
+            }
+ 
+                        this.tempTable = this.jsonTable; //整个
+
+                                  var kvObj = {
+            authId: sessionStorage.getItem("authId"),
+            type: this.typeNum,
+            tables: this.authorJson,
+            issueKeyword: {},
+            keywordIssue: {},
+          };
+
+           this.putRequest("/weight/" + this.requestWigId, kvObj).then(
+            (resp) => {
+              console.log("初始化时更新责任者权重表，init里面");
+              console.log(resp);
+            }
+          );
+
+    },
+
+    filterLevelFromAuthor(item){
+      console.log(this.jsonTable)
+      this.selectedLevel = item;
+      window.scrollTo(0, 0);
+        this.jsonTable = this.tempTable;
+
+        this.jsonTable = this.jsonTable.filter(function (element, index, self) {
+          console.log(element[2])
+          return element[2] == item;
+        });
+        
+    },
+    filterThisRequest(str, item) {
+      this.selectedLevel = item;
+      window.scrollTo(0, 0);
+
+      if (str == "level") {
         // for(var i in this.jsonTable){
         //   this.jsonTable[i][0].split('~')[0]
         // }
-      this.jsonTable=this.tempTable
+        this.jsonTable = this.tempTable;
 
-
-            this.jsonTable= this.jsonTable.filter(function (element, index, self) {
-   　　return element[0].split('~')[0]==item
-　　});
-
-      }
- 
-
-
-      
-    },
-
-        hideFilterLevel(){
-      this.filterLevelFlag=false;
-    },
-    showFilterLevel(){
-      this.filterLevelFlag=true;
-    },
-
- 
-    getAuth(){
-      
-    this.getRequest("/organ/" + sessionStorage.getItem("authId")).then(
-      (resp) => {
-        this.weightForm = resp.data;
-        
-        })
-    },
-    selectDone(){
-      if(this.selectedDoctype=="文书类"){
-        if(this.selectedTableType=="文书类档案问题(机构)优先级表"){
-          this.checkFromThisType(11)
-
-        }
-                if(this.selectedTableType=="文书类档案责任者优先级表"){
-          this.checkFromThisType(12)
-        }
-                if(this.selectedTableType=="文号责任者对照表"){
-          this.selectedTableTypeName="officialDescAuthor"
-
-          this.checkFromThisType(15)
-
-        }
-                if(this.selectedTableType=="级别期限对照表"){
-          this.selectedTableTypeName="officialLevelKeywordDeadline"
-          
-          this.checkFromThisType(16)
-
-        }
-      }
-            if(this.selectedDoctype=="业务类"){
-        if(this.selectedTableType=="业务类档案问题优先级表"){
-          this.checkFromThisType(31)
-        }
-                if(this.selectedTableType=="业务类档案责任者优先级表"){
-          this.checkFromThisType(32)
-        }
-                if(this.selectedTableType=="文号责任者对照表"){
-          this.selectedTableTypeName="busDescAuthor"
-
-          this.checkFromThisType(35)
-          
-        }
-                if(this.selectedTableType=="级别期限对照表"){
-          this.selectedTableTypeName="busLevelKeywordDeadline"
-
-          this.checkFromThisType(36)
-        }
-      }
-            if(this.selectedDoctype=="科技类"){
-        if(this.selectedTableType=="科技类档案项目优先级表"){
-          this.checkFromThisType(21)
-        }
-                if(this.selectedTableType=="科技类档案责任者优先级表"){
-          this.checkFromThisType(22)
-        }
-                if(this.selectedTableType=="文号责任者对照表"){
-          this.selectedTableTypeName="tecDescAuthor"
-
-          this.checkFromThisType(25)
-
-        }
-                if(this.selectedTableType=="级别期限对照表"){
-          this.selectedTableTypeName="tecLevelKeywordDeadline"
-
-          this.checkFromThisType(26)
-
-        }
-      }
-            if(this.selectedDoctype=="人事类"){
-
-              this.checkFromThisType(41)
-      }
-
-    },
-    docTypeChange(){
-      this.selectedTableType=""
-      if(this.selectedDoctype=='文书类')
-      this.tableTypes=[
-        "文书类档案问题(机构)优先级表",
-        "文书类档案责任者优先级表",
-                "文号责任者对照表",
-        "级别期限对照表",
-      ]
-      else if(this.selectedDoctype=='业务类'){
-        this.tableTypes=[
-        "业务类档案问题优先级表",
-        "业务类档案责任者优先级表",
-                "文号责任者对照表",
-        "级别期限对照表",
-      ]
-      }else if(this.selectedDoctype=='科技类'){
-        this.tableTypes=[
-        "科技类档案项目优先级表",
-        "科技类档案责任者优先级表",
-                "文号责任者对照表",
-        "级别期限对照表",
-      ]
-      }else{
-        this.selectedTableType=""
-        this.tableTypes=[
-        "人事类档案关键词优先级表",
-        ]
+        this.jsonTable = this.jsonTable.filter(function (element, index, self) {
+          return element[0].split("~")[0] == item;
+        });
       }
     },
 
+    hideFilterLevel() {
+      this.filterLevelFlag = false;
+    },
+    showFilterLevel() {
+      this.filterLevelFlag = true;
+    },
+
+    getAuth() {
+      this.getRequest("/organ/" + sessionStorage.getItem("authId")).then(
+        (resp) => {
+          this.weightForm = resp.data;
+        }
+      );
+    },
+    selectDone() {
+      if (this.selectedDoctype == "文书类") {
+        if (this.selectedTableType == "文书类档案问题(机构)优先级表") {
+          this.checkFromThisType(11);
+        }
+        if (this.selectedTableType == "文书类档案责任者优先级表") {
+          this.checkFromThisType(12);
+        }
+        if (this.selectedTableType == "文号责任者对照表") {
+          this.selectedTableTypeName = "officialDescAuthor";
+
+          this.checkFromThisType(15);
+        }
+        if (this.selectedTableType == "级别期限对照表") {
+          this.selectedTableTypeName = "officialLevelKeywordDeadline";
+
+          this.checkFromThisType(16);
+        }
+      }
+      if (this.selectedDoctype == "业务类") {
+        if (this.selectedTableType == "业务类档案问题优先级表") {
+          this.checkFromThisType(31);
+        }
+        if (this.selectedTableType == "业务类档案责任者优先级表") {
+          this.checkFromThisType(32);
+        }
+        if (this.selectedTableType == "文号责任者对照表") {
+          this.selectedTableTypeName = "busDescAuthor";
+
+          this.checkFromThisType(35);
+        }
+        if (this.selectedTableType == "级别期限对照表") {
+          this.selectedTableTypeName = "busLevelKeywordDeadline";
+
+          this.checkFromThisType(36);
+        }
+      }
+      if (this.selectedDoctype == "科技类") {
+        if (this.selectedTableType == "科技类档案项目优先级表") {
+          this.checkFromThisType(21);
+        }
+        if (this.selectedTableType == "科技类档案责任者优先级表") {
+          this.checkFromThisType(22);
+        }
+        if (this.selectedTableType == "文号责任者对照表") {
+          this.selectedTableTypeName = "tecDescAuthor";
+
+          this.checkFromThisType(25);
+        }
+        if (this.selectedTableType == "级别期限对照表") {
+          this.selectedTableTypeName = "tecLevelKeywordDeadline";
+
+          this.checkFromThisType(26);
+        }
+      }
+      if (this.selectedDoctype == "人事类") {
+        this.checkFromThisType(41);
+      }
+    },
+    docTypeChange() {
+      this.selectedTableType = "";
+      if (this.selectedDoctype == "文书类")
+        this.tableTypes = [
+          "文书类档案问题(机构)优先级表",
+          "文书类档案责任者优先级表",
+          "文号责任者对照表",
+          "级别期限对照表",
+        ];
+      else if (this.selectedDoctype == "业务类") {
+        this.tableTypes = [
+          "业务类档案问题优先级表",
+          "业务类档案责任者优先级表",
+          "文号责任者对照表",
+          "级别期限对照表",
+        ];
+      } else if (this.selectedDoctype == "科技类") {
+        this.tableTypes = [
+          "科技类档案项目优先级表",
+          "科技类档案责任者优先级表",
+          "文号责任者对照表",
+          "级别期限对照表",
+        ];
+      } else {
+        this.selectedTableType = "";
+        this.tableTypes = ["人事类档案关键词优先级表"];
+      }
+    },
 
     clearRsSet() {
       this.selectRsDAFlag = false;
@@ -923,85 +1262,90 @@ this.weightForm.tecDescWig={}
       }
       if (this.typeNum == 41) return 41;
     },
-    setDescToWeightForm(){  //set直接set descJson  getDescJsonTableFromWeightForm会根据weightform重置descJson
+    setDescToWeightForm() {
+      //set直接set descJson  getDescJsonTableFromWeightForm会根据weightform重置descJson
 
       //       var jsonToCommit = {}; /**将修改提交 jsonTable是数组*/
       // for (var i = 0; i < this.jsonTable.length; i++) {
-       
+
       //   jsonToCommit[this.jsonTable[i][0]] = this.jsonTable[i][1];
       // }
       // this.descJson=jsonToCommit
-console.log(this.descJson)
-      var descString=JSON.stringify(this.descJson)
+      console.log(this.descJson);
+      var descString = JSON.stringify(this.descJson);
 
-         if(sessionStorage.getItem("docType")=="official"){
-
-           this.weightForm.officialDescWig[this.deepInThisDocAbout]=descString
-    }
-    if(sessionStorage.getItem("docType")=="business"){
-           this.weightForm.busDescWig[this.deepInThisDocAbout]=descString
-
-    }
-    if(sessionStorage.getItem("docType")=="science"){
-           this.weightForm.tecDescWig[this.deepInThisDocAbout]=descString
-    }
+      if (sessionStorage.getItem("docType") == "official") {
+        this.weightForm.officialDescWig[this.deepInThisDocAbout] = descString;
+      }
+      if (sessionStorage.getItem("docType") == "business") {
+        this.weightForm.busDescWig[this.deepInThisDocAbout] = descString;
+      }
+      if (sessionStorage.getItem("docType") == "science") {
+        this.weightForm.tecDescWig[this.deepInThisDocAbout] = descString;
+      }
     },
-    getDescJsonTableFromWeightForm(){  //显示 并且 设置descJson 这个是文号优先级json
-         var organForm=this.weightForm
-    var docAboutDescJson
-    this.jsonTable=[]
-    if(sessionStorage.getItem("docType")=="official"){
-docAboutDescJson=organForm.officialDescWig
-    }
-    if(sessionStorage.getItem("docType")=="business"){
-docAboutDescJson=organForm.busDescWig
+    getDescJsonTableFromWeightForm() {
+      //显示 并且 设置descJson 这个是文号优先级json
+      var organForm = this.weightForm;
+      var keyWordDescJson;
+      this.jsonTable = [];
+      if (sessionStorage.getItem("docType") == "official") {
+        keyWordDescJson = organForm.officialDescWig;
+      }
+      if (sessionStorage.getItem("docType") == "business") {
+        keyWordDescJson = organForm.busDescWig;
+      }
+      if (sessionStorage.getItem("docType") == "science") {
+        keyWordDescJson = organForm.tecDescWig;
+      }
+      if (keyWordDescJson == null) {
+        keyWordDescJson = {};
+      }
 
-    }
-    if(sessionStorage.getItem("docType")=="science"){
-docAboutDescJson=organForm.tecDescWig
+      var descJsonString = keyWordDescJson[this.deepInThisKeyWord];
+      console.log(descJsonString);
 
-    }
-    if(docAboutDescJson==null){
-      docAboutDescJson={}
-    }
+      if (descJsonString == null) {
+        descJsonString = "{}";
+        this.jsonTable=[]
+        return
+      }
 
-    var descJsonString=docAboutDescJson[this.deepInThisDocAbout]
-console.log(descJsonString)
+      descJsonString = JSON.parse(descJsonString);
 
-    if(descJsonString==null){
-      descJsonString="{}"
-    }
- 
-    descJsonString=JSON.parse(descJsonString)
+      var attr;
+      for (attr in descJsonString) {
+        this.jsonTable.push([attr, descJsonString[attr]]);
+      }
+      this.jsonTable = this.jsonTable.sort(function (a, b) {
+        return parseInt(b[1]) - parseInt(a[1]);
+      });
 
-              var attr
-      for ( attr in descJsonString) {
-            this.jsonTable.push([attr, descJsonString[attr]]);
-          }
-  this.jsonTable=this.jsonTable.sort(function(a,b){
-      return parseInt(b[1]) -parseInt(a[1]);
-    })
-    
-    this.descJson=descJsonString
-console.log(this.descJson)
-console.log(this.jsonTable)
+      for(var i in this.jsonTable){
+        var n=this.jsonTable.length-i
+        this.jsonTable[i][1]=n
+      }
+
+      this.descJson = descJsonString;
+      console.log(this.descJson);
+      console.log(this.jsonTable);
     },
 
-thisDocAboutDesc(e, item){
-  this.setDescKVFlag=true //区别设置问题下的关键词
-     this.showWaitingFlag = true;
-      this.deepInThisDocAbout = item[0];
-      this.backToDocAboutShow = true;
-this.getDescJsonTableFromWeightForm();
+    thisKeyWordDesc(e, item) {
+      this.setDescKVFlag = true; //区别设置问题下的关键词
+      this.showWaitingFlag = true;
+      this.deepInThisKeyWord = item[0];
+      this.backToDocAboutShow=false
+      this.backToKeyWordShow = true;
+      this.getDescJsonTableFromWeightForm();
 
- 
-    this.showWaitingFlag=false
-},
+      this.showWaitingFlag = false;
+    },
     thisDocAbout(e, item) {
       this.showWaitingFlag = true;
       this.deepInThisDocAbout = item[0];
       this.backToDocAboutShow = true;
-      this.setDescKVFlag=false  //进入某个问题时设置为false 与关键词优先级设置区分
+      this.setDescKVFlag = false; //进入某个问题时设置为false 与关键词优先级设置区分
       var keywordJson;
       var keywordIssueJson;
       var that = this;
@@ -1149,17 +1493,17 @@ this.getDescJsonTableFromWeightForm();
       //       })
     },
     backToDocAbout() {
-      this.setDescKVFlag=false  //进入某个问题时设置为false 与关键词优先级设置区分
+      this.setDescKVFlag = false; //进入某个问题时设置为false 与关键词优先级设置区分
 
-      console.log(this.issueTable)
+      console.log(this.issueTable);
       this.saveBtnShow = false;
       this.jsonTable = this.level1JsonTable;
       this.backToDocAboutShow = false;
       // this.checkFromThisType(this.typeNum);
     },
-    backToDetail(){
+    backToDetail() {
       this.$router.replace("/work/docInputD");
-      this.$store.state.backToDetailFlag=false
+      this.$store.state.backToDetailFlag = false;
     },
     backToOrgans() {
       this.$router.replace("/work/modifyOrgan");
@@ -1190,7 +1534,6 @@ this.getDescJsonTableFromWeightForm();
     addKeyWordToArr() {},
     doPresetRs() {
       this.selectRsDAFlag = false;
-
 
       this.getRequest("/weight/keywordSort/" + this.requestWigId).then(
         (resp) => {
@@ -1281,7 +1624,7 @@ this.getDescJsonTableFromWeightForm();
               ).then((resp) => {
                 console.log("更新文书问题权重表");
                 console.log(resp);
-                this.issueTable=resp.data.tables
+                this.issueTable = resp.data.tables;
               });
 
               /**以上是问题权重表 */
@@ -1335,21 +1678,24 @@ this.getDescJsonTableFromWeightForm();
               );
             })
             .then(() => {});
-        } else {
-          //问题和责任者和人事关键词
+        }
+        else if(this.computeTypeNumIsAuthor){
           var table3;
           var issueKeywordArrJson;
           var keywordIssueJson;
-          this.getRequest("/weight/sort/" + this.requestWigId)
+          this.getRequest("/weight/" + this.requestWigId)
             .then((resp) => {
-              //查询对应的权重表得到json
-              console.log("添加过，先获取：");
               console.log(resp.data.tables);
+              this.authorJson=table3
               table3 = resp.data.tables;
               if (resp.code == 0) {
                 var key3 = this.keyToSet;
-                // var json1 = table;
-                table3[key3] = this.valueToSet;
+
+                table3[key3] ={}
+                table3[key3].level=this.levelToSet
+                table3[key3].value=this.valueToSet
+                table3[key3] =JSON.stringify(table3[key3])
+    
 
                 issueKeywordArrJson = resp.data.issueKeyword;
                 keywordIssueJson = resp.data.keywordIssue;
@@ -1371,6 +1717,9 @@ this.getDescJsonTableFromWeightForm();
               }
             })
             .then((r) => {
+
+
+
               var kvObj = {
                 authId: sessionStorage.getItem("authId"),
                 type: this.typeNum,
@@ -1383,10 +1732,72 @@ this.getDescJsonTableFromWeightForm();
                 (resp) => {
                   console.log("更新预设kv权重表");
                   console.log(resp);
-              this.issueTable=resp.data.tables
+                  this.issueTable = resp.data.tables;
 
                   this.renewTable();
+                }
+              );
+            })
+            .then((r) => {
+              this.showWaitingFlag = false;
+              this.showKVPreset = false;
+            });
+        }
+        else {
+          //问题和 和人事关键词
+          var table3;
+          var issueKeywordArrJson;
+          var keywordIssueJson;
+          this.getRequest("/weight/sort/" + this.requestWigId)
+            .then((resp) => {
+              //查询对应的权重表得到json
+              console.log("添加过，先获取：");
+              console.log(resp.data.tables);
+              table3 = resp.data.tables;
+              if (resp.code == 0) {
+                var key3 = this.keyToSet;
+                // var json1 = table;
+                table3[key3] = this.valueToSet;
 
+
+                issueKeywordArrJson = resp.data.issueKeyword;
+                keywordIssueJson = resp.data.keywordIssue;
+                if (keywordIssueJson == null) {
+                  keywordIssueJson = {};
+                }
+
+                if (issueKeywordArrJson[this.keyToSet] == null) {
+                  var arrtemp = [];
+
+                  issueKeywordArrJson[this.keyToSet] = arrtemp;
+                }
+              } else {
+                this.$message({
+                  type: "warning",
+                  message: "添加失败",
+                });
+                return;
+              }
+            })
+            .then((r) => {
+
+
+
+              var kvObj = {
+                authId: sessionStorage.getItem("authId"),
+                type: this.typeNum,
+                tables: table3,
+                issueKeyword: issueKeywordArrJson,
+                keywordIssue: keywordIssueJson,
+              };
+
+              this.putRequest("/weight/" + this.requestWigId, kvObj).then(
+                (resp) => {
+                  console.log("更新预设kv权重表");
+                  console.log(resp);
+                  this.issueTable = resp.data.tables;
+
+                  this.renewTable();
                 }
               );
             })
@@ -1399,90 +1810,83 @@ this.getDescJsonTableFromWeightForm();
       }
     },
     doPreset() {
-      console.log(this.weightForm)
-{//对照表的预设
-        if(this.typeNum%5==0||(this.typeNum-6)%10==0){  //对照表
-      var levelkw=this.selectedLevel+"~"+this.keyToSet
-      if(this.weightForm[this.selectedTableTypeName][this.keyToSet]!=null   
-      ){
-                  
+      console.log(this.weightForm);
+      {
+        //对照表的预设
+        if (this.typeNum % 5 == 0 || (this.typeNum - 6) % 10 == 0) {
+          //对照表
+          var levelkw = this.selectedLevel + "~" + this.keyToSet;
+          if (
+            this.weightForm[this.selectedTableTypeName][this.keyToSet] != null
+          ) {
+            this.$message({
+              type: "warning",
+              message: "该对照已存在：" + this.keyToSet,
+            });
+
+            this.showWaitingFlag = false;
+
+            return;
+          }
+          if (this.typeNum == 15) {
+            this.weightForm.officialDescAuthor[this.keyToSet] = this.valueToSet;
+          }
+          if (this.typeNum == 25) {
+            this.weightForm.tecDescAuthor[this.keyToSet] = this.valueToSet;
+          }
+          if (this.typeNum == 35) {
+            this.weightForm.busDescAuthor[this.keyToSet] = this.valueToSet;
+          }
+
+          if (this.typeNum == 16) {
+            var k = this.selectedLevel + "~" + this.keyToSet;
+            console.log(k);
+            console.log(this.weightForm.officialLevelKeywordDeadline);
+
+            this.weightForm.officialLevelKeywordDeadline[
+              this.selectedLevel + "~" + this.keyToSet
+            ] = this.valueToSet;
+            console.log(this.weightForm.officialLevelKeywordDeadline);
+          }
+          if (this.typeNum == 26) {
+            this.weightForm.tecLevelKeywordDeadline[
+              this.selectedLevel + "~" + this.keyToSet
+            ] = this.valueToSet;
+          }
+          if (this.typeNum == 36) {
+            this.weightForm.busLevelKeywordDeadline[
+              this.selectedLevel + "~" + this.keyToSet
+            ] = this.valueToSet;
+          }
+
+          this.jsonTable = [];
+          this.putRequest(
+            //注意防止重复提交
+            "/organ/" + sessionStorage.getItem("authId"),
+            JSON.stringify(this.weightForm)
+          ).then((resp) => {
+            if (resp.code == 0) {
               this.$message({
-                type: "warning",
-                message:
-                  "该对照已存在：" +
-                 this.keyToSet
+                type: "success",
+                message: "预设成功",
               });
 
-              this.showWaitingFlag = false;
+              var json = resp.data;
+              var attr;
+              var table = json[this.selectedTableTypeName];
+              for (attr in table) {
+                console.log(attr);
+                console.log(table[attr]);
+                this.jsonTable.push([attr, table[attr]]);
+              }
+              this.showKVPreset = false;
+            }
+          });
 
-              return;
-            
+          this.showWaitingFlag = false;
+          return;
+        }
       }
-        if(this.typeNum==15){
-          this.weightForm.officialDescAuthor[this.keyToSet]=this.valueToSet
-        }
-                if(this.typeNum==25){
-          this.weightForm.tecDescAuthor[this.keyToSet]=this.valueToSet
-        }
-                if(this.typeNum==35){
-          this.weightForm.busDescAuthor[this.keyToSet]=this.valueToSet
-        }
-
-          if(this.typeNum==16){
-var k=this.selectedLevel+'~'+this.keyToSet
-console.log(k)
-console.log(this.weightForm.officialLevelKeywordDeadline)
-
-          this.weightForm.officialLevelKeywordDeadline[this.selectedLevel+'~'+this.keyToSet]=this.valueToSet
-console.log(this.weightForm.officialLevelKeywordDeadline)
-
-        }
-                if(this.typeNum==26){
-
-
-                    this.weightForm.tecLevelKeywordDeadline[this.selectedLevel+'~'+this.keyToSet]=this.valueToSet
-
-        }
-                if(this.typeNum==36){
-
-
-                    this.weightForm.busLevelKeywordDeadline[this.selectedLevel+'~'+this.keyToSet]=this.valueToSet
-
-        }
-
-
-
-      this.jsonTable=[]
-      this.putRequest(
-        //注意防止重复提交
-        "/organ/" + sessionStorage.getItem("authId"),
-        JSON.stringify(this.weightForm)
-      ).then((resp) => {
-        if(resp.code==0){
-                  this.$message({
-          type: "success",
-          message: "预设成功",
-        });
-
-          var json=resp.data
-          var attr
-          var table=json[this.selectedTableTypeName]
-                    for ( attr in table) {
-
-                      console.log(attr)
-                      console.log(table[attr])
-            this.jsonTable.push([attr, table[attr]]);
-          }
-          this.showKVPreset=false
-        }
-      })
-
-
-      this.showWaitingFlag=false
-        return
-      }
-}
-
 
       if (!this.isNumber(this.valueToSet)) {
         this.$message({
@@ -1492,50 +1896,65 @@ console.log(this.weightForm.officialLevelKeywordDeadline)
         return;
       }
 
-if(this.setDescKVFlag)
-      { // 这块代码 ：文号优先级的设置
-      this.showWaitingFlag=true
-      if(this.descJson[this.keyToSet]!=null){
-          this.$message({
-                type: "warning",
-                message:
-                  "该文号已存在：" +
-                 this.keyToSet
-              });
-      this.showWaitingFlag=false
-
-              return
+/***责任者及其级别的设置检查 */
+      if(this.typeNum==12||this.typeNum==22||this.typeNum==32){
+        if(this.levelToSet==""){
+                  this.$message({
+          type: "warning",
+          message: "请选择级别",
+        });
+          return
+        }
       }
-        this.descJson[this.keyToSet]=this.valueToSet
-        console.log(this.descJson)
+
+      if (this.setDescKVFlag) {
+        
+        // 这块代码 ：文号优先级的设置
+        this.showWaitingFlag = true;
+        if (this.descJson[this.keyToSet] != null) {
+          this.$message({
+            type: "warning",
+            message: "该文号已存在：" + this.keyToSet,
+          });
+          this.showWaitingFlag = false;
+
+          return;
+        }
+        this.descJson[this.keyToSet] = this.valueToSet;
+        console.log(this.descJson);
         this.setDescToWeightForm();
-              this.putRequest(
-        //注意防止重复提交
-        "/organ/" + sessionStorage.getItem("authId"),
-        JSON.stringify(this.weightForm)
-      ).then((resp) => {
-        this.weightForm=resp.data
-        this.getDescJsonTableFromWeightForm()
-        this.showKVPreset=false
-      })
+        this.putRequest(
+          //注意防止重复提交
+          "/organ/" + sessionStorage.getItem("authId"),
+          JSON.stringify(this.weightForm)
+        ).then((resp) => {
+          this.weightForm = resp.data;
+          this.getDescJsonTableFromWeightForm();
+          this.showKVPreset = false;
+        });
         // var descObj={}
         // if(this.jsonTable.length==0){  //问题下没有文号优先级
         //   var descObj={}
         //   descObj[this.keyToSet]=this.valueToSet
         // }
         // else{
-          
-        // }
-      this.showWaitingFlag=false
 
-        return
+        // }
+        this.showWaitingFlag = false;
+
+        return;
       }
+/***责任者及其级别的设置检查 */
+
+
 
       this.showWaitingFlag = true;
       this.showKVPreset = false;
       // alert(this.valueToSet)
       // alert(this.typeNum)
-      if (this.backToDocAboutShow) { //关键词
+      /**问题下的关键词设置检查重复 */
+      if (this.backToDocAboutShow) {
+        //关键词
         //关键词重复
         this.getRequest("/weight/keywordSort/" + this.keywordWigId).then(
           (resp) => {
@@ -1557,8 +1976,28 @@ if(this.setDescKVFlag)
             this.doPresetSub();
           }
         );
-      } else {
-        this.getRequest("/weight/sort/" + this.requestWigId).then((resp) => {
+      }
+      /**问题下的关键词设置检查重复end */
+      
+      /**责任者及其级别设检查重复 */
+      else if(this.computeTypeNumIsAuthor){
+        this.getRequest("/weight/" + this.requestWigId).then((resp) => {
+          if (resp.data.tables[this.keyToSet] != null) {
+            this.$message({
+              type: "warning",
+              message:
+                "已存在" +
+                this.keyToSet
+            });
+            this.showWaitingFlag=false
+            return
+      }
+
+      this.doPresetSub()
+      })
+      }
+      else {
+        this.getRequest("/weight/" + this.requestWigId).then((resp) => {
           if (resp.data.tables[this.keyToSet] != null) {
             this.$message({
               type: "warning",
@@ -1583,14 +2022,48 @@ if(this.setDescKVFlag)
       // if(){}
     },
 
-    renewAuthTable(){
+    renewAuthTable() {
       this.getAuth();
-
     },
     renewTable() {
       //问题责任者的刷新
       this.jsonTable = [];
       this.selectShow = false;
+
+{
+  if(this.computeTypeNumIsAuthor){
+    
+        this.getRequest("/weight/authorSort/" + this.requestWigId)  //不赋权sort(不会强制54321)
+          .then((resp) => {
+            //查询对应的权重表得到json
+            table = resp.data.tables;
+            let attr;
+            this.authorJson=table
+            this.jsonTable = [];
+            console.log("getRenew")
+            console.log(resp.data)
+
+                      for ( attr in this.authorJson) {
+              console.log(attr);
+              this.jsonTable.push([attr, JSON.parse(this.authorJson[attr]).value, JSON.parse(this.authorJson[attr]).level]);
+            }
+            this.tempTable=this.jsonTable
+
+            this.filterLevelFromAuthor(this.selectedLevel)
+            // this.selectedLevel="本级"
+            
+            // for(var i in this.jsonTable){
+            //   var n=this.jsonTable.length-i
+            //   this.jsonTable[i][1]=n
+            //   var str=table[this.jsonTable[i][0]]
+            //   str[value]=n
+            // }
+            // var json1 = table;
+          })
+
+    return
+  }
+}
 
       {
         var table;
@@ -1612,73 +2085,78 @@ if(this.setDescKVFlag)
       }
     },
 
-    checkFromThisTableType(num){
-      this.selectShow=false
-      this.dicShow=true
+    checkFromThisTableType(num) {
+      this.selectShow = false;
+      this.dicShow = true;
       // var organId=sessionStorage.getItem('authId')
       //         this.getRequest("/organ/" + organId)
       //     .then((resp) => {
-              
+
       //     })
-      var descAuthorJson
-      this.jsonTable=[]
-      var table
-      var attr
-      if(num%5==0){  //文号责任者
-      this.descAuthorFlag=true
+      var descAuthorJson;
+      this.jsonTable = [];
+      var table;
+      var attr;
+      if (num % 5 == 0) {
+        //文号责任者
+        this.descAuthorFlag = true;
 
- if(num==15){//文书文号责任者
-table=this.weightForm.officialDescAuthor
-console.log(table)
-  
-                  for (attr in table) {
+        if (num == 15) {
+          //文书文号责任者
+          table = this.weightForm.officialDescAuthor;
+          console.log(table);
+
+          for (attr in table) {
             this.jsonTable.push([attr, table[attr]]);
           }
-      }
-      if(num==25){//keji文号责任者
-table=this.weightForm.tecDescAuthor
+        }
+        if (num == 25) {
+          //keji文号责任者
+          table = this.weightForm.tecDescAuthor;
 
-                  for (attr in table) {
+          for (attr in table) {
             this.jsonTable.push([attr, table[attr]]);
           }
-      }
-            if(num==35){//yewu文号责任者
-table=this.weightForm.busDescAuthor
+        }
+        if (num == 35) {
+          //yewu文号责任者
+          table = this.weightForm.busDescAuthor;
 
-                  for (attr in table) {
+          for (attr in table) {
             this.jsonTable.push([attr, table[attr]]);
           }
+        }
       }
 
+      if ((num - 6) % 10 == 0) {
+        this.selectedLevel = "级别";
+        console.log(this.selectedTableTypeName);
+
+        var table = this.weightForm[this.selectedTableTypeName];
+        console.log(table);
+        for (attr in table) {
+          this.jsonTable.push([attr, table[attr]]);
+        }
       }
 
-      if((num-6)%10==0){
-        this.selectedLevel='级别'
-        console.log(this.selectedTableTypeName)
+      this.tempTable = this.jsonTable; //级别+关键词对应期限那里 级别筛选时暂存完整的对照表
 
-        var table=this.weightForm[this.selectedTableTypeName]
-        console.log(table)
-                  for (attr in table) {
-            this.jsonTable.push([attr, table[attr]]);
-          }
-      }
-
-      this.tempTable=this.jsonTable //级别+关键词对应期限那里 级别筛选时暂存完整的对照表
-     
-      this.showWaitingFlag=false
+      this.showWaitingFlag = false;
     },
+
+    
+
     checkFromThisType(num) {
       this.typeNum = num;
       this.showWaitingFlag = true;
       this.backToDocAboutShow = false;
 
-      if((num-5)%10==0||(num-6)%10==0){
-this.checkFromThisTableType(num)
-     
+      if ((num - 5) % 10 == 0 || (num - 6) % 10 == 0) {
+        this.checkFromThisTableType(num);
 
-        return
+        return;
       }
-      this.dicShow=false
+      this.dicShow = false;
       // this.ba
       this.jsonTable = [];
       // var this.requestWigId
@@ -1717,7 +2195,7 @@ this.checkFromThisTableType(num)
       }
 
       this.selectShow = false;
-      this.typeNum = num; //选择一种键值进行修改调整 typeNum记录是哪种
+      this.typeNum = num; //选择一种权重表进行修改调整 typeNum记录是哪种
 
       if (!this.requestWigId) {
         this.jsonTable = [];
@@ -1725,13 +2203,42 @@ this.checkFromThisTableType(num)
           type: "warning",
           message: "还没有添加过该类型的档案",
         });
+      } else if (num == 12 || num == 22 || num == 32) {
+        var table;
+        this.getRequest("/weight/authorSort/" + this.requestWigId)  //不赋权sort(不会强制54321)
+          .then((resp) => {
+            //查询对应的权重表得到json
+            table = resp.data.tables;
+            this.issueTable = resp.data.tables;
+            this.issueKeywordTable = resp.data.issueKeyword;
+            let attr;
+            this.authorJson=table
+            this.jsonTable = [];
+
+            this.levelAuthorInit()  //初始化jsontable 并且变成有序 temptable存了所有级别的
+
+            this.filterLevelFromAuthor(this.selectedLevel)
+            // this.selectedLevel="本级"
+            
+            // for(var i in this.jsonTable){
+            //   var n=this.jsonTable.length-i
+            //   this.jsonTable[i][1]=n
+            //   var str=table[this.jsonTable[i][0]]
+            //   str[value]=n
+            // }
+            // var json1 = table;
+          })
+          .then(() => {
+            
+            this.showWaitingFlag = false;
+          });
       } else {
         var table;
         this.getRequest("/weight/sort/" + this.requestWigId)
           .then((resp) => {
             //查询对应的权重表得到json
-            console.log("权重表分类，get到")
-            console.log(resp)
+            console.log("权重表分类，get到");
+            console.log(resp);
             table = resp.data.tables;
             // this.issueKeywordTable=resp.data.issueKeyword==null?{}:resp.data.issueKeyword;  //关键词对应数组json
             // this.keywordIssueTable=resp.data.keywordIssue==null?{}:resp.data.keywordIssue;
@@ -1759,11 +2266,54 @@ this.checkFromThisTableType(num)
           });
       }
     },
+
+    submitFixAuthor(){//责任者的上下调整保存修改
+       for(var i in this.jsonTable){
+         var json=JSON.parse( this.authorJson[this.jsonTable[i][0]])
+         json.value=this.jsonTable[i][1]
+         var str = JSON.stringify(json)
+         this.authorJson[this.jsonTable[i][0]]=str
+       }
+
+                               var kvObj = {
+                authId: sessionStorage.getItem("authId"),
+                type: this.typeNum,
+                tables: this.authorJson,
+                issueKeyword: {},
+                keywordIssue: {},
+              };
+
+                               this.putRequest("/weight/" + this.requestWigId, kvObj).then(
+                (resp) => {
+
+                  console.log("更新预设级别下的责任者权重表");
+                  console.log(resp);
+                  if(resp.code==0){
+                                  this.$message({
+                type: "success",
+                message: "保存修改成功",
+              });
+                  }
+                  // this.issueTable = resp.data.tables;
+                  this.renewTable();
+                this.saveBtnShow = false;
+
+                  
+                }
+              );
+    },
+
     saveKeyValue() {
       console.log("save");
       console.log(this.jsonTable);
 
 
+      if(this.computeTypeNumIsAuthor){
+        this.submitFixAuthor()
+        return
+      }
+
+      console.log("continue")
       this.submitFixFromQianDuan();
       // var jsonToCommit = {};
       // for (var i = 0; i < this.jsonTable.length; i++) {
@@ -1810,9 +2360,6 @@ this.checkFromThisTableType(num)
       this.timer = setInterval(this.changeFlag, 2000);
     },
     fixKv(e, item) {
-
-
-
       //按修改值button
       this.showKVFix = true;
       this.keyToFix = item[0];
@@ -1828,90 +2375,80 @@ this.checkFromThisTableType(num)
       this.keyToSet = "词";
       this.valueToSet = "数字";
     },
-    preSetDicButton(){
-      if(this.computeIsLevel){
-        if(this.selectedLevel=="级别"){
-                            this.$message({
-          type: "warning",
-          message: "请选择级别",
-        });
-        return
+    preSetDicButton() {
+      if (this.computeIsLevel) {
+        if (this.selectedLevel == "级别") {
+          this.$message({
+            type: "warning",
+            message: "请选择级别",
+          });
+          return;
         }
-
       }
-            this.showKVPreset = true;
-      this.keyToSet = this.computeKeyTitle
-      this.valueToSet = this.computeValueTitle
+      this.showKVPreset = true;
+      this.keyToSet = this.computeKeyTitle;
+      this.valueToSet = this.computeValueTitle;
     },
 
     fixTheKV() {
+      console.log(this.typeNum - 6);
+      if (this.typeNum % 5 == 0 || (this.typeNum - 6) % 10 == 0) {
+        //对照表
 
-console.log((this.typeNum-6))
-            if(this.typeNum%5==0||(this.typeNum-6)%10==0){  //对照表
-
-        if(this.typeNum==15){
-
-          this.weightForm.officialDescAuthor[this.keyToFix]=this.valueToFix
-
+        if (this.typeNum == 15) {
+          this.weightForm.officialDescAuthor[this.keyToFix] = this.valueToFix;
         }
-                if(this.typeNum==25){
-
-
-          this.weightForm.tecDescAuthor[this.keyToFix]=this.valueToFix
+        if (this.typeNum == 25) {
+          this.weightForm.tecDescAuthor[this.keyToFix] = this.valueToFix;
         }
-                if(this.typeNum==35){
-
-
-          this.weightForm.busDescAuthor[this.keyToFix]=this.valueToFix
+        if (this.typeNum == 35) {
+          this.weightForm.busDescAuthor[this.keyToFix] = this.valueToFix;
         }
 
-                if(this.typeNum==16){
-var k=this.selectedLevel+'~'+this.keyToFix
-console.log(k)
-console.log(this.weightForm.officialLevelKeywordDeadline)
+        if (this.typeNum == 16) {
+          var k = this.selectedLevel + "~" + this.keyToFix;
+          console.log(k);
+          console.log(this.weightForm.officialLevelKeywordDeadline);
 
-          this.weightForm.officialLevelKeywordDeadline[this.selectedLevel+'~'+this.keyToFix]=this.valueToFix
-console.log(this.weightForm.officialLevelKeywordDeadline)
-
+          this.weightForm.officialLevelKeywordDeadline[
+            this.selectedLevel + "~" + this.keyToFix
+          ] = this.valueToFix;
+          console.log(this.weightForm.officialLevelKeywordDeadline);
         }
-                if(this.typeNum==26){
-
-
-                    this.weightForm.tecLevelKeywordDeadline[this.selectedLevel+'~'+this.keyToFix]=this.valueToFix
-
+        if (this.typeNum == 26) {
+          this.weightForm.tecLevelKeywordDeadline[
+            this.selectedLevel + "~" + this.keyToFix
+          ] = this.valueToFix;
         }
-                if(this.typeNum==36){
-
-
-                    this.weightForm.busLevelKeywordDeadline[this.selectedLevel+'~'+this.keyToFix]=this.valueToFix
-
+        if (this.typeNum == 36) {
+          this.weightForm.busLevelKeywordDeadline[
+            this.selectedLevel + "~" + this.keyToFix
+          ] = this.valueToFix;
         }
 
-
-      this.jsonTable=[]
-      this.putRequest(
-        //注意防止重复提交
-        "/organ/" + sessionStorage.getItem("authId"),
-        JSON.stringify(this.weightForm)
-      ).then((resp) => {
-        if(resp.code==0){
-                  this.$message({
-          type: "success",
-          message: "修改成功",
-        });
-          var json=resp.data
-          var attr
-          var table=json[this.selectedTableTypeName]
-                    for ( attr in table) {
-            this.jsonTable.push([attr, table[attr]]);
+        this.jsonTable = [];
+        this.putRequest(
+          //注意防止重复提交
+          "/organ/" + sessionStorage.getItem("authId"),
+          JSON.stringify(this.weightForm)
+        ).then((resp) => {
+          if (resp.code == 0) {
+            this.$message({
+              type: "success",
+              message: "修改成功",
+            });
+            var json = resp.data;
+            var attr;
+            var table = json[this.selectedTableTypeName];
+            for (attr in table) {
+              this.jsonTable.push([attr, table[attr]]);
+            }
+            this.showKVFix = false;
           }
-          this.showKVFix=false
-        }
-      })
+        });
 
-
-      this.showWaitingFlag=false
-        return
+        this.showWaitingFlag = false;
+        return;
       }
       //确定修改
       if (!this.isNumber(this.valueToFix)) {
@@ -1922,30 +2459,80 @@ console.log(this.weightForm.officialLevelKeywordDeadline)
         return;
       }
 
-      if(this.setDescKVFlag){
-               this.descJson[this.keyToFix]=this.valueToFix
-        console.log(this.descJson)
+      /***责任者及其级别的设置检查 */
+      if(this.typeNum==12||this.typeNum==22||this.typeNum==32){
+        if(this.levelToSet==""){
+                  this.$message({
+          type: "warning",
+          message: "请选择级别",
+        });
+          return
+        }
+        else{
+          var table=this.authorJson
+          var key=this.keyToFix
+          console.log(this.authorJson)
+          table[key]=JSON.parse(table[key])
+                table[key].level=this.levelToSet
+                table[key].value=this.valueToFix
+                table[key] =JSON.stringify(table[key])
+
+
+                        var kvObj = {
+                authId: sessionStorage.getItem("authId"),
+                type: this.typeNum,
+                tables: table,
+                issueKeyword: {},
+                keywordIssue: {},
+              };
+                        this.putRequest("/weight/" + this.requestWigId, kvObj).then(
+                (resp) => {
+                  console.log("更新预设级别下的责任者权重表");
+                  console.log(resp);
+                  if(resp.code==0){
+                                  this.$message({
+                type: "success",
+                message: "操作成功",
+              });
+                  }
+                  // this.issueTable = resp.data.tables;
+                  this.renewTable();
+                this.showKVFix = false;
+
+                  
+                }
+              );
+              
+       return
+        }
+      }
+
+
+
+      if (this.setDescKVFlag) {  //this.backToKeyWordShow
+        this.descJson[this.keyToFix] = this.valueToFix;
+        console.log(this.descJson);
         this.setDescToWeightForm();
-              this.putRequest(
-        //注意防止重复提交
-        "/organ/" + sessionStorage.getItem("authId"),
-        JSON.stringify(this.weightForm)
-      ).then((resp) => {
-        this.weightForm=resp.data
-        this.getDescJsonTableFromWeightForm()
-        this.showKVFix=false
-      })
+        this.putRequest(
+          //注意防止重复提交
+          "/organ/" + sessionStorage.getItem("authId"),
+          JSON.stringify(this.weightForm)
+        ).then((resp) => {
+          this.weightForm = resp.data;
+          this.getDescJsonTableFromWeightForm();
+          this.showKVFix = false;
+        });
         // var descObj={}
         // if(this.jsonTable.length==0){  //问题下没有文号优先级
         //   var descObj={}
         //   descObj[this.keyToSet]=this.valueToSet
         // }
         // else{
-          
-        // }
-      this.showWaitingFlag=false
 
-        return
+        // }
+        this.showWaitingFlag = false;
+
+        return;
       }
 
       var _arr = this.jsonTable;
@@ -1972,27 +2559,29 @@ console.log(this.weightForm.officialLevelKeywordDeadline)
         // console.log(this.jsonTable[i][0]);
         jsonToCommit[this.jsonTable[i][0]] = this.jsonTable[i][1];
       }
-      this.descJson=jsonToCommit
+      this.descJson = jsonToCommit;
 
-      if(this.setDescKVFlag&&this.backToDocAboutShow){
+      if (this.setDescKVFlag && this.backToDocAboutShow) {
         this.setDescToWeightForm();
- this.putRequest(
-        //注意防止重复提交
-        "/organ/" + sessionStorage.getItem("authId"),
-        JSON.stringify(this.weightForm)
-      ).then((resp) => {
-        if(resp.code==0){
-                        this.$message({
+        this.putRequest(
+          //注意防止重复提交
+          "/organ/" + sessionStorage.getItem("authId"),
+          JSON.stringify(this.weightForm)
+        )
+          .then((resp) => {
+            if (resp.code == 0) {
+              this.$message({
                 type: "warning",
                 message: "操作成功",
               });
-              this.weightForm=resp.data
-        }
-      }).then(()=>{
-        this.getDescJsonTableFromWeightForm();
-      })
+              this.weightForm = resp.data;
+            }
+          })
+          .then(() => {
+            this.getDescJsonTableFromWeightForm();
+          });
 
-      return
+        return;
       }
 
       if (!this.backToDocAboutShow) {
@@ -2063,55 +2652,54 @@ console.log(this.weightForm.officialLevelKeywordDeadline)
       //this.issueTable
       //this.issueKeywordTable
       // alert('shanchu')
-      console.log(this.issueTable)
-       var issueToDelete = item[0];
-       var issueKeywordArr
+      console.log(this.issueTable);
+      var issueToDelete = item[0];
+      var issueKeywordArr;
       this.getRequest(
         "/weight/map/about/" + this.requestWigId + "?word=" + item[0]
       )
         .then((resp) => {
-          issueKeywordArr=resp.data
+          issueKeywordArr = resp.data;
         })
 
-
-
         .then(() => {
+          {
+            //操作关键词权重表
 
-{//操作关键词权重表
-  
-          console.log("按问题查关键词数组 删除某个问题后");
-          var kwArr = issueKeywordArr
-          if (kwArr == null) {
-            kwArr = [];
-          }
-          this.getRequest("/weight/keywordSort/" + this.keywordWigId).then(
-            (resp) => {
-              this.keywordTable = resp.data.tables;
-              this.keywordIssueTable = resp.data.keywordIssue;
+            console.log("按问题查关键词数组 删除某个问题后");
+            var kwArr = issueKeywordArr;
+            if (kwArr == null) {
+              kwArr = [];
             }
-          ).then(()=>{ //获取关键词权重表后再操作
-          for (var i in kwArr) {
-            console.log("删除问题对应的关键词：" + kwArr[i]);
-            delete this.keywordTable[kwArr[i]];
-            delete this.keywordIssueTable[kwArr[i]]
-          }
-          }).then(()=>{
-
-         var kvObj = {
-            authId: sessionStorage.getItem("authId"),
-            type: this.getKwTypeNum(),
-            tables: this.keywordTable,
-            keywordIssue: this.keywordIssueTable,
-          };
-          this.putRequest("/weight/" + this.keywordWigId, kvObj).then(
-            (resp) => {
-              console.log(kvObj);
-              console.log("删除问题后，操作关键词权重表");
-              console.log(resp);
-            }
-          );
-          });
-          // for (var kwitem in kwArr) {
+            this.getRequest("/weight/keywordSort/" + this.keywordWigId)
+              .then((resp) => {
+                this.keywordTable = resp.data.tables;
+                this.keywordIssueTable = resp.data.keywordIssue;
+              })
+              .then(() => {
+                //获取关键词权重表后再操作
+                for (var i in kwArr) {
+                  console.log("删除问题对应的关键词：" + kwArr[i]);
+                  delete this.keywordTable[kwArr[i]];
+                  delete this.keywordIssueTable[kwArr[i]];
+                }
+              })
+              .then(() => {
+                var kvObj = {
+                  authId: sessionStorage.getItem("authId"),
+                  type: this.getKwTypeNum(),
+                  tables: this.keywordTable,
+                  keywordIssue: this.keywordIssueTable,
+                };
+                this.putRequest("/weight/" + this.keywordWigId, kvObj).then(
+                  (resp) => {
+                    console.log(kvObj);
+                    console.log("删除问题后，操作关键词权重表");
+                    console.log(resp);
+                  }
+                );
+              });
+            // for (var kwitem in kwArr) {
             // var stringWithSplit = this.keywordIssueTable[kwArr[kwitem]];
             // if (stringWithSplit) {
             //   var keywordIssueStringToArr = stringWithSplit.split("|");
@@ -2129,135 +2717,131 @@ console.log(this.weightForm.officialLevelKeywordDeadline)
             //   }
             //   this.keywordIssueTable[kwArr[kwitem]] = stringWithSplit; //放回
             // } //该关键词有 问题串
-          // }
+            // }
+          }
 
- 
-        
-}
-
-{  //操作问题权重表
+          {
+            //操作问题权重表
             console.log("shanchu问题权重表1");
-          console.log(this.issueTable);
+            console.log(this.issueTable);
 
-          delete this.issueTable[item[0]];
-          delete this.issueKeywordTable[item[0]];
-          console.log(this.issueTable);
+            delete this.issueTable[item[0]];
+            delete this.issueKeywordTable[item[0]];
+            console.log(this.issueTable);
 
-          var issueObj = {
-            authId: sessionStorage.getItem("authId"),
-            type: this.typeNum,
-            tables: this.issueTable,
-            issueKeyword: this.issueKeywordTable,
-          };
+            var issueObj = {
+              authId: sessionStorage.getItem("authId"),
+              type: this.typeNum,
+              tables: this.issueTable,
+              issueKeyword: this.issueKeywordTable,
+            };
 
-          this.putRequest(
-            "/weight/" + this.weightForm.docIssueWig,
-            issueObj
-          ).then((resp) => {
-            console.log("shanchu问题权重表");
-            console.log(resp);
-            if (resp.code == 0) {
-              this.$message({
-                type: "success",
-                message: "删除成功",
-              });
-              this.issueKeywordTable = resp.data.issueKeyword;
-              this.issueTable = resp.data.tables;
-              this.jsonTable = [];
-              for (var attr in this.issueTable) {
-                this.jsonTable.push([attr, this.issueTable[attr]]);
+            this.putRequest(
+              "/weight/" + this.weightForm.docIssueWig,
+              issueObj
+            ).then((resp) => {
+              console.log("shanchu问题权重表");
+              console.log(resp);
+              if (resp.code == 0) {
+                this.$message({
+                  type: "success",
+                  message: "删除成功",
+                });
+                this.issueKeywordTable = resp.data.issueKeyword;
+                this.issueTable = resp.data.tables;
+                this.jsonTable = [];
+                for (var attr in this.issueTable) {
+                  this.jsonTable.push([attr, this.issueTable[attr]]);
+                }
+                this.level1JsonTable = this.jsonTable; //暂存的数组
+              } else {
+                this.$message({
+                  type: "success",
+                  message: "删除失败",
+                });
+                this.checkFromThisType(this.typeNum);
               }
-              this.level1JsonTable = this.jsonTable; //暂存的数组
-            } else {
-              this.$message({
-                type: "success",
-                message: "删除失败",
-              });
-              this.checkFromThisType(this.typeNum);
-            }
-          });
-}
-
+            });
+          }
         });
     },
 
     deleteKV(e, item) {
       //删除问题
-            if(this.typeNum%5==0||(this.typeNum-6)%10==0){  //对照表
+      if (this.typeNum % 5 == 0 || (this.typeNum - 6) % 10 == 0) {
+        //对照表
 
-        var arr=[]
-        var json=this.weightForm[this.selectedTableTypeName]
+        var arr = [];
+        var json = this.weightForm[this.selectedTableTypeName];
 
-        console.log(json)
+        console.log(json);
 
-        delete json[item[0]]
-        console.log(json)
+        delete json[item[0]];
+        console.log(json);
 
+        //         for (var i = 0; i < length; i++) {
+        //   if (this.jsonTable[i][0] == item[0]) {
+        //     keywordTodelete = this.jsonTable.splice(i, 1); //删除下标为i的元素  返回的是数组，长度为1
+        //     break; //不break的话会报错，因为外层循环还在继续，数组已经少了一个了
+        //   }
+        // }
 
-     
-          //         for (var i = 0; i < length; i++) {
-          //   if (this.jsonTable[i][0] == item[0]) {
-          //     keywordTodelete = this.jsonTable.splice(i, 1); //删除下标为i的元素  返回的是数组，长度为1
-          //     break; //不break的话会报错，因为外层循环还在继续，数组已经少了一个了
-          //   }
-          // }
-
-       this.jsonTable=[]
-      this.putRequest(
-        //注意防止重复提交
-        "/organ/" + sessionStorage.getItem("authId"),
-        JSON.stringify(this.weightForm)
-      ).then((resp) => {
-        if(resp.code==0){
-                  this.$message({
-          type: "success",
-          message: "删除成功",
-        });
-          var json=resp.data
-          var attr
-          var table=json[this.selectedTableTypeName]
-                    for ( attr in table) {
-            this.jsonTable.push([attr, table[attr]]);
+        this.jsonTable = [];
+        this.putRequest(
+          //注意防止重复提交
+          "/organ/" + sessionStorage.getItem("authId"),
+          JSON.stringify(this.weightForm)
+        ).then((resp) => {
+          if (resp.code == 0) {
+            this.$message({
+              type: "success",
+              message: "删除成功",
+            });
+            var json = resp.data;
+            var attr;
+            var table = json[this.selectedTableTypeName];
+            for (attr in table) {
+              this.jsonTable.push([attr, table[attr]]);
+            }
+            this.showKVFix = false;
           }
-          this.showKVFix=false
-        }
-      })
+        });
 
-
-      this.showWaitingFlag=false
-        return
+        this.showWaitingFlag = false;
+        return;
       }
 
-{ //文号优先级
-if(this.setDescKVFlag){
+      {
+        //文号优先级
+        if (this.setDescKVFlag) {
           //   for (var i = 0; i < this.jsonTable.length; i++) {
           //   if (this.jsonTable[i][0] == item[0]) {
           //     this.jsonTable = this.jsonTable.splice(i, 1); //删除下标为i的元素  返回的是数组，长度为1
           //     break; //不break的话会报错，因为外层循环还在继续，数组已经少了一个了
           //   }
           // }
-delete this.descJson[item[0]]
-this.setDescToWeightForm();
-              this.putRequest(
-        "/organ/" + sessionStorage.getItem("authId"),
-        JSON.stringify(this.weightForm)
-      ).then((resp) => {
-                    this.$message({
-              type: "success",
-              message: "删除成功",
+          delete this.descJson[item[0]];
+          this.setDescToWeightForm();
+          this.putRequest(
+            "/organ/" + sessionStorage.getItem("authId"),
+            JSON.stringify(this.weightForm)
+          )
+            .then((resp) => {
+              this.$message({
+                type: "success",
+                message: "删除成功",
+              });
+              this.weightForm = resp.data;
+            })
+            .then(() => {
+              this.getDescJsonTableFromWeightForm();
             });
-        this.weightForm=resp.data
-      }).then(()=>{
-this.getDescJsonTableFromWeightForm()
-
-      })
-return
-}
-
-}
+          return;
+        }
+      }
       var keywordTodelete = {};
       this.$confirm(
-        "确定要删除该条不再使用吗，若某批次录入中有该词条可能导致排序失败",
+        "确定要删除该条不再使用吗",
         {
           cancelButtonClass: "btn-custom-cancel",
           confirmButtonText: "确定",
@@ -2269,15 +2853,42 @@ return
           //问题删除
           if (this.typeNum == 11 || this.typeNum == 21 || this.typeNum == 31) {
             if (this.backToDocAboutShow == false) {
-              //问题责任者
+              //问题
               this.deleteDocAbout(item);
               return;
             }
           }
+          else if(this.computeTypeNumIsAuthor){  //责任者删除
+            delete this.authorJson[item[0]]
 
-          // alert(2)
+                                    var kvObj = {
+                authId: sessionStorage.getItem("authId"),
+                type: this.typeNum,
+                tables: this.authorJson,
+                issueKeyword: {},
+                keywordIssue: {},
+              };
+            
+                               this.putRequest("/weight/" + this.requestWigId, kvObj).then(
+                (resp) => {
+                  console.log("删除预设级别下的责任者权重表");
+                  console.log(resp);
+                  if(resp.code==0){
+                                  this.$message({
+                type: "success",
+                message: "删除成功",
+              });
+                  }
+                  // this.issueTable = resp.data.tables;
+                  this.renewTable();
 
-          var _arr = this.jsonTable;
+
+                  
+                })
+
+          }
+          else{
+                    var _arr = this.jsonTable;
           var length = _arr.length;
           // console.log(length)
           for (var i = 0; i < length; i++) {
@@ -2354,6 +2965,11 @@ return
 
           console.log(this.jsonTable);
           this.submitFixFromQianDuan();
+          }
+
+          // alert(2)
+
+  
         })
         .catch(() => {
           // alert(a)
@@ -2406,11 +3022,6 @@ return
 
           // }
           else {
-            // var tt=this.jsonTable[i]
-            // console.log(tt)
-            // this.jsonTable[i]=this.jsonTable[i-1]
-            // this.jsonTable[i-1]=tt
-            // this.jsonTable=_arr
 
             _arr.splice(i, 1); //删除下标为i的元素
             _arr.splice(i - 1, 0, item);
@@ -2447,46 +3058,31 @@ return
       // var preEle=e.path[2].previousElementSibling
       // e=preEle;
     },
-
-
   },
-  data() {  //jsonTable 是用来显示的kv数组
+  data() {
+    //jsonTable 是用来显示的kv数组
     return {
-  setDescKVFlag:false, //区别设置问题下的关键词
-  descJson:{},
 
-      tempTable:[],//级别+关键词对应期限那里 级别筛选时暂存完整的对照表
+      backToKeyWordShow:false,
+      setDescKVFlag: false, //区别设置问题下的关键词
+      descJson: {},
+authorJson:{},
+      tempTable: [], //级别+关键词对应期限那里 级别筛选时暂存完整的对照表
 
-      descAuthorFlag:false, //是否是文号责任者对照表
-      dicShow:false,  //对照表是否显示
+      descAuthorFlag: false, //是否是文号责任者对照表
+      dicShow: false, //对照表是否显示
       selectShow: true, //选择类型界面是否显示
 
-      selectedLevel:"级别",//筛选级别
-      selectedDoctype:'',
-      selectedTableType:'',
-      selectedTableTypeName:'',//选择的对照表类型在单位对象中属性的名称
+      selectedLevel: "本级", //筛选级别
+      selectedDoctype: "",
+      selectedTableType: "",
+      selectedTableTypeName: "", //选择的对照表类型在单位对象中属性的名称
 
-filterLevelFlag:false, //设置级别+关键词对照期限表时 筛选级别
-levelFilter:[
-  "本级",
-  "县级",
-  "市级",
-  "省级",
-  "部级",
+      filterLevelFlag: false, //设置级别+关键词对照期限表时 筛选级别
+      levelFilter: ["乡级","本级", "县级", "市级", "省级", "部级"],
+      docTypes: ["文书类", "业务类", "科技类", "人事类"],
 
-
-],
-      docTypes:[
-        '文书类',
-        '业务类',
-        '科技类',
-        '人事类',
-      ],
-
-      tableTypes:[
-        "请先选择文档类型",
-
-      ],
+      tableTypes: ["请先选择文档类型"],
       selectRsDAFlag: false,
       level1JsonTable: [],
       keywordIssueTable: {},
@@ -2507,6 +3103,8 @@ levelFilter:[
 
       keyToSet: "",
       valueToSet: "",
+      levelToSet:"",
+
       showKVFix: false,
       showKVPreset: false,
       saveBtnShow: false,
@@ -2547,14 +3145,14 @@ levelFilter:[
  
 
 <style lang="scss" scoped>
-.tableSelectStyle{
+.tableSelectStyle {
   position: absolute;
-  top:5rem;
+  top: 5rem;
   left: 3rem;
-  width:20rem;
+  width: 20rem;
 }
 
-.filterItemStyle{
+.filterItemStyle {
   border-bottom: 0.01rem;
   font-size: 0.8rem;
   padding-top: 0.2rem;
@@ -2563,20 +3161,17 @@ levelFilter:[
   cursor: pointer;
 }
 
-.filterItemStyle:hover{
+.filterItemStyle:hover {
   background-color: rgb(222, 222, 222);
-  
 }
-.filterStyle{
-  position:absolute;
-  width:7rem;
+.filterStyle {
+  position: absolute;
+  width: 7rem;
   border-radius: 1rem;
 
-  
   background-color: rgb(230, 230, 230);
-  
-  top:1.5rem;
 
+  top: 1.5rem;
 }
 
 .hoverStyle:hover {
@@ -2704,13 +3299,13 @@ levelFilter:[
   left: 50%;
   margin-left: -20rem;
   padding-bottom: 15rem;
-    .newTip {
+  .newTip {
     position: absolute;
     width: 100%;
     top: 0.5rem;
     font-size: 1.1rem;
     text-align: center;
   }
-  }
+}
 </style>
 
