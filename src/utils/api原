@@ -1,87 +1,449 @@
-import axios from 'axios'
-import {Message} from 'element-ui';
-import router from '../router'
+<template>
+  <div>
+    <div
+      style="
+        position: fixed;
+        width: 20rem;
+        height: 10rem;
+        top: 10rem;
+        left: 50%;
+        margin-left: -10rem;
+        line-height: 10rem;
+        background-color: rgba(25, 55, 163, 0.8);
+        font-size: 1.3rem;
+        color: white;
+        text-align: center;
+        z-index: 1000;
+      "
+      v-if="showWaitingFlag"
+    >
+      请求中，请稍候...
+    </div>
+
+    <!-- 卡片视图区域 -->
+
+    <el-card>
+      <div style="font-size: 1.1rem; font-weight: 600">
+        项目名：{{ projectName }}
+      </div>
+
+      <div>
+        <el-button
+          type="primary"
+          size="small"
+          @click="showDialog"
+          style="margin-bottom: 0.5rem; float: right; font-size: 1rem"
+        >
+          构建新镜像
+        </el-button>
+
+        <el-button
+          type="primary"
+          size="small"
+          v-if="!this.showRepoFlag"
+          @click="showRepoFlag = true"
+          style="
+            margin-bottom: 0.5rem;
+            float: right;
+            font-size: 1rem;
+            margin-right: 2px;
+          "
+        >
+          返回镜像列表
+        </el-button>
+      </div>
+
+      <div style="margin-top: 5px; margin-bottom: 10px; float: left">
+        历史构建镜像：
+      </div>
+
+      <el-dialog
+        title="构建新镜像"
+        :visible.sync="showImageConfigDialog"
+        :close-on-click-modal="false"
+        width="70%"
+      >
+        <el-row class="tac">
+          <el-col style="width: 20%">
+            <el-menu
+              default-active="1"
+              class="el-menu-vertical-demo"
+              @select="handleCreateServiceSteps"
+            >
+              <el-menu-item index="1">
+                <span slot="title">基本信息</span>
+              </el-menu-item>
+              <el-menu-item index="2">
+                <span slot="title">构建命令</span>
+              </el-menu-item>
+            </el-menu>
+          </el-col>
+          <el-col v-show="imageConfigIndex == 1" :span="40" style="width: 80%">
+            <el-form label-width="100px">
+              <el-form-item label="镜像名">
+                <el-input
+                  v-model="buildReq.path"
+                  placeholder="请输入小写英文镜像名如：nginx"
+                ></el-input>
+              </el-form-item>
+
+              <el-form-item label="镜像版本">
+                <el-input
+                  v-model="buildReq.image"
+                  placeholder="请输入版本如：v1.0"
+                ></el-input>
+              </el-form-item>
+
+              <el-form-item label="代码构建包">
+                <el-select
+                  v-model="buildReq.buildResult"
+                  placeholder="请选择代码包"
+                >
+                  <el-option
+                    v-for="item in buildResultList"
+                    :key="item.id"
+                    :label="item.packageName"
+                    :value="item.packageName"
+                  >
+                  </el-option>
+                </el-select>
+              </el-form-item>
+            </el-form>
+          </el-col>
+          <el-col v-show="imageConfigIndex == 2" :span="30" style="width: 80%">
+            <el-form label-width="80px">
+              <el-form-item label="构建命令">
+                <el-input
+                  type="textarea"
+                  :rows="5"
+                  v-model="buildReq.dockerString"
+                  placeholder="请输入构建命令"
+                ></el-input>
+              </el-form-item>
+            </el-form>
+          </el-col>
+        </el-row>
+        <el-row style="padding-left: 21%" v-show="imageConfigIndex == 2">
+          <div style="margin-left: 1rem; color: #777">
+            tips：代码包将自动复制到执行目录
+          </div>
+        </el-row>
+        <el-row style="padding-left: 80%">
+          <el-button
+            type="primary"
+            @click="buildImage"
+            :disabled="imageConfigIndex != 2"
+            >构建</el-button
+          >
+          <el-button @click="showImageConfigDialog = false">取消</el-button>
+        </el-row>
+      </el-dialog>
+
+      <el-table :data="repositoryList" border stripe v-if="showRepoFlag">
+        <el-table-column type="selection" width="45"></el-table-column>
+        <el-table-column label="镜像" prop="name">
+          <!-- 将构建名称列的颜色设置为蓝色 -->
+          <template slot-scope="scope">
+            <span
+              style="color: green; cursor: pointer"
+              @click="checkThisImage(scope.row.name)"
+              >{{ scope.row.name }}</span
+            >
+          </template>
+        </el-table-column>
+        <el-table-column label="时间" prop="creation_time"></el-table-column>
+        <el-table-column label="拉取次数" prop="pull_count"></el-table-column>
+
+        <el-table-column label="操作" width="400">
+          <!-- 操作栏按钮 -->
+          <!-- 改变操作栏按钮布局-->
+          <el-row :gutter="3">
+            <el-col :span="4">
+              <el-button size="mini" type="danger">删除</el-button>
+            </el-col>
+          </el-row>
+        </el-table-column>
+      </el-table>
+
+      <el-table :data="imageList" border stripe v-if="!showRepoFlag">
+        <el-table-column type="selection" width="45"></el-table-column>
+        <el-table-column label="镜像标签" prop="imageTag">
+          <!-- 将构建名称列的颜色设置为蓝色 -->
+          <template slot-scope="scope">
+            <span style="color: green"
+              >{{ deepInThisImage }}:{{ scope.row.imageTag }}</span
+            >
+          </template>
+        </el-table-column>
+        <el-table-column label="操作系统" prop="os"></el-table-column>
+        <el-table-column label="系统架构" prop="architecture"></el-table-column>
+        <el-table-column label="上传时间" prop="push_time"></el-table-column>
+
+        <el-table-column label="操作" width="400">
+          <!-- 操作栏按钮 -->
+          <!-- 改变操作栏按钮布局-->
+          <template slot-scope="scope">
+            <el-row :gutter="3">
+              <el-col :span="4">
+                <el-button
+                  size="mini"
+                  type="danger"
+                  @click="deleteTag(scope.row.imageTag)"
+                  >删除</el-button
+                >
+              </el-col>
+            </el-row>
+          </template>
+        </el-table-column>
+      </el-table>
+      <!-- 
+        <div style="height:30px;line-height:30px">
+            <div class="imageItem">haha</div>
+            <div class="imageItem"></div>
+
+        </div> -->
+    </el-card>
+  </div>
+</template>
+
+<script>
+import axios1 from "axios";
+export default {
+  // 当前组件的数据
+  data() {
+    return {
+      // 项目列表数据
+      deepInThisImage: "",
+      showRepoFlag: true,
+      showWaitingFlag: false,
+      repositoryList: [],
+      buildResultList: [],
+      imageConfigIndex: 1,
+      showImageConfigDialog: false,
+      buildReq: {
+        path: "",
+        image: "",
+        dockerString: "",
+        buildResult: "请选择",
+      },
+      buildReq1: {
+        path: "",
+        image: "",
+        dockerString: "",
+        buildResult: "请选择",
+      },
+      projectName: "hello",
+      imageList: [
+        {
+          //需要提供projectName
+          imageTag: "latest",
+          os: "linux",
+          architecture: "amd",
+          pushTime: "2018-08-08-15:30",
+        },
+        {
+          imageTag: "latest",
+          os: "linux",
+          architecture: "amd",
+          pushTime: "2018-08-08-15:30",
+        },
+        {
+          imageTag: "latest",
+          os: "linux",
+          architecture: "amd",
+          pushTime: "2018-08-08-15:30",
+        },
+      ],
+    };
+  },
+  // 生命周期函数
+  created() {
+    this.getCommonList(1, 10);
+
+    axios1
+      .get(
+        "http://222.201.187.155:88/source-code/get-code-packaged?reqCode=1&count=100&index=1"
+      )
+      .then((resp) => {
+        console.log(resp.data.data);
+        this.buildResultList = resp.data.data;
+      })
+      .then(() => {
+        this.buildResultList = this.buildResultList.filter((i) => {
+          return i.status == 1;
+        });
+      });
+  },
+  // 当前组件的事件处理函数 addr/project/image:tag
+  methods: {
+    deleteTag(item) {
+        var obj={}
+        obj.tagName=item
+        obj.imageName=this.deepInThisImage
+        obj.projectName=this.projectName
+
+          this.$http({
+        method: "post",
+        url: "/image/deleteImage",
+        data: JSON.stringify(obj),
+      }).then((resp) => {
+                    console.log(resp)
+          this.checkThisImage(this.deepInThisImage)
+
+          if(resp.data.code==0){
+                      this.$message.success("删除成功");
+
+          }else{
+this.$message.error("删除失败");
+          }
+      })
 
 
+    },
+    checkThisImage(name) {
+      this.deepInThisImage = name;
+      this.showWaitingFlag = true;
+      this.getArtifacts(name, 1, 10);
+    },
 
-axios.interceptors.response.use(success => {
-    
-    if (success.status && success.status == 200 && success.data.status == 500) {   //第一个status是http响应码
-        Message.error({message: success.data.msg})
+    getArtifacts(name, pagei, pagesize) {
+      var Obj = {};
+      Obj.imageName = name;
+      Obj.projectName = this.projectName;
+      Obj.page = pagei;
+      Obj.page_size = pagesize;
+
+      this.$http({
+        method: "post",
+        url: "/image/imageVersionList",
+        data: JSON.stringify(Obj),
+      }).then((resp) => {
+        this.showWaitingFlag = false;
+        //   resp=JSON.parse(resp)
+        console.log(resp.data);
+        this.imageList = resp.data.data;
+        for (var i in this.imageList) {
+          this.imageList[i].push_time = this.formatDate(
+            this.imageList[i].push_time
+          );
+        }
+
+        this.showRepoFlag = false;
+      });
+    },
+    getCommonList(pagei, pagesize) {
+      this.showWaitingFlag = true;
+      var Obj = {
+        projectName: "hello",
+        page: pagei,
+        page_size: pagesize,
+      };
+      this.$http({
+        method: "post",
+        url: "/image/commonList",
+        data: JSON.stringify(Obj),
+      })
+        .then((resp) => {
+          var repos = resp.data.data;
+          this.repositoryList = repos;
+          for (var i in this.repositoryList) {
+            this.repositoryList[i].name = this.repositoryList[i].name.split(
+              "/"
+            )[1];
+            this.repositoryList[i].creation_time = this.formatDate(
+              this.repositoryList[i].creation_time
+            );
+          }
+          console.log(this.repositoryList);
+        })
+        .then(() => {
+          this.showWaitingFlag = false;
+        });
+    },
+
+    formatDate(dateStr) {
+      var ymd = dateStr.split("T")[0];
+      var t = dateStr.split("T")[1];
+      console.log(t);
+      var hms = t.substring(0, 8);
+      return ymd + "-" + hms;
+    },
+
+    hasUpperCase(str) {
+      var result = str.match(/^.*[A-Z]+.*$/);
+      if (result == null) return false;
+      return true;
+    },
+    showDialog() {
+      this.showImageConfigDialog = true;
+      this.buildReq = Object.assign({}, this.buildReq1);
+    },
+    buildImage() {
+      this.showWaitingFlag = true;
+      if (
+        this.buildReq.path.trim() == "" ||
+        this.buildReq.image.trim() == "" ||
+        this.buildReq.dockerString.trim() == ""
+      ) {
+        this.$message.error("请正确填写");
         return;
-    }
-    if (success.data.status==200) {
-        Message.success({message: success.data.msg})
-    }
-    return success.data;
-}, error => {
-    if(error.response.status==100){return error.response}
-    if (error.response.status == 504 || error.response.status == 404) {
-        Message.error({message: '服务器被吃了( ╯□╰ )'})
-    } else if (error.response.status == 403) {
-        Message.error({message: '权限不足，请联系管理员'})
-    } else if (error.response.status == 401) {
-        Message.error({message: '尚未登录，请登录'})
-        router.replace('/');
-    } else {
-        if (error.response.data.msg) {
-            Message.error({message: error.response.data.msg})
+      }
+      //             if(this.hasUpperCase(this.buildReq.path)){
+      //       this.$message.error('小写')
+      //       return
+      //   }
+      this.showWaitingFlag = true;
+
+      var buildReqObj = {};
+      buildReqObj.image =
+        "reg.imagehub.com/" +
+        this.projectName +
+        "/" +
+        this.buildReq.path +
+        ":" +
+        this.buildReq.image;
+      buildReqObj.dockerString = this.buildReq.dockerString;
+      buildReqObj.path = "userPath";
+      //   buildReqObj.buildResult="/root/.jenkins/workspace/"+this.buildReq.buildResult
+      buildReqObj.buildResult = "./nihao.txt";
+
+      //
+      console.log(buildReqObj);
+      //  return
+
+      this.$http({
+        method: "post",
+        url: "/image/buildAndPushImage",
+        data: JSON.stringify(buildReqObj),
+      }).then((resp) => {
+        if (resp) {
+          this.showWaitingFlag = false;
+        }
+        if (resp.data.code == 0) {
+          this.showImageConfigDialog = false;
+          this.$message.success("构建成功");
+          this.getCommonList(1, 10);
+          if (!this.showRepoFlag) {
+            this.checkThisImage(this.deepInThisImage);
+          }
         } else {
-            Message.error({message: '未知错误!'})
+          this.$message.info("构建失败");
         }
-    }
-    return;
-})
+      });
+    },
 
-let base = '';
+    handleCreateServiceSteps(index) {
+      this.imageConfigIndex = index;
+    },
+  },
+};
+</script>
 
-
-export const postKeyValueRequest = (url, params) => {
-    return axios({
-        method: 'post',
-        url: `${base}${url}`,
-        data: params,
-        transformRequest: [function (data) {
-            let ret = '';
-            for (let i in data) {
-                ret += encodeURIComponent(i) + '=' + encodeURIComponent(data[i]) + '&'
-            }
-            return ret;
-        }],
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
-        }
-    });
+<style lang="less" scoped>
+.imageItem {
+  width: 10%;
 }
-export const postRequest = (url, params) => {   // tlq1
-    return axios({
-        method: 'post',
-        url: `${base}${url}`,
-        data: params,
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-            token:localStorage.getItem('token')
-        }
-    })
+.column-color {
+  color: #72b2f5;
 }
-export const putRequest = (url, params) => {
-    return axios({
-        method: 'put',
-        url: `${base}${url}`,
-        data: params
-    })
-}
-export const getRequest = (url, params) => {
-    return axios({
-        method: 'get',
-        url: `${base}${url}`,
-        data: params
-    })
-}
-export const deleteRequest = (url, params) => {
-    return axios({
-        method: 'delete',
-        url: `${base}${url}`,
-        data: params
-    })
-}
+</style>

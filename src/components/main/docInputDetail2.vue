@@ -34,7 +34,12 @@
       </div>
     </div>
 
-    <div class="wrapper" style="padding-bottom: 50rem">
+<!-- <div v-show="getDocInShow">
+  <DocIn>
+  </DocIn>
+</div> -->
+
+    <div class="wrapper" style="padding-bottom: 50rem" >
       <div style="height: 6.5rem"></div>
       <div
         style="
@@ -388,7 +393,7 @@
             class="hoverStyle topTextButton"
             @click="goDocIn"
           >
-            继续录入
+            录入档案
           </div>
 
           <div
@@ -693,6 +698,19 @@
               所有文件
             </div>
 
+            <div
+              style="
+                float: left;
+                width: 8rem;
+                text-align: center;
+                position: relative;
+                cursor: pointer;
+              "
+              @click="showDeleted"
+            >
+              {{deletedShowSwitch==1?"已删文件":"返回列表"}}
+            </div>
+            
           </div>
         </div>
         <!-- <div
@@ -748,7 +766,7 @@
 
           <div
             class="detailItem infoItemHighlight"
-            v-for="(item, index) in this.$store.state.alreadyDocs"
+            v-for="(item, index) in this.$store.state.alreadyDocs.filter(obj=>obj.deleted!=deletedShowSwitch)"
             :key="index"
           >
             <div class="itemInfo" style="width: 3%">{{ item.docSequence }}</div>
@@ -793,8 +811,9 @@
             <div class="itemInfo" style="width: 4%">
               {{ item.boxSeq ? item.boxSeq : "暂无" }}
             </div>
-            <div class="itemInfo" style="width: 7%">
-              <div
+            <div class="itemInfo" style="width: 7%" >
+              <div v-if="item.deleted==0">
+                 <div 
                 style="float:left;margin-left=1rem"
                 class="optionDiv"
                 @click="fixThisItem(item)"
@@ -808,7 +827,7 @@
               >
                 删除
               </div>
-              <div
+                            <div
               v-if="item.printed==null"
                 style="float: left"
                 class="optionDiv"
@@ -816,6 +835,17 @@
               >
                 印章
               </div>
+
+              </div>
+
+               <div  v-if="item.deleted==1"
+                style="float:left;margin-left=1rem;cursor:arrow;color:red"
+                class="optionDiv"
+
+              >
+                已作废
+              </div>
+
                             <div v-if="item.printed"
                 style="float: left;color:#ccc"
                 class="optionDiv"
@@ -1007,17 +1037,40 @@
 </template>
 
 <script>
-import Utils from "../../utils/doc.js";
+import Utils from "../../utils/printUtil.js";
+import DocIn from "./DocIn"
 import axios from "axios";
-import doc from "../../utils/doc.js";
+import docUtil from "../../utils/doc.js";
 
 import HidePrint from "./print";
 
 export default {
   components: {
     HidePrint: HidePrint,
+    DocIn:DocIn,
   },
+  watch: {
+    
+    // getDocInShow:{
+    //          handler(val, oldVal) {
+    //            console.log(val)
+    //            if(val==false){
+    //           setTimeout(() => {
+    //                              console.log(this.$store.state.docDetialBar)
+    //   window.scrollTo(0,this.$store.state.docDetialBar)
 
+    //           }, 0);
+
+
+
+    //            }
+    //            if(val==true){
+    //              window.scrollTo(0,0)
+    //            }
+ 
+    //    }
+    // }
+    },
   computed: {
     docType() {
       return sessionStorage.getItem("docType");
@@ -1025,9 +1078,19 @@ export default {
     authCode() {
       return sessionStorage.getItem("authCode") || "";
     },
+    getDocInShow(){
+      return this.$store.state.showDocIn
+    },
+    // getDocDetailBar(){
+    //   return this.$store.state.docDetialBar
+    // },
   },
   data() {
     return {
+      deletedShowSwitch:1,
+      showDocIn:false,
+      destoryFlag:true,
+      initTime:"",
       printDoc:false,
 
       deadlineReq: "期限",
@@ -1203,6 +1266,19 @@ export default {
     };
   },
   methods: {
+    showDeleted(){
+      this.deletedShowSwitch=!this.deletedShowSwitch
+      if(this.deletedShowSwitch==0){
+      this.showAllDocs()
+
+      console.log("raw,全部的文件，开关处于已删除文件")
+      console.log(this.$store.state.rawDocs)
+      }else{
+        this.showAllDocs()
+        // this.$store.state.alreadyDocs=this.alreadyDocsRestore
+      }
+
+    },
     lockThisBatch(){
                                     this.putRequest(
         "/work/"+sessionStorage.getItem("batchId")+"/1/end"
@@ -1239,7 +1315,7 @@ export default {
     },
 
     hideCenterPrintBtn() {
-      this.alreadyDocsRestore=this.$store.state.alreadyDocs
+      // this.alreadyDocsRestore=this.$store.state.alreadyDocs
       this.showCenterPrint = false;
     },
     showCenterPrintBtn() {},
@@ -1269,9 +1345,10 @@ export default {
       this.dabCheck = false;
       this.sortYearCheck = false;
 
-      if (this.alreadyDocsRestore.length > 0) {
-        this.$store.state.alreadyDocs = this.alreadyDocsRestore;
-      }
+  
+        this.$store.state.alreadyDocs = this.$store.state.rawDocs //this.$store.state.rawDocs存的是所有的
+        //
+    
     },
 
     filterFromRequests1(item) {
@@ -1291,10 +1368,12 @@ export default {
     },
     filterFromRequests() {
       window.scrollTo(0, 0);
-
+      console.log(this.alreadyDocsRestore)
       // alert(item)
+      this.alreadyDocsRestore=this.$store.state.rawDocs
       if (this.alreadyDocsRestore.length > 0) {
-        this.$store.state.alreadyDocs = this.alreadyDocsRestore;
+        console.log("把显示的列表设为储存的数据alreadyDocsRestore")
+        this.$store.state.alreadyDocs = this.$store.state.rawDocs;
       }
 
       var tempDocs = this.alreadyDocsRestore;
@@ -1313,6 +1392,7 @@ export default {
         (this.dabCheck || this.dabCheck == "true") &&
         this.dabCheck != "false"
       ) {
+        console.log("筛选勾选了的条件")
         tempDocs = tempDocs.filter(function (element, index, self) {
           return element.docAbout == that.docAboutReq;
         });
@@ -1337,11 +1417,16 @@ export default {
           return element.deadline == that.deadlineReq;
         });
       }
+            this.alreadyDocsRestore=tempDocs;
+      console.log("筛选后的docs")
       console.log(tempDocs);
+      console.log("vux存的docs")
+      console.log(this.$store.state.rawDocs);
+      
 
       this.$store.state.alreadyDocs = tempDocs;
     },
-    filterThisRequest(str, item) {
+    filterThisRequest(str, item) { //姓名
       window.scrollTo(0, 0);
 
       // alert(item)
@@ -1402,11 +1487,11 @@ export default {
       }
     },
 
-    filterAlreadyDocs() {
+    filterAlreadyDocs() { //
       //获取批次中已经排好的数组时、获取时、排序时、排完件号盒号后需要调用
-      //获取所有的筛选条件
+      //获取sortYear筛选条件
       // console.log(this.$store.state.alreadyDocs)
-      this.alreadyDocsRestore = this.$store.state.alreadyDocs;
+      // this.alreadyDocsRestore = this.$store.state.alreadyDocs;
 
       if (sessionStorage.getItem("docType") == "personnel") {
         var name = [];
@@ -1426,25 +1511,57 @@ export default {
       var year = [];
       var docAboutF = [];
 
-      for (var i in this.$store.state.alreadyDocs) {
-        if (docAboutF.indexOf(this.$store.state.alreadyDocs[i].docAbout) < 0) {
-          docAboutF.push(this.$store.state.alreadyDocs[i].docAbout);
-        }
-        if (year.indexOf(this.$store.state.alreadyDocs[i].sortYear) < 0) {
-          year.push(this.$store.state.alreadyDocs[i].sortYear);
+      for (var i in this.$store.state.rawDocs) {
+        // if (docAboutF.indexOf(this.$store.state.alreadyDocs[i].docAbout) < 0) {
+        //   docAboutF.push(this.$store.state.alreadyDocs[i].docAbout);
+        // }
+        if (year.indexOf(this.$store.state.rawDocs[i].sortYear) < 0) {
+          year.push(this.$store.state.rawDocs[i].sortYear);
         }
       }
       this.yearFilter = year;
-      this.docAboutFilter = docAboutF;
+      // this.docAboutFilter = docAboutF;
     },
     nullJson(data) {
       var arr = Object.keys(data);
       return arr.length == 0; //true
     },
+    getDocAboutFilter(){
+      var docAboutWeightId
+      var organ=sessionStorage.getItem("organ")
+      organ=JSON.parse(organ)
+
+       if (sessionStorage.getItem("docType") == "official") {
+         docAboutWeightId= organ.docIssueWig
+      }
+      if (sessionStorage.getItem("docType") == "science") {
+docAboutWeightId=organ.tecProjectWig
+      }
+
+      if (sessionStorage.getItem("docType") == "business") {
+
+docAboutWeightId=organ.busProjectWig
+      }
+
+      this.docAboutFilter=[]
+       this.getRequest("/weight/" + docAboutWeightId)
+              .then((resp) => {
+                for(var attr in resp.data.tables){
+                  console.log(resp.data.tables)
+                  this.docAboutFilter.push(attr)
+                }
+              })
+
+    },
     preLoadDocs() {
+      
+this.getDocAboutFilter()
+
       console.log("preload");
       var f = false;
-      if(this.$store.state.alreadyDocs.length==0){
+      if(this.$store.state.alreadyDocs.length==0){ //批次页面进来时会将这个设为[],也就是每次查看
+      //新的批次会走这里，返回查看的话不会,返回查看的时候还得跳转到上次记忆的滚动条位置
+
           this.getRequest("/work/sorted/"+sessionStorage.getItem("batchId")).then((resp) => {
      var item=resp.data
 
@@ -1454,6 +1571,7 @@ export default {
             var sorted = JSON.parse(item.sorted.sorted);
             console.log(sorted);
             this.$store.state.alreadyDocs = sorted;
+                      this.$store.state.rawDocs=sorted //全部的，第一次加载时存下来
             this.filterAlreadyDocs(); //已经排好
 
           } else {
@@ -1461,7 +1579,17 @@ export default {
             this.loadDocs();
           }
 
+
                 })
+      }
+      else{ //后续回来的  this.alreadyDocsRestore 是筛选时需要的所有文档，如果没有这步，修改页面回来不会走上面的，就不会初始化
+         this.alreadyDocsRestore=this.$store.state.rawDocs
+                        setTimeout(() => {
+                                 console.log(this.$store.state.docDetialBar)
+      window.scrollTo(0,this.$store.state.docDetialBar)
+
+              }, 50);
+          this.filterAlreadyDocs();
       }
 
 
@@ -1483,8 +1611,6 @@ export default {
           }
 
 
-        }).then(()=>{
-
         })
 }
         // .then(() => {
@@ -1494,24 +1620,12 @@ export default {
     loadDocs() {
       console.log("load");
 
-      if (this.sortedTemp.length != 0) {
-        this.$store.state.alreadyDocs = this.sortedTemp;
-        console.log("return");
-        return;
-      }
-      //         if(sessionStorage.getItem('docType')=='personnel'){
-      // var path =
-      //         "/document/" +
-      //         sessionStorage.getItem("docType") +
-      //         "/sort/" +
-      //         sessionStorage.getItem("batchId") +
-      //         "?pageNow=0&pageSize=10000";
-
-      //         this.showWaitingFlag = true;
-      //         this.getRequest(path).then((resp) => {
-      //           console.log("排件号盒号");
-      //           console.log(resp);})
-      //         }
+    //   if (this.sortedTemp.length != 0) {
+    //     this.$store.state.alreadyDocs = this.sortedTemp;
+    //     console.log("return");
+    //     return;
+    //   }
+    
       this.showWaitingFlag = true;
       // return
       var path =
@@ -1565,16 +1679,17 @@ export default {
 
             // else {
             this.$store.state.alreadyDocs = resp.data.content;
+             this.$store.state.rawDocs=resp.data.content
             console.log(resp.data.content);
 
             this.showWaitingFlag = false;
             // }
           }
 
-          // this.$router.replace('/work/docInputD')
+          // this.$router.push('/work/docInputD')
         })
         .then(() => {
-          this.filterAlreadyDocs(); //获取时
+          this.filterAlreadyDocs(); //load获取时
         });
 
       var tmparr = [];
@@ -1596,101 +1711,7 @@ export default {
       // }
     },
 
-    loadDocs1() {
-      this.$store.state.alreadyDocs = [];
-      //         if(sessionStorage.getItem('docType')=='personnel'){
 
-      // var path =
-      //         "/document/" +
-      //         sessionStorage.getItem("docType") +
-      //         "/sort/" +
-      //         sessionStorage.getItem("batchId") +
-      //         "?pageNow=0&pageSize=90000";
-
-      //         this.showWaitingFlag = true;
-
-      //         this.getRequest(path).then((resp) => {
-      //           console.log("排件号盒号");
-      //           console.log(resp);})
-
-      //         }
-
-      this.showWaitingFlag = true;
-
-      // return
-      // var path =
-      //   "/document/page/" +
-      //   sessionStorage.getItem("docType") +
-      //   "/" +
-      //   sessionStorage.getItem("batchId") +
-      //   "?pageNow=0&pageSize=900000";
-      var path =
-        "/document/" +
-        sessionStorage.getItem("docType") +
-        "/sort/" +
-        sessionStorage.getItem("batchId") +
-        "?pageNow=0&pageSize=10000";
-
-      // var path='/document/page/'+sessionStorage.getItem('docType')+'/'
-      // +sessionStorage.getItem('batchId')+'?pageNow=0&pageSize=100000'
-
-      axios
-        .get(this.baseurl + path, {
-          headers: {
-            "Content-Type": "application/json",
-            authId: sessionStorage.getItem("authId"),
-            token: window.localStorage.getItem("token")
-              ? window.localStorage.getItem("token").split('"')[1] ||
-                window.localStorage.getItem("token")
-              : null,
-          },
-        })
-        .then((resp) => {
-          console.log(resp);
-          this.$store.state.alreadyDocs = resp.data;
-
-          if (resp) {
-            // if (resp.data.content && this.docType == "personnel") {
-            if (resp.data.content && this.docType == "personnel") {
-              // let vm = this;
-              // var path =
-              //   "/document/" +
-              //   sessionStorage.getItem("docType") +
-              //  "/" +
-              //   sessionStorage.getItem("batchId") +
-              //   "?pageNow=0&pageSize=90000";
-
-              var path =
-                "/document/page/" +
-                sessionStorage.getItem("docType") +
-                "/" +
-                sessionStorage.getItem("batchId") +
-                "?pageNow=0&pageSize=1000";
-
-              this.getRequest(path).then((resp) => {
-                console.log("排件号人事");
-                console.log(resp);
-                if (resp) {
-                  this.showWaitingFlag = false;
-                }
-                // console.log(JSON.stringify(resp))
-                if (resp.code == 0) {
-                  // console.log("ss000000000aaaa")
-                  this.showWaitingFlag = false;
-                  console.log(resp.data);
-                  this.$store.state.alreadyDocs = resp.data;
-                }
-              });
-            } else {
-              this.$store.state.alreadyDocs = resp.data.content;
-
-              this.showWaitingFlag = false;
-            }
-          }
-
-          // this.$router.replace('/work/docInputD')
-        });
-    },
     putInContent() {
       return;
       this.searchContent = "输入识别号";
@@ -1703,7 +1724,7 @@ export default {
       if (true) {
         this.searchContent = "输入识别号";
       if (this.alreadyDocsRestore.length > 0) {
-        this.$store.state.alreadyDocs = this.alreadyDocsRestore;
+        this.$store.state.alreadyDocs = this.alreadyDocsRestore;//还原搜索前的列表，不一定是所有的即vuex里面的alreadydocsrestore
       }else{
       this.preLoadDocs();
 
@@ -1711,12 +1732,12 @@ export default {
       }
     },
     goSetRule() {
-      // this.$router.replace('/work/modifyOragan')
+      // this.$router.push('/work/modifyOragan')
       // if(this.docType=='')
       // this.$store.state.whichRuleSet=
       // this.$store.state.whichRuleSet=sessionStorage.getItem('auth')
       this.$store.state.backToDetailFlag=true
-      this.$router.replace("/work/keyWM");
+      this.$router.push("/work/keyWM");
     },
 
     hideAdvSearch() {
@@ -1762,7 +1783,7 @@ export default {
       ).then((resp) => {
         // console.log(resp);
         this.showWaitingFlag = false;
-        this.alreadyDocsRestore= this.$store.state.alreadyDocs 
+        this.alreadyDocsRestore= this.$store.state.alreadyDocs //保存搜索前的列表
         this.$store.state.alreadyDocs = resp.data.content;
 
         // if(sessionStorage.getItem('docType')=='personnel'){
@@ -1801,7 +1822,7 @@ export default {
       ).then((resp) => {
         // console.log(resp);
         this.showWaitingFlag = false;
-        this.alreadyDocsRestore=this.$store.state.alreadyDocs
+        this.alreadyDocsRestore=this.$store.state.alreadyDocs  //gai1
         this.$store.state.alreadyDocs = resp.data.content;
 
         // if(sessionStorage.getItem('docType')=='personnel'){
@@ -1886,7 +1907,7 @@ export default {
                 }
               }
             }
-            this.sortedTemp = Object.assign({}, this.$store.state.alreadyDocs);
+            // this.sortedTemp = Object.assign({}, this.$store.state.alreadyDocs);
             this.filterAlreadyDocs(); //排序人事时
 
             // for(var arr in resp.data){
@@ -1966,7 +1987,11 @@ export default {
         });
         return;
       }
-      this.$router.replace("/work/docInput");
+      this.showDocIn=true
+      this.$store.state.docDetialBar=0
+      this.$router.push("/work/docInput");
+
+      // this.$store.state.showDocIn=true
     },
     reloadTable() {
       var path =
@@ -1990,12 +2015,12 @@ export default {
           console.log(resp);
 
           this.$store.state.alreadyDocs = resp.data.content;
-          // this.$router.replace('/work/docInputD')
+          // this.$router.push('/work/docInputD')
         });
     },
 
     backToOrgans() {
-      this.$router.replace("/work/modifyOrgan");
+      this.$router.push("/work/modifyOrgan");
     },
     focusOnThis(e) {},
 
@@ -2176,6 +2201,7 @@ export default {
       this.$message.warning("修改后请重新排件号盒号");
       console.log(item);
       this.$store.state.tempDoc = Object.assign({}, item);
+      // docUtil.$emit("changeThisDoc",item)
       //   alert(item.id)
       //   this.$store.state.tempDoc.sortYear=JSON.stringify(item.sortYear)
       // item.sortYear=JSON.stringify(item.sortYear)
@@ -2184,8 +2210,12 @@ export default {
 
       this.$store.state.tempDocSeq = item.docSequence;
       this.sortedTemp = [];
+ let barHeight = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop;
+ console.log(barHeight)
+      this.$store.state.docDetialBar=barHeight
 
-      this.$router.replace("/work/docInput");
+      // this.$store.state.showDocIn=true
+      this.$router.push("/work/docInput");
     },
     aaa() {},
 
@@ -2646,7 +2676,11 @@ export default {
   },
 
   mounted() {
-    var that = this;
+    var dd=new Date()
+    var inittime=dd.getHours()+"-"+dd.getMinutes()+"-"+dd.getSeconds()+""
+    console.log("init 一个detail"+inittime)
+    this.initTime=inittime
+
     //     Utils.$on("changeThePrint", function (doc) {
     //   console.log("get改变已经印了");
     //   var idd=sessionStorage.getItem("docId")
@@ -2657,19 +2691,25 @@ export default {
     //       }
     //     }
     // });
+
     
   var that=this
     Utils.$on("printBackThisDoc", function (doc) {
       // console.log("父页面get下拉的");
       // var that=this
       that.$store.state.printDoc=doc
-      console.log(doc.id+"收到并且设置!!!!")
+      console.log(doc.id+that.initTime+"收到并且设置!!!!")
+    
       that.printBtn(doc)
     });
   },
+  //    beforeDestroy(){
+  //    docUtil.$off("changeThisDoc")
+  //  },
   destroyed(){
+    this.destoryFlag=false
     console.log("destory")
-    this.$.destory()
+    // document=null
   }
 };
 </script>

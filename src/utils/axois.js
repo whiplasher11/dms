@@ -85,7 +85,7 @@ axios1.interceptors.response.use(
         res.data.msg.indexOf("运行时异常:null") !== -1
       ) {
         // Message.warning("登录信息已过期，请重新登录");
-        // router.replace("/login");
+        // router.push("/login");
       } else {
         Message.error(res.data.msg);
       }

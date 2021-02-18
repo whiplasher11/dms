@@ -181,7 +181,7 @@
         },
         methods: {
             goRegister(){
-                 this.$router.replace("/login")
+                 this.$router.push("/login")
                 
             },
             pRegister(){
@@ -193,7 +193,7 @@
                             // alert(this.$store.state.kind)
                             if (resp) {
                                 console.log(resp.obj)
-                                if(resp.status==200) this.$router.replace('/login');
+                                if(resp.status==200) this.$router.push('/login');
                                 
                             }else{
                                 
@@ -213,7 +213,7 @@
                             // alert(this.$store.state.kind)
                             if (resp) {
                                 console.log(resp.obj)
-                                if(resp.status==200) this.$router.replace('/login');
+                                if(resp.status==200) this.$router.push('/login');
                                 
                             }else{
                                 
@@ -256,7 +256,7 @@
                                 window.sessionStorage.setItem("user", JSON.stringify(resp.obj));
                                 let path = this.$route.query.redirect;
                                 console.log(resp.obj)
-                                this.$router.replace((path == '/' || path == undefined) ? '/' : path);
+                                this.$router.push((path == '/' || path == undefined) ? '/' : path);
                             }else{
                                 this.vcUrl = '/verifyCode?time='+new Date();
                             }

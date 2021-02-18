@@ -108,7 +108,7 @@
         @change="logShowtoSet"
         v-model="showToSet"
  
-        >是否显示</el-checkbox
+        >设为常用</el-checkbox
       >
 
         <input
@@ -557,7 +557,7 @@ this.presetNameShowFlag=false
       window.sessionStorage.setItem("authName", item.authName);
 
       // window.sessionStorage.setItem('checkAuthId',item.id)
-      this.$router.replace("/work/keyWM");
+      this.$router.push("/work/keyWM");
     },
     batchDocs(item) {
       //查看某批
@@ -592,7 +592,7 @@ this.presetNameShowFlag=false
       // batchId
 }
 
-      this.$router.replace("/work/docInputD");
+      this.$router.push("/work/docInputD");
 
 
     },
@@ -607,7 +607,7 @@ this.presetNameShowFlag=false
       window.sessionStorage.setItem("authId", item.id);
       window.sessionStorage.setItem("authCode", item.authCode);
       window.sessionStorage.setItem("authName", item.authName);
-
+      window.sessionStorage.setItem("organ",JSON.stringify(item))
       // window.sessionStorage.setItem('checkAuthId',item.id)
       // window.sessionStorage.setItem('batchId',item.id)
 

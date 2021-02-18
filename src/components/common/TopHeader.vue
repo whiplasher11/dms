@@ -243,7 +243,7 @@ t=this.fomatTime(t)
             message: "将于"+t+"过期",})
     },
     ManageUser() {
-      this.$router.replace("/admin/userManage");
+      this.$router.push("/admin/userManage");
     },
     exit() {
       this.$confirm("是否退出", "提示", {
@@ -276,14 +276,14 @@ t=this.fomatTime(t)
 
         });
 
-        this.$router.replace("/login");
+        this.$router.push("/login");
       });
     },
     goKWM() {
-      this.$router.replace("/work/keyWM");
+      this.$router.push("/work/keyWM");
     },
     goCheckHistoryBat() {
-      this.$router.replace("/work/modifyOrgan");
+      this.$router.push("/work/modifyOrgan");
     },
     fixTheTopHeader() {
       this.topHeaderFix = !this.topHeaderFix;
@@ -297,18 +297,18 @@ t=this.fomatTime(t)
     },
 
     goDocIn() {
-      this.$router.replace("/work/newBatch");
+      this.$router.push("/work/newBatch");
     },
 
     goRecovery() {
-      this.$router.replace("/recovery");
+      this.$router.push("/recovery");
     },
     gologin() {
-      this.$router.replace("/login");
+      this.$router.push("/login");
     },
     goHome() {
       //  alert("home")
-      this.$router.replace("/home");
+      this.$router.push("/home");
     },
     unLogin() {
       //  alert(1);
@@ -328,7 +328,7 @@ t=this.fomatTime(t)
 
           sessionStorage.removeItem("user");
 
-          this.$router.replace("/login");
+          this.$router.push("/login");
         })
         .catch(() => {
           // this.$message({
@@ -340,18 +340,18 @@ t=this.fomatTime(t)
 
     toHistory() {
       if (localStorage.getItem("token")) {
-        this.$router.replace("/history");
+        this.$router.push("/history");
       } else {
         this.$message({
           type: "info",
           message: "请登录",
         });
-        this.$router.replace("/login");
+        this.$router.push("/login");
       }
     },
 
     toIllManage() {
-      this.$router.replace("/illManage");
+      this.$router.push("/illManage");
     },
 
     getUserInfo() {
@@ -389,7 +389,7 @@ t=this.fomatTime(t)
       } else {
         // setTimeout(() => {
         //   this.$message.warning("登录信息已过期，请重新登录");
-        //   this.$router.replace("/login");
+        //   this.$router.push("/login");
         // }, 1500);
       }
     },
@@ -451,7 +451,7 @@ t=this.fomatTime(t)
   //         message: "注销成功!"
   //       });
   //       localStorage.removeItem("token");
-  //       this.$router.replace("/login");
+  //       this.$router.push("/login");
   //     })
   //     .catch(() => {
   //       // this.$message({

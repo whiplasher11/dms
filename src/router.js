@@ -11,7 +11,7 @@ import newBatch from './components/main/NewBatch.vue'
 import DocIn from './components/main/DocIn.vue'
 import ModifyOrgan from './components/main/ModifyOrgan.vue'
 import KeyWordManage from './components/main/KeyWordManage.vue'
-import DocInputDetail from './components/main/docInputDetail.vue'
+import docInputDetail2 from './components/main/docInputDetail2.vue'
 import Manage from './components/main/Manage.vue'
 import Print from './components/main/print.vue'
 import { resolve } from 'core-js/fn/promise'
@@ -53,7 +53,7 @@ export default new Router({
         {
             path: '/work/docInputd',
             name: 'docInputd',
-            component: resolve => require(['./components/main/docInputDetail.vue'],resolve),
+            component: resolve => require(['./components/main/docInputDetail2.vue'],resolve),
             hidden: true,
 
         }, 

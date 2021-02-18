@@ -161,7 +161,10 @@ Vue.filter('formatAuthCode',function(value){
 });
 router.beforeEach((to, from, next) => {
     if (true) {
-        next({replace:true});
+        console.log("打印from")
+
+        console.log(from)
+        next();
         
     }else {
         if (window.sessionStorage.getItem("user")) {

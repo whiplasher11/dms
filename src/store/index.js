@@ -12,6 +12,8 @@ const now = new Date();
 const store = new Vuex.Store({
 
     state: {
+        showDocIn:false,
+        docDetialBar:0,
         printDoc:{},
         backToDetailFlag:false,//权重表页面是否返回详细信息页面
         noChufa:false,//修改文件时不要触发查找相似
@@ -26,84 +28,7 @@ const store = new Vuex.Store({
         tempDoc:'',
         alreadyDocs:[],
         sortedFlag:true,  //在排序后设置为true 新增修改  删除？ 后设置为false
-        alreadyDocss:[
-            {
-                userId:7,
-        authId:12,
-        batchId:22,
-        docDate:'20181221',
-        docNum:100, //????
-        docPage:12,
-        docSequence:'sge3ff',
-        docTitle:'今天的猪肉12元每斤',
-        docType:'official',
-        keyword:'猪肉',
-        remark:'',
-        deadline:'永久', 
-        docAbout:'综合类',
-        docDesc:'慈办'+'[2010]2号',
-        docPage:2,
-        docDescAuthor:'磁力公安局发文',
-        docDescNum:2,
-        docLevel:'部级',
-        docSecret:'',
-        docTypeCode:'WS',
-        dutyAuthor:'磁力公安局发文',
-        sortYear:2018
-
-            },
-            {
-                userId:7,
-        authId:12,
-        batchId:22,
-        docDate:'20181221',
-        docNum:100, //????
-        docPage:12,
-        docSequence:'ddcc24',
-        docTitle:'今天的猪肉12元每斤',
-        docType:'official',
-        keyword:'猪肉',
-        remark:'',
-        deadline:'永久', 
-        docAbout:'综合类',
-        docDesc:'慈办'+'[2010]2号',
-        docPage:2,
-        docDescAuthor:'磁力公安局发文',
-        docDescNum:2,
-        docLevel:'部级',
-        docSecret:'无',
-        docTypeCode:'WS',
-        dutyAuthor:'磁力公安局发文',
-        sortYear:2018
-
-            },           {
-                userId:7,
-        authId:12,
-        batchId:22,
-        docDate:'20181221',
-        docNum:100, //????
-        docPage:12,
-        docSequence:'asdw2f',
-        docTitle:'今天的猪肉12元每斤',
-        docType:'official',
-        keyword:'猪肉',
-        remark:'',
-        deadline:'永久', 
-        docAbout:'综合类',
-        docDesc:'慈办'+'[2010]2号',
-        docPage:2,
-        docDescAuthor:'磁力公安局发文',
-        docDescNum:2,
-        docLevel:'部级',
-        docSecret:'',
-        docDescAuthor:'慈办发',
-        // dutyAuthor:'',
-        docTypeCode:'WS',
-        dutyAuthor:'磁力公安局发文',
-        sortYear:2018
-
-            },
-        ],
+        rawDocs:[],
 
         kind:1,//1 管理员，2病人，3医生
         routes: [],

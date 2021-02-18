@@ -66,6 +66,19 @@ mounted(){
 	this.runInv()
 			console.log(this.baseurl)
  
+    document.onkeydown= function (e) {
+
+var theEvent = window.event || e;
+var code = theEvent.keyCode || theEvent.which;
+if (code == 13||code == 80) {
+
+
+}
+if(code==81){
+	console.log("首页qqqqqqqqqqqqqq")
+}
+    }
+
 },
 methods: {
 		runInv() {

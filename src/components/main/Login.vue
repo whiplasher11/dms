@@ -249,7 +249,7 @@ export default {
                   // window.sessionStorage.setItem("user", JSON.stringify(resp.obj));
                   // let path = this.$route.query.redirect;
                   // console.log(resp.obj);
-                  // this.$router.replace(
+                  // this.$router.push(
                   //   path == "/" || path == undefined ? "/" : path
                 // );
               } else {
@@ -319,7 +319,7 @@ export default {
                         message: "登录成功!"
                       });
 
-                      this.$router.replace('/work/newBatch')
+                      this.$router.push('/work/newBatch')
                 }
                 
                 // else if(){}
@@ -327,7 +327,7 @@ export default {
                   // window.sessionStorage.setItem("user", JSON.stringify(resp.obj));
                   // let path = this.$route.query.redirect;
                   // console.log(resp.obj);
-                  // this.$router.replace(
+                  // this.$router.push(
                   //   path == "/" || path == undefined ? "/" : path
                 // );
               } else {

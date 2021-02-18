@@ -39,7 +39,7 @@ axios.interceptors.response.use(success => {
         // console.log(error)
         Message.error({message:"未知错误"})
         return error.response
-        // router.replace('/login')
+        // router.push('/login')
        
         return error.response}
     if (error.response.status == 504 || error.response.status == 404) {
@@ -50,7 +50,7 @@ axios.interceptors.response.use(success => {
     } else if (error.response.status == 401) {
         window.sessionStorage.clear('userId')
         Message.error({message: '尚未登录，请登录!!'})
-        router.replace('/');
+        router.push('/');
     } else {
         if (error.response.data.massage) {
             Message.error({message: error.response.data.msg})
@@ -61,8 +61,8 @@ axios.interceptors.response.use(success => {
     return;
 })
 
-var base = 'http://101.200.243.57:8080';
-// var base = 'http://localhost:8080';
+// var base = 'http://101.200.243.57:8080';
+var base = 'http://localhost:8080';
 
 // var base= 'http://193.112.147.158:8088'
 // var base = 'http://gdm.free.idcfengye.com';

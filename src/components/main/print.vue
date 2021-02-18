@@ -136,7 +136,7 @@
 
 <script>
 
-import Utils from '../../utils/doc.js'
+import Utils from '../../utils/printUtil.js'
 // import Hide from "./docInputDetail.vue";
 
 
@@ -167,8 +167,8 @@ if (code == 13||code == 80) {
 that.clickPrint();
 
 }
+    }
 
-}
 
 
   },
@@ -204,7 +204,6 @@ that.clickPrint();
         }
       })
       var b=document.getElementById("printButton")
-this.emitThisId()
 
       b.click()
       return true
@@ -215,7 +214,7 @@ this.emitThisId()
 
 
       }else{
-this.emitThisId()
+
 
               var b=document.getElementById("printButton")
       b.click()
@@ -284,11 +283,7 @@ if(window.sessionStorage.getItem("docType")=='science'){
         }
       }
     },
-    emitThisId(){
-      // alert("emit")
-        Utils.$emit('changeThePrint',1);
 
-    },
         emitThisDoc(doc) {
       // console.log(doc)
       console.log("emit")
@@ -389,7 +384,13 @@ this.initData()
       rsPrintSub:'',
     }
   },
+     beforeDestroy(){
+     Utils.$off("printBackThisDoc")
+   },
 
+          destroyed: function() {
+            console.log("Parent", "Destroyed");
+        },
 }
 </script>
 

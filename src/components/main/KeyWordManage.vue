@@ -1502,11 +1502,11 @@ this.jsonTable=[]
       // this.checkFromThisType(this.typeNum);
     },
     backToDetail() {
-      this.$router.replace("/work/docInputD");
+      this.$router.push("/work/docInputD");
       this.$store.state.backToDetailFlag = false;
     },
     backToOrgans() {
-      this.$router.replace("/work/modifyOrgan");
+      this.$router.push("/work/modifyOrgan");
     },
     backToSelect() {
       this.saveBtnShow = false;
@@ -2767,6 +2767,7 @@ this.jsonTable=[]
     },
 
     deleteKV(e, item) {
+      // console
       //删除问题
       if (this.typeNum % 5 == 0 || (this.typeNum - 6) % 10 == 0) {
         //对照表
@@ -2840,6 +2841,7 @@ this.jsonTable=[]
         }
       }
       var keywordTodelete = {};
+      console.log(1)
       this.$confirm(
         "确定要删除该条不再使用吗",
         {
@@ -2850,15 +2852,18 @@ this.jsonTable=[]
         }
       )
         .then(() => {
-          //问题删除
-          if (this.typeNum == 11 || this.typeNum == 21 || this.typeNum == 31) {
+          //问题删除   console.log("关键词删除")
+   console.log("关键词删除进入，需判断")
+          if ((this.typeNum == 11 || this.typeNum == 21 || this.typeNum == 31) && this.backToDocAboutShow == false) {
+            console.log("wenti delete")
             if (this.backToDocAboutShow == false) {
               //问题
               this.deleteDocAbout(item);
               return;
             }
           }
-          else if(this.computeTypeNumIsAuthor){  //责任者删除
+          else if(this.computeTypeNumIsAuthor){  //责任者删除.
+          console.log("责任者删除")
             delete this.authorJson[item[0]]
 
                                     var kvObj = {
@@ -2887,7 +2892,8 @@ this.jsonTable=[]
                 })
 
           }
-          else{
+          else{ //关键词删除
+          console.log("关键词删除")
                     var _arr = this.jsonTable;
           var length = _arr.length;
           // console.log(length)

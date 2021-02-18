@@ -179,7 +179,7 @@
                                 this.getRequest("/logout");
                                 window.sessionStorage.removeItem("user")
                                 this.$store.commit('initRoutes', []);
-                                this.$router.replace("/");
+                                this.$router.push("/");
                             }
                         })
                     } else {

@@ -12,7 +12,7 @@
       <div style="height:2rem;position:relative;">
         <div class="detailList" style="margin-left:0.5rem;font-size:0.9rem;" @click="goDetail">点击查看本批详情</div>
       </div>
-        <div v-for="item in this.$store.state.alreadyDocs" @click="checkThisDoc(item)" v-on:mouseover="fixShow()" 
+        <div v-for="item in this.$store.state.alreadyDocs.filter(obj=>obj.deleted!=1)" @click="checkThisDoc(item)" v-on:mouseover="fixShow()" 
         v-on:mouseleave="fixHide()" :key="item.docSequence"  class="leftItem animated fadeInLeft" style="width:60%;height:2rem;float:left;
     box-shadow: 0 0 0.5rem #909399;
     border-radius: .8rem;
@@ -88,13 +88,14 @@ export default {
             // console.log(resp)
             // this.
                     this.$store.state.alreadyDocs=resp.data.content
-           this.$router.replace("/work/docInputd")
+           this.$router.push("/work/docInputd")
 
 
           })
     },
     goDetail(){
-           this.$router.replace("/work/docInputd")
+      // this.$store.state.showDocIn=false
+           this.$router.push("/work/docInputd")
       
     },
     emitThisDoc(doc) {
@@ -128,7 +129,10 @@ export default {
 
       this.emitThisDoc(doc)
     },
-  }
+  },
+     beforeDestroy(){
+     Utils.$off("changeThisDoc")
+   },
 
 }
 </script>
