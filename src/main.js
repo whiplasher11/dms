@@ -37,10 +37,11 @@ Vue.filter('formatdocType',function(value){
     var tvalue=value+""
     if(tvalue==undefined||tvalue=='null'||!tvalue||tvalue==""){return '暂无'}
     else {
-        if(tvalue=="official") return "文书"
+        if(tvalue=="official") return "文书问题法"
         if(tvalue=="personnel") return "人事"
         if(tvalue=="science") return "科技"
         if(tvalue=="business") return "业务"
+        if(tvalue=="officialJ") return "文书机构法"
 
     }
 });

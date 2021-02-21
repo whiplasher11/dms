@@ -1,9 +1,9 @@
 <template>
   <div class="left_history_batches">
-      <div style="height:150vh;overflow-x:hidden;margin-top:4.6rem" >
+      <div style="height:100vh;overflow-x:hidden" >
         <vue-scroll :ops="ops">
 
-      <div style="height:2.5rem" > 
+      <div style="height:4.8rem" > 
         <!-- 搜索 -->
         <!-- <el-input class="leftInput" v-model="searchContent" ></el-input> -->
          <!-- <el-button type="primary" icon="el-icon-search"  style="background-color:rgb(134, 151, 197);border:none;margin-top:2vh;" @click="searchTheDoc">搜索</el-button> -->
@@ -215,6 +215,7 @@ export default {
   //  }
 
     height: 150vh;
+
     width: 10rem;
     background-color:rgb(216, 221, 231);
     position: absolute;

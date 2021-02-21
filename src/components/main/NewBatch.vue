@@ -353,6 +353,27 @@ export default {
         six:"docDate",
         seven:"docDescNum"
       },
+            priorityJ: {
+        first: "keyword",
+        second:"keyword2",
+        third: "docDateYear",
+        forth: "level",
+        fifth: "author",
+        six:"docDesc",
+        seven:"docDate",
+        eight:"docDescNum"
+      },
+            uploadpriorityJ: {
+        first: "keyword",
+        second:"keyword2",
+        third: "docDateYear",
+        forth: "level",
+        fifth: "author",
+        six:"docDesc",
+        seven:"docDate",
+        eight:"docDescNum"
+      },
+
       renshipriority: {
         first: "keyword",
         second: "docDate",
@@ -602,13 +623,24 @@ for(  var i=0;i<this.jsonArray.length;i++){
       window.sessionStorage.setItem("lastBox",JSON.stringify(jsonToCommit))
 
       var a = { first: "1", second: "2", third: "3", forth: "4", fifth: "5",six:"6" ,seven:"7"};
-      let b = this.BatchForm.priority;
+      let b = this.priority
       // console.log(b)
 
+
       for (var key in b) {  //数字作为key ，keyword level 作为value
-        var newKey = a[key];
-        b[newKey] = b[key];
+        var newKey = a[key];  //a[first]
+        b[newKey] = b[key];  //b[1]=b[first]
         delete b[key];
+      }
+
+      if(this.officialDocTypeSub==2){
+         a = { first: "1", second: "2", third: "3", forth: "4", fifth: "5",six:"6" ,seven:"7",eight:"8"};
+         b=this.priorityJ
+               for (var key in b) {  //数字作为key ，keyword level 作为value
+        var newKey = a[key];  //a[first]
+        b[newKey] = b[key];  //b[1]=b[first]
+        delete b[key];
+      }
       }
 
       // console.log("aaa");
@@ -696,7 +728,7 @@ for(  var i=0;i<this.jsonArray.length;i++){
 
     nextStep() {
 //人事 
-      if(this.BatchForm.docType==3){
+if(this.BatchForm.docType==3){
 {
 /**
  * 人事类
@@ -904,14 +936,19 @@ var key91 = '工资情况材料';
 
 */
 }
-         var docTypetemp = "official";
-      if (this.BatchForm.docType == 2) {
-        docTypetemp = "science";
+         var docTypetemp = "science";
+      if (this.BatchForm.docType == 1) {
+        docTypetemp = "official";
+        if(this.officialDocTypeSub==2){//机构法
+        docTypetemp = "officialJ"
+        }
       } else if (this.BatchForm.docType == 3) {
         docTypetemp = "personnel";
       } else if (this.BatchForm.docType == 4) {
         docTypetemp = "business";
       }
+
+
       this.BatchForm.priority=this.uploadpriority
             var a = { first: "1", second: "2", third: "3", forth: "4", fifth: "5" ,six:"6",seven:"7"};
             let b = this.BatchForm.priority;
@@ -920,6 +957,18 @@ var key91 = '工资情况材料';
         b[newKey] = b[key];
         delete b[key];
       }
+
+      // if(this.docTypetemp=="officialJ"){
+      //         this.BatchForm.priority=this.uploadpriorityJ
+      //        a = { first: "1", second: "2", third: "3", forth: "4", fifth: "5" ,six:"6",seven:"7",eight:"8"};
+      //        b = this.BatchForm.priority;
+      // for (var key in b) {
+      //   var newKey = a[key];
+      //   b[newKey] = b[key];
+      //   delete b[key];
+      // }
+
+      // }
  
       this.BatchForm.rule = b;
 

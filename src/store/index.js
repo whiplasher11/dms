@@ -12,7 +12,8 @@ const now = new Date();
 const store = new Vuex.Store({
 
     state: {
-        showDocIn:false,
+        organIdForJump:null,
+        showDocIn:false,//没用了
         docDetialBar:0,
         printDoc:{},
         backToDetailFlag:false,//权重表页面是否返回详细信息页面
@@ -29,6 +30,7 @@ const store = new Vuex.Store({
         alreadyDocs:[],
         sortedFlag:true,  //在排序后设置为true 新增修改  删除？ 后设置为false
         rawDocs:[],
+        sequenceDocs:[],//按序列号查询的数据
 
         kind:1,//1 管理员，2病人，3医生
         routes: [],

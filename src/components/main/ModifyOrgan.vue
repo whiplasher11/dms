@@ -699,17 +699,34 @@ this.presetNameShowFlag=false
 
     // fun2(fun1);//调用回调函数，
 
+
+
     this.getRequest("/organs").then((resp) => {
       if (resp.code == 0) {
         console.log("加载时请求单位列表");
         this.organs = resp.data;
         this.organs.reverse();
-        this.showUsusal()
+
         // console.log(this.organs)
         //  console.log(resp)
       }
+    }).then(()=>{
+       console.log(this.$store.state.organIdForJump)
+    var bid=this.$store.state.organIdForJump
+    if(bid){
+      console.log(bid)
+      for(var i=0;i<this.organs.length;i++){
+        console.log(this.organs[i].id)
+        if(this.organs[i].id==bid){
+          this.checkThisOrganBat(this.organs[i])
+        }
+      }
+      this.$store.state.organIdForJump=null
+    }else{
+              this.showUsusal()
+    }
     });
-
+   
     // var testObj={"yongjiu":"20","changqi":"20","beicha":"12","y10":"22","y30":"22","y100":"22"}
     // window.window.localStorage.setItem("token",'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1OTU5NDgzNDMsInVzZXJuYW1lIjoidGFuZyJ9.SYvuMV81W9FEjm32GYm5DXsglRH2BU_zJjiMg9MV6qg')
     //        this.postRequest("/document/test",JSON.stringify(testObj)).then(resp => {

@@ -376,24 +376,12 @@
          float:left
          width:5rem
          text-align:center
-          "
-            class="topTextButton hoverStyle"
-            @click="backToOrgans"
-          >
-            查看与设置
-          </div>
-
-          <div
-            style="
-         float:left
-         width:5rem
-         text-align:center
          margin-left:1rem
           "
             class="hoverStyle topTextButton"
             @click="goDocIn"
           >
-            录入档案
+            录入界面
           </div>
 
           <div
@@ -448,6 +436,18 @@
           >
             下载表格
           </div>
+                             <div
+            style="
+         float:left
+         width:5rem
+         text-align:center
+          "
+            class="topTextButton hoverStyle"
+            @click="backToOrgans"
+          >
+           单位其他批次
+          </div>
+
                     <div
             style="
          float:left
@@ -462,6 +462,8 @@
           >
             锁定本批
           </div>
+
+          
                     <div
             style="
          float:left
@@ -476,6 +478,7 @@
             解除锁定
           </div>
 
+ 
  
           <div
             style="         float:left
@@ -695,7 +698,7 @@
               "
               @click="showAllDocs"
             >
-              所有文件
+              取消筛选
             </div>
 
             <div
@@ -739,8 +742,8 @@
         <div v-if="docType != 'science' && docType != 'personnel'" style="">
           <div class="detailItem detailItemTitle" style="height: 2rem">
             <div class="itemInfo" style="width: 3%">识别号</div>
-            <div class="itemInfo" style="width: 6%">问题</div>
-            <div class="itemInfo" style="width: 4%">关键字</div>
+            <div class="itemInfo" style="width: 6%">{{docType=="officialJ"?"机构":"问题"}}</div>
+            <div class="itemInfo" style="width: 4%">{{docType=="officialJ"?"机构词":"问题词"}}</div>
 
             <div class="itemInfo" style="width: 10%">档号</div>
             <div class="itemInfo" style="width: 10%">文号</div>
@@ -1269,12 +1272,41 @@ export default {
     showDeleted(){
       this.deletedShowSwitch=!this.deletedShowSwitch
       if(this.deletedShowSwitch==0){
-      this.showAllDocs()
+        this.showWaitingFlag=true
+      var path =
+        "/document/page/" +
+        sessionStorage.getItem("docType") +
+        "/" +
+        sessionStorage.getItem("batchId") +
+        "?pageNow=0&pageSize=100000"; //
 
-      console.log("raw,全部的文件，开关处于已删除文件")
-      console.log(this.$store.state.rawDocs)
+      axios
+        .get(this.baseurl + path, {
+          headers: {
+            "Content-Type": "application/json",
+            authId: sessionStorage.getItem("authId"),
+            token: localStorage.getItem("token")
+              ? localStorage.getItem("token").split('"')[1] ||
+                localStorage.getItem("token")
+              : null,
+          },
+        })
+        .then((resp) => {
+          if (resp) {
+             this.$store.state.sequenceDocs=resp.data.content
+            this.showWaitingFlag = false;
+            // }
+             this.$store.state.alreadyDocs=this.$store.state.sequenceDocs
+          }
+        })
+
+     
+
+      console.log("全部的文件按照序列号，开关处于已删除文件")
+
       }else{
-        this.showAllDocs()
+      // this.$store.state.alreadyDocs=this.$store.state.rawDocs
+      this.showAllDocs()
         // this.$store.state.alreadyDocs=this.alreadyDocsRestore
       }
 
@@ -1542,6 +1574,9 @@ docAboutWeightId=organ.tecProjectWig
 
 docAboutWeightId=organ.busProjectWig
       }
+      if(sessionStorage.getItem("docType")=="officialJ"){
+        docAboutWeightId=organ.docIssuejWig
+      }
 
       this.docAboutFilter=[]
        this.getRequest("/weight/" + docAboutWeightId)
@@ -1572,6 +1607,7 @@ this.getDocAboutFilter()
             console.log(sorted);
             this.$store.state.alreadyDocs = sorted;
                       this.$store.state.rawDocs=sorted //全部的，第一次加载时存下来
+                      this.alreadyDocsRestore=sorted
             this.filterAlreadyDocs(); //已经排好
 
           } else {
@@ -1647,52 +1683,22 @@ this.getDocAboutFilter()
           },
         })
         .then((resp) => {
-          // console.log(resp)
           if (resp) {
-            //               if(resp.data.content&&this.docType=='personnel' ){
-
-            //                  let vm = this;
-            // var path =
-            //   "/document/" +
-            //   sessionStorage.getItem("docType") +
-            //   "/sort/" +
-            //   sessionStorage.getItem("batchId") +
-            //   "?pageNow=0&pageSize=10000";
-
-            //    this.getRequest(path).then((resp) => {
-            //     console.log("排件号人事");
-            //     console.log(resp);
-            //     if(resp){
-            //       this.showWaitingFlag=false
-            //     }
-            //     // console.log(JSON.stringify(resp))
-            //     if (resp.code == 0) {
-
-            //       // console.log("ss000000000aaaa")
-            //       this.showWaitingFlag = false;
-            //       console.log(resp.data)
-            //       this.$store.state.alreadyDocs = resp.data
-
-            //     }
-            //   }).then(()=>this.filterAlreadyDocs());
-            //               }
-
-            // else {
             this.$store.state.alreadyDocs = resp.data.content;
              this.$store.state.rawDocs=resp.data.content
+             this.alreadyDocsRestore=resp.data.content
+
             console.log(resp.data.content);
 
             this.showWaitingFlag = false;
-            // }
-          }
 
-          // this.$router.push('/work/docInputD')
+          }
         })
         .then(() => {
           this.filterAlreadyDocs(); //load获取时
         });
 
-      var tmparr = [];
+
       // if(this.docType!='personnel'){
       //   console.log('把暂无调到前面')
 
@@ -2020,6 +2026,7 @@ this.getDocAboutFilter()
     },
 
     backToOrgans() {
+      this.$store.state.organIdForJump=sessionStorage.getItem("authId")
       this.$router.push("/work/modifyOrgan");
     },
     focusOnThis(e) {},
