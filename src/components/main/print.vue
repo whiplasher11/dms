@@ -47,7 +47,7 @@
 
 
   <!-- 文书 -->
-  <div v-if="docType=='official'||docType=='business'" id="printArea">
+  <div v-if="docType=='official'||docType=='business'||docType=='officialJ'" id="printArea">
       <div ref="print1" style="position:relative;top:1cm;border:solid;height:1.6cm;width:45mm;left:1cm"  @mouseover="showAdjPos" @mouseleave="hideAdjPos" >
     <div class="clickSmall"   style="font-size:15px;cursor:pointer;float:left;width:14.5mm;border-bottom:solid 0.5mm;border-right:solid 0.5mm;line-height:0.8cm;height:7.75mm;text-align:center">
       {{this.authCode||""}}

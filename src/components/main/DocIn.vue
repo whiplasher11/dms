@@ -256,10 +256,10 @@
           </el-form-item>
         </el-col>
       </el-row>
-   <div v-if="true"> 
+   <div   v-if="docType=='officialJ'"> 
      <!-- 机构分卷法 -->
       <el-row :gutter="24">
-              <el-col :span="12"   v-if="true">
+              <el-col :span="12"   v-if="docType=='officialJ'">
           <el-form-item prop="historyAuth" label="机构词：">
             <el-select
               ref="authSelectref"
@@ -313,7 +313,7 @@
               filterable
               v-model="docForm.keyword2"
               placeholder="选择或填写关键词(可不填)"
-            >
+            > 
               <el-option
                 v-for="item in keyword2TipArr"
                 :key="item"
@@ -327,7 +327,7 @@
       </el-row>
 </div>   
 <!-- 问题分卷法 -->
-   <div v-if="false">
+   <div   v-if="docType!='officialJ'">
       <el-row :gutter="24">
         <el-col :span="12">
           <el-form-item prop="historyAuth" label="问题词：">
@@ -1006,7 +1006,9 @@ export default {
   },
 
   computed: {
-
+    docType() {
+      return sessionStorage.getItem("docType");
+    },
     weightFormJS(){
       return this.weightForm
     },
@@ -1064,6 +1066,8 @@ export default {
       docAboutTipArr: [],
       keywordTipArr: [],
       dutyAuthorTipArr: [],
+
+      keyword2TipArr:[],
 
       docAbout_KeywordArrJson: {},
       keyword_docAboutJson: {},

@@ -61,6 +61,78 @@
         请求中，请稍候...
       </div>
 
+  <div
+        v-if="showStartBoxSet"
+        style="
+          position: fixed;
+          top: 15rem;
+          left: 50%;
+          margin-left: -15rem;
+          z-index: 122;
+          padding-top: 1rem;
+          color: #333;
+          font-size: 1.5rem;
+          width: 30rem;
+          height: 10rem;
+          background-color: rgb(255, 255, 255);
+          -webkit-box-shadow: 0 0 0.5rem #909399;
+          box-shadow: 0 0 0.5rem #909399;
+          border-radius: 1rem;
+        "
+      >
+        <div
+          style="
+            font-size: 1rem;
+            width: 20rem;
+            text-align: center;
+            margin-left: 5rem;
+            color: #333;
+          "
+        >
+          输入盒号
+        </div>
+        <input
+          type="text"
+          style="
+            height: 1.5rem;
+            margin-left: 11rem;
+            margin-top: 2rem;
+            width: 8rem;
+          "
+          v-model="startBoxNum"
+        /> 
+        <div
+          class="textButton"
+          @click="cancleManulBox"
+          style="
+            color: #333;
+            cursor: pointer;
+            position: absolute;
+            margin-top: 1.5rem;
+
+            font-size: 1.2rem;
+            margin-left: 17rem;
+          "
+        >
+          取消
+        </div>
+
+        <div
+          @click="manualBox"
+          style="
+            color: #333;
+            cursor: pointer;
+            position: absolute;
+            margin-top: 1.5rem;
+
+            font-size: 1.2rem;
+            margin-left: 10rem;
+          "
+        >
+          确定
+        </div>
+      </div>
+
       <!-- <div class="docDetailBox" v-if="docType=='personnel'">
 
     </div> -->
@@ -275,7 +347,7 @@
             position: fixed;
             top: 6rem;
             right: 0px;
-            width: 35%;
+            width: 27%;
             background-color: rgb(255, 255, 255);
           "
         >
@@ -447,6 +519,20 @@
           >
            单位其他批次
           </div>
+                    <div
+            style="
+         float:left
+         width:5rem
+         text-align:center
+         margin-left:1rem
+          "
+            v-if="docType != 'personnel'"
+            class="hoverStyle topTextButton"
+            @click="myBoxNum"
+          >
+            {{myBoxNumSwitch?"保存盒号":"手动排盒号"}}
+          </div>
+
 
                     <div
             style="
@@ -740,7 +826,7 @@
         ></div>
 
         <div v-if="docType != 'science' && docType != 'personnel'" style="">
-          <div class="detailItem detailItemTitle" style="height: 2rem">
+          <div class="detailItem detailItemTitle" style="height: 2rem" >
             <div class="itemInfo" style="width: 3%">识别号</div>
             <div class="itemInfo" style="width: 6%">{{docType=="officialJ"?"机构":"问题"}}</div>
             <div class="itemInfo" style="width: 4%">{{docType=="officialJ"?"机构词":"问题词"}}</div>
@@ -804,15 +890,30 @@
               {{ item.remark ? item.remark : "&nbsp;" }}
             </div>
             <div class="itemInfo" style="width: 2%">{{ item.docPage }}</div>
-            <div class="itemInfo" style="width: 2%">
+            <div class="itemInfo" style="width: 2%"
+            v-bind:class="[
+            { itemInfo: true },
+            { endStyle:item.docSequence==endInfo.docSequence },
+            ]"
+            >
               {{ item.pageTotal | pageTotalformat }}
             </div>
 
             <div class="itemInfo" style="width: 4%">
               {{ item.docNum ? item.docNum : "暂无" }}
             </div>
-            <div class="itemInfo" style="width: 4%">
+            <div  
+            v-bind:class="[
+            { itemInfo: true },
+            { startStyle:item.docSequence==startInfo.docSequence },
+            { endStyle:item.docSequence==endInfo.docSequence },
+            ]"
+       style="width: 4%;" 
+            @mouseleave="boxLeave(item)"
+             @mouseenter="boxOver(item)" @click="boxClick(item)">
               {{ item.boxSeq ? item.boxSeq : "暂无" }}
+
+              
             </div>
             <div class="itemInfo" style="width: 7%" >
               <div v-if="item.deleted==0">
@@ -1090,6 +1191,27 @@ export default {
   },
   data() {
     return {
+      /**手动排盒号使用变量 */
+      boxNumMap:{},
+      startBoxNum:0,
+      showStartBoxSet:false,
+      startStyleCtrl:false,
+      myBoxNumSwitch:false,
+      boxSeqTemp:"",
+      boxSeqText:"开始",
+      startSeq:"",
+      endSeq:"",
+      startInfo:{
+        docSequence:0,
+        boxSeq:0,
+      },//存“开始”标签的信息
+
+      endInfo:{
+        docSequence:0,
+        boxSeq:0,
+      },//存“结束”标签的信息
+
+
       deletedShowSwitch:1,
       showDocIn:false,
       destoryFlag:true,
@@ -1269,7 +1391,169 @@ export default {
     };
   },
   methods: {
+ 
+ 
+    boxOver(item){
+      if(!this.myBoxNumSwitch) return
+      if(this.startSeq){
+        if(item.docSequence==this.startSeq) return
+        this.endInfo.docSequence=item.docSequence
+        this.endInfo.boxSeq=item.boxSeq
+                item.boxSeq="结束"
+
+        this.endSeq=item.docSequence
+        this.preComputeBox()
+      }
+      if(this.startSeq==""){//没有点开始
+
+        this.startInfo.docSequence=item.docSequence
+        this.startInfo.boxSeq=item.boxSeq
+        item.boxSeq="开始"
+        // // this.startStyleCtrl=true
+        // for(var i in this.$store.alreadyDocs){ //把上一个还原
+        //   if(this.$store.alreadyDocs[i].docSequence==this.startInfo.docSequence){
+        //     this.$store.alreadyDocs[i].docSequence.boxSeq=this.startInfo.boxSeq
+        //   }
+        // }
+        // //存新的
+
+      }
+    },
+    boxLeave(item){
+      if(this.startSeq==item.docSequence){
+        return
+      }
+      if(this.startInfo.docSequence==item.docSequence){
+        item.boxSeq= this.startInfo.boxSeq //还原开始候选者的信息
+      }
+
+      if(this.endInfo.docSequence==item.docSequence){
+        item.boxSeq=this.endInfo.boxSeq
+      }
+    },
+    boxClick(item){//点击事件
+      if(this.myBoxNumSwitch){ //点了手动排盒号后才起作用
+      // this.boxSeqText="结束"
+      if(this.startSeq==""){ //还没指定开始的文档
+        this.startSeq=item.docSequence
+        return
+      }
+    //指定了开始的文档，该指定结束的文档
+      this.endSeq=item.docSequence
+   
+      if(this.startSeq&&this.endSeq){ 
+        
+        // alert("kaishi:"+this.startSeq+"..jieshu:"+this.endSeq)
+        // this.preComputeBox()
+        //点击后清除  hover不清除
+        this.showStartBoxSet=true
+                        this.$message({
+                  type: "success",
+                  message: "修改完成后请点击“保存盒号”"
+                });
+
+
+
+      }
+ }
+    },
+
+    manualBox(){
+      
+      this.showStartBoxSet=false
+var start =-1//下标
+      var end=-1
+      var docs=this.$store.state.alreadyDocs
+      for(var i=0;i<docs.length;i++){
+ 
+        if(docs[i].docSequence==this.startSeq){
+          start=i
+        }
+        if(docs[i].docSequence==this.endSeq){
+          end=i
+        }
+      }
+ var j=start
+      if(start>=0){
+           for(;j<=end;j++){
+            docs[j].boxSeq=this.startBoxNum
+            this.boxNumMap[docs[j].id]=this.startBoxNum
+        }
+      }
+
+      this.startSeq=""
+      this.endSeq=""
+      console.log(this.boxNumMap)
+    },
+    cancleManulBox(){
+      this.showStartBoxSet=false
+            this.startSeq=""
+      this.endSeq=""
+    },
+
+    preComputeBox(){//鼠标悬停预览计数
+ 
+      var start =-1//下标
+      var end=-1
+      var docs=this.$store.state.alreadyDocs
+      for(var i=0;i<docs.length;i++){
+ 
+        if(docs[i].docSequence==this.startSeq){
+          start=i
+        }
+        if(docs[i].docSequence==this.endSeq){
+          end=i
+        }
+      }
+ 
+      if(start>=0){
+        var pageCount=docs[start].docPage
+        console.log(pageCount)
+        docs[start].pageTotal=pageCount
+        var j=start+1
+        for(;j<=end;j++){
+          pageCount=pageCount+docs[j].docPage
+          docs[j].pageTotal=pageCount
+          console.log(pageCount)
+        }
+      }
+      console.log(docs)
+
+ 
+      
+    },
+    myBoxNum(){
+      var req={boxes:this.boxNumMap}
+      if(this.myBoxNumSwitch){//点击保存
+       
+              this.postRequest(
+        "/work/boxSet/"+sessionStorage.getItem("batchId"),
+        JSON.stringify(this.boxNumMap)
+      ).then((resp) => {
+        console.log(resp)
+        if(resp.code==0){
+            this.$message({
+              type: "success",
+              message: "保存成功，若重新排件号将覆盖已保存盒号"
+            });
+        }
+      })
+ this.myBoxNumSwitch=false
+ return
+      }
+      if(!this.myBoxNumSwitch){
+        //点击手动排盒号
+        this.myBoxNumSwitch=true
+ 
+
+
+      }
+    },
     showDeleted(){
+      //       this.$store.state.alreadyDocs[0].docSequence=999
+      // console.log(this.$store.state.alreadyDocs)
+      // console.log(this.$store.state.rawDocs)
+      // return
       this.deletedShowSwitch=!this.deletedShowSwitch
       if(this.deletedShowSwitch==0){
         this.showWaitingFlag=true
@@ -1445,12 +1729,13 @@ export default {
         (this.ddlCheck || this.ddlCheck == "true") &&
         this.ddlCheck != "false"
       ) {
-        tempDocs = tempDocs.filter(function (element, index, self) {
+        tempDocs = tempDocs.filter(function (element, index, self) {  //filter这个相当于切片
           return element.deadline == that.deadlineReq;
         });
       }
             this.alreadyDocsRestore=tempDocs;
       console.log("筛选后的docs")
+
       console.log(tempDocs);
       console.log("vux存的docs")
       console.log(this.$store.state.rawDocs);
@@ -1588,7 +1873,9 @@ docAboutWeightId=organ.busProjectWig
               })
 
     },
-    preLoadDocs() {
+    preLoadDocs() {  //this.$store.state.alreadyDocs是显示的文档
+    //this.$store.state.rawDocs 是所有的文档，包括删除位为1的
+    // this.alreadyDocsRestore 是暂存的文档，如筛选了部分文档后，存下来然后，搜索文档，然后取消搜索，返回显示为暂存的文档
       
 this.getDocAboutFilter()
 
@@ -1829,6 +2116,7 @@ this.getDocAboutFilter()
         // console.log(resp);
         this.showWaitingFlag = false;
         this.alreadyDocsRestore=this.$store.state.alreadyDocs  //gai1
+        // this.alreadyDocsRestore[1].docSequence=888
         this.$store.state.alreadyDocs = resp.data.content;
 
         // if(sessionStorage.getItem('docType')=='personnel'){
@@ -2265,7 +2553,8 @@ this.getDocAboutFilter()
       } //personnel
       else if (
         sessionStorage.getItem("docType") == "official" ||
-        sessionStorage.getItem("docType") == "business"
+        sessionStorage.getItem("docType") == "business"||
+        sessionStorage.getItem("docType") == "officialJ"
       ) {
         // alert(2)
         window.sessionStorage.setItem(
@@ -2722,6 +3011,16 @@ this.getDocAboutFilter()
 </script>
 
 <style lang="scss" scoped>
+.endStyle{
+    cursor: pointer;
+  color: green;
+  font-weight: 600;
+}
+.startStyle{
+  cursor: pointer;
+  color: red;
+  font-weight: 600;
+}
 #user_topd {
   position: absolute;
 

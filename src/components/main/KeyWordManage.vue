@@ -955,7 +955,7 @@ export default {
     },
 
     computeTypeNumIsAuthor() {
-      return this.typeNum == 12 || this.typeNum == 22 || this.typeNum == 32;
+      return this.typeNum == 12 || this.typeNum == 22 || this.typeNum == 32 || this.typeNum==52;
     },
     getAuthName() {
       return sessionStorage.getItem("authName");
@@ -964,11 +964,17 @@ export default {
       return this.typeNum == 41;
     },
     showKeyWord() {
-      return this.typeNum == 11 || this.typeNum == 21 || this.typeNum == 31;
+      return this.typeNum == 11 || this.typeNum == 21 || this.typeNum == 31 ||this.typeNum==51;
     },
   },
 
   created() {
+
+    /**
+     * 1、关键词大小从大到小按整数递减，只能是非赋权sort，因为查看关键词是问题下的关键词 ，入股后端sort的时候按大到小赋权的话，可能出现
+     * 从大到小 5 3 1不连续
+     * 2、
+     */
   // this.$confirm(
   //       "确定要删除该条不再使用吗，若某批次录入中有该词条可能导致排序失败",
   //       {
@@ -1062,11 +1068,13 @@ export default {
                       this.thisDocAbout(e, tempp);
     },
     levelAuthorInit(){
-      console.log("init")
+      console.log("levelAuthorInit")
                   for (var attr in this.authorJson) {
               console.log(attr);
               this.jsonTable.push([attr, JSON.parse(this.authorJson[attr]).value, JSON.parse(this.authorJson[attr]).level]);
             }
+            /**{"慈利县发展和改革局": "{\"value\":\"1\",\"level\":\"本级\"}",
+             *  "慈利县优化经济发展环境办公室": "{\"value\":\"1\",\"level\":\"县级\"}"} */
 
       var temArr=[]
       var levelArr=['乡级','本级','县级','市级','省级','部级']
@@ -1155,13 +1163,22 @@ this.jsonTable=[]
         }
       );
     },
+    //          "问题法问题优先级表",
+          // "问题法责任者优先级表",          "机构法机构优先级表",
+          // "机构法责任者优先级表",
     selectDone() {
       if (this.selectedDoctype == "文书类") {
-        if (this.selectedTableType == "文书类档案问题(机构)优先级表") {
+        if (this.selectedTableType == "问题法问题优先级表") {
           this.checkFromThisType(11);
         }
-        if (this.selectedTableType == "文书类档案责任者优先级表") {
+        if (this.selectedTableType == "问题法责任者优先级表") {
           this.checkFromThisType(12);
+        }
+                if (this.selectedTableType == "机构法机构优先级表") {
+          this.checkFromThisType(51);
+        }
+        if (this.selectedTableType == "机构法责任者优先级表") {
+          this.checkFromThisType(52);
         }
         if (this.selectedTableType == "文号责任者对照表") {
           this.selectedTableTypeName = "officialDescAuthor";
@@ -1218,10 +1235,12 @@ this.jsonTable=[]
       this.selectedTableType = "";
       if (this.selectedDoctype == "文书类")
         this.tableTypes = [
-          "文书类档案问题(机构)优先级表",
-          "文书类档案责任者优先级表",
-          "文号责任者对照表",
-          "级别期限对照表",
+          "问题法问题优先级表",
+          "问题法责任者优先级表",
+          // "问题法文号责任者对照表",
+          // "问题法级别期限对照表",
+          "机构法机构优先级表",
+          "机构法责任者优先级表",
         ];
       else if (this.selectedDoctype == "业务类") {
         this.tableTypes = [
@@ -1261,6 +1280,9 @@ this.jsonTable=[]
         return 33;
       }
       if (this.typeNum == 41) return 41;
+      if(this.typeNum==51){
+        return 53
+      }
     },
     setDescToWeightForm() {
       //set直接set descJson  getDescJsonTableFromWeightForm会根据weightform重置descJson
@@ -1407,7 +1429,7 @@ this.jsonTable=[]
           console.log(this.jsonTable);
           for (var i = 0; i < this.jsonTable.length; i++) {
             this.jsonTable[i][1] = this.jsonTable.length - i;
-          }
+          } //将关键词大小从大到小按整数递减
 
           for (var i = 0; i < this.jsonTable.length; i++) {
             // console.log(this.jsonTable[i][0]);
@@ -1619,7 +1641,7 @@ this.jsonTable=[]
               };
 
               this.putRequest(
-                "/weight/" + this.weightForm.docIssueWig,
+                "/weight/" + this.requestWigId,
                 docAboutObj
               ).then((resp) => {
                 console.log("更新文书问题权重表");
@@ -1627,7 +1649,7 @@ this.jsonTable=[]
                 this.issueTable = resp.data.tables;
               });
 
-              /**以上是问题权重表 */
+              /**以上是问题或机构权重表 */
 
               this.getRequest("/weight/keywordSort/" + this.keywordWigId).then(
                 (resp) => {
@@ -1897,7 +1919,7 @@ this.jsonTable=[]
       }
 
 /***责任者及其级别的设置检查 */
-      if(this.typeNum==12||this.typeNum==22||this.typeNum==32){
+      if(this.typeNum==12||this.typeNum==22||this.typeNum==32||this.typeNum==52){
         if(this.levelToSet==""){
                   this.$message({
           type: "warning",
@@ -2147,6 +2169,7 @@ this.jsonTable=[]
     
 
     checkFromThisType(num) {
+
       this.typeNum = num;
       this.showWaitingFlag = true;
       this.backToDocAboutShow = false;
@@ -2155,7 +2178,7 @@ this.jsonTable=[]
         this.checkFromThisTableType(num);
 
         return;
-      }
+      } //存在单位表里面的权重表  文号-责任者  级别期限对照表
       this.dicShow = false;
       // this.ba
       this.jsonTable = [];
@@ -2170,6 +2193,15 @@ this.jsonTable=[]
       if (num == 13) {
         this.requestWigId = this.weightForm.docKeywordWig;
       }
+      if(num==51){
+                this.requestWigId = this.weightForm.docIssuejWig;
+        this.keywordWigId = this.weightForm.docKeywordjWig;
+      }
+      if(num==52){
+        this.requestWigId = this.weightForm.docAuthorjWig;
+      }
+
+
       if (num == 21) {
         this.requestWigId = this.weightForm.tecProjectWig;
         this.keywordWigId = this.weightForm.tecKeywordWig;
@@ -2203,7 +2235,7 @@ this.jsonTable=[]
           type: "warning",
           message: "还没有添加过该类型的档案",
         });
-      } else if (num == 12 || num == 22 || num == 32) {
+      } else if (num == 12 || num == 22 || num == 32 || num == 52) {
         var table;
         this.getRequest("/weight/authorSort/" + this.requestWigId)  //不赋权sort(不会强制54321)
           .then((resp) => {
@@ -2737,7 +2769,7 @@ this.jsonTable=[]
             };
 
             this.putRequest(
-              "/weight/" + this.weightForm.docIssueWig,
+              "/weight/" + this.requestWigId,
               issueObj
             ).then((resp) => {
               console.log("shanchu问题权重表");
@@ -2930,7 +2962,7 @@ this.jsonTable=[]
                 };
 
                 this.putRequest(
-                  "/weight/" + this.weightForm.docIssueWig,
+                  "/weight/" + this.requestWigId,
                   issueObj
                 ).then((resp) => {
                   console.log("更新文书问题权重表");

@@ -122,7 +122,7 @@ Vue.filter('pageTotalformat',function(value){
     if(value<0){
         return -value
     }
-    else return '    '
+    else return value
     
 });
 
