@@ -591,6 +591,7 @@ this.presetNameShowFlag=false
 
       // batchId
 }
+    
 
       this.$router.push("/work/docInputD");
 
@@ -604,6 +605,7 @@ this.presetNameShowFlag=false
       console.log("查看批次item");
 
       console.log(item); //打印单位
+      this.$store.state.organ=item
       window.sessionStorage.setItem("authId", item.id);
       window.sessionStorage.setItem("authCode", item.authCode);
       window.sessionStorage.setItem("authName", item.authName);

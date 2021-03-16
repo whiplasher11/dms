@@ -25,6 +25,7 @@
 
      </el-form> -->
 
+
     <div class="Card" v-show="step==1">
       <div class="newTip">新建一批档案工作</div>
 
@@ -74,16 +75,7 @@
           </el-select>
         </el-form-item>
 
-                <el-form-item prop="workTypeSub" label="分卷方法：" v-if="officialDocTypeSubsShow">
-          <el-select filterable v-model="officialDocTypeSub" placeholder="选择分卷方法">
-            <el-option
-              v-for="item in officialDocTypeSubs"
-              :key="item.typeId"
-              :label="item.typeName"
-              :value="item.typeId"
-            ></el-option>
-          </el-select>
-        </el-form-item>
+
 
         <el-form-item prop="batchName" label="档案类型代码：">
           <el-input
@@ -195,7 +187,27 @@
       </el-form>
     </div>
 <!-- step==2 -->
-    <div class="Card" v-if="step==2">
+     <div class="Card"  v-show="step==2">
+      <div class="newTip">选择本单位的文书类分卷方法</div>
+<el-form  class="batchForm" label-width="30%" style="padding-bottom:5rem">
+                        <el-form-item prop="workTypeSub" label="分卷方法：" >
+          <el-select v-model="officialDocTypeSub" placeholder="选择分卷方法">
+            <el-option
+              v-for="item in officialDocTypeSubs"
+              :key="item.typeId"
+              :label="item.typeName"
+              :value="item.typeId"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+
+
+                <div type="primary" class="topTextButtonBlue" style="width:12%;position:absolute;left:25%;bottom:1rem" @click="preStep">上一步</div>
+        <div type="primary" class="topTextButtonBlue" style="width:12%;position:absolute;left:55%;bottom:1rem;" @click="nextStep2">下一步</div>
+      </el-form>
+      </div>
+
+    <div class="Card" v-if="step==3">
       <div class="newTip">设置本单位档案盒号</div>
       <el-form v-if="true" ref="BatchForm" :model="BatchForm" label-width="30%" class="batchForm">
        <div style="font-size=0.7rem;margin-bottom:1rem;width:80%;margin-left:10%;text-align:center"> 提示：填写需要用到的盒子类型的上一盒盒号即可,如长期盒前一批整档工作排到了39盒，本批将使用第40盒那么填写(长期：39)</div>
@@ -304,7 +316,6 @@ export default {
       step: 1,
       showTwo: true,
       showPriority: false,
-      officialDocTypeSubsShow:false,
       officialDocTypeSub:1,
 
       BatchForm: {
@@ -511,11 +522,11 @@ export default {
     BatchForm: {
       handler(val, oldVal) {
         // console.log(val);
-        if(val.docType==1){
-          this.officialDocTypeSubsShow=true
-        }else{
-          this.officialDocTypeSubsShow=false
-        }
+        // if(val.docType==1){
+        //   this.officialDocTypeSubsShow=true
+        // }else{
+        //   this.officialDocTypeSubsShow=false
+        // }
 
         if (val.docType == 3) {
           this.showTwo = true;
@@ -532,6 +543,25 @@ export default {
   computed: {},
 
   methods: {
+    nextStep2(){
+  this.showWaitingFlag=true
+          this.weightForm.officialType=this.officialDocTypeSub
+           this.putRequest(
+          //注意防止重复提交
+          "/organ/" + sessionStorage.getItem("authId"),
+          JSON.stringify(this.weightForm)
+        ).then((resp) => {
+          console.log("修改单位表的文书类分卷方法");
+          console.log(resp)
+          this.weightForm=resp.data
+          if(resp.code==0){
+                  this.step++
+                  this.showWaitingFlag=false
+          }
+        })
+ 
+
+    },
     deleteThis(index){
       this.jsonArray.splice(index,1)
     },
@@ -1021,6 +1051,13 @@ if(this.can){ //再验证code和单位名是否匹配
         that.BatchForm.priority = that.uploadpriority;
         if (that.step == 1) that.step++;
       }
+
+      if(that.weightForm.officialType==0&&that.BatchForm.docType==1){
+        console.log("文书第一次")
+      }else
+      {
+        that.step++
+      }
       that.showWaitingFlag=false
 }
 checkp()
@@ -1054,6 +1091,7 @@ var that=this
                 // alert('ok')
                 window.sessionStorage.setItem("authId",resp.data.id);
             window.sessionStorage.setItem('authName',resp.data.authName)
+            that.weightForm=resp.data
 
                 window.sessionStorage.setItem(
                   "authCode",
@@ -1092,6 +1130,8 @@ var that=this
             window.sessionStorage.setItem('authName',resp.data.authName)
 
                 window.sessionStorage.setItem("authId", resp.data.id);
+                 that.weightForm=resp.data
+                 
                 window.sessionStorage.setItem(
                   "authCode",
                   that.BatchForm.authCode
@@ -1278,9 +1318,17 @@ test()
     },
 
     preStep() {
-      if (this.step == 2) {
-        this.step--;
+
+       if(this.weightForm.officialType==0&&this.BatchForm.docType==1&&this.step==3){
+        console.log("文书第一次,prestep")
+        this.step--
+        return
+      }else if(this.step==3){
+        this.step=1
+        return
       }
+    this.step--
+
     },
 
     conver(s) {

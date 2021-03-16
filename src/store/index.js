@@ -12,6 +12,7 @@ const now = new Date();
 const store = new Vuex.Store({
 
     state: {
+        organ:{},
         organIdForJump:null,
         showDocIn:false,//没用了
         docDetialBar:0,

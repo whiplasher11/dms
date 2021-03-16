@@ -1,5 +1,5 @@
 <template>
-  <div style="position:relative" class="Loginwrapper">
+  <div style="position:relative" class="Loginwrapper" v-on:keyup.enter="submitLogin">
     <div class="bgpic"></div>
 
    
@@ -48,7 +48,7 @@
       <!-- <el-checkbox size="normal" class="loginRemember" v-model="checked"></el-checkbox> -->
       <div class="goRegister" @click="goRegister">尚未注册？前往注册</div>
       <div style="width:3rem;height:3rem"></div>
-      <div class="topTextButtonBlue"  style="width:6rem;margin-left:40%"  @click="submitLogin" @keyup.enter="submitLogin">登录</div>
+      <div class="topTextButtonBlue"  style="width:6rem;margin-left:40%"  @click="submitLogin" >登录</div>
     </el-form>
       </transition>
 
@@ -138,12 +138,12 @@ export default {
                 window.scrollTo(0,0)
     
 
-      let that = this;
-      document.onkeydown = function (e) {
-        let key = window.event.keyCode;
-        if (key === 13){
-          that.submitLogin();//方法
-        }}
+      // let that = this;
+      // document.onkeydown = function (e) {
+      //   let key = window.event.keyCode;
+      //   if (key === 13){
+      //     that.submitLogin();//方法
+      //   }}
 
   },
   data() {

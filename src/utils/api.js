@@ -61,8 +61,9 @@ axios.interceptors.response.use(success => {
     return;
 })
 
-var base = 'http://101.200.243.57:8080';
-// var base = 'http://localhost:8080';
+// var base = 'http://101.200.243.57:8080';
+var base = 'http://localhost:8080';
+// var base='http://106.52.85.131:8080'
 
 // var base= 'http://193.112.147.158:8088'
 // var base = 'http://gdm.free.idcfengye.com';

@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <div
+  <div >
+    <div 
       v-show="showCenterPrint"
       style="
         position: fixed;
@@ -1144,7 +1144,7 @@
 import Utils from "../../utils/printUtil.js";
 import DocIn from "./DocIn"
 import axios from "axios";
-import docUtil from "../../utils/doc.js";
+ 
 
 import HidePrint from "./print";
 
@@ -1243,7 +1243,6 @@ export default {
       yearFilter: [],
       docAboutFilter: [],
       deadlineFilter: [],
-      sortedTemp: [],
       advSearchShow: false,
       searchContent: "输入识别号",
       searchForm: {
@@ -1391,7 +1390,9 @@ export default {
     };
   },
   methods: {
- 
+ enterToPrint(){
+   console.log("p")
+ },
  
     boxOver(item){
       if(!this.myBoxNumSwitch) return
@@ -1845,8 +1846,9 @@ var start =-1//下标
     },
     getDocAboutFilter(){
       var docAboutWeightId
-      var organ=sessionStorage.getItem("organ")
-      organ=JSON.parse(organ)
+      var organ=this.$store.state.organ
+      console.log(organ)
+      // organ=JSON.parse(organ)
 
        if (sessionStorage.getItem("docType") == "official") {
          docAboutWeightId= organ.docIssueWig
@@ -1921,6 +1923,7 @@ this.getDocAboutFilter()
       this.getRequest("/work/" + sessionStorage.getItem("batchId"))
         .then((resp) => {
           var item = resp.data;
+          console.log(item)
           var lastb = item.lastBox;
           this.deadlineFilter = [];
           this.isEnd = resp.data.end; //是否录入结束 还可以修改
@@ -1942,13 +1945,7 @@ this.getDocAboutFilter()
     },
     loadDocs() {
       console.log("load");
-
-    //   if (this.sortedTemp.length != 0) {
-    //     this.$store.state.alreadyDocs = this.sortedTemp;
-    //     console.log("return");
-    //     return;
-    //   }
-    
+ 
       this.showWaitingFlag = true;
       // return
       var path =
@@ -2201,7 +2198,6 @@ this.getDocAboutFilter()
                 }
               }
             }
-            // this.sortedTemp = Object.assign({}, this.$store.state.alreadyDocs);
             this.filterAlreadyDocs(); //排序人事时
 
             // for(var arr in resp.data){
@@ -2230,7 +2226,7 @@ this.getDocAboutFilter()
         sessionStorage.getItem("batchId") +
         "?pageNow=0&pageSize=90000";
       this.$confirm(
-        "将生成件号盒号，本批工作是否已经完成录入，并且所有关键词责任者等都已经设置优先级",
+        "将重新生成件号盒号，本批工作是否已经完成录入，并且所有关键词责任者等都已经设置优先级",
         "提示",
         {
           cancelButtonClass: "btn-custom-cancel",
@@ -2261,8 +2257,8 @@ this.getDocAboutFilter()
                 //
               }
             }
-            this.sortedTemp = Object.assign({}, this.$store.state.alreadyDocs);
-            console.log(this.sortedTemp);
+             
+            this.$store.state.rawDocs= this.$store.state.alreadyDocs
             this.filterAlreadyDocs(); // 排完件号盒号之后更新筛选条件，使得筛选条件后仍按件号从小到大
           }
         });
@@ -2504,7 +2500,7 @@ this.getDocAboutFilter()
       this.$store.state.tempDocId = item.id;
 
       this.$store.state.tempDocSeq = item.docSequence;
-      this.sortedTemp = [];
+ 
  let barHeight = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop;
  console.log(barHeight)
       this.$store.state.docDetialBar=barHeight
@@ -2901,7 +2897,6 @@ this.getDocAboutFilter()
         }
       ).then(() => {
         this.showWaitingFlag = true;
-        this.sortedTemp = [];
         var pathToDel =
           "/document/" + sessionStorage.getItem("docType") + "/" + item.id;
 
@@ -2956,7 +2951,6 @@ this.getDocAboutFilter()
     },
   },
   created() {
-    this.sortedTemp = [];
     this.alreadyDocsRestore=[];
     // this
     // var c="adsd"

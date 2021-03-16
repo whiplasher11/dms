@@ -13,9 +13,12 @@ proxyObj['/api'] = {
 }
 
 module.exports = {
+    publicPath: './',
+        outputDir:"html",
     devServer: {
+
         host: 'localhost',
-        port: 8085,
+        port: 8084,
         
         // proxy: {
         //     '/': {

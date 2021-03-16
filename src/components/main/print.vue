@@ -1,7 +1,7 @@
 <template>
-<div>
+<div >
  
-  <div style="position:absolute;width:10cm;top:5cm;left:1cm" class="printSetBox">
+  <div style="position:absolute;width:10cm;top:5cm;left:1cm" class="printSetBox" >
     <el-select style="width:7cm;position:absolute;left:-50%" v-if="true"
             @blur="selectBlur"
             @change="selectSequenceChange"
@@ -386,6 +386,7 @@ this.initData()
   },
      beforeDestroy(){
      Utils.$off("printBackThisDoc")
+     document.onkeydown = undefined
    },
 
           destroyed: function() {

@@ -130,7 +130,7 @@
           font-size: 1.5rem;
           width: 40rem;
           height: 10rem;
-          background-color: rgb(209, 218, 243);
+          background-color: rgb(255, 255, 255);
           -webkit-box-shadow: 0 0 0.5rem #909399;
           box-shadow: 0 0 0.5rem #909399;
           border-radius: 1rem;
@@ -203,9 +203,89 @@
         </div>
       </div>
 
+     <div
+        v-if="showCombineToDeadlineSet"
+        style="
+          position: absolute;
+          top: 15rem;
+          left: 50%;
+          margin-left: -20rem;
+          z-index: 122;
+          padding-top: 1rem;
+          color: #333;
+          font-size: 1.5rem;
+          width: 40rem;
+          height: 10rem;
+          background-color: rgb(255, 255, 255);
+          -webkit-box-shadow: 0 0 0.5rem #909399;
+          box-shadow: 0 0 0.5rem #909399;
+          border-radius: 1rem;
+        "
+      >
+        <div
+          style="
+            font-size: 1rem;
+            width: 20rem;
+            text-align: center;
+            margin-left: 10rem;
+            color: #333;
+          "
+        >
+          请按提示输入
+        </div>
+        <input
+          type="text"
+          style="
+            height: 1.5rem;
+            margin-left: 6rem;
+            margin-top: 2rem;
+            width: 7rem;
+          "
+          v-model="keywordToSet"
+                    placeholder="词"
+        />&nbsp;&nbsp;&nbsp;+
+
+        <input
+          type="text"
+          style="height: 1.5rem; margin-left: 1rem; width: 7rem"
+          v-model="authorToSet"
+          placeholder="责任者"
+        />
+        ：
+
+                <input
+          type="text"
+          style="height: 1.5rem; margin-left: 1rem; width: 7rem"
+          v-model="deadlineToSet"
+          placeholder="期限"
+        /> <font style="font-size:1rem">年</font>
+ 
+
+        <div
+          class="textButton"
+          @click="clearCombineSet"
+          style="position: absolute; left: 10rem; color: #333"
+        >
+          取消
+        </div>
+        <div
+          @click="setCombineToDeadline"
+          style="
+            color: #333;
+            cursor: pointer;
+            position: absolute;
+            margin-top: 1.5rem;
+
+            font-size: 1.2rem;
+            margin-left: 15rem;
+          "
+        >
+          确定
+        </div>
+      </div>
 
       <div
-        v-if="showKVFix&&!computeTypeNumIsAuthor"
+        v-if="showKVFix&&dicShowType==3"
         style="
           position: absolute;
           top: 40vh;
@@ -603,8 +683,8 @@
       </div>
       <!-- 选择类型 -->
 
-      <!-- 对照表的设置table -->
-      <div class="keyValueBox" @click="boxClick" v-if="!selectShow && dicShow">
+      <!-- 文号责任者对照表（无优先级）的设置table -->
+      <div class="keyValueBox" @click="boxClick" v-if="!selectShow && dicShowType==2">
         <div
           style="
             position: absolute;
@@ -616,27 +696,10 @@
             line-height: 2rem;
           "
           @click="preSetDicButton"
-          v-if="!computeIsLevel"
         >
           点击预设对照规则
         </div>
-
-        <div
-          style="
-            position: absolute;
-            right: 0;
-            top: -0;
-            font-weight: 700;
-            right: 2rem;
-            cursor: pointer;
-            line-height: 2rem;
-          "
-          v-if="computeIsLevel"
-          @click="preSetDicButton"
-        >
-          点击预设对照规则
-        </div>
-
+<!--  
         <div
           style="
             float: left;
@@ -645,7 +708,7 @@
             position: absolute;
             z-index: 1333;
           "
-          v-if="computeIsLevel && !selectShow"
+          v-if="computeIsAuthorKwDeadline && !selectShow"
           v-on:mouseover="showFilterLevel()"
           @mouseleave="hideFilterLevel"
         >
@@ -679,15 +742,19 @@
             </div>
           </div>
         </div>
+-->
 
         <div class="keyValueItem">
           <div class="keyValueInfo" style="border: none; position: relative">
             {{ computeKeyTitle }}
           </div>
 
+
+
           <div class="keyValueInfo" style="border: none">
             {{ computeValueTitle }}
           </div>
+ 
 
           <div class="keyValueInfo" style="border: none">操作</div>
         </div>
@@ -697,17 +764,10 @@
           style="z-index=99"
           v-for="(item, index) in jsonTable"
           :key="index"
-          draggable="false"
         >
+
+
           <div
-            v-if="computeIsLevel"
-            v-bind:class="[{ keyValueInfo: true }, { hideText: false }]"
-            style="border: none"
-          >
-            {{ item[0] | formatLevelKeyword }}
-          </div>
-          <div
-            v-if="!computeIsLevel"
             v-bind:class="[{ keyValueInfo: true }, { hideText: false }]"
             style="border: none"
           >
@@ -716,13 +776,6 @@
 
           <div class="keyValueInfo" style="border: none">{{ item[1] }}</div>
 
-          <div
-            v-bind:class="[{ keyValueInfo: true }, { hideText: true }]"
-            style="border: none"
-            v-if="false"
-          >
-            {{ item.tables | formatKeyWordValue }}
-          </div>
 
           <div style="width: 0; position: absolute">{{ item.id }}</div>
 
@@ -747,8 +800,124 @@
 
         <div style="clear: both"></div>
       </div>
+      <!-- end 文号责任者对照表（无优先级）的设置table -->
 
-      <div class="keyValueBox" @click="boxClick" v-if="!selectShow && !dicShow ">
+      <!-- 关键词1责任者对应期限对照表（无优先级）的设置table -->
+      <div class="keyValueBox" @click="boxClick" v-if="!selectShow && dicShowType==3">
+
+
+        <div
+          style="
+            position: absolute;
+            right: 0;
+            top: -0;
+            font-weight: 700;
+            right: 2rem;
+            cursor: pointer;
+            line-height: 2rem;
+          "
+          @click="showCombineToDeadlineSet=true"
+        >
+          点击预设对照规则
+        </div>
+
+                <div
+          style="
+            float: left;
+            width: 7rem;
+            text-align: center;
+            position: absolute;
+            z-index: 1333;
+          "
+          v-on:mouseover="showFilterDeadline()"
+          @mouseleave="hideFilterDeadline"
+
+        >
+          {{ selectedDeadline }}
+          <div
+            style="width: 0.7rem; height: 0.7rem; positon: relative"
+           v-if="filterDeadlineFlag"
+          >
+            <span id="user_top"></span>
+          </div>
+          <div
+            style="width: 0.7rem; height: 0.7rem; positon: relative"
+            v-if="!filterDeadlineFlag"
+          >
+            <span id="user_topd"></span>
+          </div>
+
+          <div
+            class="filterStyle"
+            v-on:mouseover="showFilterDeadline()"
+            @mouseleave="hideFilterDeadline"
+                      v-if="filterDeadlineFlag"
+          >
+            <div
+              v-for="(item, index) in this.deadlineFilter"
+              :key="index"
+              @click="filterThisRequest('deadline', item)"
+              class="filterItemStyle"
+            >
+              {{ item }}
+            </div>
+          </div>
+        </div>
+
+
+
+        <div class="keyValueItem">
+          <div class="keyValueInfo" style="border: none;">
+        {{computeKeyTitle}}
+          </div>
+
+
+ 
+
+          <div class="keyValueInfo" style="border: none">
+            责任者
+          </div>
+
+          <div class="keyValueInfo" style="border: none">操作</div>
+        </div>
+
+        <div
+          class="keyValueItem infoItemHighlight"
+          style="z-index=99"
+          v-for="(item, index) in jsonTable"
+          :key="index"
+        >
+
+
+          <div
+            v-bind:class="[{ keyValueInfo: true }, { hideText: false }]"
+            style="border: none"
+          >
+            {{ item[0] }}
+          </div>
+
+          <div class="keyValueInfo" style="border: none">{{ item[1] }}</div>
+
+
+          <div style="width: 0; position: absolute">{{ item.id }}</div>
+
+
+          <div
+            class="topTextButtonBlueNoWidth"
+            style="float: left;margin-left:11%"
+            type="danger"
+            @click="deleteKV($event, item)"
+          >
+            删除
+          </div>
+        </div>
+
+        <div style="clear: both"></div>
+      </div>
+      <!-- end文号责任者对照表（无优先级）的设置table -->
+
+         <!-- start 优先级表（无优先级）的设置table -->
+      <div class="keyValueBox" @click="boxClick" v-if="!selectShow && dicShowType==1 ">
         <div
           style="
             position: absolute;
@@ -760,7 +929,8 @@
             line-height: 2rem;
           "
           @click="preSetButton"
-          v-if=" !backToKeyWordShow"
+          v-if=" !backToKeyWordShow&&!computeTypeNumIsAuthor"
+
         >
           点击预设优先级
         </div>
@@ -930,22 +1100,28 @@
 </template>
 
 <script>
-import axios from "axios";
-import messageVue from "../chat/message.vue";
 
 export default {
   computed: {
+    dicShowType(){
+      return this.dicShow
+    },
     computeKeyTitle() {
+
       if ((this.typeNum - 6) % 10 == 0) {
-        return "关键词";
+        if(sessionStorage.getItem("docType")=="official"){
+          return "问题词";
+        }
+                if(sessionStorage.getItem("docType")=="officialJ"){
+          return "机构词";
+        }
+
       } else return "文号(不包括数字)";
     },
     computeValueTitle() {
-      if ((this.typeNum - 6) % 10 == 0) {
-        return "期限";
-      } else return "责任者";
+     return "责任者"; //第二列  文号对责任者 是第二列  问题词+责任者 对 期限 也是第二列
     },
-    computeIsLevel() {
+    computeIsAuthorKwDeadline() {
       if ((this.typeNum - 6) % 10 == 0) {
         return true;
       } else return false;
@@ -1009,6 +1185,9 @@ export default {
       (resp) => {
         this.weightForm = resp.data;
         this.authName = resp.data.authName;
+
+        
+
         console.log("加载keyWM页面时某个特定单位的权重表对应的id");
 
         if (this.weightForm.officialDescWig == null) {
@@ -1025,20 +1204,20 @@ export default {
         if (this.weightForm.officialDescAuthor == null) {
           this.weightForm.officialDescAuthor = {};
         }
-        if (this.weightForm.officialLevelKeywordDeadline == null) {
-          this.weightForm.officialLevelKeywordDeadline = {};
+        if (this.weightForm.officialAuthorKeywordDeadline == null) {
+          this.weightForm.officialAuthorKeywordDeadline = {};
         }
         if (this.weightForm.tecDescAuthor == null) {
           this.weightForm.tecDescAuthor = {};
         }
-        if (this.weightForm.tecLevelKeywordDeadline == null) {
-          this.weightForm.tecLevelKeywordDeadline = {};
+        if (this.weightForm.tecAuthorKeywordDeadline == null) {
+          this.weightForm.tecAuthorKeywordDeadline = {};
         }
         if (this.weightForm.busDescAuthor == null) {
           this.weightForm.busDescAuthor = {};
         }
-        if (this.weightForm.busLevelKeywordDeadline == null) {
-          this.weightForm.busLevelKeywordDeadline = {};
+        if (this.weightForm.busAuthorKeywordDeadline == null) {
+          this.weightForm.busAuthorKeywordDeadline = {};
         }
         if (this.weightForm) {
           this.showWaitingFlag = false;
@@ -1059,6 +1238,65 @@ export default {
     // console.log(this.jsonTable);
   },
   methods: {
+    setCombineToDeadline(){
+
+      if(this.authorToSet.trim()==""||
+      this.keywordToSet.trim()==""||
+      this.deadlineToSet.trim()==""){
+                    this.$message({
+              type: "warning",
+              message: "请填写完整",
+            });
+            return
+      }
+
+ 
+        var arr=[]
+        arr.push(this.keywordToSet)
+        arr.push(this.authorToSet)
+        if(this.authorKeywordDeadlineJson[this.deadlineToSet]==null){
+          var arrM=[]
+          arrM.push(arr)
+          this.authorKeywordDeadlineJson[this.deadlineToSet]=JSON.stringify(arrM)
+        }
+        else{
+          var ar=JSON.parse(this.authorKeywordDeadlineJson[this.deadlineToSet])
+          console.log("预设时该期限已经有记录")
+          console.log(ar)
+          console.log(arr)
+         ar.push(arr)
+         console.log(ar)
+         this.authorKeywordDeadlineJson[this.deadlineToSet]=JSON.stringify(ar)
+        }
+        this.weightForm[this.keywordDeadlineColumn]=this.authorKeywordDeadlineJson
+        
+        this.putRequest(
+            //注意防止重复提交
+            "/organ/" + sessionStorage.getItem("authId"),
+            JSON.stringify(this.weightForm)
+          ).then((resp) => {
+            if (resp.code == 0) {
+              this.$message({
+                type: "success",
+                message: "预设成功",
+              })
+              this.weightForm=resp.data
+              this.showCombineToDeadlineSet=false
+              this.deadlineFilter=[]
+              for(var key in this.authorKeywordDeadlineJson){
+                this.deadlineFilter.push(key)
+              }
+              this.filterThisRequest("deadline",this.deadlineToSet)
+
+              }
+          })
+    },
+    clearCombineSet(){
+      this.showCombineToDeadlineSet=false
+      this.authorToSet=""
+      this.keywordToSet=""
+      this.deadlineToSet=""
+    },
     backToKeyWord(){
       this.backToDocAboutShow=true
       this.backToKeyWordShow=false
@@ -1134,7 +1372,6 @@ this.jsonTable=[]
         
     },
     filterThisRequest(str, item) {
-      this.selectedLevel = item;
       window.scrollTo(0, 0);
 
       if (str == "level") {
@@ -1147,6 +1384,14 @@ this.jsonTable=[]
           return element[0].split("~")[0] == item;
         });
       }
+      if(str="deadline"){
+      this.selectedDeadline = item;
+        console.log(this.authorKeywordDeadlineJson)
+
+        var combineArr=JSON.parse(this.authorKeywordDeadlineJson[item])
+        console.log(combineArr)
+        this.jsonTable=combineArr
+      }
     },
 
     hideFilterLevel() {
@@ -1154,6 +1399,12 @@ this.jsonTable=[]
     },
     showFilterLevel() {
       this.filterLevelFlag = true;
+    },
+        showFilterDeadline() {
+      this.filterDeadlineFlag = true;
+    },
+        hideFilterDeadline() {
+      this.filterDeadlineFlag = false;
     },
 
     getAuth() {
@@ -1163,35 +1414,42 @@ this.jsonTable=[]
         }
       );
     },
-    //          "问题法问题优先级表",
-          // "问题法责任者优先级表",          "机构法机构优先级表",
-          // "机构法责任者优先级表",
+          // "问题优先级表",
+          // "责任者优先级表",
+          // "文号责任者对照表",
+          // "问题词期限对照表",
     selectDone() {
       if (this.selectedDoctype == "文书类") {
-        if (this.selectedTableType == "问题法问题优先级表") {
+        this.authorKeywordDeadlineJson=this.weightForm.officialAuthorKeywordDeadline
+        this.keywordDeadlineColumn="officialAuthorKeywordDeadline"
+        
+
+        if (this.selectedTableType == "问题优先级表") {
           this.checkFromThisType(11);
-        }
-        if (this.selectedTableType == "问题法责任者优先级表") {
+        }     
+        if (this.selectedTableType == "责任者优先级表") {
           this.checkFromThisType(12);
-        }
-                if (this.selectedTableType == "机构法机构优先级表") {
-          this.checkFromThisType(51);
-        }
-        if (this.selectedTableType == "机构法责任者优先级表") {
-          this.checkFromThisType(52);
-        }
+        }    
+
         if (this.selectedTableType == "文号责任者对照表") {
           this.selectedTableTypeName = "officialDescAuthor";
 
           this.checkFromThisType(15);
         }
-        if (this.selectedTableType == "级别期限对照表") {
-          this.selectedTableTypeName = "officialLevelKeywordDeadline";
+        if (this.selectedTableType == "问题词期限对照表"||this.selectedTableType == "机构词期限对照表") {
+          this.selectedTableTypeName = "officialAuthorKeywordDeadline";
 
           this.checkFromThisType(16);
+
+        }
+        if (this.selectedTableType == "机构优先级表") {
+          this.checkFromThisType(51);
         }
       }
       if (this.selectedDoctype == "业务类") {
+         this.authorKeywordDeadlineJson=this.weightForm.busAuthorKeywordDeadline
+ this.keywordDeadlineColumn="busAuthorKeywordDeadline"
+
         if (this.selectedTableType == "业务类档案问题优先级表") {
           this.checkFromThisType(31);
         }
@@ -1204,12 +1462,14 @@ this.jsonTable=[]
           this.checkFromThisType(35);
         }
         if (this.selectedTableType == "级别期限对照表") {
-          this.selectedTableTypeName = "busLevelKeywordDeadline";
+          this.selectedTableTypeName = "busAuthorKeywordDeadline";
 
           this.checkFromThisType(36);
         }
       }
       if (this.selectedDoctype == "科技类") {
+         this.authorKeywordDeadlineJson=this.weightForm.tecAuthorKeywordDeadline
+        this.keywordDeadlineColumn="tecAuthorKeywordDeadline"
         if (this.selectedTableType == "科技类档案项目优先级表") {
           this.checkFromThisType(21);
         }
@@ -1222,7 +1482,7 @@ this.jsonTable=[]
           this.checkFromThisType(25);
         }
         if (this.selectedTableType == "级别期限对照表") {
-          this.selectedTableTypeName = "tecLevelKeywordDeadline";
+          this.selectedTableTypeName = "tecAuthorKeywordDeadline";
 
           this.checkFromThisType(26);
         }
@@ -1230,18 +1490,37 @@ this.jsonTable=[]
       if (this.selectedDoctype == "人事类") {
         this.checkFromThisType(41);
       }
+
+
+
+
     },
     docTypeChange() {
       this.selectedTableType = "";
-      if (this.selectedDoctype == "文书类")
-        this.tableTypes = [
-          "问题法问题优先级表",
-          "问题法责任者优先级表",
-          // "问题法文号责任者对照表",
-          // "问题法级别期限对照表",
-          "机构法机构优先级表",
-          "机构法责任者优先级表",
+      if (this.selectedDoctype == "文书类"){
+              if(this.weightForm.officialType!=2){
+                window.sessionStorage.setItem("docType","official")
+                                this.tableTypes = [
+          "问题优先级表",
+          "责任者优先级表",
+          "文号责任者对照表",
+          "问题词期限对照表",
         ];
+              }
+              else{
+                window.sessionStorage.setItem("docType","officialJ")
+
+                              this.tableTypes = [
+          "机构优先级表",
+          "责任者优先级表",
+          "文号责任者对照表",
+          "机构词期限对照表",
+        ];
+              }
+
+
+      }
+
       else if (this.selectedDoctype == "业务类") {
         this.tableTypes = [
           "业务类档案问题优先级表",
@@ -1863,20 +2142,20 @@ this.jsonTable=[]
           if (this.typeNum == 16) {
             var k = this.selectedLevel + "~" + this.keyToSet;
             console.log(k);
-            console.log(this.weightForm.officialLevelKeywordDeadline);
+            console.log(this.weightForm.officialAuthorKeywordDeadline);
 
-            this.weightForm.officialLevelKeywordDeadline[
+            this.weightForm.officialAuthorKeywordDeadline[
               this.selectedLevel + "~" + this.keyToSet
             ] = this.valueToSet;
-            console.log(this.weightForm.officialLevelKeywordDeadline);
+            console.log(this.weightForm.officialAuthorKeywordDeadline);
           }
           if (this.typeNum == 26) {
-            this.weightForm.tecLevelKeywordDeadline[
+            this.weightForm.tecAuthorKeywordDeadline[
               this.selectedLevel + "~" + this.keyToSet
             ] = this.valueToSet;
           }
           if (this.typeNum == 36) {
-            this.weightForm.busLevelKeywordDeadline[
+            this.weightForm.busAuthorKeywordDeadline[
               this.selectedLevel + "~" + this.keyToSet
             ] = this.valueToSet;
           }
@@ -2109,7 +2388,7 @@ this.jsonTable=[]
 
     checkFromThisTableType(num) {
       this.selectShow = false;
-      this.dicShow = true;
+      this.dicShow = 2;
       // var organId=sessionStorage.getItem('authId')
       //         this.getRequest("/organ/" + organId)
       //     .then((resp) => {
@@ -2151,17 +2430,29 @@ this.jsonTable=[]
       }
 
       if ((num - 6) % 10 == 0) {
-        this.selectedLevel = "级别";
-        console.log(this.selectedTableTypeName);
+        this.dicShow=3
 
-        var table = this.weightForm[this.selectedTableTypeName];
-        console.log(table);
-        for (attr in table) {
-          this.jsonTable.push([attr, table[attr]]);
-        }
+        console.log(this.selectedTableTypeName);
+        this.deadlineFilter=[]
+              for(var key in this.authorKeywordDeadlineJson){
+        this.deadlineFilter.push(key)
       }
 
-      this.tempTable = this.jsonTable; //级别+关键词对应期限那里 级别筛选时暂存完整的对照表
+
+            if(this.selectedDeadline=="请选择"){
+        this.jsonTable=[]
+
+      }else{
+        var arrjson=this.authorKeywordDeadlineJson[this.selectedDeadline]
+        var ar=JSON.parse(arrjson)
+        this.jsonTable=ar  
+      }
+      
+
+      }
+
+
+
 
       this.showWaitingFlag = false;
     },
@@ -2179,7 +2470,7 @@ this.jsonTable=[]
 
         return;
       } //存在单位表里面的权重表  文号-责任者  级别期限对照表
-      this.dicShow = false;
+      this.dicShow = 1;
       // this.ba
       this.jsonTable = [];
       // var this.requestWigId
@@ -2408,15 +2699,15 @@ this.jsonTable=[]
       this.valueToSet = "数字";
     },
     preSetDicButton() {
-      if (this.computeIsLevel) {
-        if (this.selectedLevel == "级别") {
-          this.$message({
-            type: "warning",
-            message: "请选择级别",
-          });
-          return;
-        }
-      }
+      // if (this.computeIsAuthorKwDeadline) {
+      //   if (this.selectedLevel == "级别") {
+      //     this.$message({
+      //       type: "warning",
+      //       message: "请选择级别",
+      //     });
+      //     return;
+      //   }
+      // }
       this.showKVPreset = true;
       this.keyToSet = this.computeKeyTitle;
       this.valueToSet = this.computeValueTitle;
@@ -2437,23 +2728,23 @@ this.jsonTable=[]
           this.weightForm.busDescAuthor[this.keyToFix] = this.valueToFix;
         }
 
-        if (this.typeNum == 16) {
+        if (this.typeNum == 16) { //已废弃
           var k = this.selectedLevel + "~" + this.keyToFix;
           console.log(k);
-          console.log(this.weightForm.officialLevelKeywordDeadline);
+          console.log(this.weightForm.officialAuthorKeywordDeadline);
 
-          this.weightForm.officialLevelKeywordDeadline[
+          this.weightForm.officialAuthorKeywordDeadline[
             this.selectedLevel + "~" + this.keyToFix
           ] = this.valueToFix;
-          console.log(this.weightForm.officialLevelKeywordDeadline);
+          console.log(this.weightForm.officialAuthorKeywordDeadline);
         }
         if (this.typeNum == 26) {
-          this.weightForm.tecLevelKeywordDeadline[
+          this.weightForm.tecAuthorKeywordDeadline[
             this.selectedLevel + "~" + this.keyToFix
           ] = this.valueToFix;
         }
         if (this.typeNum == 36) {
-          this.weightForm.busLevelKeywordDeadline[
+          this.weightForm.busAuthorKeywordDeadline[
             this.selectedLevel + "~" + this.keyToFix
           ] = this.valueToFix;
         }
@@ -2801,7 +3092,41 @@ this.jsonTable=[]
     deleteKV(e, item) {
       // console
       //删除问题
-      if (this.typeNum % 5 == 0 || (this.typeNum - 6) % 10 == 0) {
+      if((this.typeNum - 6) % 10 == 0){
+        
+        var arr=this.authorKeywordDeadlineJson[this.selectedDeadline]
+        arr=JSON.parse(arr)
+        for(var index in arr){
+          console.log(arr[index])
+          if(arr[index][0]==item[0]&&arr[index][1]==item[1]){
+            arr.splice(index,1)
+          }
+        }
+        this.authorKeywordDeadlineJson[this.selectedDeadline]=JSON.stringify(arr)
+        this.checkFromThisTableType(this.typeNum)
+
+        this.weightForm[this.keywordDeadlineColumn]=this.authorKeywordDeadlineJson
+        
+        this.putRequest(
+            //注意防止重复提交
+            "/organ/" + sessionStorage.getItem("authId"),
+            JSON.stringify(this.weightForm)
+          ).then((resp) => {
+            if(resp.code==0){
+                          this.$message({
+              type: "success",
+              message: "删除成功",
+            });
+            }else{
+                          this.$message({
+              type: "warning",
+              message: "删除失败",
+            });
+            }
+          })
+        return
+      }
+      if (this.typeNum % 5 == 0 ) {
         //对照表
 
         var arr = [];
@@ -2884,7 +3209,7 @@ this.jsonTable=[]
         }
       )
         .then(() => {
-          //问题删除   console.log("关键词删除")
+          //问题删除  
    console.log("关键词删除进入，需判断")
           if ((this.typeNum == 11 || this.typeNum == 21 || this.typeNum == 31) && this.backToDocAboutShow == false) {
             console.log("wenti delete")
@@ -2922,6 +3247,9 @@ this.jsonTable=[]
 
                   
                 })
+
+          }
+          else if(this.dicShowType==3){ //问题词+责任者=期限对照表
 
           }
           else{ //关键词删除
@@ -3100,7 +3428,13 @@ this.jsonTable=[]
   data() {
     //jsonTable 是用来显示的kv数组
     return {
+      keywordToSet:"",
+      authorToSet:"",
+      deadlineToSet:"",
 
+
+      showCombineToDeadlineSet:false,
+authorKeywordDeadlineJson:{},//文书/科技/业务类的 责任者关键词对应期限对照表
       backToKeyWordShow:false,
       setDescKVFlag: false, //区别设置问题下的关键词
       descJson: {},
@@ -3108,16 +3442,19 @@ authorJson:{},
       tempTable: [], //级别+关键词对应期限那里 级别筛选时暂存完整的对照表
 
       descAuthorFlag: false, //是否是文号责任者对照表
-      dicShow: false, //对照表是否显示
+      dicShow: 1, //对照表是否显示
       selectShow: true, //选择类型界面是否显示
 
       selectedLevel: "本级", //筛选级别
+      selectedDeadline:"请选择",
       selectedDoctype: "",
       selectedTableType: "",
       selectedTableTypeName: "", //选择的对照表类型在单位对象中属性的名称
 
       filterLevelFlag: false, //设置级别+关键词对照期限表时 筛选级别
+      filterDeadlineFlag:false,
       levelFilter: ["乡级","本级", "县级", "市级", "省级", "部级"],
+      deadlineFilter:[],
       docTypes: ["文书类", "业务类", "科技类", "人事类"],
 
       tableTypes: ["请先选择文档类型"],
