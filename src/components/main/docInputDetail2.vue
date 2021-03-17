@@ -1397,7 +1397,8 @@ export default {
     boxOver(item){
       if(!this.myBoxNumSwitch) return
       if(this.startSeq){
-        if(item.docSequence==this.startSeq) return
+        if(item.docSequence==this.startSeq) return //鼠标又移到“开始”上 
+        // if(this.endInfo.docSequence==item.docSequence) return //
         this.endInfo.docSequence=item.docSequence
         this.endInfo.boxSeq=item.boxSeq
                 item.boxSeq="结束"
@@ -1409,6 +1410,8 @@ export default {
 
         this.startInfo.docSequence=item.docSequence
         this.startInfo.boxSeq=item.boxSeq
+
+
         item.boxSeq="开始"
         // // this.startStyleCtrl=true
         // for(var i in this.$store.alreadyDocs){ //把上一个还原
@@ -1424,6 +1427,7 @@ export default {
       if(this.startSeq==item.docSequence){
         return
       }
+      // if(this.endSeq==item.docSequence) return
       if(this.startInfo.docSequence==item.docSequence){
         item.boxSeq= this.startInfo.boxSeq //还原开始候选者的信息
       }
@@ -1484,6 +1488,8 @@ var start =-1//下标
 
       this.startSeq=""
       this.endSeq=""
+      this.startInfo={}
+      this.endInfo={}
       console.log(this.boxNumMap)
     },
     cancleManulBox(){
@@ -2481,11 +2487,14 @@ this.getDocAboutFilter()
 
       if (
         item.docDescAuthor == "true" ||
-        item.docDescAuthor  ||
+        item.docDescAuthor == true  ||
         item.docDescAuthor == "1"
       ) {
+        console.log("勾选变成true")
+
         item.docDescAuthor = true;
       } else {
+        console.log("勾选变成false")
         item.docDescAuthor = false;
       }
 
@@ -2963,6 +2972,7 @@ this.getDocAboutFilter()
     //   return;
     // }
     this.preLoadDocs();
+    console.log(this.$store.state.alreadyDocs)
   },
 
   mounted() {

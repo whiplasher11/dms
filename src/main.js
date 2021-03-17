@@ -85,7 +85,14 @@ Vue.filter('formatFourNum',function(value){
     }
 });
 
-Vue.filter('formatLevelKeyword',function(value){
+Vue.filter('formatAuthorKeyword1',function(value){
+    // console.log(value)
+    if(value.split('~').length>0){
+        return value.split('~')[0]
+    }else return value
+    
+});
+Vue.filter('formatAuthorKeyword2',function(value){
     // console.log(value)
     if(value.split('~').length>0){
         return value.split('~')[1]

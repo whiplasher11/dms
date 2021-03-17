@@ -116,7 +116,7 @@
       >
         {{ this.deepInThisKeyWord }}-文号优先级规则设置
       </div>
-<!-- 修改的card   并且带级别 -->
+<!-- 修改的card   责任者按级别 -->
       <div
         v-if="showKVFix&&computeTypeNumIsAuthor"
         style="
@@ -202,7 +202,7 @@
           确定
         </div>
       </div>
-
+<!-- 关键词1+责任者=期限 组合对照表预设 preset card -->
      <div
         v-if="showCombineToDeadlineSet"
         style="
@@ -285,7 +285,7 @@
       </div>
 
       <div
-        v-if="showKVFix&&dicShowType==3"
+        v-if="showKVFix&&dicShowType==1&&!computeTypeNumIsAuthor"
         style="
           position: absolute;
           top: 40vh;
@@ -297,7 +297,7 @@
           font-size: 1.5rem;
           width: 30rem;
           height: 10rem;
-          background-color: rgb(209, 218, 243);
+          background-color: rgb(254, 254, 254);
           -webkit-box-shadow: 0 0 0.5rem #909399;
           box-shadow: 0 0 0.5rem #909399;
           border-radius: 1rem;
@@ -999,19 +999,32 @@
         </div>
 
         <div
-          class="keyValueItem infoItemHighlight"
+                v-bind:class="[
+        { keyValueItem: true },
+        {infoItemHighlight:true},
+    
+      ]"
+
           style="z-index=99"
           v-for="(item, index) in jsonTable"
           :key="index"
           draggable="false"
         >
+
           <div
-            v-bind:class="[{ keyValueInfo: true }, { hideText: false }]"
+            v-bind:class="[{ keyValueInfo: true }, { hideText: false }, { upDownHighlight: adjHighlightCompute(item) },]"
             style="border: none;margin-left:5rem"
           >
             {{ item[1] }}
           </div>
-          <div class="keyValueInfo" style="border: none">{{ item[0] }}</div>
+          <div 
+          
+                          v-bind:class="[
+        { keyValueInfo: true },
+        { upDownHighlight: adjHighlightCompute(item) },
+      ]"
+
+           style="border: none">{{ item[0] }}</div>
 
           <div
             v-bind:class="[{ keyValueInfo: true }, { hideText: true }]"
@@ -1103,6 +1116,16 @@
 
 export default {
   computed: {
+    adjFilter(){
+      return function(item){
+              if(this.adjItemId==item[0]){
+        return true
+      }
+      else return false
+      }
+    },
+
+
     dicShowType(){
       return this.dicShow
     },
@@ -1238,6 +1261,12 @@ export default {
     // console.log(this.jsonTable);
   },
   methods: {
+            adjHighlightCompute(item){
+      if(this.adjItemId==item[0]){
+        return true
+      }
+      else return false
+    },
     setCombineToDeadline(){
 
       if(this.authorToSet.trim()==""||
@@ -3343,6 +3372,8 @@ this.jsonTable=[]
     },
 
     downClick(e, item) {
+      this.adjItemId=item[0]
+
       // this.valueCompute(e)
       // this.valueShow=false
       this.saveBtnShow = true;
@@ -3370,6 +3401,9 @@ this.jsonTable=[]
     },
     upClick(e, item) {
       // console.log(this.jsonTable)
+      this.adjItemId=item[0]
+      // console.log(item[0])
+
       this.saveBtnShow = true;
 
       var _arr = this.jsonTable;
@@ -3428,6 +3462,8 @@ this.jsonTable=[]
   data() {
     //jsonTable 是用来显示的kv数组
     return {
+      adjItemId:0,//上调下调颜色显示
+
       keywordToSet:"",
       authorToSet:"",
       deadlineToSet:"",
@@ -3520,6 +3556,10 @@ authorJson:{},
  
 
 <style lang="scss" scoped>
+.upDownHighlight{
+  color:red;
+  font-size: 1.1rem;
+}
 .tableSelectStyle {
   position: absolute;
   top: 5rem;

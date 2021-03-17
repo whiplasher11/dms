@@ -1052,11 +1052,11 @@ if(this.can){ //再验证code和单位名是否匹配
         if (that.step == 1) that.step++;
       }
 
-      if(that.weightForm.officialType==0&&that.BatchForm.docType==1){
+      if(that.weightForm.officialType==0&&that.BatchForm.docType==1){ //到step2
         console.log("文书第一次")
       }else
       {
-        that.step++
+        that.step++ //到step3
       }
       that.showWaitingFlag=false
 }

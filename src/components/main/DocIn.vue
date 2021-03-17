@@ -178,21 +178,22 @@
       <!-- <div class="docTypeTitle">sessionStorage批次</div> -->
       <div class="docSequenceTip">
         文件在该批次中唯一识别号：
-        <div style="display: inline-block">{{ this.docForm.docSequence }}</div>
-      </div>
-
-      <div
+        <div style="display: inline-block;font-size:1.1rem">{{ this.docForm.docSequence }}</div>
+              <div
         v-if="fixDocFlag"
         style="
-          position: absolute;
-          left: 50%;
-          width: 6rem;
-          margin-left: -3rem;
-          top: 1rem;
+          display:inline-block;
+          color:red;
         "
       >
-        修改中
+        &nbsp;&nbsp;修改中
       </div>
+
+      </div>
+
+      <div style="width:60%;position:absolute;top:1rem;left:50%;margin-left:-30%;text-align:center">录入单位：{{authName}}</div>
+
+
       <!-- contenteditable="true" @focus="sequenceFocus" @blur="sequenceBlur"  -->
       <el-checkbox
         style="position: absolute; right: 1rem; top: 1rem"
@@ -891,6 +892,7 @@ export default {
     if (this.$store.state.tempDoc) {
       //从详情页跳转，  checked属性会在created后，
       //在mounted之前 所以这段不能放在created里 这段是根据跳转来的doc设置form，使得修改时checkbox正常显示
+      var item=this.$store.state.tempDoc
       console.log("详情页得到的");
       console.log(this.$store.state.tempDoc);
       this.fixDocFlag = true;
@@ -898,6 +900,19 @@ export default {
       this.docForm = Object.assign({}, this.$store.state.tempDoc);
       this.docFormRS = Object.assign({}, this.$store.state.tempDoc);
       this.docForm.docDescAuthor = this.$store.state.tempDoc.docDescAuthor;
+            if (
+        item.docDescAuthor == "true" ||
+        item.docDescAuthor==true  ||
+        item.docDescAuthor == "1"
+      ) {
+        console.log("勾选变成t")
+
+         this.docForm.docDescAuthor = true;
+      } else {
+        console.log("勾选变成false")
+         this.docForm.docDescAuthor = false;
+      }
+
 
       console.log(this.$store.state.tempDoc.docDescAuthor);
       if (this.$store.state.tempDoc.keyword2 != "") {
@@ -1026,6 +1041,10 @@ export default {
   },
 
   computed: {
+    authName(){
+      return sessionStorage.getItem("authName");
+
+    },
     docType() {
       return sessionStorage.getItem("docType");
     },
@@ -1076,6 +1095,7 @@ export default {
 
   data() {
     return {
+      docDescRepeatNum:0, //文号输入完后检测有无重复 没有的话 后面还需要多重条件判断重复
       initTime: "",
       DescWigArr: [],
       levelTemp: "", //暂存的提交级别 因此异步提交不会在提交时被清空
@@ -1124,7 +1144,7 @@ export default {
         keyword: "关键字", //关键字
         // docDesc: "", //文号
         // sortYear: "2019",
-        docDate: "20180808",
+        docDate: "",
         docTypeCode: sessionStorage.getItem("docTypeCode"),
 
         docSecret: "", //文件密级
@@ -1144,7 +1164,7 @@ export default {
         keyword: "", //关键字
         // docDesc: "", //文号
         // sortYear: "2019",
-        docDate: "20190808",
+        docDate: "",
         docTypeCode: sessionStorage.getItem("docTypeCode"),
 
         docSecret: "", //文件密级
@@ -1330,13 +1350,13 @@ export default {
         id: "",
         docSequence: "", //序列号，标识文件
         docType: "",
-        docTitle: "请填写文件标题", //标题
+        docTitle: "", //标题
         docAbout: "",
         keyword: "", //关键字
         keyword2: "", //机构词
         docDesc: "", //文号
         sortYear: "2019",
-        docDate: "20190808",
+        docDate: "",
         docTypeCode: sessionStorage.getItem("docTypeCode"),
         docLevel: "",
         docDescNum: "", //责任者简称
@@ -1641,11 +1661,12 @@ export default {
         var repeatArr = [];
         for (var i in resp.data.content) {
           if (resp.data.content[i].docSequence != this.docForm.docSequence) {
-            repeatArr.push(resp.data.content[i].docSequence);
+            repeatArr.push(JSON.stringify(resp.data.content[i].docSequence));
           }
         }
 
         if (resp.data.content.length != 0) {
+          this.docDescRepeatNum=resp.data.content.length //文号不重复 就不要在addDOc时判断多个条件了
           this.$confirm(
             "请检查是否录入重复,检测到文号可能重复的识别号：" + repeatArr,
             "提示",
@@ -1864,7 +1885,7 @@ export default {
         for (var i in resp.data.content) {
           repeatArr.push(resp.data.content[i].docSequence);
         }
-        if (resp.data.content.length != 0) {
+        if (resp.data.content.length != 0 &&this.docDescRepeatNum==0) { //this.docDescRepeatNum==0 文号不重复才多个条件判断重复
           this.$confirm(
             "请检查是否录入重复,检测到可能重复的识别号：" + repeatArr,
             "提示",
@@ -2286,6 +2307,8 @@ export default {
             this.docForm.keyword = "";
             this.genId(6, 62); //修改成功后产生新的识别号
             // this.docForm.docDate.replace("-", "");
+                    this.docForm.docSecrets="无"
+
             this.docForm.docDate = "";
             this.docForm.docTitle = "";
             this.docForm.docDescAuthor = true;
@@ -2700,9 +2723,9 @@ export default {
           for (var i in resp.data.content) {
             repeatArr.push(resp.data.content[i].docSequence);
           }
-          if (resp.data.content.length != 0) {
+          if (resp.data.content.length != 0 &&this.docDescRepeatNum==0) {//this.docDescRepeatNum==0文号不重复才多重条件判断
             this.$confirm(
-              "请检查是否录入重复,检测到可能重复的识别号：" + repeatArr,
+              "请检查是否录入重复,检测到可能重复的识别号：" + repeatArr, //
               "提示",
               {
                 cancelButtonClass: "btn-custom-cancel",
@@ -2755,8 +2778,9 @@ export default {
                     this.docForm.docLevel = "";
                     this.docForm.dutyAuthor = "";
                     this.docForm.docDate = "";
-                    this.genId(6, 62); //提交文件成功后产生新的识别号
+                    this.genId(6, 62); //提交文件成功后产生新的识别号  有两处提交成功
                     this.docForm.docDate.replace("-", "");
+                    this.docForm.docSecrets="无"
                     console.log(this.docForm);
                     this.docForm.docTitle = "";
                     this.docForm.docPage = "";
@@ -2817,6 +2841,8 @@ export default {
 
                 this.genId(6, 62); //提交文件成功后gen
                 this.docForm.docDate.replace("-", "");
+                    this.docForm.docSecrets="无"
+
                 console.log(this.docForm);
                 this.docForm.docTitle = "";
                 this.docForm.docPage = "";
