@@ -3,7 +3,7 @@
         <div>
             <el-input size="small" v-model="jl.name" style="width: 300px;" prefix-icon="el-icon-plus"
                       placeholder="添加职称..."></el-input>
-            <el-select v-model="jl.titleLevel" placeholder="职称等级" size="small"
+            <el-select v-model="jl.titleLevel" placeholder="职称等2222222222级" size="small"
                        style="margin-left: 5px;margin-right: 5px">
                 <el-option
                         v-for="item in titleLevels"
