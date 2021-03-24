@@ -8,7 +8,7 @@
             <ul>
                 <ul class="ul_a">
                     <li class="li_a">麓优a22sdasd2思</li>
-                    <li class="li_b"><a target="_blank" class="">招贤纳士</a></li>
+                    <li class="li_b"><a target="_blank" class="">招贤2纳士</a></li>
                     <li class="li_c"><router-link to='aboutus' class="">关s于我们</router-link></li>
                     <li class="li_d">反馈问题</li>
                     <ul class="ul_c">
