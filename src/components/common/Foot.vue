@@ -7,7 +7,7 @@
         <div class="content" style="color:#ffffff">
             <ul>
                 <ul class="ul_a">
-                    <li class="li_a">麓优思</li>
+                    <li class="li_a">麓优asdasd2思</li>
                     <li class="li_b"><a target="_blank" class="">招贤纳士</a></li>
                     <li class="li_c"><router-link to='aboutus' class="">关于我们</router-link></li>
                     <li class="li_d">反馈问题</li>
