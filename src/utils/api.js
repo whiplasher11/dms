@@ -34,6 +34,11 @@ axios.interceptors.response.use(success => {
     }
     return success.data;
 }, error => {
+    if(!error.response){
+        Message.error({message:"请检查网络！"})
+        return
+
+    }
     if(error.response.status==100){return error.response}
     if(error.response.status==500){
         // console.log(error)
@@ -54,8 +59,10 @@ axios.interceptors.response.use(success => {
     } else {
         if (error.response.data.massage) {
             Message.error({message: error.response.data.msg})
+            return
         } else {
-            Message.error({message: '未知错误!'})
+            Message.error({message: '请检查网络!'})
+            return
         }
     }
     return;
@@ -97,6 +104,8 @@ export const postRequest = (url, params) => {   // tlq1
             token:localStorage.getItem('token')?(localStorage.getItem('token').split('"')[1]||localStorage.getItem('token')):null,
             authId:sessionStorage.getItem('authId')||''
         }
+    }).catch(err=>{
+        console.log(err)
     })
 }
 export const putRequest = (url, params) => {

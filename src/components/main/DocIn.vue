@@ -152,7 +152,7 @@
           <font v-html="item.docTitle"> </font> -
           <font style="font-size: 1.1rem; color: #abc">
             {{ item.docAbout }} </font
-          >-{{ item.keyword }}
+          >-{{ item.keyword }}-期限：{{item.deadline}}
         </div>
       </div>
     </div>
@@ -171,7 +171,7 @@
     <el-form
       v-if="!isRS"
       class="docInForm"
-      ref="docForm"
+      
       :model="docForm"
       label-width="10rem"
     >
@@ -208,7 +208,10 @@
       <el-form-item class="textArea" prop="batchName" label="文件标题：">
         <el-input
           @blur="titleComplete"
+          @keydown.native="fastNext($event)"
           type="textarea"
+          ref="docTitle"
+          id="docTitle"
           :rows="3"
           class="textAreaInput"
           v-model="docForm.docTitle"
@@ -223,6 +226,7 @@
             <el-checkbox
               style="position: absolute; left: 2rem; top: 0.5rem"
               v-if="true"
+
               @change="docDescChange"
               false-label="false"
               true-label="true"
@@ -242,6 +246,10 @@
               size="normal"
               type="text"
               @blur="docDescComplete"
+              ref="docDesc"
+          id="docDesc"
+          @keydown.native="fastNext($event)"
+
               v-model="docForm.docDesc"
               auto-complete="off"
               placeholder="文号"
@@ -255,11 +263,16 @@
             v-if="docForm.docDescAuthor"
             label="序号："
           >
+          
             <el-input
               size="normal"
               type="text"
               v-model="docForm.docDescNum"
               auto-complete="off"
+              ref="docDescNum"
+          id="docDescNum"
+          @keydown.native="fastNext($event)"
+
               placeholder="文号的序号"
               class="DescNumStyle"
             ></el-input>
@@ -272,7 +285,7 @@
           <el-col :span="12" v-if="docType == 'officialJ'">
             <el-form-item prop="historyAuth" label="机构词：">
               <el-select
-                ref="authSelectref"
+
                 @blur="keywordBlur"
                 @change="keywordComplete"
                 filterable
@@ -292,7 +305,7 @@
           <el-col :span="12">
             <el-form-item prop="historyAuth" label="机构：">
               <el-select
-                ref="authSelectref"
+
                 filterable
                 @blur="docAboutBlur"
                 @change="docAboutChange"
@@ -314,7 +327,7 @@
           <el-col :span="12">
             <el-form-item prop="historyAuth" label="关键词：">
               <el-select
-                ref="authSelectref"
+
                 @blur="keyword2Blur"
                 @change="keyword2Complete"
                 filterable
@@ -350,7 +363,7 @@
 
               <el-form-item prop="historyAuth" label="项目：">
                 <el-select
-                  ref="authSelectref"
+   
                   filterable
                   @blur="docAboutBlur"
                   @change="docAboutChange"
@@ -369,7 +382,7 @@
             <el-col :span="12">
               <el-form-item prop="historyAuth" label="项目词：">
                 <el-select
-                  ref="authSelectref"
+
                   @blur="keywordBlur"
                   @change="keywordComplete"
                   filterable
@@ -402,7 +415,10 @@
 
               <el-form-item prop="historyAuth" label="问题：">
                 <el-select
-                  ref="authSelectref"
+                  ref="docAbout"
+                  id = "docAbout"
+          @keydown.native="fastNext($event)"
+
                   filterable
                   @blur="docAboutBlur"
                   @change="docAboutChange"
@@ -422,9 +438,13 @@
             <el-col :span="12">
               <el-form-item prop="historyAuth" label="问题词：">
                 <el-select
-                  ref="authSelectref"
+                  ref="keyword"
+                  id="keyword"
+          @keydown.native="fastNext($event)"
+
                   @blur="keywordBlur"
                   @change="keywordComplete"
+                  
                   filterable
                   v-model="docForm.keyword"
                   placeholder="选择或填写问题词"
@@ -448,6 +468,12 @@
             <el-select
               v-model="docForm.docLevel"
               @change="levelCompelete"
+          ref="docLevel"
+          id="docLevel"
+          @keydown.native="fastNext($event)"
+
+          filterable
+
               placeholder="选择文件级别"
             >
               <el-option
@@ -462,7 +488,12 @@
 
         <el-col :span="12">
           <el-form-item prop="batchName" label="文件期限(年)：">
-            <el-select v-model="docForm.deadline" placeholder="选择文件期限">
+            <el-select v-model="docForm.deadline" 
+                          ref="deadline"
+          id="deadline"
+          @keydown.native="fastNext($event)"
+          filterable
+            placeholder="选择文件期限">
               <el-option
                 v-for="item in docTimeDues"
                 :key="item"
@@ -478,7 +509,11 @@
         <el-col :span="24">
           <el-form-item prop="batchName" label="责任者：">
             <el-select
-              ref="authSelectref"
+
+                            ref="dutyAuthor"
+          id="dutyAuthor"
+          @keydown.native="fastNext($event)"
+
               @blur="dutyAuthorBlur"
               @change="dutyAuthorComplete"
               filterable
@@ -507,6 +542,10 @@
               value-format="yyyyMMdd"
               :picker-options="pickerOptions"
               @change="selectDateChange"
+                            ref="docDate"
+          id="docDate"
+          @keydown.native="fastNext($event)"
+
             ></el-date-picker>
           </el-form-item>
         </el-col>
@@ -517,6 +556,10 @@
               size="normal"
               type="text"
               v-model="docForm.docPage"
+                            ref="docPage"
+          id="docPage"
+          @keydown.native="fastNext($event)"
+
               auto-complete="off"
               placeholder="根据文件填写"
             ></el-input>
@@ -551,7 +594,12 @@
           </el-form-item> -->
 
           <el-form-item prop="batchName" label="文件密级：">
-            <el-select v-model="docForm.docSecret" placeholder="选择文件密级">
+            <el-select v-model="docForm.docSecret"
+                          ref="docSecret"
+          id="docSecret"
+          @keydown.native="fastNext($event)"
+          filterable
+           placeholder="选择文件密级">
               <el-option
                 v-for="item in docSecrets"
                 :key="item.value"
@@ -571,6 +619,10 @@
               value-format="yyyy"
               :picker-options="pickerOptions"
               @change="selectDateChange"
+                            ref="sortYear"
+          id="sortYear"
+          @keydown.native="fastNext($event)"
+
             ></el-date-picker>
           </el-form-item>
         </el-col>
@@ -584,6 +636,10 @@
           v-model="docForm.remark"
           auto-complete="off"
           placeholder="输入备注"
+                                      ref="remark"
+          id="remark"
+          @keydown.native="fastNext($event)"
+
         ></el-input>
       </el-form-item>
 
@@ -684,7 +740,7 @@
           </el-form-item> -->
           <el-form-item prop="historyAuth" label="关键词：">
             <el-select
-              ref="authSelectref"
+
               filterable
               v-model="docFormRS.keyword"
               placeholder="选择或填写关键词"
@@ -863,6 +919,7 @@ export default {
     console.log(this);
   },
   mounted() {
+    this.$refs['docTitle'].focus();
     var dd = new Date();
     var inittime =
       dd.getHours() + "-" + dd.getMinutes() + "-" + dd.getSeconds() + "";
@@ -1095,6 +1152,8 @@ export default {
 
   data() {
     return {
+      nowId:1,//焦点id
+
       docDescRepeatNum:0, //文号输入完后检测有无重复 没有的话 后面还需要多重条件判断重复
       initTime: "",
       DescWigArr: [],
@@ -1408,6 +1467,68 @@ export default {
     };
   },
   methods: {
+    fastNext(e){
+      console.log(e)
+      if(e.key=="ArrowRight"){
+        console.log("down")
+        var next=false;
+        var pre=""
+        for(var key in this.$refs){
+          console.log(key)
+          if(key==e.srcElement.id){
+            next=true
+            pre = key
+          }
+          if(next){
+            if(this.$refs[key]&&key!=e.srcElement.id){
+              console.log("聚焦于下一个有效的")
+              this.$refs[key].focus()
+              this.$refs[pre].blur()
+              break;
+            }
+ 
+          }
+        }
+
+      }
+            if(e.key=="ArrowLeft"){
+        console.log("pre")
+        var next=false;
+        var pre=""
+        var reverse =[]
+          for(var key in this.$refs){
+            reverse.push(key)
+          }
+
+          for (var i =reverse.length;i>=0 ;i--){
+            var key=reverse[i]
+                      console.log(key)
+          if(key==e.srcElement.id){
+            next=true
+            pre = key
+          }
+          if(next){
+            if(this.$refs[key]&&key!=e.srcElement.id){
+              console.log("聚焦于shang一个有效的")
+              this.$refs[key].focus()
+              this.$refs[pre].blur()
+              break;
+            }
+ 
+          }
+          }
+ 
+
+      }
+          
+    },
+      // fastNext(e){
+      // if(e.key=="ArrowRight"){
+      //   if(this.docForm.docDescAuthor){
+      //     this.$refs["docDesc"].focus();
+      //   }
+      // }
+    //},
     keyword2CkbChange(e) {
       // console.log(e)
       if (e == "false" || !e) {
@@ -1439,6 +1560,20 @@ export default {
 
     //   this.docForm.docSequence=
     // },
+        docAboutBlur(e) {
+
+      var input = e.target.value;
+      this.docForm.docAbout = input;
+
+      if(this.docForm.docAbout==""){
+        console.log("问题没了，换整个数组")
+                this.keywordTipArr = [];
+        for (var attr in this.keyword_docAboutJson) {
+          this.keywordTipArr.push(attr);
+        }
+      }
+    },
+
     docAboutChange() {
       console.log(this.keywordTipArr);
       console.log(this.docAbout_KeywordArrJson);
@@ -1467,10 +1602,7 @@ export default {
 
       // this.authorAndKwToDeadline();
     },
-    docAboutBlur(e) {
-      var input = e.target.value;
-      this.docForm.docAbout = input;
-    },
+
     initTable() {},
     initNull() {
       if (this.weightForm.officialDescAuthor == null) {
@@ -1491,6 +1623,7 @@ export default {
       if (this.weightForm.busLevelKeywordDeadline == null) {
         this.weightForm.busLevelKeywordDeadline = {};
       }
+      
     },
     closeDocTip() {
       this.matchKvFunc();
@@ -1586,7 +1719,7 @@ export default {
           this.$message({
             type: "success",
             message:
-              "识别出可能匹配的文件，助您快速录入，请选择后检查是否需要修改",
+              "识别出可能相似的文件，助您快速录入，请选择后检查是否需要修改",
           });
         } else if (resp.code == 0 && resp.data.length == 0) {
           this.matchKvFunc(); //关闭或者没有历史匹配就去从标题匹配
@@ -1624,13 +1757,19 @@ export default {
     },
 
     docDescComplete() {
+
       if (this.docForm.docDesc == "") {
         return;
       }
       if (this.docForm.docDesc.length < 2) {
+        console.log("asdsa")
+
         return;
       }
-
+      if(this.fixDocFlag){
+        console.log("修改中啊啊啊啊")
+        return;
+      }
       console.log(this.docForm.docDesc);
 
       var a = this.docForm.docDesc.replace(/【/g, "[");
@@ -1651,24 +1790,30 @@ export default {
         docType: sessionStorage.getItem("docType"),
       };
 
+      if(this.fixDocFlag){
+        console.log("修改中啊啊啊啊")
+        return;
+      }
+
       this.postRequest(
         //注意防止重复提交
         searchPath,
         JSON.stringify(searchObj)
       ).then((resp) => {
-        console.log("输完文号后检查是否重复");
+        console.log("输完文号后检查是否重复1111111");
         console.log(resp);
         var repeatArr = [];
         for (var i in resp.data.content) {
-          if (resp.data.content[i].docSequence != this.docForm.docSequence) {
-            repeatArr.push(JSON.stringify(resp.data.content[i].docSequence));
-          }
+          var k=resp.data.content[i]
+          var repeatStr=k.docSequence+"题名："+k.docTitle+"\nabout："+k.docAbout+",文号："+k.docDesc+",日期："+k.docDate+
+          ",责任者"+k.dutyAuthor+",页数："+k.docPage
+          repeatArr.push(repeatStr);
         }
 
         if (resp.data.content.length != 0) {
           this.docDescRepeatNum=resp.data.content.length //文号不重复 就不要在addDOc时判断多个条件了
           this.$confirm(
-            "请检查是否录入重复,检测到文号可能重复的识别号：" + repeatArr,
+            "请检查是否录入重复:" + repeatArr,
             "提示",
             {
               cancelButtonClass: "btn-custom-cancel",
@@ -1710,6 +1855,8 @@ export default {
     },
     keyword2Complete() {},
     keywordComplete() {
+      console.log("keyword选择")
+
       // console.log(this.authorKwToDeadlineTable);
       // this.authorAndKwToDeadline();
       if (
@@ -1719,8 +1866,9 @@ export default {
           type: "success",
           message: "系统根据对照表识别出问题",
         });
-        this.docForm.docAbout = this.keyword_docAboutJson[this.docForm.keyword];
       }
+        this.docForm.docAbout = this.keyword_docAboutJson[this.docForm.keyword];
+
     },
     levelCompelete() {
       if (this.docForm.docLevel == "本级") {
@@ -1851,6 +1999,11 @@ export default {
         });
       }
 
+            if(this.fixDocFlag){
+        return
+      }
+
+
       var searchPath =
         "/document/list/page/" +
         sessionStorage.getItem("docType") +
@@ -1874,6 +2027,10 @@ export default {
         }
       }
 
+            if(this.fixDocFlag){
+        return
+      }
+
       this.postRequest(
         //注意防止重复提交
         searchPath,
@@ -1883,11 +2040,14 @@ export default {
         console.log(resp);
         var repeatArr = [];
         for (var i in resp.data.content) {
-          repeatArr.push(resp.data.content[i].docSequence);
+          var k=resp.data.content[i]
+          var repeatStr=k.docSequence+"题名："+k.docTitle+"\nabout："+k.docAbout+",文号："+k.docDesc+",日期："+k.docDate+
+          ",责任者"+k.dutyAuthor+",页数："+k.docPage
+          repeatArr.push(repeatStr);
         }
         if (resp.data.content.length != 0 &&this.docDescRepeatNum==0) { //this.docDescRepeatNum==0 文号不重复才多个条件判断重复
           this.$confirm(
-            "请检查是否录入重复,检测到可能重复的识别号：" + repeatArr,
+            "请检查是否录入重复：" + repeatArr,
             "提示",
             {
               cancelButtonClass: "btn-custom-cancel",
@@ -2260,7 +2420,7 @@ export default {
           "/" +
           this.$store.state.tempDocId;
         this.putRequest(
-          //注意防止重复提交
+
           pathToDoc,
           JSON.stringify(docObj)
         )
@@ -2583,13 +2743,16 @@ export default {
           console.log("添加前检查是否重复");
           console.log(resp);
           var repeatArr = [];
-          for (var i in resp.data.content) {
-            repeatArr.push(resp.data.content[i].docSequence);
-          }
+        for (var i in resp.data.content) {
+          var k=resp.data.content[i]
+          var repeatStr=k.docSequence+"题名："+k.docTitle+"\nabout："+k.docAbout+",文号："+k.docDesc+",日期："+k.docDate+
+          ",责任者"+k.dutyAuthor+",页数："+k.docPage
+          repeatArr.push(repeatStr);
+        }
 
           if (resp.data.content.length != 0) {
             this.$confirm(
-              "请检查是否录入重复,检测到可能重复的识别号：" + repeatArr,
+              "请检查是否录入重复：" + repeatArr,
               "提示",
               {
                 cancelButtonClass: "btn-custom-cancel",
@@ -2662,7 +2825,7 @@ export default {
         }
         var docObj = {
           deleted: 0,
-          keyword2: this.docForm.keyword2,
+          keyword2: this.docForm.keyword2.trim(),
           // userId:JSON.stringify(sessionStorage.getItem("userId")),
           // userId: sessionStorage.getItem('userId'),
           userId: sessionStorage.getItem("userIdNum"),
@@ -2674,18 +2837,18 @@ export default {
           docSequence: this.docForm.docSequence,
           docTitle: this.docForm.docTitle,
           docType: sessionStorage.getItem("docType"),
-          keyword: this.docForm.keyword,
+          keyword: this.docForm.keyword.trim(),
           remark: this.docForm.remark,
           deadline: this.docForm.deadline,
-          docAbout: this.docForm.docAbout,
-          docDesc: this.docForm.docDesc,
+          docAbout: this.docForm.docAbout.trim(),
+          docDesc: this.docForm.docDesc.trim(),
           docPage: this.docForm.docPage,
           docDescNum: docDescNumTemp,
           docDescAuthor: this.docForm.docDescAuthor,
           docLevel: this.docForm.docLevel,
           docSecret: this.docForm.docSecret,
           docTypeCode: sessionStorage.getItem("docTypeCode"),
-          dutyAuthor: this.docForm.dutyAuthor,
+          dutyAuthor: this.docForm.dutyAuthor.trim(),
           sortYear: this.docForm.sortYear,
         };
 
@@ -2720,12 +2883,15 @@ export default {
           console.log("添加前检查是否重复");
           console.log(resp);
           var repeatArr = [];
-          for (var i in resp.data.content) {
-            repeatArr.push(resp.data.content[i].docSequence);
-          }
+        for (var i in resp.data.content) {
+          var k=resp.data.content[i]
+          var repeatStr=k.docSequence+"-题名："+k.docTitle+"\nabout："+k.docAbout+",文号："+k.docDesc+",日期："+k.docDate+
+          ",责任者"+k.dutyAuthor+",页数："+k.docPage
+          repeatArr.push(repeatStr);
+        }
           if (resp.data.content.length != 0 &&this.docDescRepeatNum==0) {//this.docDescRepeatNum==0文号不重复才多重条件判断
             this.$confirm(
-              "请检查是否录入重复,检测到可能重复的识别号：" + repeatArr, //
+              "请检查是否录入重复：" + repeatArr, //
               "提示",
               {
                 cancelButtonClass: "btn-custom-cancel",
@@ -3176,9 +3342,7 @@ export default {
         //文号
 
         this.optDescTable(
-          "officialDescWig",
-          "officialAuthorKeywordDeadline",
-          "officialDescAuthor"
+          "officialDescWig"
         );
 
         // {

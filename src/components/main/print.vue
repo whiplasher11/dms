@@ -2,9 +2,11 @@
 <div >
  
   <div style="position:absolute;width:10cm;top:5cm;left:1cm" class="printSetBox" >
-    <el-select style="width:7cm;position:absolute;left:-50%" v-if="true"
+    <el-select style="width:7cm;position:absolute;left:-50%;height:0" v-if="false"
             @blur="selectBlur"
             @change="selectSequenceChange"
+            @input="inputSelect"
+            @keyup="inputSelect"
             ref="authSelectref"
             id="selectAuth"
             filterable
@@ -18,6 +20,14 @@
               :value="item.docSequence"
             ></el-option>
           </el-select>
+
+          <el-input 
+           style="width:7cm;position:absolute;left:-50%;"
+            v-model="selectedDocSequence"
+            @input="inputSelect"
+          >
+
+          </el-input>
 
           <div style="position:relative;left:-50%;bottom:0;width:2cm;height:2cm">
   <div style="position:absolute;top:0cm;left:8cm;width:3cm;text-align:center"  @click="clickPrint"  class="topTextButton" >回车打印</div>
@@ -174,6 +184,16 @@ that.clickPrint();
   },
 
   methods:{
+    inputSelect(){
+            console.log(this.selectedDocSequence)
+      for(var i in this.printDocs){
+        if(this.printDocs[i].docSequence==this.selectedDocSequence){
+          this.emitThisDoc(this.printDocs[i])
+          this.$store.state.printDoc=this.printDocs[i]
+          console.log(this.$store.state.printDoc)
+        }
+      }
+    },
 
     clickPrint(){  //点button 或者按键
 

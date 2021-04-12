@@ -1163,6 +1163,7 @@ var that=this
               "docTypeCode",
               that.BatchForm.docTypeCode
             );
+            this.weightForm=resp.data
             resolve(true)
             // return true
             // window.sessionStorage.setItem("authId",this.BatchForm.authId)

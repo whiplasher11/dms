@@ -2236,7 +2236,7 @@ this.jsonTable=[]
           return
         }
       }
-
+/**文号不用设置优先级了 */
       if (this.setDescKVFlag) {
         
         // 这块代码 ：文号优先级的设置

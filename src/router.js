@@ -1,9 +1,5 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Home from './views/Home.vue'
-import FriendChat from './views/chat/FriendChat.vue'
-import HrInfo from './views/HrInfo.vue'
-import Register from './views/Register.vue'
 import Main from './components/main/Main.vue'
 import Temp from'./components/main/Recover.vue'
 import Login from './components/main/Login.vue'
@@ -98,34 +94,8 @@ export default new Router({
             component: Login,
             hidden: true
         },
-        {
-            path: '/register',
-            name: 'r',
-            component: Register,
-            hidden: true
-        },
-        {
-            path: '/home',
-            name: 'Home',
-            component: Home,
-            hidden: true,
-            meta: {
-                roles: ['admin', 'user']
-            },
-            children: [
-                {
-                    path: '/chat',
-                    name: '在线聊天',
-                    component: FriendChat,
-                    hidden: true
-                }, {
-                    path: '/hrinfo',
-                    name: '个人中心',
-                    component: HrInfo,
-                    hidden: true
-                }
-            ]
-        },
+
+   
          {
             path: '*',
             redirect: '/home'
