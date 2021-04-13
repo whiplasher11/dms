@@ -20,6 +20,9 @@
         style="margin-left: -30mm; position: relative;width:80%; left: 50%"
       ></HidePrint>
 
+
+
+
       <div
         style="
           position: absolute;
@@ -34,12 +37,22 @@
       </div>
     </div>
 
+      <div style="position:relative;z-index:444;margin-top:0rem;background-color:#eee" v-show="showKWM">
+        <div style="position:absolute;right:6rem;top:5rem" class="topTextButtonBlue" @click="hideSubKWM">
+          &nbsp;X&nbsp;
+        </div>
+
+        <KeyWordManage>
+
+        </KeyWordManage>
+      </div>
+
 <!-- <div v-show="getDocInShow">
   <DocIn>
   </DocIn>
 </div> -->
 
-    <div class="wrapper" style="padding-bottom: 50rem" >
+    <div class="wrapper" style="padding-bottom: 50rem"  v-if="!showKWM">
       <div style="height: 6.5rem"></div>
       <div
         style="
@@ -387,6 +400,9 @@
           >
             搜索
           </div>
+
+
+
           <!-- <input class="leftInput myInput" v-model="searchContent" @focus="clearSearchContent" @blur="putInContent">  -->
 
           <!-- 搜索         <el-button
@@ -411,7 +427,8 @@
             @blur="putInContent"
           ></el-input>
         </div>
-        <!-- fix遮挡div -->
+        <!-- fix遮挡div以及单位名称 -->
+
         <div
           style="
             height: 9rem;
@@ -420,7 +437,12 @@
             background-color: rgb(255, 255, 255);
             top: 3rem;
           "
-        ></div>
+        >
+          <div style="position:absolute;bottom:6rem;left:50%;width:50%;margin-left:-25%;text-align:center">
+            单位名：{{authName}}
+          </div>
+        </div>
+        <!-- 顶部按钮 ↓ -->
         <div
           style="
             position: fixed;
@@ -571,12 +593,12 @@
          width:5rem;
          text-align:center;
          margin-left:1rem;
-         margin-top:0.3rem
+
          "
-            class="hoverStyle"
-            @click="goSetRule"
+            class="topTextButton"
+            @click="showKWMClick"
           >
-            顺序有问题？请前往设置本单位规则
+            设置规则
           </div>
 
           <div style="clear: both"></div>
@@ -814,7 +836,8 @@
         >
           本批所有已录入文档
         </div> -->
-
+        <!-- 文档列表↓ -->
+<div v-if="!showKWM">
         <div
           style="height: 4.5rem; width: 100%"
           v-if="docType != 'personnel'"
@@ -1135,6 +1158,7 @@
 
         <div style="boder-top: solid 0.2rem"></div>
       </div>
+</div>
       <div style="height: 2rem"></div>
     </div>
   </div>
@@ -1142,7 +1166,7 @@
 
 <script>
 import Utils from "../../utils/printUtil.js";
-import DocIn from "./DocIn"
+import KeyWordManage from "./KeyWordManage"
 import axios from "axios";
  
 
@@ -1151,7 +1175,7 @@ import HidePrint from "./print";
 export default {
   components: {
     HidePrint: HidePrint,
-    DocIn:DocIn,
+    KeyWordManage:KeyWordManage,
   },
   watch: {
     
@@ -1182,6 +1206,10 @@ export default {
     authCode() {
       return sessionStorage.getItem("authCode") || "";
     },
+    authName(){
+      return sessionStorage.getItem("authName") || "";
+
+    },
     getDocInShow(){
       return this.$store.state.showDocIn
     },
@@ -1191,6 +1219,8 @@ export default {
   },
   data() {
     return {
+      showKWM:false,
+
       /**手动排盒号使用变量 */
       boxNumMap:{},
       startBoxNum:0,
@@ -1393,7 +1423,14 @@ export default {
  enterToPrint(){
    console.log("p")
  },
- 
+ showKWMClick(){
+   this.showKWM=true;
+      window.scrollTo(0, 0);
+
+ },
+ hideSubKWM(){
+   this.showKWM=false;
+ },
     boxOver(item){
       if(!this.myBoxNumSwitch) return
       if(this.startSeq){
@@ -1852,7 +1889,11 @@ var start =-1//下标
     },
     getDocAboutFilter(){
       var docAboutWeightId
-      var organ=this.$store.state.organ
+      var organ=this.$store.state.organ //刷新就没有了
+      if(!organ.id){
+        organ=JSON.parse(sessionStorage.getItem("organ"))
+
+      }
       console.log(organ)
       // organ=JSON.parse(organ)
 
@@ -2961,6 +3002,7 @@ this.getDocAboutFilter()
   },
   created() {
     this.alreadyDocsRestore=[];
+    window.sessionStorage.setItem("isSub",1)
     // this
     // var c="adsd"
     // if(c.charAt(0)=='a') c=c.substring(1)
@@ -3007,6 +3049,7 @@ this.getDocAboutFilter()
   //    docUtil.$off("changeThisDoc")
   //  },
   destroyed(){
+    window.sessionStorage.setItem("isSub",0)
     this.destoryFlag=false
     console.log("destory")
     // document=null

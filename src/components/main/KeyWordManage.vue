@@ -1,6 +1,9 @@
 <template>
   <div class="outbox">
-    <div style="position: relative" class="wrapper">
+    <div style="position: relative"
+            v-bind:class="[{ wrapper: true }, { subWrapper: false }]"
+    
+    >
       <div
         style="
           position: fixed;
@@ -20,6 +23,10 @@
       >
         请求中，请稍候...
       </div>
+
+ 
+<div v-if="!isSubPage"> 
+  <!-- 顶部的两个跨页面返回按钮 -->
       <div
         class="topTextButtonBlue"
         style="position: absolute; top: 7.5rem; right: 20rem; z-index: 123"
@@ -36,6 +43,7 @@
       >
         返回预览
       </div>
+</div>
       <div
         class="topTextButton"
         style="position: absolute; top: 7.5rem; right: 20rem; z-index: 123"
@@ -60,7 +68,7 @@
         v-if="false&&!selectShow &&  backToKeyWordShow"
         @click="backToKeyWord"
       >
-        &nbsp; 返回g &nbsp;
+        &nbsp; 返回 &nbsp;
       </div>
 
       <div style="height: 4.5rem"></div>
@@ -1123,6 +1131,12 @@ export default {
       }
       else return false
       }
+    },
+    isSubPage(){
+      if(sessionStorage.getItem("isSub")==1){
+        return true
+      }
+      else return false;
     },
 
 
@@ -3702,7 +3716,10 @@ authorJson:{},
   // height: 150vh;
   padding-bottom: 100vh;
 }
+.subWrapper{
+  background-color: rgb(1, 233, 233) !important;
 
+}
 .Card {
   width: 40rem;
   -webkit-box-shadow: 0 0 0.5rem #909399;

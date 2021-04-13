@@ -34,11 +34,13 @@ axios.interceptors.response.use(success => {
     }
     return success.data;
 }, error => {
-    if(!error.response){
+
+    if(!error.response&&!error.response.status){
         Message.error({message:"请检查网络！"})
         return
-
     }
+    if(error.response.status==400){return}
+
     if(error.response.status==100){return error.response}
     if(error.response.status==500){
         // console.log(error)
@@ -47,6 +49,7 @@ axios.interceptors.response.use(success => {
         // router.push('/login')
        
         return error.response}
+
     if (error.response.status == 504 || error.response.status == 404) {
         Message.error({message: '服务器被吃了( ╯□╰ )'})
     } else if (error.response.status == 403) {

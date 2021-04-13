@@ -1192,6 +1192,7 @@ export default {
         dutyAuthor: "",
         docType: "",
         personName: "",
+        authId:"",
       },
       docFormRS: {
         id: "",
@@ -1785,7 +1786,7 @@ export default {
         "?pageNow=0&pageSize=900000";
 
       var searchObj = {
-        batchId: sessionStorage.getItem("batchId"),
+        batchId: sessionStorage.getItem("batchId"),  //文号输入完 批内查重
         docDesc: this.docForm.docDesc,
         docType: sessionStorage.getItem("docType"),
       };
@@ -2013,6 +2014,8 @@ export default {
 
       {
         this.searchForm.docTitle = this.docForm.docTitle;
+        this.searchForm.batchId=sessionStorage.getItem("batchId") //选完日期查重 批内
+
         // this.searchForm.docSequence=this.docForm.docSequence
         // this.searchForm.docDesc = this.docForm.docDesc;
         this.searchForm.docDate = this.docForm.docDate;
@@ -2723,6 +2726,9 @@ export default {
         this.searchForm.docType = sessionStorage.getItem("docType");
         this.searchForm.personName = this.docFormRS.personName;
         this.searchForm.docTitle = this.docFormRS.docTitle;
+        this.searchForm.batchId=""
+        this.searchForm.authId=sessionStorage.getItem("authId") //人事提交查重 单位内
+
         // this.searchForm.docSequence=this.docFormRS.docSequence
         this.searchForm.docDate = this.docFormRS.docDate;
         this.searchForm.dutyAuthor = "";
@@ -2862,10 +2868,12 @@ export default {
         {
           this.searchForm.docTitle = this.docForm.docTitle;
           // this.searchForm.docSequence=this.docForm.docSequence
-          // this.searchForm.docDesc = this.docForm.docDesc;
+          // this.searchForm.docDesc = this.docForm.docDesc; //提交查重，单位内
           this.searchForm.docDate = this.docForm.docDate;
           this.searchForm.dutyAuthor = this.docForm.dutyAuthor;
           this.searchForm.personName = "";
+          this.searchForm.authId=sessionStorage.getItem("authId")
+          this.searchForm.batchId=""
         }
         var searchObj = Object.assign({}, this.searchForm);
 
