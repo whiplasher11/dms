@@ -35,9 +35,8 @@ axios.interceptors.response.use(success => {
     return success.data;
 }, error => {
 
-    if(!error.response&&!error.response.status){
-        Message.error({message:"请检查网络！"})
-        return
+    if(!error.response||!error.response.status){
+        return error
     }
     if(error.response.status==400){return}
 
@@ -72,8 +71,8 @@ axios.interceptors.response.use(success => {
 })
 
 // var base = 'http://101.200.243.57:8080';
-// var base = 'http://localhost:8080';
-var base='http://106.52.85.131:8080'
+var base = 'http://localhost:8080';
+// var base='http://106.52.85.131:8080'
 
 // var base= 'http://193.112.147.158:8088'
 // var base = 'http://gdm.free.idcfengye.com';

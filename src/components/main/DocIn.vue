@@ -1415,7 +1415,7 @@ export default {
         keyword: "", //关键字
         keyword2: "", //机构词
         docDesc: "", //文号
-        sortYear: "2019",
+        sortYear: sessionStorage.getItem("docTypeCode"),
         docDate: "",
         docTypeCode: sessionStorage.getItem("docTypeCode"),
         docLevel: "",
@@ -1584,6 +1584,16 @@ export default {
       var input = e.target.value;
       this.docForm.dutyAuthor = input;
       // this.docFormRS.dutyAuthor = input;
+        if(this.docForm.dutyAuthor.indexOf(" ")>0){
+                this.$confirm("检查到了空格，多余空格会影响后续记忆录入， 是否去除", "提示", {
+          cancelButtonClass: "btn-custom-cancel",
+          confirmButtonText: "好的",
+          cancelButtonText: "保留空格",
+          type: "warning",
+        }).then(() => {
+          this.docForm.dutyAuthor=this.docForm.dutyAuthor.replace(/\s+/g,"")
+        });
+      }
       this.authorAndKwToDeadline(); //1
     },
     keywordBlur(e) {
@@ -1592,15 +1602,39 @@ export default {
       this.docFormRS.keyword = input;
 
       console.log(input);
+ if(this.docForm.keyword.indexOf(" ")>-1){
+                this.$confirm("检查到了空格，多余空格会影响后续记忆录入， 是否去除", "提示", {
+          cancelButtonClass: "btn-custom-cancel",
+          confirmButtonText: "好的",
+          cancelButtonText: "保留空格",
+          type: "warning",
+        }).then(() => {
+          console.log(this.docForm.keyword)
+          this.docForm.keyword=this.docForm.keyword.replace(/\s+/g,"")
+          console.log(this.docForm.keyword)
+
+        });
+
+      }
 
       this.authorAndKwToDeadline(); //1
     },
     keyword2Blur(e) {
+      
       var input = e.target.value;
       this.docForm.keyword2 = input;
 
       console.log(input);
-
+      if(this.docForm.keyword2.indexOf(" ")>-1){
+                this.$confirm("检查到了空格，多余空格会影响后续记忆录入， 是否去除", "提示", {
+          cancelButtonClass: "btn-custom-cancel",
+          confirmButtonText: "好的",
+          cancelButtonText: "保留空格",
+          type: "warning",
+        }).then(() => {
+          this.docForm.keyword2=this.docForm.keyword2.replace(/\s+/g,"")
+        });
+      }
       // this.authorAndKwToDeadline();
     },
 
@@ -1641,6 +1675,24 @@ export default {
           docToSet = this.matchedDoc[i];
         }
       }
+
+            this.genId(6, 62); //1
+      var docTitleTemp = this.docForm.docTitle;
+      var docTitleTemp1 = this.docFormRS.docTitle;
+
+      this.likelyTipShowFlag = false;
+      this.docForm.deadline = docToSet.deadline; //替换  "依照选取文件的机构问题名，保管期限，关键词"
+      this.docForm.keyword = docToSet.keyword;
+      this.docForm.docAbout = docToSet.docAbout;
+      this.docForm.docTitle = docTitleTemp;
+
+
+            this.docFormRS.docTitle = docTitleTemp1;
+      this.docFormRS.personName = docToSet.personName;
+      this.docFormRS.keyword = docToSet.keyword;
+
+
+      return
       var docTitleTemp = this.docForm.docTitle;
       var docTitleTemp1 = this.docFormRS.docTitle;
       var sortYearT = this.docForm.sortYear; //保留密级和年度
@@ -1779,6 +1831,17 @@ export default {
       b = b.replace(/{/g, "[");
       b = b.replace(/}/g, "]");
 
+      if(this.docForm.docDesc.indexOf(" ")>0){
+                this.$confirm("检查到了空格，多余空格会影响后续记忆录入， 是否去除", "提示", {
+          cancelButtonClass: "btn-custom-cancel",
+          confirmButtonText: "好的",
+          cancelButtonText: "保留空格",
+          type: "warning",
+        }).then(() => {
+          this.docForm.docDesc=this.docForm.docDesc.replace(/\s+/g,"")
+        });
+      }
+
       this.docForm.docDesc = b;
       var searchPath =
         "/document/list/page/" +
@@ -1792,7 +1855,6 @@ export default {
       };
 
       if(this.fixDocFlag){
-        console.log("修改中啊啊啊啊")
         return;
       }
 
@@ -1879,15 +1941,30 @@ export default {
     },
     authorAndKwToDeadline() {
       //根据责任者和关键词识别期限
-      var key = this.docForm.dutyAuthor + "~" + this.docForm.keyword;
-      console.log(key);
+      //var key = this.docForm.dutyAuthor + "~" + this.docForm.keyword;
+      console.log(11111111111)
+      var ddl=""
+      for(var i in this.authorKwToDeadlineTable){
+        console.log(i)
+        var arr = this.authorKwToDeadlineTable[i];
+        arr=JSON.parse(arr)
+        for(var k in arr){
+          var ar=arr[k]
+            console.log(ar)
+
+          if(ar[0]==this.docForm.keyword&&ar[1]==this.docForm.dutyAuthor){
+            ddl=i
+          }
+        }
+      }
       console.log(this.authorKwToDeadlineTable);
-      if (this.authorKwToDeadlineTable[key] != null) {
+     
+      if (ddl.length>0) {
         this.$message({
           type: "success",
           message: "系统根据对照表识别出保管期限",
         });
-        var dd = this.authorKwToDeadlineTable[key];
+        var dd = ddl
         dd = dd.split("年")[0];
         this.docForm.deadline = dd;
       }
@@ -2017,7 +2094,7 @@ export default {
         this.searchForm.batchId=sessionStorage.getItem("batchId") //选完日期查重 批内
 
         // this.searchForm.docSequence=this.docForm.docSequence
-        // this.searchForm.docDesc = this.docForm.docDesc;
+        this.searchForm.docDesc = this.docForm.docDesc;
         this.searchForm.docDate = this.docForm.docDate;
         this.searchForm.dutyAuthor = this.docForm.dutyAuthor;
         this.searchForm.personName = "";
@@ -2054,7 +2131,7 @@ export default {
             "提示",
             {
               cancelButtonClass: "btn-custom-cancel",
-              confirmButtonText: "没有重复，录入此条",
+              confirmButtonText: "没有重复，继续",
               cancelButtonText: "好的，暂不录入",
               type: "warning",
             }
@@ -2496,6 +2573,8 @@ export default {
       // console.log(e)
       if (e == "false" || !e) {
         this.docForm.docDescAuthor = false;
+        this.docForm.docDesc = "";
+        this.docForm.docDescNum = "";
       } else if (e == "true" || e) {
         this.docForm.docDescAuthor = true;
         this.docForm.docDesc = "";
@@ -2503,6 +2582,8 @@ export default {
       }
     },
     cancelFixRS() {
+        this.$store.state.noChufa = false;  //取消修改，（修改时拦截历史匹配）拦截取消
+
       this.tipShowFlag = false;
 
       this.keyWordEdit = false;
@@ -2522,6 +2603,8 @@ export default {
       this.fixDocFlag = false;
     },
     cancelFix() {
+        this.$store.state.noChufa = false;  //取消修改，（修改时拦截历史匹配）拦截取消
+
       this.fixDocFlag = false;
 
       this.keyWordEdit = false;
@@ -2788,6 +2871,7 @@ export default {
       }
     },
     addDoc() {
+      window.sessionStorage.setItem("sortYearCache",this.docForm.sortYear)
       //  if(!this.docForm.docDescNum){
       //    alert(0)
       //  }
@@ -2868,7 +2952,7 @@ export default {
         {
           this.searchForm.docTitle = this.docForm.docTitle;
           // this.searchForm.docSequence=this.docForm.docSequence
-          // this.searchForm.docDesc = this.docForm.docDesc; //提交查重，单位内
+          this.searchForm.docDesc = this.docForm.docDesc; //提交查重，单位内
           this.searchForm.docDate = this.docForm.docDate;
           this.searchForm.dutyAuthor = this.docForm.dutyAuthor;
           this.searchForm.personName = "";
@@ -2883,6 +2967,8 @@ export default {
           }
         }
 
+
+
         this.postRequest(
           //注意防止重复提交
           searchPath,
@@ -2892,9 +2978,14 @@ export default {
           console.log(resp);
           var repeatArr = [];
         for (var i in resp.data.content) {
+          
           var k=resp.data.content[i]
-          var repeatStr=k.docSequence+"-题名："+k.docTitle+"\nabout："+k.docAbout+",文号："+k.docDesc+",日期："+k.docDate+
+
+          var repeatStr=k.docSequence+"-题名："+k.docTitle+",名："+k.docAbout+",文号："+k.docDesc+",日期："+k.docDate+
           ",责任者"+k.dutyAuthor+",页数："+k.docPage
+                    if(k.authId!=sessionStorage.getItem("authId")){
+                      repeatStr=repeatStr+"（上批次文件，特别检查）"
+          }
           repeatArr.push(repeatStr);
         }
           if (resp.data.content.length != 0 &&this.docDescRepeatNum==0) {//this.docDescRepeatNum==0文号不重复才多重条件判断
@@ -4087,6 +4178,10 @@ export default {
     // }
     // console.log(jsonk)
     // return
+    if(!sessionStorage.getItem("sortYearCache")){
+      window.sessionStorage.setItem("sortYearCache",2018)
+    }
+
     window.scrollTo(0, 0);
 
     this.docTimeDues = [];

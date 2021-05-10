@@ -2,8 +2,6 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import { Notification } from 'element-ui';
 import {getRequest} from "../utils/api";
-import '../utils/stomp'
-import '../utils/sockjs'
 
 Vue.use(Vuex)
 

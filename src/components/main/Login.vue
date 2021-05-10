@@ -352,12 +352,16 @@ export default {
     background: rgba(255, 255, 255, 0.15) !important;
     border-radius: 0.6rem;
     border: 0.05rem solid #8992acc5;
-    height: 3rem;
+    height: 3rem !important;
     color: #222;
     font-size: 1.1rem;
     padding-left: 3.3rem !important;
+    width:100%;
 
-    
+      .el-select {
+    width: 100%;
+  }
+
   &::-webkit-input-placeholder {
     /* WebKit browsers 适配谷歌 */
  color: rgb(155,155,155) !important;

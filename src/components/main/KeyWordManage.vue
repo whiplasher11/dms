@@ -128,10 +128,10 @@
       <div
         v-if="showKVFix&&computeTypeNumIsAuthor"
         style="
-          position: absolute;
+          position: fixed;
           top: 40vh;
-          left: 50%;
-          margin-left: -15rem;
+          right: 2%;
+
           z-index: 122;
           padding-top: 1rem;
           color: #333;
@@ -214,10 +214,9 @@
      <div
         v-if="showCombineToDeadlineSet"
         style="
-          position: absolute;
+          position: fixed;
           top: 15rem;
-          left: 50%;
-          margin-left: -20rem;
+          right: 2%;
           z-index: 122;
           padding-top: 1rem;
           color: #333;
@@ -295,10 +294,9 @@
       <div
         v-if="showKVFix&&dicShowType==1&&!computeTypeNumIsAuthor"
         style="
-          position: absolute;
+          position: fixed;
           top: 40vh;
-          left: 50%;
-          margin-left: -15rem;
+          right: 2%;
           z-index: 122;
           padding-top: 1rem;
           color: #333;
@@ -364,10 +362,9 @@
       <div
         v-if="selectRsDAFlag"
         style="
-          position: absolute;
+          position: fixed;
           top: 40vh;
-          left: 50%;
-          margin-left: -15rem;
+          right: 2%;
           z-index: 122;
           padding-top: 1rem;
           color: #333;
@@ -461,8 +458,7 @@
         style="
           position: fixed;
           top: 40vh;
-          left: 50%;
-          margin-left: -15rem;
+          right: 2%;
           z-index: 122;
           padding-top: 1rem;
           color: #333;
@@ -545,8 +541,7 @@
         style="
           position: fixed;
           top: 40vh;
-          left: 50%;
-          margin-left: -15rem;
+          right: 2%;
           z-index: 122;
           padding-top: 1rem;
           color: #333;
@@ -579,11 +574,14 @@
             width: 7rem;
           "
           v-model="keyToSet"
+          @click="clearKeyToSet"
+          
         />&nbsp;&nbsp;&nbsp;:
         <input
           type="text"
           style="height: 1.5rem; margin-left: 1rem; width: 7rem"
           v-model="valueToSet"
+          @click="clearValueToSet"
         />
         <div
           class="textButton"
@@ -787,18 +785,18 @@
 
           <div style="width: 0; position: absolute">{{ item.id }}</div>
 
-          <div
+          <!-- <div
             class="topTextButtonBlueNoWidth"
             style="float: left; margin-left: 10rem"
             type="primary"
             @click="fixKv($event, item)"
             v-if="!saveBtnShow"
           >
-            修改
-          </div>
+            nbsp
+          </div> -->
           <div
             class="topTextButtonBlueNoWidth"
-            style="float: left"
+            style="float: left;margin-left: 11%"
             type="danger"
             @click="deleteKV($event, item)"
           >
@@ -1275,6 +1273,17 @@ export default {
     // console.log(this.jsonTable);
   },
   methods: {
+    clearKeyToSet(){
+      if(!this.selectShow && this.dicShowType==2){
+        this.keyToSet=""
+      }
+    },
+
+    clearValueToSet(){
+            if(!this.selectShow && this.dicShowType==2){
+        this.valueToSet=""
+      }
+    },
             adjHighlightCompute(item){
       if(this.adjItemId==item[0]){
         return true
@@ -2738,8 +2747,8 @@ this.jsonTable=[]
 
     preSetButton() {
       this.showKVPreset = true;
-      this.keyToSet = "词";
-      this.valueToSet = "数字";
+      // this.keyToSet = "词";
+      // this.valueToSet = "数字";
     },
     preSetDicButton() {
       // if (this.computeIsAuthorKwDeadline) {
@@ -3495,7 +3504,7 @@ authorJson:{},
       dicShow: 1, //对照表是否显示
       selectShow: true, //选择类型界面是否显示
 
-      selectedLevel: "本级", //筛选级别
+      selectedLevel: "县级", //筛选级别
       selectedDeadline:"请选择",
       selectedDoctype: "",
       selectedTableType: "",
