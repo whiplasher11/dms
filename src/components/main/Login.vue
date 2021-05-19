@@ -132,18 +132,63 @@
 </template>
 
 <script>
+import axios from "axios";
+
 export default {
   name: "Login",
   created(){
                 window.scrollTo(0,0)
-    
 
-      // let that = this;
-      // document.onkeydown = function (e) {
-      //   let key = window.event.keyCode;
-      //   if (key === 13){
-      //     that.submitLogin();//方法
-      //   }}
+return
+    var k={
+        "id":"1",
+        "box":"22",
+        "tableNumber":"表号表号表号表号表号表号表号表号",
+        "docCount":"3",
+        "from":"1",
+        "to":"33",
+        "totalPage":"222",
+        "remark":"其他需要说明的情况",
+        "publisher":"tlq",
+        "checker":"chl",
+        "publishTime":"2020-02-02",
+        "checkTime":"2021-02-02",
+        "authName":"单位名"
+    }
+    var arr=[]
+    arr.push(k)
+    arr.push(k)
+
+    axios({
+            method: "post",
+            url: "http://localhost:8080/download",
+            responseType: "arraybuffer",
+            data:arr,
+          }).then((res) => {
+            // //console.log("DASDASDASDASD")
+
+            //console.log(res);
+            const blob = new Blob([res]); //new Blob([res])中不加data就会返回下图中[objece objece]内容（少取一层）
+
+            const fileName = "文件名称.zip"; //这里可以自定义名称，发现设置xlsx文件类型下载后打开会提示下面图-1的无效报错,所以我用了xls格式
+
+            const elink = document.createElement("a");
+
+            elink.download = fileName;
+
+            elink.style.display = "none";
+
+            elink.href = URL.createObjectURL(blob);
+
+            document.body.appendChild(elink);
+
+            elink.click();
+
+            URL.revokeObjectURL(elink.href); // 释放URL 对象
+            document.body.removeChild(elink);
+            this.showWaitingFlag = false;
+          });
+
 
   },
   data() {
@@ -183,10 +228,29 @@ export default {
       },
       regirules: {
         username: [
-          { required: true, message: "请输入用户名", trigger: "blur" }
+          { required: true, message: "请输入用户名", trigger: "blur" },
+         	{validator:function (rule,value,callback) 
+{ 
+  var fData=value
+    var intLength=0 
+    for (var i=0;i<fData.length;i++) 
+    { 
+        if ((fData.charCodeAt(i) < 0) || (fData.charCodeAt(i) > 255)) 
+            intLength=intLength+2 
+        else 
+            intLength=intLength+1    
+    } 
+    if(intLength<11&&intLength>4){
+      callback()
+    }else{
+       callback(new Error("长度4-10,汉字6个以内"));
+    }
+} , trigger: 'blur'}
+
         ],
         password: [{ required: true, message: "请输入密码", trigger: "blur" },
-        { min: 5,max: 25,message: '长度在 5 到 25个字符'},],
+        { min: 5,max: 25,message: '长度在 5 到 25个字符'},
+        ],
 
         repassword: [{ required: true, message: "请再次输入密码", trigger: "blur" },
         {validator: validatePass, trigger: 'blur'},
@@ -279,6 +343,7 @@ export default {
     updateVerifyCode() {
       this.vcUrl = "/verifyCode?time=" + new Date();
     },
+    
     submitLogin() {
       this.$refs.loginForm.validate(valid => {
         if (valid) {

@@ -1475,6 +1475,8 @@ export default {
         var next=false;
         var pre=""
         for(var key in this.$refs){
+          
+
           console.log(key)
           if(key==e.srcElement.id){
             next=true

@@ -1418,7 +1418,7 @@ this.jsonTable=[]
         this.jsonTable = this.tempTable;
 
         this.jsonTable = this.jsonTable.filter(function (element, index, self) {
-          console.log(element[2])
+
           return element[2] == item;
         });
         

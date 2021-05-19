@@ -337,7 +337,7 @@
           <div class="BatchInfo">{{ item.docType | formatdocType }}</div>
 
           <div class="BatchInfo">{{ item.createTime }}</div>
-          <div class="BatchInfo">已完成</div>
+          <div class="BatchInfo">{{computeEnd(item)}}</div>
           <div
             class="BatchInfo hoverStyle"
             style="width: 6%"
@@ -384,6 +384,11 @@ export default {
     };
   },
   methods: {
+    computeEnd(item){
+      console.log(item)
+      if(item.end==1) return "已锁定"
+      else return "进行中"
+    },
     logShowtoSet(){
       console.log(this.showToSet)
       if(this.showToSet){

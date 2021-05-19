@@ -1,6 +1,6 @@
 <template>
-  <div >
-    <div 
+  <div>
+    <div
       v-show="showCenterPrint"
       style="
         position: fixed;
@@ -15,13 +15,11 @@
         border-radius: 1rem;
       "
     >
-      <HidePrint v-bind:printDoc="printDoc"
+      <HidePrint
+        v-bind:printDoc="printDoc"
         v-show="!showPrint"
-        style="margin-left: -30mm; position: relative;width:80%; left: 50%"
+        style="margin-left: -30mm; position: relative; width: 80%; left: 50%"
       ></HidePrint>
-
-
-
 
       <div
         style="
@@ -37,22 +35,38 @@
       </div>
     </div>
 
-      <div style="position:relative;z-index:444;margin-top:0rem;background-color:#eee" v-show="showKWM">
-        <div style="position:absolute;right:6rem;top:5rem;background-color:#f22;font-size:0.8rem" class="topTextButtonBlue" @click="hideSubKWM">
-          &nbsp;关闭&nbsp;
-        </div>
-
-        <KeyWordManage>
-
-        </KeyWordManage>
+    <div
+      style="
+        position: relative;
+        z-index: 444;
+        margin-top: 0rem;
+        background-color: #eee;
+      "
+      v-show="showKWM"
+    >
+      <div
+        style="
+          position: absolute;
+          right: 6rem;
+          top: 5rem;
+          background-color: #f22;
+          font-size: 0.8rem;
+        "
+        class="topTextButtonBlue"
+        @click="hideSubKWM"
+      >
+        &nbsp;关闭&nbsp;
       </div>
 
-<!-- <div v-show="getDocInShow">
+      <KeyWordManage> </KeyWordManage>
+    </div>
+
+    <!-- <div v-show="getDocInShow">
   <DocIn>
   </DocIn>
 </div> -->
 
-    <div class="wrapper" style="padding-bottom: 50rem"  v-if="!showKWM">
+    <div class="wrapper" style="padding-bottom: 50rem" v-if="!showKWM">
       <div style="height: 6.5rem"></div>
       <div
         style="
@@ -74,7 +88,7 @@
         请求中，请稍候...
       </div>
 
-  <div
+      <div
         v-if="showStartBoxSet"
         style="
           position: fixed;
@@ -113,7 +127,7 @@
             width: 8rem;
           "
           v-model="startBoxNum"
-        /> 
+        />
         <div
           class="textButton"
           @click="cancleManulBox"
@@ -248,16 +262,15 @@
             </div>
           </el-form>
 
+          <div></div>
 
-<div></div>
-
-                      <el-form
+          <el-form
             class="specialELContainer"
-            label-width="6rem"
-            v-if="PrintControllshow"
-            style="width:40rem;margin-left:-20rem"
+            label-width="7rem"
+            v-if="boxInfoShowFlag"
+            style="width: 50rem; margin-left: -25rem"
           >
-                        <div
+            <div
               style="
                 position: absolute;
                 right: 0.5rem;
@@ -265,53 +278,263 @@
                 font-size: 1.5rem;
                 cursor: pointer;
               "
-              @click="PrintControllshow=false"
+              @click="boxInfoShowFlag = false"
             >
               <i class="el-icon-remove"></i>
-       
-            
+            </div>
 
-        </div>
+            <h3 style="text-align: center; color: #505458">备考表详细信息</h3>
 
-                                <h3 style="text-align: center; color: #505458">
-              设置打印机
-            </h3>
-<el-row :gutter="24">
-  <el-col :span="20">
-                <el-form-item  label="IP">
+            <div>
+              所有盒：
+            </div>
+
+            <div >
+            <el-row :gutter="24" >
+              <el-col :span="12">
+                <el-form-item label="立卷人">
+                  <el-input
+                    size="normal"
+                    type="text"
+                    v-model="publisher"
+                    auto-complete="off"
+                    placeholder="立卷人"
+                  ></el-input>
+                </el-form-item>
+              </el-col>
+
+                            <el-col :span="12">
+                <el-form-item label="检查人">
+                  <el-input
+                    size="normal"
+                    type="text"
+                    v-model="checker"
+                    auto-complete="off"
+                    placeholder="检查人"
+                  ></el-input>
+                </el-form-item>
+              </el-col>
+
+              
+            </el-row>
+
+                        <el-row :gutter="24" style="border-bottom:1px dashed">
+              <el-col :span="12">
+                <el-form-item label="立卷时间">
+                  <el-input
+                    size="normal"
+                    type="text"
+                    v-model="publishTime"
+                    auto-complete="off"
+                    placeholder="立卷时间"
+                  ></el-input>
+                </el-form-item>
+              </el-col>
+
+                            <el-col :span="12">
+                <el-form-item label="检查时间">
+                  <el-input
+                    size="normal"
+                    type="text"
+                    v-model="checkTime"
+                    auto-complete="off"
+                    placeholder="检查时间"
+                  ></el-input>
+                </el-form-item>
+              </el-col>
+
+              
+            </el-row>
+                          </div>
+
+            <div style="height:2rem">
+                          <div style="height:2rem;width:5rem;float:left">
+                            设置盒: 
+
+                          </div>
+
+                          <div style="float:left;margin-left:2rem" v-if="!boxInfoNow">
+                              选择盒子
+                          </div>
+
+                      <div style="float:left;margin-left:2rem" v-if="boxInfoNow">
+                              本盒共{{boxInfoNow.docCount}}件,{{boxInfoNow.from}}~{{boxInfoNow.to}},共{{boxInfoNow.totalPage}}页
+                          </div>
+            </div>
+
+            <el-form-item prop="historyAuth" label="选择盒子" v-if="true">
+              <el-select
+                style="width: 80%"
+                @change="boxInfoSelectDone"
+                value-key="tableNumber"
+                filterable
+                v-model="boxInfoNow"
+                placeholder="选择盒子"
+              >
+                <el-option
+                  v-for="item in boxInfoList"
+                  :key="item.tableNumber"
+                  :label="item.tableNumber"
+                  :value="item"
+                ></el-option>
+              </el-select>
+            </el-form-item>
+
+
+
+        
+
+            <div v-show="!processShow">
+              <el-form-item label="其他需要说明的情况" class="textArea">
                 <el-input
-              style="width:80%"
-                size="normal"
-                type="text"
-                v-model="printerIp"
-                auto-complete="off"
-                placeholder="设备Ip地址"
-              ></el-input>
-            </el-form-item >
-  </el-col>
+                  size="normal"
+            type="textarea"
+            
+            class="textAreaInput"
+                  v-model="boxInfoNow.remark"
+                  auto-complete="off"
+          :rows="3"
+                  placeholder="其他需要说明的情况"
+                ></el-input>
+              </el-form-item>
+            </div>
 
-  <!-- <div style="position:absolute;left:73%;top:0.5rem;" v-if="connectStatus" >连接中···</div> -->
+
+            <div
+              class="topTextButtonBlue"
+              style="width: 20%; margin-left: 6%; float: left"
+              @click="saveInfo"
+            >
+              保存备考表信息
+            </div>
+
+
+            <!-- <div class="topTextButtonBlue" v-if="processShow" style="width:15%;float:left;margin-left:5%" @click="printThis"> 
+            打印
+          </div> -->
+            <div
+              class="topTextButtonBlue"
+              style="width: 20%; float: left; margin-left: 6%"
+              @click="getOneInfo"
+            >
+              下载本盒备考表
+            </div>
+            <div
+              class="topTextButtonBlue"
+              style="width: 20%; float: left; margin-left: 6%"
+              @click="getAllInfo"
+            >
+              下载所有盒备考表
+            </div>
+
   
-  <div style="position:absolute;left:73%;top:0.5rem;cursor:pointer"  @click="ipInput">连接
-    <!-- <div class="topButton">
+
+            <div></div>
+          </el-form>         
+
+
+
+          <el-form
+            class="specialELContainer"
+            label-width="6rem"
+            v-if="PrintControllshow"
+            style="width: 40rem; margin-left: -20rem"
+          >
+            <div
+              style="
+                position: absolute;
+                right: 0.5rem;
+                top: 0.1rem;
+                font-size: 1.5rem;
+                cursor: pointer;
+              "
+              @click="PrintControllshow = false"
+            >
+              <i class="el-icon-remove"></i>
+            </div>
+
+            <h3 style="text-align: center; color: #505458">设置打印机</h3>
+            <el-row :gutter="24">
+              <el-col :span="20">
+                <el-form-item label="IP">
+                  <el-input
+                    style="width: 80%"
+                    size="normal"
+                    type="text"
+                    v-model="printerIp"
+                    auto-complete="off"
+                    placeholder="设备Ip地址"
+                  ></el-input>
+                </el-form-item>
+              </el-col>
+
+              <!-- <div style="position:absolute;left:73%;top:0.5rem;" v-if="connectStatus" >连接中···</div> -->
+
+              <div
+                style="
+                  position: absolute;
+                  left: 73%;
+                  top: 0.5rem;
+                  cursor: pointer;
+                "
+                @click="ipInput"
+              >
+                连接
+                <!-- <div class="topButton">
       连接
     </div> -->
-      <div style="position:absolute;width:3rem;left:1rem;top:-4rem;color:red" v-if="!connectStatus">{{connectTip}}</div>
-      <div style="position:absolute;width:3rem;left:1rem;top:-4rem;color:green" v-if="connectStatus">已连接</div>
+                <div
+                  style="
+                    position: absolute;
+                    width: 3rem;
+                    left: 1rem;
+                    top: -4rem;
+                    color: red;
+                  "
+                  v-if="!connectStatus"
+                >
+                  {{ connectTip }}
+                </div>
+                <div
+                  style="
+                    position: absolute;
+                    width: 3rem;
+                    left: 1rem;
+                    top: -4rem;
+                    color: green;
+                  "
+                  v-if="connectStatus"
+                >
+                  已连接
+                </div>
 
-  <!-- 本来准备用作说明怎么连接机器 -->
-    <div style="position:relative;width:1rem;height:1rem;background-color:red; " v-if="false">  
-      <div style="position:absolute;width:5rem;height:5rem;left:1rem;top:1rem;background-color:red">
-        
-      </div>
-    </div>
-  </div>
-</el-row>
+                <!-- 本来准备用作说明怎么连接机器 -->
+                <div
+                  style="
+                    position: relative;
+                    width: 1rem;
+                    height: 1rem;
+                    background-color: red;
+                  "
+                  v-if="false"
+                >
+                  <div
+                    style="
+                      position: absolute;
+                      width: 5rem;
+                      height: 5rem;
+                      left: 1rem;
+                      top: 1rem;
+                      background-color: red;
+                    "
+                  ></div>
+                </div>
+              </div>
+            </el-row>
 
-<el-form-item prop="historyAuth" label="打印顺序" v-if="false">
-
+            <el-form-item prop="historyAuth" label="打印顺序" v-if="false">
               <el-select
-              style="width:80%"
+                style="width: 80%"
                 @blur="printOrderBlur"
                 @change="printOrderDone"
                 filterable
@@ -327,55 +550,76 @@
               </el-select>
             </el-form-item>
 
-            <div style="height:3rem" v-if="processShow"></div>
+            <div style="height: 3rem" v-if="processShow"></div>
 
-<div v-show="!processShow">
+            <div v-show="!processShow">
+              <el-form-item label="识别号">
+                <el-input
+                  ref="shibie"
+                  style="width: 80%"
+                  size="normal"
+                  type="text"
+                  v-model="printSeqAt"
+                  auto-complete="off"
+                  placeholder="识别号"
+                ></el-input>
+              </el-form-item>
+            </div>
 
+            <div
+              v-show="processShow"
+              style="
+                height: 3rem;
+                width: 50%;
+                position: relative;
+                left: 50%;
+                margin-left: -25%;
+                text-align: center;
+              "
+            >
+              本次打印{{ this.printType }}:{{ this.processInfo }}
+            </div>
+            <div style="margin-left: 10%">
+              提示：按上下键可快速切换识别号，按回车键发送打印信息
+            </div>
+            <div style="height: 1rem"></div>
+            <div
+              class="topTextButtonBlue"
+              v-if="!processShow"
+              style="width: 15%; margin-left: 5%; float: left"
+              @click="printThis"
+            >
+              发送打印
+            </div>
 
-            <el-form-item label="识别号">
-              <el-input
-              style="width:80%"
-                size="normal"
-                type="text"
-                v-model="startPrintSeq"
-                auto-complete="off"
-                placeholder="识别号"
-              ></el-input>
-            </el-form-item>
-          </div>
-
-<div v-show="processShow" style="height:3rem;width:50%;position:relative;left:50%;margin-left:-25%;text-align:center">
-  本次打印{{this.printType}}:{{this.processInfo}}
-
-</div>
-
-<div style="height:1rem"></div>
-          <div class="topTextButtonBlue" v-if="!processShow" style="width:15%;margin-left:5%;float:left;" @click="printThis"> 
-            发送打印
-          </div>
-
-          <!-- <div class="topTextButtonBlue" v-if="processShow" style="width:15%;float:left;margin-left:5%" @click="printThis"> 
+            <!-- <div class="topTextButtonBlue" v-if="processShow" style="width:15%;float:left;margin-left:5%" @click="printThis"> 
             打印
           </div> -->
-          <div class="topTextButtonBlue" style="width:15%;float:left;margin-left:5%" @click="nextPrint"> 
-            下一个
-          </div>
-                    <div class="topTextButtonBlue" style="width:15%;float:left;margin-left:5%" @click="prePrint"> 
-            上一个
-          </div>
+            <div
+              class="topTextButtonBlue"
+              style="width: 15%; float: left; margin-left: 5%"
+              @click="nextPrint"
+            >
+              +
+            </div>
+            <div
+              class="topTextButtonBlue"
+              style="width: 15%; float: left; margin-left: 5%"
+              @click="prePrint"
+            >
+              -
+            </div>
 
-          <div class="topTextButtonBlue" style="width:15%;float:left;margin-left:5%" @click="resetPrint"> 
-            重置
-          </div>
-          
+            <div
+              class="topTextButtonBlue"
+              style="width: 15%; float: left; margin-left: 5%"
+              @click="resetPrint"
+            >
+              重置
+            </div>
 
-          <div >
-
-          </div>
-            
-                      </el-form>
-
-          
+            <div></div>
+          </el-form>
 
           <el-form
             v-if="advSearchShow && docType != 'personnel'"
@@ -530,8 +774,6 @@
             搜索
           </div>
 
-
-
           <!-- <input class="leftInput myInput" v-model="searchContent" @focus="clearSearchContent" @blur="putInContent">  -->
 
           <!-- 搜索         <el-button
@@ -567,8 +809,17 @@
             top: 3rem;
           "
         >
-          <div style="position:absolute;bottom:6rem;left:50%;width:50%;margin-left:-25%;text-align:center">
-            单位名：{{authName}}
+          <div
+            style="
+              position: absolute;
+              bottom: 6rem;
+              left: 50%;
+              width: 50%;
+              margin-left: -25%;
+              text-align: center;
+            "
+          >
+            单位名：{{ authName }}
           </div>
         </div>
         <!-- 顶部按钮 ↓ -->
@@ -659,7 +910,7 @@
           >
             下载表格
           </div>
-                             <div
+          <div
             style="
          float:left
          width:5rem
@@ -668,9 +919,9 @@
             class="topTextButton hoverStyle"
             @click="backToOrgans"
           >
-           其他批次
+            其他批次
           </div>
-                    <div
+          <div
             style="
          float:left
          width:5rem
@@ -681,11 +932,10 @@
             class="hoverStyle topTextButton"
             @click="myBoxNum"
           >
-            {{myBoxNumSwitch?"保存盒号":"手动排盒号"}}
+            {{ myBoxNumSwitch ? "保存盒号" : "手动盒号" }}
           </div>
 
-
-                    <div
+          <div
             style="
          float:left
          width:5rem
@@ -694,14 +944,12 @@
           "
             class="hoverStyle topTextButton"
             @click="lockThisBatch"
-                        v-if="!isEnd"
-
+            v-if="!isEnd"
           >
             锁定本批
           </div>
 
-          
-                    <div
+          <div
             style="
          float:left
          width:5rem
@@ -710,13 +958,11 @@
           "
             class="hoverStyle topTextButton"
             @click="unLockThisBatch"
-                        v-if="isEnd"
+            v-if="isEnd"
           >
             解除锁定
           </div>
 
- 
- 
           <div
             style="         float:left
          width:5rem;
@@ -742,6 +988,19 @@
             批量打印
           </div>
 
+                    <div
+            style="         float:left
+         width:5rem;
+         text-align:center;
+         margin-left:1rem;
+
+         "
+            class="topTextButton"
+            @click="genBoxInfo"
+          >
+            备考表
+          </div>
+
           <div style="clear: both"></div>
           <div style="margin-top: 0.4rem">
             <div style="float: left">筛选：</div>
@@ -758,18 +1017,28 @@
               v-on:mouseover="showFilterSortYear()"
               @mouseleave="hideFilterSortYear"
             >
-                            <div
-                  style="width: 0.7rem; height: 0.7rem; position: absolute;right:1rem"
-                  v-if="!filterSortYearFlag && docType != 'personnel'"
-                >
-                  <span id="user_top"></span>
-                </div>
-                <div
-                  style="width: 0.7rem; height: 0.7rem; position: absolute;right:1rem"
-                  v-if="filterSortYearFlag"
-                >
-                  <span id="user_topd"></span>
-                </div>
+              <div
+                style="
+                  width: 0.7rem;
+                  height: 0.7rem;
+                  position: absolute;
+                  right: 1rem;
+                "
+                v-if="!filterSortYearFlag && docType != 'personnel'"
+              >
+                <span id="user_top"></span>
+              </div>
+              <div
+                style="
+                  width: 0.7rem;
+                  height: 0.7rem;
+                  position: absolute;
+                  right: 1rem;
+                "
+                v-if="filterSortYearFlag"
+              >
+                <span id="user_topd"></span>
+              </div>
 
               <el-checkbox
                 class=""
@@ -780,7 +1049,6 @@
                 @change="sortYearCheckChange"
                 v-model="sortYearCheck"
                 >{{ yearReq }}
-
               </el-checkbox>
 
               <div
@@ -812,19 +1080,29 @@
               v-on:mouseover="showFilterDocAbout()"
               @mouseleave="hideFilterDocAbout"
             >
-                            <div
-                  style="width: 0.7rem; height: 0.7rem; position: absolute;right:1rem"
-                  v-if="!filterDocAboutFlag && docType != 'personnel'"
-                >
-                  <span id="user_top" ></span>
-                </div>
-                <div
-                  style="width: 0.7rem; height: 0.7rem; position: absolute;right:1rem"
-                  v-if="filterDocAboutFlag"
-                >
-                  <span id="user_topd" ></span>
-                </div>
-                
+              <div
+                style="
+                  width: 0.7rem;
+                  height: 0.7rem;
+                  position: absolute;
+                  right: 1rem;
+                "
+                v-if="!filterDocAboutFlag && docType != 'personnel'"
+              >
+                <span id="user_top"></span>
+              </div>
+              <div
+                style="
+                  width: 0.7rem;
+                  height: 0.7rem;
+                  position: absolute;
+                  right: 1rem;
+                "
+                v-if="filterDocAboutFlag"
+              >
+                <span id="user_topd"></span>
+              </div>
+
               <el-checkbox
                 class=""
                 style="position: relative; right: 1rem; top: 0rem"
@@ -834,9 +1112,7 @@
                 @change="dabCheckChange"
                 v-model="dabCheck"
                 >{{ docAboutReq }}
-
               </el-checkbox>
-
 
               <div
                 class="filterStyle"
@@ -960,21 +1236,20 @@
               "
               @click="showDeleted"
             >
-              {{deletedShowSwitch==1?"已删文件":"返回列表"}}
+              {{ deletedShowSwitch == 1 ? "已删文件" : "返回列表" }}
             </div>
 
-                        <div
+            <div
               style="
-                float: right;
+                float: left;
                 width: 8rem;
                 text-align: center;
                 position: relative;
               "
-            
+              v-if="deletedShowSwitch"
             >
-              {{$store.state.alreadyDocs.length}}份
+              {{ $store.state.alreadyDocs.length }}份
             </div>
-            
           </div>
         </div>
         <!-- <div
@@ -990,330 +1265,341 @@
           本批所有已录入文档
         </div> -->
         <!-- 文档列表↓ -->
-<div v-if="!showKWM">
-        <div
-          style="height: 4.5rem; width: 100%"
-          v-if="docType != 'personnel'"
-        ></div>
-
-        <div
-          style="height: 2.5rem; width: 100%"
-          v-if="docType == 'personnel'"
-        ></div>
-
-        <div v-if="docType != 'science' && docType != 'personnel'" style="">
-          <div class="detailItem detailItemTitle" style="height: 2rem" >
-            <div class="itemInfo" style="width: 3%">识别号</div>
-            <div class="itemInfo" style="width: 6%">{{docType=="officialJ"?"机构":"问题"}}</div>
-            <div class="itemInfo" style="width: 4%">{{docType=="officialJ"?"机构词":"问题词"}}</div>
-
-            <div class="itemInfo" style="width: 10%">档号</div>
-            <div class="itemInfo" style="width: 10%">文号</div>
-            <div class="itemInfo" style="width: 12%">责任者</div>
-            <div class="itemInfo" style="font-size: 0.6rem; width: 12%">
-              题名
-            </div>
-            <div class="itemInfo" style="width: 4%">成文时间</div>
-            <div class="itemInfo" style="width: 4%">密级</div>
-            <div class="itemInfo" style="font-size: 0.6rem; width: 6%">
-              备注
-            </div>
-            <div class="itemInfo" style="width: 2%">页数</div>
-            <div class="itemInfo" style="width: 2%">计</div>
-
-            <div class="itemInfo" style="width: 4%">件号</div>
-            <div class="itemInfo" style="width: 4%">盒号</div>
-
-            <div style="clear: both"></div>
-
-            <!-- <div style="clear:both"></div> -->
-          </div>
+        <div v-if="!showKWM">
+          <div
+            style="height: 4.5rem; width: 100%"
+            v-if="docType != 'personnel'"
+          ></div>
 
           <div
-            class="detailItem infoItemHighlight"
-            v-for="(item, index) in this.$store.state.alreadyDocs.filter(obj=>obj.deleted!=deletedShowSwitch)"
-            :key="index"
-          >
-            <div class="itemInfo" style="width: 3%">{{ item.docSequence }}</div>
-            <div class="itemInfo" style="width: 6%">{{ item.docAbout }}</div>
-            <div class="itemInfo" style="width: 4%">{{ item.keyword }}</div>
+            style="height: 2.5rem; width: 100%"
+            v-if="docType == 'personnel'"
+          ></div>
 
-            <div class="itemInfo" style="font-size: 0.6rem; width: 10%">
-              {{ authCode + "-" + item.docTypeCode + "·"
-              }}{{ item.sortYear | formatSortYear }}-{{
-                item.deadline | deadlineFormat
-              }}-{{ item.docAbout + "-" }}{{ item.docNum | formatFourNum }}
-            </div>
-            <!-- 档号 -->
-            <!-- <div class="itemInfo">{{item.docDescAuthor+'['}}{{item.sortYear|formatSortYear}}{{']'+(item.docNum?item.docNum:'暂无')+"号"}}</div> -->
-            <div class="itemInfo" style="font-size: 0.6rem; width: 10%">
-              {{ item.docDesc ? item.docDesc : "&nbsp;" }}
+          <div v-if="docType != 'science' && docType != 'personnel'" style="">
+            <div class="detailItem detailItemTitle" style="height: 2rem">
+              <div class="itemInfo" style="width: 3%">识别号</div>
+              <div class="itemInfo" style="width: 6%">
+                {{ docType == "officialJ" ? "机构" : "问题" }}
+              </div>
+              <div class="itemInfo" style="width: 4%">
+                {{ docType == "officialJ" ? "机构词" : "问题词" }}
+              </div>
+
+              <div class="itemInfo" style="width: 10%">档号</div>
+              <div class="itemInfo" style="width: 10%">文号</div>
+              <div class="itemInfo" style="width: 12%">责任者</div>
+              <div class="itemInfo" style="font-size: 0.6rem; width: 12%">
+                题名
+              </div>
+              <div class="itemInfo" style="width: 4%">成文时间</div>
+              <div class="itemInfo" style="width: 4%">密级</div>
+              <div class="itemInfo" style="font-size: 0.6rem; width: 6%">
+                备注
+              </div>
+              <div class="itemInfo" style="width: 2%">页数</div>
+              <div class="itemInfo" style="width: 2%">计</div>
+
+              <div class="itemInfo" style="width: 4%">件号</div>
+              <div class="itemInfo" style="width: 4%">盒号</div>
+
+              <div style="clear: both"></div>
+
+              <!-- <div style="clear:both"></div> -->
             </div>
 
-            <div class="itemInfo" style="width: 12%">{{ item.dutyAuthor }}</div>
-            <div class="itemInfo" style="font-size: 0.6rem; width: 12%">
-              {{ item.docTitle }}
-            </div>
-            <div class="itemInfo" style="width: 4%">{{ item.docDate }}</div>
-            <div class="itemInfo" style="width: 4%">
-              {{
-                item.docSecret == "无" || !item.docSecret
-                  ? "&nbsp;"
-                  : item.docSecret
-              }}
-            </div>
-            <div class="itemInfo" style="font-size: 0.6rem; width: 6%">
-              {{ item.remark ? item.remark : "&nbsp;" }}
-            </div>
-            <div class="itemInfo" style="width: 2%">{{ item.docPage }}</div>
-            <div class="itemInfo" style="width: 2%"
-            v-bind:class="[
-            { itemInfo: true },
-            { endStyle:item.docSequence==endInfo.docSequence },
-            ]"
+            <div
+              class="detailItem infoItemHighlight"
+              v-for="(item, index) in this.$store.state.alreadyDocs.filter(
+                (obj) => obj.deleted != deletedShowSwitch
+              )"
+              :key="index"
             >
-              {{ item.pageTotal | pageTotalformat }}
-            </div>
+              <div class="itemInfo" style="width: 3%">
+                {{ item.docSequence }}
+              </div>
+              <div class="itemInfo" style="width: 6%">{{ item.docAbout }}</div>
+              <div class="itemInfo" style="width: 4%">{{ item.keyword }}</div>
 
-            <div class="itemInfo" style="width: 4%">
-              {{ item.docNum ? item.docNum : "暂无" }}
-            </div>
-            <div  
-            v-bind:class="[
-            { itemInfo: true },
-            { startStyle:item.docSequence==startInfo.docSequence },
-            { endStyle:item.docSequence==endInfo.docSequence },
-            ]"
-       style="width: 4%;" 
-            @mouseleave="boxLeave(item)"
-             @mouseenter="boxOver(item)" @click="boxClick(item)">
-              {{ item.boxSeq ? item.boxSeq : "暂无" }}
+              <div class="itemInfo" style="font-size: 0.6rem; width: 10%">
+                {{ authCode + "-" + item.docTypeCode + "·"
+                }}{{ item.sortYear | formatSortYear }}-{{
+                  item.deadline | deadlineFormat
+                }}-{{ item.docAbout + "-" }}{{ item.docNum | formatFourNum }}
+              </div>
+              <!-- 档号 -->
+              <!-- <div class="itemInfo">{{item.docDescAuthor+'['}}{{item.sortYear|formatSortYear}}{{']'+(item.docNum?item.docNum:'暂无')+"号"}}</div> -->
+              <div class="itemInfo" style="font-size: 0.6rem; width: 10%">
+                {{ item.docDesc ? item.docDesc : "&nbsp;" }}
+              </div>
 
-              
-            </div>
-            <div class="itemInfo" style="width: 7%" >
-              <div v-if="item.deleted==0">
-                 <div 
-                style="float:left;margin-left=1rem"
-                class="optionDiv"
-                @click="fixThisItem(item)"
+              <div class="itemInfo" style="width: 12%">
+                {{ item.dutyAuthor }}
+              </div>
+              <div class="itemInfo" style="font-size: 0.6rem; width: 12%">
+                {{ item.docTitle }}
+              </div>
+              <div class="itemInfo" style="width: 4%">{{ item.docDate }}</div>
+              <div class="itemInfo" style="width: 4%">
+                {{
+                  item.docSecret == "无" || !item.docSecret
+                    ? "&nbsp;"
+                    : item.docSecret
+                }}
+              </div>
+              <div class="itemInfo" style="font-size: 0.6rem; width: 6%">
+                {{ item.remark ? item.remark : "&nbsp;" }}
+              </div>
+              <div class="itemInfo" style="width: 2%">{{ item.docPage }}</div>
+              <div
+                class="itemInfo"
+                style="width: 2%"
+                v-bind:class="[
+                  { itemInfo: true },
+                  { endStyle: item.docSequence == endInfo.docSequence },
+                ]"
               >
-                修改
+                {{ item.pageTotal | pageTotalformat }}
+              </div>
+
+              <div class="itemInfo" style="width: 4%">
+                {{ item.docNum ? item.docNum : "暂无" }}
               </div>
               <div
-                style="float: left"
-                class="optionDiv"
-                @click="deleteThisItem(item)"
+                v-bind:class="[
+                  { itemInfo: true },
+                  { startStyle: item.docSequence == startInfo.docSequence },
+                  { endStyle: item.docSequence == endInfo.docSequence },
+                ]"
+                style="width: 4%"
+                @mouseleave="boxLeave(item)"
+                @mouseenter="boxOver(item)"
+                @click="boxClick(item)"
               >
-                删除
+                {{ item.boxSeq ? item.boxSeq : "暂无" }}
               </div>
-                            <div
-              v-if="item.printed==null"
-                style="float: left"
-                class="optionDiv"
-                @click="printBtn(item)"
-              >
-                印章
+              <div class="itemInfo" style="width: 7%">
+                <div v-if="item.deleted == 0">
+                  <div
+                    style="float:left;margin-left=1rem"
+                    class="optionDiv"
+                    @click="fixThisItem(item)"
+                  >
+                    修改
+                  </div>
+                  <div
+                    style="float: left"
+                    class="optionDiv"
+                    @click="deleteThisItem(item)"
+                  >
+                    删除
+                  </div>
+                  <div
+                    v-if="item.printed != 1"
+                    style="float: left"
+                    class="optionDiv"
+                    @click="PrintSocket()"
+                  >
+                    印章
+                  </div>
+                </div>
+
+                <div
+                  v-if="item.deleted == 1"
+                  style="float:left;margin-left=1rem;cursor:arrow;color:red"
+                  class="optionDiv"
+                >
+                  已作废
+                </div>
+
+                <div
+                  v-if="item.printed == 1"
+                  style="float: left; color: #ccc"
+                  class="optionDiv"
+                  @click="printBtn(item)"
+                >
+                  已印
+                </div>
               </div>
-
-              
-
-              </div>
-
-               <div  v-if="item.deleted==1"
-                style="float:left;margin-left=1rem;cursor:arrow;color:red"
-                class="optionDiv"
-
-              >
-                已作废
-              </div>
-
-                            <div v-if="item.printed"
-                style="float: left;color:#ccc"
-                class="optionDiv"
-                @click="printBtn(item)"
-              >
-                已印
-              </div>
-
+              <div style="clear: both"></div>
+              <!-- <div style="clear:both"></div> -->
             </div>
-            <div style="clear: both"></div>
-            <!-- <div style="clear:both"></div> -->
           </div>
+
+          <div v-if="docType == 'personnel'">
+            <div style="height: 2rem; width: 3rem"></div>
+            <div class="detailTopLine">
+              <div class="itemInfo" style="width: 3%">识别号</div>
+
+              <div class="itemInfo">姓名</div>
+              <div class="itemInfo" style="width: 10%">材料类型</div>
+              <div class="itemInfo" style="width: 10%">子材料类型</div>
+              <div class="itemInfo" style="width: 15%">标题</div>
+              <div class="itemInfo">日期</div>
+              <div class="itemInfo" style="width: 4%">页数</div>
+
+              <div class="itemInfo" style="width: 4%">材料序号</div>
+
+              <div class="itemInfo" style="width: 10%">备注</div>
+              <div class="itemInfo">操作</div>
+
+              <div class="itemInfo" style="width: 14%">&nbsp;</div>
+              <div style="clear: both"></div>
+
+              <!-- <div class="itemInfo">操作</div> -->
+              <!-- <div class="itemInfo">操作</div> -->
+              <!-- <div style=""></div> -->
+            </div>
+
+            <div
+              class="detailItemRS infoItemHighlight"
+              v-for="(item, index) in this.$store.state.alreadyDocs"
+              :key="index"
+            >
+              <div class="itemInfo" style="width: 3%">
+                {{ item.docSequence }}
+              </div>
+
+              <div class="itemInfo">{{ item.personName }}</div>
+              <div class="itemInfo" style="width: 10%">{{ item.docAbout }}</div>
+              <div class="itemInfo" style="width: 10%">
+                {{ item.docAboutSub }}
+              </div>
+              <div class="itemInfo" style="width: 15%">{{ item.docTitle }}</div>
+              <div class="itemInfo">{{ item.docDate }}</div>
+              <div class="itemInfo" style="width: 4%">{{ item.docPage }}</div>
+
+              <div class="itemInfo" style="width: 4%">
+                {{ item.docNum ? item.docNum : "暂无" }}
+              </div>
+
+              <div class="itemInfo" style="width: 10%">{{ item.remark }}</div>
+              <div class="itemInfo">&nbsp;</div>
+
+              <div class="itemInfo" style="width: 14%">&nbsp;</div>
+              <div style="clear: both"></div>
+            </div>
+
+            <!-- <div style="border-top: 0.02rem"></div> -->
+          </div>
+
+          <div v-if="docType == 'science'">
+            <div class="detailItem detailItemTitle">
+              <div class="itemInfo2" style="width: 3%">识别号</div>
+
+              <div class="itemInfo2" style="width: 6%">关键词</div>
+              <div class="itemInfo2" style="width: 4%">项目</div>
+              <div class="itemInfo2" style="width: 10%">档号</div>
+              <div class="itemInfo2" style="width: 4%">全宗号</div>
+              <div class="itemInfo2" style="width: 4%">目录号</div>
+              <div class="itemInfo2" style="width: 10%">责任者</div>
+              <div class="itemInfo2" style="font-size: 0.6rem; width: 10%">
+                题名
+              </div>
+              <div class="itemInfo2" style="width: 4%">成文时间</div>
+              <div class="itemInfo2" style="width: 4%">期限</div>
+              <div class="itemInfo2" style="width: 3%">密级</div>
+
+              <div class="itemInfo2" style="font-size: 0.6rem; width: 8%">
+                备注
+              </div>
+              <div class="itemInfo2" style="width: 3%">页数</div>
+
+              <div class="itemInfo2" style="width: 3%">计</div>
+
+              <div class="itemInfo2" style="width: 3%">案卷号</div>
+              <div class="itemInfo2" style="width: 3%">顺序号</div>
+
+              <div style="clear: both"></div>
+
+              <!-- <div style="clear:both"></div> -->
+            </div>
+
+            <div
+              class="detailItem infoItemHighlight"
+              v-for="(item, index) in this.$store.state.alreadyDocs"
+              :key="index"
+            >
+              <div class="itemInfo2" style="width: 3%">
+                {{ item.docSequence }}
+              </div>
+              <div class="itemInfo2" style="width: 6%">{{ item.keyword }}</div>
+              <div class="itemInfo2" style="width: 4%">{{ item.docAbout }}</div>
+
+              <div class="itemInfo2" style="width: 10%">
+                {{ authCode + "-" + item.docTypeCode + "-"
+                }}{{ item.boxSeq | formatFiveKJ }}-{{
+                  item.docNum | formatThreeKJ
+                }}
+              </div>
+              <!-- 档号 -->
+              <!-- <div class="itemInfo2">{{item.docDescAuthor+'['}}{{item.sortYear|formatSortYear}}{{']'+(item.docNum?item.docNum:'暂无')+"号"}}</div> -->
+
+              <!-- 全宗号 -->
+              <div class="itemInfo2" style="width: 4%">{{ authCode }}</div>
+              <!-- 目录号 -->
+              <div class="itemInfo2" style="width: 4%">
+                {{ item.docTypeCode ? item.docTypeCode : "&nbsp;" }}
+              </div>
+
+              <div class="itemInfo2" style="width: 10%">
+                {{ item.dutyAuthor }}
+              </div>
+              <div class="itemInfo2" style="font-size: 0.6rem; width: 10%">
+                {{ item.docTitle }}
+              </div>
+              <div class="itemInfo2" style="width: 4%">{{ item.docDate }}</div>
+              <div class="itemInfo2" style="width: 4%">{{ item.deadline }}</div>
+
+              <div class="itemInfo2" style="width: 3%">
+                {{ item.docSecret == "无" ? "&nbsp;" : item.docSecret }}
+              </div>
+              <div class="itemInfo2" style="font-size: 0.6rem; width: 8%">
+                {{ item.remark ? item.remark : "&nbsp;" }}
+              </div>
+              <div class="itemInfo2" style="width: 3%">{{ item.docPage }}</div>
+
+              <div class="itemInfo2" style="width: 3%">
+                {{ item.pageTotal | pageTotalformat }}
+              </div>
+              <div class="itemInfo2" style="width: 3%">
+                {{ item.boxSeq ? item.boxSeq : "暂无" }}
+              </div>
+
+              <div class="itemInfo2" style="width: 3%">
+                {{ item.docNum ? item.docNum : "暂无" }}
+              </div>
+              <div class="itemInfo2" style="width: 7%">
+                <div
+                  style="float:left;margin-left=1rem"
+                  class="optionDiv"
+                  @click="fixThisItem(item)"
+                >
+                  修改
+                </div>
+                <div
+                  style="float: left"
+                  class="optionDiv"
+                  @click="deleteThisItem(item)"
+                >
+                  删除
+                </div>
+                <div
+                  style="float: left"
+                  class="optionDiv"
+                  @click="printBtn(item)"
+                >
+                  印章
+                </div>
+              </div>
+              <div style="clear: both"></div>
+              <!-- <div style="clear:both"></div> -->
+            </div>
+          </div>
+
+          <div style="boder-top: solid 0.2rem"></div>
         </div>
-
-        <div v-if="docType == 'personnel'">
-          <div style="height: 2rem; width: 3rem"></div>
-          <div class="detailTopLine">
-            <div class="itemInfo" style="width: 3%">识别号</div>
-
-            <div class="itemInfo">姓名</div>
-            <div class="itemInfo" style="width: 10%">材料类型</div>
-            <div class="itemInfo" style="width: 10%">子材料类型</div>
-            <div class="itemInfo" style="width: 15%">标题</div>
-            <div class="itemInfo">日期</div>
-            <div class="itemInfo" style="width: 4%">页数</div>
-
-            <div class="itemInfo" style="width: 4%">材料序号</div>
-
-            <div class="itemInfo" style="width: 10%">备注</div>
-            <div class="itemInfo">操作</div>
-
-            <div class="itemInfo" style="width: 14%">&nbsp;</div>
-            <div style="clear: both"></div>
-
-            <!-- <div class="itemInfo">操作</div> -->
-            <!-- <div class="itemInfo">操作</div> -->
-            <!-- <div style=""></div> -->
-          </div>
-
-          <div
-            class="detailItemRS infoItemHighlight"
-            v-for="(item, index) in this.$store.state.alreadyDocs"
-            :key="index"
-          >
-            <div class="itemInfo" style="width: 3%">{{ item.docSequence }}</div>
-
-            <div class="itemInfo">{{ item.personName }}</div>
-            <div class="itemInfo" style="width: 10%">{{ item.docAbout }}</div>
-            <div class="itemInfo" style="width: 10%">
-              {{ item.docAboutSub }}
-            </div>
-            <div class="itemInfo" style="width: 15%">{{ item.docTitle }}</div>
-            <div class="itemInfo">{{ item.docDate }}</div>
-            <div class="itemInfo" style="width: 4%">{{ item.docPage }}</div>
-
-            <div class="itemInfo" style="width: 4%">
-              {{ item.docNum ? item.docNum : "暂无" }}
-            </div>
-
-            <div class="itemInfo" style="width: 10%">{{ item.remark }}</div>
-            <div class="itemInfo">&nbsp;</div>
-
-            <div class="itemInfo" style="width: 14%">&nbsp;</div>
-            <div style="clear: both"></div>
-          </div>
-
-          <!-- <div style="border-top: 0.02rem"></div> -->
-        </div>
-
-        <div v-if="docType == 'science'">
-          <div class="detailItem detailItemTitle">
-            <div class="itemInfo2" style="width: 3%">识别号</div>
-
-            <div class="itemInfo2" style="width: 6%">关键词</div>
-            <div class="itemInfo2" style="width: 4%">项目</div>
-            <div class="itemInfo2" style="width: 10%">档号</div>
-            <div class="itemInfo2" style="width: 4%">全宗号</div>
-            <div class="itemInfo2" style="width: 4%">目录号</div>
-            <div class="itemInfo2" style="width: 10%">责任者</div>
-            <div class="itemInfo2" style="font-size: 0.6rem; width: 10%">
-              题名
-            </div>
-            <div class="itemInfo2" style="width: 4%">成文时间</div>
-            <div class="itemInfo2" style="width: 4%">期限</div>
-            <div class="itemInfo2" style="width: 3%">密级</div>
-
-            <div class="itemInfo2" style="font-size: 0.6rem; width: 8%">
-              备注
-            </div>
-            <div class="itemInfo2" style="width: 3%">页数</div>
-
-            <div class="itemInfo2" style="width: 3%">计</div>
-
-            <div class="itemInfo2" style="width: 3%">案卷号</div>
-            <div class="itemInfo2" style="width: 3%">顺序号</div>
-
-            <div style="clear: both"></div>
-
-            <!-- <div style="clear:both"></div> -->
-          </div>
-
-          <div
-            class="detailItem infoItemHighlight"
-            v-for="(item, index) in this.$store.state.alreadyDocs"
-            :key="index"
-          >
-            <div class="itemInfo2" style="width: 3%">
-              {{ item.docSequence }}
-            </div>
-            <div class="itemInfo2" style="width: 6%">{{ item.keyword }}</div>
-            <div class="itemInfo2" style="width: 4%">{{ item.docAbout }}</div>
-
-            <div class="itemInfo2" style="width: 10%">
-              {{ authCode + "-" + item.docTypeCode + "-"
-              }}{{ item.boxSeq | formatFiveKJ }}-{{
-                item.docNum | formatThreeKJ
-              }}
-            </div>
-            <!-- 档号 -->
-            <!-- <div class="itemInfo2">{{item.docDescAuthor+'['}}{{item.sortYear|formatSortYear}}{{']'+(item.docNum?item.docNum:'暂无')+"号"}}</div> -->
-
-            <!-- 全宗号 -->
-            <div class="itemInfo2" style="width: 4%">{{ authCode }}</div>
-            <!-- 目录号 -->
-            <div class="itemInfo2" style="width: 4%">
-              {{ item.docTypeCode ? item.docTypeCode : "&nbsp;" }}
-            </div>
-
-            <div class="itemInfo2" style="width: 10%">
-              {{ item.dutyAuthor }}
-            </div>
-            <div class="itemInfo2" style="font-size: 0.6rem; width: 10%">
-              {{ item.docTitle }}
-            </div>
-            <div class="itemInfo2" style="width: 4%">{{ item.docDate }}</div>
-            <div class="itemInfo2" style="width: 4%">{{ item.deadline }}</div>
-
-            <div class="itemInfo2" style="width: 3%">
-              {{ item.docSecret == "无" ? "&nbsp;" : item.docSecret }}
-            </div>
-            <div class="itemInfo2" style="font-size: 0.6rem; width: 8%">
-              {{ item.remark ? item.remark : "&nbsp;" }}
-            </div>
-            <div class="itemInfo2" style="width: 3%">{{ item.docPage }}</div>
-
-            <div class="itemInfo2" style="width: 3%">
-              {{ item.pageTotal | pageTotalformat }}
-            </div>
-            <div class="itemInfo2" style="width: 3%">
-              {{ item.boxSeq ? item.boxSeq : "暂无" }}
-            </div>
-
-            <div class="itemInfo2" style="width: 3%">
-              {{ item.docNum ? item.docNum : "暂无" }}
-            </div>
-            <div class="itemInfo2" style="width: 7%">
-              <div
-                style="float:left;margin-left=1rem"
-                class="optionDiv"
-                @click="fixThisItem(item)"
-              >
-                修改
-              </div>
-              <div
-                style="float: left"
-                class="optionDiv"
-                @click="deleteThisItem(item)"
-              >
-                删除
-              </div>
-              <div
-                style="float: left"
-                class="optionDiv"
-                @click="printBtn(item)"
-              >
-                印章
-              </div>
-            </div>
-            <div style="clear: both"></div>
-            <!-- <div style="clear:both"></div> -->
-          </div>
-        </div>
-
-        <div style="boder-top: solid 0.2rem"></div>
       </div>
-</div>
       <div style="height: 2rem"></div>
     </div>
   </div>
@@ -1321,20 +1607,19 @@
 
 <script>
 import Utils from "../../utils/printUtil.js";
-import KeyWordManage from "./KeyWordManage"
+import KeyWordManage from "./KeyWordManage";
 import axios from "axios";
-import VueSocketIO from 'vue-socket.io'
- 
+import VueSocketIO from "vue-socket.io";
+
 import HidePrint from "./print";
 // 由 arr.filter 产生的部分符合条件的alreadydocs 和  rawdocs是指向的同一个数组？ 修改 a也修改了r
 
 export default {
   components: {
     HidePrint: HidePrint,
-    KeyWordManage:KeyWordManage,
+    KeyWordManage: KeyWordManage,
   },
   watch: {
-    
     // getDocInShow:{
     //          handler(val, oldVal) {
     //            //console.log(val)
@@ -1342,19 +1627,14 @@ export default {
     //           setTimeout(() => {
     //                              //console.log(this.$store.state.docDetialBar)
     //   window.scrollTo(0,this.$store.state.docDetialBar)
-
     //           }, 0);
-
-
-
     //            }
     //            if(val==true){
     //              window.scrollTo(0,0)
     //            }
- 
     //    }
     // }
-    },
+  },
   computed: {
     docType() {
       return sessionStorage.getItem("docType");
@@ -1362,12 +1642,11 @@ export default {
     authCode() {
       return sessionStorage.getItem("authCode") || "";
     },
-    authName(){
+    authName() {
       return sessionStorage.getItem("authName") || "";
-
     },
-    getDocInShow(){
-      return this.$store.state.showDocIn
+    getDocInShow() {
+      return this.$store.state.showDocIn;
     },
     // getDocDetailBar(){
     //   return this.$store.state.docDetialBar
@@ -1375,53 +1654,70 @@ export default {
   },
   data() {
     return {
-      printType:"识别号",
-      connectTip:"未连接",
-      processInfo:"",
-      processShow:false,
-      spliceAt:0,
-      spliceArrs:[],
-      connectStatus:false,
-      helpShow:false,
-      printerIp:"",
-SelectedPrintOrder:"",
-printOrders:[
-  "按识别号小到大正序",
-  "按识别号大到小逆序",
-  "按件号顺序",
-],
-startPrintSeq:1,
-      socketUtil:'',
-      PrintControllshow:false,
 
-      showKWM:false,
+      //备考表相关变量
+      publisher:"",
+      checker:"",
+      publishTime:"",
+      checkTime:"",
+
+      boxInfoShowFlag:false,
+      boxInfoList:[],
+      boxInfoNow:{},
+      boxInfoTableNumList:[],
+      
+      //备考表相关变量
+      //print相关
+      firstTimePrint:1,//第一次发送打印信号，会超时
+
+
+      printIndex: 1,
+      printedList: [],
+      printedString: "",
+      maxSeq: 1,
+      lastPrint: -1,
+      printType: "识别号",
+      connectTip: "未连接",
+      processInfo: "",
+      processShow: false,
+      printSeqAt: 0,
+      printArr: [],
+      connectStatus: false,
+      helpShow: false,
+      printerIp: "",
+      SelectedPrintOrder: "",
+      printOrders: ["按识别号小到大正序", "按识别号大到小逆序", "按件号顺序"],
+
+      socketUtil: "",
+      PrintControllshow: false,
+
+      showKWM: false,
 
       /**手动排盒号使用变量 */
-      boxNumMap:{},
-      startBoxNum:0,
-      showStartBoxSet:false,
-      startStyleCtrl:false,
-      myBoxNumSwitch:false,
-      boxSeqTemp:"",
-      boxSeqText:"开始",
-      startSeq:"",
-      endSeq:"",
-      startInfo:{
-        docSequence:0,
-        boxSeq:0,
-      },//存“开始”标签的信息
+      boxNumMap: {},
+      startBoxNum: 0,
+      showStartBoxSet: false,
+      startStyleCtrl: false,
+      myBoxNumSwitch: false,
+      boxSeqTemp: "",
+      boxSeqText: "开始",
+      startSeq: "",
+      endSeq: "",
+      startInfo: {
+        docSequence: 0,
+        boxSeq: 0,
+      }, //存“开始”标签的信息
 
-      endInfo:{
-        docSequence:0,
-        boxSeq:0,
-      },//存“结束”标签的信息
+      endInfo: {
+        docSequence: 0,
+        boxSeq: 0,
+      }, //存“结束”标签的信息
 
-
-      deletedShowSwitch:1,
-      showDocIn:false,
-      destoryFlag:true,
-      initTime:"",
-      printDoc:false,
+      deletedShowSwitch: 1,
+      showDocIn: false,
+      destoryFlag: true,
+      initTime: "",
+      printDoc: false,
 
       deadlineReq: "期限",
       yearReq: "年度",
@@ -1595,89 +1891,346 @@ startPrintSeq:1,
     };
   },
   methods: {
-    printThis(){
-      // var arr=this.spliceArrs[this.spliceAt]
-            if(!this.connectStatus){
+    saveInfo(){
+      var infoObj={}
+      for(var i in this.boxInfoList){
+        this.boxInfoList[i].publisher=this.publisher
+        this.boxInfoList[i].checker=this.checker
+        this.boxInfoList[i].publishTime=this.publishTime
+        this.boxInfoList[i].checkTime=this.checkTime
+        this.boxInfoList[i].authName=sessionStorage.getItem("authName")
+      }
+      infoObj.infos=JSON.stringify(this.boxInfoList)
+
+            this.putRequest(
+        "/work/box-infos/" + sessionStorage.getItem("batchId"),
+          JSON.stringify(infoObj)
+      ).then((resp) => {
+        
+        //console.log(resp)
+        if (resp.code == 0) {
+          console.log(resp)
+                              this.$message({
+          type: "success",
+          message: "保存成功",
+        });
+        }
+      });
+
+    },
+    getOneInfo(){
+      if(this.boxInfoNow.id==null||this.boxInfoNow.tableNumber.length==0){
+                                      this.$message({
+          type: "warning",
+          message: "请选择",
+        });
+        return
+
+      }
+        //       this.getRequest("/work/downloadOne/"+this.boxInfoNow.id+"/"+sessionStorage.getItem("batchId")).then((resp) => {
+        //   console.log(resp)
+          
+        // })
+
+        axios({
+            method: "get",
+            url: this.baseurl+"/work/downloadOne/"+this.boxInfoNow.id+"/"+sessionStorage.getItem("batchId"),
+            responseType: "arraybuffer",
+                        headers: {
+              "Content-Type": "application/json",
+              authId: sessionStorage.getItem("authId"),
+              token: window.localStorage.getItem("token")
+                ? window.localStorage.getItem("token").split('"')[1] ||
+                  window.localStorage.getItem("token")
+                : null,
+            },
+          }).then((res) => {
+            // //console.log("DASDASDASDASD")
+
+            //console.log(res);
+            const blob = new Blob([res]); //new Blob([res])中不加data就会返回下图中[objece objece]内容（少取一层）
+
+            const fileName = this.boxInfoNow.tableNumber+".doc"; //这里可以自定义名称，发现设置xlsx文件类型下载后打开会提示下面图-1的无效报错,所以我用了xls格式
+
+            const elink = document.createElement("a");
+
+            elink.download = fileName;
+
+            elink.style.display = "none";
+
+            elink.href = URL.createObjectURL(blob);
+
+            document.body.appendChild(elink);
+
+            elink.click();
+
+            URL.revokeObjectURL(elink.href); // 释放URL 对象
+            document.body.removeChild(elink);
+            this.showWaitingFlag = false;
+          });
+    },
+    getAllInfo(){
+      this.showWaitingFlag=true
+    axios({
+            method: "get",
+            url: this.baseurl+"/work/downloadAll/"+sessionStorage.getItem("batchId"),
+            responseType: "arraybuffer",
+                        headers: {
+              "Content-Type": "application/json",
+              authId: sessionStorage.getItem("authId"),
+              token: window.localStorage.getItem("token")
+                ? window.localStorage.getItem("token").split('"')[1] ||
+                  window.localStorage.getItem("token")
+                : null,
+            },
+          }).then((res) => {
+            // //console.log("DASDASDASDASD")
+
+            //console.log(res);
+            const blob = new Blob([res]); //new Blob([res])中不加data就会返回下图中[objece objece]内容（少取一层）
+
+            const fileName = sessionStorage.getItem("authName")+".zip"; //这里可以自定义名称，发现设置xlsx文件类型下载后打开会提示下面图-1的无效报错,所以我用了xls格式
+
+            const elink = document.createElement("a");
+
+            elink.download = fileName;
+
+            elink.style.display = "none";
+
+            elink.href = URL.createObjectURL(blob);
+
+            document.body.appendChild(elink);
+
+            elink.click();
+
+            URL.revokeObjectURL(elink.href); // 释放URL 对象
+            document.body.removeChild(elink);
+            this.showWaitingFlag = false;
+          }).then(r=>{
+            this.showWaitingFlag=false
+          });
+    },
+    boxInfoBlur(e){
+            var inputBoxTableNum = e.target.value;
+      console.log(inputBoxTableNum)
+    },
+    boxInfoSelectDone(e){
+      console.log(e)
+      this.boxInfoNow=e
+      // for(var i in this.boxInfoList){
+      //   if(this.boxInfoList[i].tableNumber==e){
+      //     this.boxInfoNow
+      //   }
+      // }
+    },
+    genBoxInfo(){
+      if(!this.isEnd){
+ this.$confirm(
+        "请确定盒号件号不再修改,锁定本批次后再操作备考表",
+        "提示",
+        {
+          confirmButtonText: "好的",
+          type: "warning",
+        }
+      )
+      }
+      if(this.isEnd){
+        this.boxInfoShowFlag=true
+
+        this.getRequest("/work/box-infos?id="+sessionStorage.getItem("batchId")).then((resp) => {
+          console.log(resp)
+          this.boxInfoList=resp.data
+          if(this.boxInfoList.length==0){
+                    this.$message({
+          type: "warning",
+          message: "请先排件号盒号并锁定本批",
+        });
+        return
+          }
+
+          this.publishTime=this.boxInfoList[0].publishTime
+          this.publisher=this.boxInfoList[0].publisher
+          this.checkTime=this.boxInfoList[0].checkTime
+          this.checker=this.boxInfoList[0].checker
+          this.boxInfoTableNumList=[]
+
+        })
+      //   var infoObj={}
+      //   infoObj.a="b"
+      //         this.postRequest(
+      //   //注意防止重复提交
+      //   "/work/box-infos/"+sessionStorage.getItem("batchId"),
+      //   JSON.stringify(infoObj)
+      // ).then((resp) => {
+      //   console.log(resp)
+      // })
+      }
+    },
+    printThis() {
+      // var arr=this.printArr[this.printSeqAt]
+      // this.connectStatus=true
+      if (!this.connectStatus) {
         this.$message({
-                  type: "warning",
-                  message: "请先连接打印机"
-                });
-                return
+          type: "warning",
+          message: "请先连接打印机",
+        });
+        return;
       }
 
-      var arr = []
-      var docs = this.$store.state.rawDocs
-      var docOne
+      var arr = [];
+      var docs = this.$store.state.rawDocs;
+      var docOne;
+          console.log(docs.length)
 
-      for (var k in docs){
-        if(docs[k].docSequence==this.startPrintSeq) docOne=docs[k]
+
+      for (var k in docs) {
+
+        if (docs[k].docSequence == this.printSeqAt) {
+          console.log(docs[k])
+          if(docs[k].deleted==1){
+                    this.$message({
+          type: "warning",
+          message: "该份已删除",
+        });
+        return
+          }
+          docOne = docs[k];
+          if(docOne.printed!=1){
+          docs[k].printed = 1;
+            this.printedList.push(docs[k].id);
+                      var str = "";
+          for (var i in this.printedList) {
+            str = str + this.printedList[i] + ",";
+          }
+          if (str.charAt(str.length - 1) == ",") {
+            str = str.substring(0, str.length - 1);
+          }
+          ///setPrint/{type}/{id}
+          console.log(str);
+          this.postRequest(
+            "/work/printedList/" + sessionStorage.getItem("batchId"),
+            str
+          ).then((resp) => {
+            //console.log(resp)
+            if (resp.code == 0) {
+            }
+          });
+          }
+
+        }
       }
-      arr.push(docOne)
-      var step1=false
-      var step2=false
-      var that=this
-  const checkp=async function(){
-  step1=await that.sendFormat(arr)
-  if(step1){
-    step2=await that.sendQR(arr)
-  }
 
-  if(step1&&step2) {
-    that.sendMessage()
-  }else{
-    that.connectStatus=false
-    that.connectTip="已断开"
-                      this.$message({
-                  type: "success",
-                  message: "发送出错，请尝试重新连接"
-                });
-  }
+      arr.push(docOne);
 
-}
+      var step1 = false;
+      var step2 = false;
+      var that = this;
+      const checkp = async function () {
+        step1 = await that.sendFormat(arr);
+        if (step1) {
+          step2 = await that.sendQR(arr);
+        }
 
-checkp()
+        if (step1 && step2) {
+          that.sendMessage();
+        } else {
+          that.connectStatus = false;
+          this.firstTimePrint=1
+          that.connectTip = "已断开";
+          that.$message({
+            type: "success",
+            message: "发送出错，请尝试重新连接",
+          });
+        }
+      };
+
+      checkp();
     },
 
-    sendMessage(){
-var td=this.spliceArrs[this.spliceAt][0].deadline
-var n=1;
-      if(!this.isNumber(td)){
-        n=11
-      }else if(td.length==2){
-        n=22
-      }else{
-        n=33
+    sendMessage() {
+
+      var td;
+      for (var i in this.printArr) {
+        if (this.printArr[i].docSequence == this.printSeqAt) {
+          td = this.printArr[i].deadline;
+          break;
+        }
       }
 
-axios({
-     method: "post",
-     url:"http://localhost:8999/api/send",
-     data:{
-            message:"000B|0000|500|0|0|0000|0|0000|0D0A",
+      console.log("111111111?" + td);
+      var n = 1;
+      if (!this.isNumber(td)) {
+        n = 11;
+      } else if (td.length == 2) {
+        n = 22;
+      } else {
+        n = 33;
+      }
 
-            },
-            timeout:2000
-
- }).then(r=>{
-   console.log(typeof(r))
-                  this.$message({
-                  type: "success",
-                  message: "已停止打印机，并启动新的一组打印"
-                });
-
-                          axios.post("http://localhost:8999/api/send", {
-            message:"000B|0000|100|/mnt/sdcard/MSG/"+n+"/|0|0000|0|0000|0D0A",
-            // message:"000B|0000|500|0|0|0000|0|0000|0D0A"
-
-      }).then(r=>{
-        console.log(r)
-                this.$message({
-                  type: "success",
-                  message: "打印信号已发送"
-                });
-
+      axios({
+        method: "post",
+        url: "http://localhost:8999/api/send",
+        data: {
+          message: "000B|0000|500|0|0|0000|0|0000|0D0A",
+        },
+        timeout: 600,
       })
- })
+        .then((r) => {
+          console.log("stop signal" + JSON.stringify(r));
+          this.$message({
+            type: "success",
+            message: "已停止打印机，并启动新的一组打印",
+          });
+
+          if (r) { //好像stop信号不响应但是发过去了，再发start信号使其生效
+            axios({
+              method: "post",
+              url: "http://localhost:8999/api/send",
+              data: {
+                message:
+                  "000B|0000|100|/mnt/sdcard/MSG/" + n + "/|0|0000|0|0000|0D0A",
+              },
+              timeout: 6000,
+            })
+              .then((r) => {
+                console.log(JSON.stringify("开始打印返回的：" + r));
+                if (r.code == 0) {
+                  this.$message({
+                    type: "success",
+                    message: "打印信号已发送",
+                  });
+                } else {
+                  if(this.firstTimePrint==1){
+                    this.firstTimePrint=0  //第一次发送会收不到 ? 也不是第一次发的问题
+                    console.log("第一次发送会收不到")
+                  }else{
+                //  this.connectStatus = false;
+                //  this.firstTimePrint=1
+                //   this.$message({
+                //     type: "warning",
+                //     message: "请在打印机操作界面检查打印机，并尝试重新连接",
+                //   });
+                  }
+
+                }
+              })
+              .catch((err) => {
+                console.log("start err" + err);
+              });
+          } else {
+            this.$message({
+              type: "warning",
+              message: "请在打印机操作界面检查打印机",
+            });
+          }
+        })
+        .catch((err) => {
+          console.log("stop err" + err);
+          this.$message({
+            type: "warning",
+            message: "请在打印机操作界面检查打印机",
+          });
+        });
 
       //         axios.post("http://localhost:8999/api/send", {
       //       // message:"000B|0000|100|/mnt/sdcard/MSG/"+n+"/|0|0000|0|0000|0D0A"
@@ -1698,86 +2251,87 @@ axios({
       //           });
       // })
       // })
-
     },
 
-    ipInput(){
-      console.log(2)
-      var cidrs=this.printerIp.split(".")
-      if(cidrs.length==4&&cidrs[cidrs.length-1].length>0){
-        for(var i in cidrs){
-          if(!this.isNumber(cidrs[i])){
-                                            this.$message({
-                  type: "warning",
-                  message: "地址格式错误"
-                });
+    ipInput() {
+      console.log(2);
+      var cidrs = this.printerIp.split(".");
+      if (cidrs.length == 4 && cidrs[cidrs.length - 1].length > 0) {
+        for (var i in cidrs) {
+          if (!this.isNumber(cidrs[i])) {
+            this.$message({
+              type: "warning",
+              message: "地址格式错误",
+            });
 
-
-            return
+            return;
           }
         }
-        console.log(this.printerIp)
-      this.connectTip="连接中"
-         axios.get("http://localhost:8999/api/"+this.printerIp+"/3550", {
-                headers:{
-          'Content-Type': 'application/json',
+        console.log(this.printerIp);
+        this.connectTip = "连接中";
+        axios
+          .get("http://localhost:8999/api/" + this.printerIp + "/3550", {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          })
+          .then((r) => {
+            if (r.code == 0) {
+              this.$message({
+                type: "success",
+                message: "连接打印机成功",
+              });
+
+              this.connectStatus = true;
+            } else {
+              this.connectTip = "未连接";
             }
-      }).then(r=>{
-        if(r.code==0){
-          this.$message({
-                  type: "success",
-                  message: "连接打印机成功"
-                });
-
-          this.connectStatus=true
-        }else{
-          this.connectTip="未连接"
-        }
-      })
-
-      }else{
-                                                    this.$message({
-                  type: "warning",
-                  message: "地址格式错误"
-                });
+          });
+      } else {
+        this.$message({
+          type: "warning",
+          message: "地址格式错误",
+        });
       }
     },
-    resetPrint(){
-      this.spliceAt=0
-      this.SelectedPrintOrder=""
-      this.processShow=false
+    resetPrint() {
+      this.nowPrintSeq = "";
+      // this.SelectedPrintOrder=""
+      this.connectStatus = false;
+      this.firstTimePrint=1
+      this.cidrs = "";
+      this.processShow = false;
     },
-    startPrint(){
+    startPrint() {
       // this.printOrderDone
-      // for (var i in this.spliceArrs){
+      // for (var i in this.printArr){
 
       // }
-      if(!this.connectStatus){
+      if (!this.connectStatus) {
         this.$message({
-                  type: "warning",
-                  message: "请先连接打印机"
-                });
-                return
+          type: "warning",
+          message: "请先连接打印机",
+        });
+        return;
       }
-      this.spliceAt=0
-      this.processShow=true
+      this.printSeqAt = 0;
+      this.processShow = true;
 
-      var cut=0
-      // outer: for(var i in this.spliceArrs){
-      //   for(var j in this.spliceArrs[i]){
-      //     if(this.startPrintSeq==this.spliceArrs[i][j].docSequence){
+      var cut = 0;
+      // outer: for(var i in this.printArr){
+      //   for(var j in this.printArr[i]){
+      //     if(this.nowPrintSeq==this.printArr[i][j].docSequence){
       //       cut=i
       //       break outer;
       //     }
       //   }
       // }
 
-      // this.spliceArrs=this.spliceArrs.slice(cut)
-      
+      // this.printArr=this.printArr.slice(cut)
 
-      // var arrt=this.spliceArrs[this.spliceAt]
-      var tstring=""
-      console.log(this.spliceArrs)
+      // var arrt=this.printArr[this.printSeqAt]
+      var tstring = "";
+      console.log(this.printArr);
       // for(var i in arrt){
       //   tstring=tstring+arrt[i].docSequence
       // }
@@ -1790,372 +2344,438 @@ axios({
       // }
 
       // this.processInfo=tstring+",共"+arrt.length+"件"
-      
 
-      // this.sendQR(this.spliceArrs[0]);
+      // this.sendQR(this.printArr[0]);
     },
 
-    nextPrint(){
-
-      this.spliceAt+=1
-      this.startPrintSeq=this.spliceArrs[this.spliceAt].docSequence
-
-      
-      return
-
-      this.spliceAt++
-      if(this.spliceAt>=this.spliceArrs.length){
-                                this.$message({
-                  type: "success",
-                  message: "已全部打印"
-                });
-
-        return
+    nextPrint() {
+      if (this.printSeqAt < this.maxSeq) {
+        
+        this.printSeqAt = parseInt(this.printSeqAt) + 1;
       }
-      var arrt=this.spliceArrs[this.spliceAt]
-      var tstring=""
 
-          if(this.printType=="件号"){
-      tstring=arrt.length==1?arrt[0].docNum:arrt[0].docNum+"~"+arrt[arrt.length-1].docNum
+      return;
 
-      }else{
-      tstring=arrt.length==1?arrt[0].docSequence:arrt[0].docSequence+"~"+arrt[arrt.length-1].docSequence
+      this.printSeqAt++;
+      if (this.printSeqAt >= this.printArr.length) {
+        this.$message({
+          type: "success",
+          message: "已全部打印",
+        });
 
+        return;
       }
-  
+      var arrt = this.printArr[this.printSeqAt];
+      var tstring = "";
 
-           this.processInfo=tstring+",共"+arrt.length+"件"
+      if (this.printType == "件号") {
+        tstring =
+          arrt.length == 1
+            ? arrt[0].docNum
+            : arrt[0].docNum + "~" + arrt[arrt.length - 1].docNum;
+      } else {
+        tstring =
+          arrt.length == 1
+            ? arrt[0].docSequence
+            : arrt[0].docSequence + "~" + arrt[arrt.length - 1].docSequence;
+      }
 
+      this.processInfo = tstring + ",共" + arrt.length + "件";
     },
-     prePrint(){
+    prePrint() {
       //  this.connectStatus=true
-       this.spliceAt-=1
-      this.startPrintSeq=this.spliceArrs[this.spliceAt].docSequence
 
-
-      return
-
-     if(this.spliceAt>0) {
-        this.spliceAt--
-     }
-    if(this.spliceAt>=this.spliceArrs.length){
-                                this.$message({
-                  type: "success",
-                  message: "已全部打印"
-                });
-
-        return
+      if (this.printSeqAt > 0) {
+        this.printSeqAt = parseInt(this.printSeqAt) - 1;
       }
-      var arrt=this.spliceArrs[this.spliceAt]
-      var tstring=""
+      //this.nowPrintSeq=this.printArr[this.printSeqAt].docSequence
 
-            if(this.printType=="件号"){
-      tstring=arrt.length==1?arrt[0].docNum:arrt[0].docNum+"~"+arrt[arrt.length-1].docNum
+      return;
 
-      }else{
-      tstring=arrt.length==1?arrt[0].docSequence:arrt[0].docSequence+"~"+arrt[arrt.length-1].docSequence
-
+      if (this.printSeqAt > 0) {
+        this.printSeqAt--;
       }
-  
+      if (this.printSeqAt >= this.printArr.length) {
+        this.$message({
+          type: "success",
+          message: "已全部打印",
+        });
 
-          this.processInfo=tstring+",共"+arrt.length+"件"
+        return;
+      }
+      var arrt = this.printArr[this.printSeqAt];
+      var tstring = "";
 
+      if (this.printType == "件号") {
+        tstring =
+          arrt.length == 1
+            ? arrt[0].docNum
+            : arrt[0].docNum + "~" + arrt[arrt.length - 1].docNum;
+      } else {
+        tstring =
+          arrt.length == 1
+            ? arrt[0].docSequence
+            : arrt[0].docSequence + "~" + arrt[arrt.length - 1].docSequence;
+      }
+
+      this.processInfo = tstring + ",共" + arrt.length + "件";
     },
 
-    printOrderBlur(){},
-    printOrderDone(){
-//   "按识别号小到大正序",
-  // "按识别号大到小逆序",
-  // "按件号顺序",
+    printOrderBlur() {},
+    //     printOrderDone(){
+    // //   "按识别号小到大正序",
+    //   // "按识别号大到小逆序",
+    //   // "按件号顺序",
 
+    //       if(this.SelectedPrintOrder=="按识别号小到大正序"){
+    //       var Larry= this.sortL();
+    //       // this.$store.state.alreadyDocs=Larry  //由 arr.filter 产生的部分符合条件的alreadydocs 和  rawdocs是指向的同一个数组？ 修改 a也修改了r
+    //       this.printArr=this.spliceUtil(Larry)  //分组
+    //       // this.printArr=Larry;
 
-      if(this.SelectedPrintOrder=="按识别号小到大正序"){
-      var Larry= this.sortL();
-      // this.$store.state.alreadyDocs=Larry  //由 arr.filter 产生的部分符合条件的alreadydocs 和  rawdocs是指向的同一个数组？ 修改 a也修改了r
-      this.spliceArrs=this.spliceUtil(Larry)  //分组
-      // this.spliceArrs=Larry;
-      
-      // this.
-      // this.$store.state.alreadyDocs=Larry
-      }else if(this.SelectedPrintOrder=="按识别号大到小逆序"){
-        var Rarray = this.sortR();
-      this.spliceArrs=this.spliceUtil(Rarray)
-        this.printType="识别号"
+    //       // this.
+    //       // this.$store.state.alreadyDocs=Larry
+    //       }else if(this.SelectedPrintOrder=="按识别号大到小逆序"){
+    //         var Rarray = this.sortR();
+    //       this.printArr=this.spliceUtil(Rarray)
+    //         this.printType="识别号"
 
+    //       }else if(this.SelectedPrintOrder=="按件号顺序"){
+    //         var ar=this.deepClone(this.$store.state.rawDocs)
+    //         this.printArr=this.spliceUtil(ar)
+    //         this.printType="件号"
+    //       }
+    //     },
 
-      }else if(this.SelectedPrintOrder=="按件号顺序"){
-        var ar=this.deepClone(this.$store.state.rawDocs)
-        this.spliceArrs=this.spliceUtil(ar)
-        this.printType="件号"
-      }
-    },
-
-    spliceUtil(arr){//因为格式的打印切片
-      var totalArr=[]
-      for (var i in arr){
+    spliceUtil(arr) {
+      //因为格式的打印切片
+      var totalArr = [];
+      for (var i in arr) {
         // if(isNumber(arr[i].deadline)){
         //   arr[i].deadline=arr[i].deadline+""
         // }
-        totalArr.push(arr[i])
+        totalArr.push(arr[i]);
       }
       //console.log(totalArr)
-      var pos=0;
+      var pos = 0;
       var posDoc;
-      var lastDoc=totalArr[0];
-      var formatArrays=[]
-      var temArray=[]
-      temArray.push(totalArr[0])
-      for(var j in totalArr){
-        if(j==0) continue
-        posDoc=totalArr[j]
-        lastDoc=totalArr[j-1]
-        if((posDoc.docNum+"").length!=(lastDoc.docNum+"").length
-        ||posDoc.docAbout.length!=lastDoc.docAbout.length
-        ||this.isNumber(posDoc.deadline)!=this.isNumber(lastDoc.deadline)
-      ||(posDoc.deadline+"").length!=(lastDoc.deadline+"").length
-      // ||(posDoc.boxSeq+"").length!=(lastDoc.boxSeq+"").length
-      ||(posDoc.docPage+"").length!=(lastDoc.docPage+"").length
-      
-      ){
-        //console.log("前一个"+(posDoc.docNum+"").length+"原字符串是"+posDoc.docNum + "  后一个："+(lastDoc.docNum+"").length+"原字符串是"+lastDoc.docNum )
-          formatArrays.push(temArray)
-          temArray=[]
-          temArray.push(totalArr[j])
-          if(j==totalArr.length-1) formatArrays.push(temArray)
-          continue
-      }else{
-        temArray.push(totalArr[j])
-          if(j==totalArr.length-1) formatArrays.push(temArray)
-        continue
-      }
-      
+      var lastDoc = totalArr[0];
+      var formatArrays = [];
+      var temArray = [];
+      temArray.push(totalArr[0]);
+      for (var j in totalArr) {
+        if (j == 0) continue;
+        posDoc = totalArr[j];
+        lastDoc = totalArr[j - 1];
+        if (
+          (posDoc.docNum + "").length != (lastDoc.docNum + "").length ||
+          posDoc.docAbout.length != lastDoc.docAbout.length ||
+          this.isNumber(posDoc.deadline) != this.isNumber(lastDoc.deadline) ||
+          (posDoc.deadline + "").length != (lastDoc.deadline + "").length ||
+          // ||(posDoc.boxSeq+"").length!=(lastDoc.boxSeq+"").length
+          (posDoc.docPage + "").length != (lastDoc.docPage + "").length
+        ) {
+          //console.log("前一个"+(posDoc.docNum+"").length+"原字符串是"+posDoc.docNum + "  后一个："+(lastDoc.docNum+"").length+"原字符串是"+lastDoc.docNum )
+          formatArrays.push(temArray);
+          temArray = [];
+          temArray.push(totalArr[j]);
+          if (j == totalArr.length - 1) formatArrays.push(temArray);
+          continue;
+        } else {
+          temArray.push(totalArr[j]);
+          if (j == totalArr.length - 1) formatArrays.push(temArray);
+          continue;
+        }
+
         // if(posDoc.)
       }
       //console.log(formatArrays)
-      return formatArrays
-
+      return formatArrays;
     },
 
-// 1,13533,1116,333,四个得得问题,100,222,年
-    sendQR(arr){
-      var txtString=""
-      for(var i in arr){
-        var order=parseInt(i)
-        order=order+","
-
-        txtString=txtString+order+sessionStorage.getItem("authCode")+","+arr[0].sortYear+","+arr[i].docNum+","+arr[i].docAbout+","+arr[i].deadline+","+arr[i].docPage+","+"年"+"\n"
-                if(i==arr.length-1){//最后一个数据多写一份
-                var c=parseInt(order+1)
-        txtString=txtString+c+","+sessionStorage.getItem("authCode")+","+arr[0].sortYear+","+arr[i].docNum+","+arr[i].docAbout+","+arr[i].deadline+","+arr[i].docPage+","+"年"+"\n"
+    // 1,13533,1116,333,四个得得问题,100,222,年
+    sendQR(arr) {
+      var txtString = "";
+      var tipString = "";
+      for (var i in arr) {
+        var order = parseInt(i);
+        order = order + ",";
+        txtString =
+          txtString +
+          order +
+          sessionStorage.getItem("authCode") +
+          "," +
+          arr[0].sortYear +
+          "," +
+          arr[i].docNum +
+          "," +
+          arr[i].docAbout +
+          "," +
+          arr[i].deadline +
+          "," +
+          arr[i].docPage +
+          "," +
+          "年" +
+          "\n";
+        if (i == arr.length - 1) {
+          //最后一个数据多写一份
+          var c = parseInt(order + 1);
+          txtString =
+            txtString +
+            c +
+            "," +
+            sessionStorage.getItem("authCode") +
+            "," +
+            arr[0].sortYear +
+            "," +
+            arr[i].docNum +
+            "," +
+            arr[i].docAbout +
+            "," +
+            arr[i].deadline +
+            "," +
+            arr[i].docPage +
+            "," +
+            "年" +
+            "\n";
         }
       }
-      
-      var p={}
-      p.txtString=txtString
-      var params={}
-      params.params=p
+      tipString +=
+        arr[0].docSequence +
+        "-" +
+        sessionStorage.getItem("authCode") +
+        "," +
+        arr[0].sortYear +
+        "," +
+        arr[i].docNum +
+        "," +
+        arr[i].docAbout +
+        "," +
+        arr[i].deadline +
+        "," +
+        arr[i].docPage;
 
-      console.log(p)
-       return  new Promise((resolve, reject)=>{
-         axios({
-     method: "post",
-     url:"http://localhost:8999/api/writeData",
-     data:{
-            txtString:txtString
-            },
-            timeout:6000
+      var deadlineType = "1";
+      if (!this.isNumber(arr[0].deadline)) {
+        deadlineType = "1"; //长期永久
+      } else if (arr[0].deadline.length == 2) {
+        deadlineType = "2";
+      } else {
+        deadlineType = "3";
+      }
 
- }).then(r=>{
-        if(r.code==0){
-          resolve(true)
-        }else{
-          resolve(false)
-          
-        }
-        console.log("write txtData")
-        console.log(r)
-      })
-       })
+      var p = {};
+      p.txtString = txtString;
+      var params = {};
+      params.params = p;
 
+      console.log(p);
+      return new Promise((resolve, reject) => {
+        axios({
+          method: "post",
+          url: "http://localhost:8999/api/writeData",
+          data: {
+            txtString: txtString,
+            tip: deadlineType + "," + tipString,
+          },
+          timeout: 6000,
+        }).then((r) => {
+          if (r.code == 0) {
+            resolve(true);
+          } else {
+            resolve(false);
+          }
+          console.log("write txtData");
+          console.log(r);
+        });
+      });
     },
 
-    connectPrinter(ip){
-      this.connectTip="连接中"
-       axios.get("http://localhost:8999/api/"+ip+"/3550", {
-                headers:{
-          'Content-Type': 'application/json',
-
-
-            }
-      }).then(r=>{
-        console.log(r)
-        if(r.code!=0){
-          this.connectTip="未连接"
-          // this.connectTip=""
-        }
-      })
-
+    connectPrinter(ip) {
+      this.connectTip = "连接中";
+      axios
+        .get("http://localhost:8999/api/" + ip + "/3550", {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        })
+        .then((r) => {
+          console.log(r);
+          if (r.code != 0) {
+            this.connectTip = "未连接";
+            // this.connectTip=""
+          }
+        });
     },
 
-
-    sendFormat(arr){
+    sendFormat(arr) {
       // var docAboutNum=arr[0].docAbout.length //位数
       // var docNumNum=arr[0].docNum
       // var pageNum=arr[0].docPage
-      var deadlineType="1";
-      if(!this.isNumber(arr[0].deadline)){
-        deadlineType="1"
+      console.log("send format：" + arr[0]);
+      var deadlineType = "1";
+      if (!this.isNumber(arr[0].deadline)) {
+        deadlineType = "1";
+      } else if (arr[0].deadline.length == 2) {
+        deadlineType = "2";
+      } else {
+        deadlineType = "3";
       }
-      else if(arr[0].deadline.length==2){
-        deadlineType="2"
-      }else{
-        deadlineType="3"
-      }
 
-      var pjson={}
-      pjson.authCode=sessionStorage.getItem("authCode").length+""
-      pjson.docAbout=arr[0].docAbout.length+""
-      pjson.page=(arr[0].docPage+"").length+""
-      pjson.docNum=(arr[0].docNum+"").length+""
-      console.log("?????"+arr[0].docNum)
-      pjson.deadline=deadlineType
+      var pjson = {};
+      pjson.authCode = sessionStorage.getItem("authCode").length + "";
+      pjson.docAbout = arr[0].docAbout.length + "";
+      pjson.page = (arr[0].docPage + "").length + "";
+      pjson.docNum = (arr[0].docNum + "").length + "";
+      console.log("?????" + arr[0].docNum);
+      pjson.deadline = deadlineType;
 
-      var p={}
-      p.params=pjson
+      var p = {};
+      p.params = pjson;
 
- return  new Promise((resolve, reject)=>{
-         
-         
-axios({
-     method: "post",
-     url:"http://localhost:8999/api/writeFormat",
-     data:{
-            params:JSON.stringify(pjson)
-            },
-            timeout:6000
-
- }).then(r=>{
-        console.log("write format")
-        console.log(r)
-        if(r&&r.code==0){
-           resolve(true)
-        }else{
-          resolve (false)
-        }
-      })
- })
-
-
+      return new Promise((resolve, reject) => {
+        axios({
+          method: "post",
+          url: "http://localhost:8999/api/writeFormat",
+          data: {
+            params: JSON.stringify(pjson),
+          },
+          timeout: 6000,
+        }).then((r) => {
+          console.log("write format");
+          console.log(r);
+          if (r && r.code == 0) {
+            resolve(true);
+          } else {
+            resolve(false);
+          }
+        });
+      });
     },
-deepClone(initalObj) {
-    var obj = {};
+    deepClone(initalObj) {
+      var obj = {};
 
-        obj = JSON.parse(JSON.stringify(initalObj));
+      obj = JSON.parse(JSON.stringify(initalObj));
 
-    return obj;
-},
-  sortR(){ //大到小
-      var rArray=[]
-        //       rArray = this.$store.state.rawDocs.filter(function (element, index, self) {  //复制？ no
-        //   return true
-        // });
-        // rArray[0].docTitle="aaaaaaaaaa"
+      return obj;
+    },
+    sortR() {
+      //大到小
+      var rArray = [];
 
-      rArray = this.deepClone(this.$store.state.rawDocs)
-      // rArray[0].authCode=111
-      // //console.log(rArray)
-      // //console.log(this.$store.state.rawDocs)
-      rArray[0].docTitle="bbbbbbbbb"
+      rArray = this.deepClone(this.$store.state.rawDocs);
 
-function sortData(a, b) {
-return parseInt(b.docSequence) - parseInt(a.docSequence)
-}
-var t=[]
-for(var i in rArray){
-  t.push(rArray[i])
-}
-//console.log(t)
-t.sort(sortData)
-for(var k in t){
-  if(t[k].deleted==1){
-    t.splice(k,1)
-  }
-}
+      function sortData(a, b) {
+        return parseInt(b.docSequence) - parseInt(a.docSequence);
+      }
+      var t = [];
+      for (var i in rArray) {
+        t.push(rArray[i]);
+      }
+      //console.log(t)
+      t.sort(sortData);
+      for (var k in t) {
+        if (t[k].deleted == 1) {
+          t.splice(k, 1);
 
-return t
+          k = k - 1;
+        }
+      }
 
+      return t;
+    },
+    getPrints() {
+      var r;
+      r = this.deepClone(this.$store.state.rawDocs);
+      var t = r;
+      for (var k = 0; k < t.length; k++) {
+        console.log(t[k].deleted);
+        if (t[k].deleted != 0) {
+          console.log(t[k]);
+          t.splice(k, 1);
+          k--; //数组减小了
+        }
+      }
+      return t;
+    },
+    sortL() {
+      //小到大
+      var rArray = [];
+      //       rArray = this.$store.state.rawDocs.filter(function (element, index, self) {  //复制？ no
+      //   return true
+      // });
+      // rArray[0].docTitle="aaaaaaaaaa"
 
-},
-    sortL(){ //小到大
-      var rArray=[]
-        //       rArray = this.$store.state.rawDocs.filter(function (element, index, self) {  //复制？ no
-        //   return true
-        // });
-        // rArray[0].docTitle="aaaaaaaaaa"
-
-      rArray = this.deepClone(this.$store.state.rawDocs)
+      rArray = this.deepClone(this.$store.state.rawDocs);
       // rArray[0].docTitle="aaaabbbaaaaaa"
       // rArray[1]={}
       //console.log(rArray)
       //console.log(this.$store.state.rawDocs)
 
-function sortData(a, b) {
-return parseInt(a.docSequence) - parseInt(b.docSequence)
-}
-var t=[]
-for(var i in rArray){
-  t.push(rArray[i])
-}
-t.sort(sortData)
-
-for(var k in t){
-  if(t[k].deleted==1){
-    t.splice(k,1)
-  }
-}
-return t
-
-
-    },
-    PrintSocket(){
-
-      this.spliceArrs=this.sortR()
-      this.spliceAt=0;
-      this.startPrintSeq=this.spliceArrs[0].docSequence
-      this.PrintControllshow=true
-
-    },
-
- enterToPrint(){
-   //console.log("p")
- },
- showKWMClick(){
-   this.showKWM=true;
-      window.scrollTo(0, 0);
-
- },
- hideSubKWM(){
-   this.showKWM=false;
- },
-    boxOver(item){
-      if(!this.myBoxNumSwitch) return
-      if(this.startSeq){
-        if(item.docSequence==this.startSeq) return //鼠标又移到“开始”上 
-        // if(this.endInfo.docSequence==item.docSequence) return //
-        this.endInfo.docSequence=item.docSequence
-        this.endInfo.boxSeq=item.boxSeq
-                item.boxSeq="结束"
-
-        this.endSeq=item.docSequence
-        this.preComputeBox()
+      function sortData(a, b) {
+        return parseInt(a.docSequence) - parseInt(b.docSequence);
       }
-      if(this.startSeq==""){//没有点开始
+      var t = [];
+      for (var i in rArray) {
+        t.push(rArray[i]);
+      }
+      t.sort(sortData);
+      console.log("arr len" + rArray.length);
+      for (var k = 0; k < t.length; k++) {
+        console.log(t[k].deleted);
+        if (t[k].deleted != 0) {
+          console.log(t[k]);
+          t.splice(k, 1);
+          k--; //数组减小了
+        }
+      }
+      return t;
+    },
+    PrintSocket() {
+      this.printArr = this.getPrints();
+      console.log(this.printArr);
 
-        this.startInfo.docSequence=item.docSequence
-        this.startInfo.boxSeq=item.boxSeq
+      this.maxSeq = 1;
+      for (var i in this.printArr) {
+        if (this.maxSeq < parseInt(this.printArr[i].docSequence)) {
+          this.maxSeq = parseInt(this.printArr[i].docSequence);
+          this.printIndex = i;
+        }
+      }
+      this.printSeqAt = this.maxSeq;
+      //this.nowPrintSeq=th
+      this.PrintControllshow = true;
+    },
 
+    enterToPrint() {
+      //console.log("p")
+    },
+    showKWMClick() {
+      this.showKWM = true;
+      window.scrollTo(0, 0);
+    },
+    hideSubKWM() {
+      this.showKWM = false;
+    },
+    boxOver(item) {
+      if (!this.myBoxNumSwitch) return;
+      if (this.startSeq) {
+        if (item.docSequence == this.startSeq) return; //鼠标又移到“开始”上
+        // if(this.endInfo.docSequence==item.docSequence) return //
+        this.endInfo.docSequence = item.docSequence;
+        this.endInfo.boxSeq = item.boxSeq;
+        item.boxSeq = "结束";
 
-        item.boxSeq="开始"
+        this.endSeq = item.docSequence;
+        this.preComputeBox();
+      }
+      if (this.startSeq == "") {
+        //没有点开始
+
+        this.startInfo.docSequence = item.docSequence;
+        this.startInfo.boxSeq = item.boxSeq;
+
+        item.boxSeq = "开始";
         // // this.startStyleCtrl=true
         // for(var i in this.$store.alreadyDocs){ //把上一个还原
         //   if(this.$store.alreadyDocs[i].docSequence==this.startInfo.docSequence){
@@ -2163,210 +2783,295 @@ return t
         //   }
         // }
         // //存新的
-
       }
     },
-    boxLeave(item){
-      if(this.startSeq==item.docSequence){
-        return
+    boxLeave(item) {
+      if (this.startSeq == item.docSequence) {
+        return;
       }
       // if(this.endSeq==item.docSequence) return
-      if(this.startInfo.docSequence==item.docSequence){
-        item.boxSeq= this.startInfo.boxSeq //还原开始候选者的信息
+      if (this.startInfo.docSequence == item.docSequence) {
+        item.boxSeq = this.startInfo.boxSeq; //还原开始候选者的信息
       }
 
-      if(this.endInfo.docSequence==item.docSequence){
-        item.boxSeq=this.endInfo.boxSeq
+      if (this.endInfo.docSequence == item.docSequence) {
+        item.boxSeq = this.endInfo.boxSeq;
       }
     },
-    boxClick(item){//点击事件
-      if(this.myBoxNumSwitch){ //点了手动排盒号后才起作用
-      // this.boxSeqText="结束"
-      if(this.startSeq==""){ //还没指定开始的文档
-        this.startSeq=item.docSequence
+    boxClick(item) {
+      //点击事件
+      if (this.myBoxNumSwitch) {
+        //点了手动排盒号后才起作用
+        // this.boxSeqText="结束"
+        if (this.startSeq == "") {
+          //还没指定开始的文档
+          this.startSeq = item.docSequence;
+          return;
+        }
+        //指定了开始的文档，该指定结束的文档
+        this.endSeq = item.docSequence;
+
+        var ddl1
+        var ddl2
+        var index1
+        var index2
+        for(var i  in this.$store.state.alreadyDocs){
+          if(this.$store.state.alreadyDocs[i].docSequence==this.startSeq){
+            ddl1=this.$store.state.alreadyDocs[i].deadline
+            index1=i
+          }
+          if(this.$store.state.alreadyDocs[i].docSequence==this.endSeq){
+            ddl2=this.$store.state.alreadyDocs[i].deadline
+            index2=i
+          }
+        }
+        if(ddl2!=ddl1){
+          this.endSeq=""
+                    this.$message({
+            type: "warning",
+            message: "不是同一盒型",
+          });
         return
+        }
+        if(index1>index2){
+                    this.endSeq=""
+                    this.$message({
+            type: "warning",
+            message: "操作错误",
+          });
+        return
+        }
+        if (this.startSeq && this.endSeq ) {
+          // alert("kaishi:"+this.startSeq+"..jieshu:"+this.endSeq)
+          // this.preComputeBox()
+          //点击后清除  hover不清除
+          // var tindex;
+          // for(var i in this.$store.state.alreadyDocs){
+          //   if(this.endSeq==this.$store.state.alreadyDocs[i].docSequence){
+          //     tindex=i
+          //     break
+          //   }
+          // }
+
+          this.showStartBoxSet = true;
+          
+          this.$message({
+            type: "success",
+            message: "修改完成后请点击“保存盒号”",
+          });
+        }
       }
-    //指定了开始的文档，该指定结束的文档
-      this.endSeq=item.docSequence
-   
-      if(this.startSeq&&this.endSeq){ 
-        
-        // alert("kaishi:"+this.startSeq+"..jieshu:"+this.endSeq)
-        // this.preComputeBox()
-        //点击后清除  hover不清除
-        this.showStartBoxSet=true
-                        this.$message({
-                  type: "success",
-                  message: "修改完成后请点击“保存盒号”"
-                });
-
-
-
-      }
- }
     },
 
-    manualBox(){
-      
-      this.showStartBoxSet=false
-var start =-1//下标
-      var end=-1
-      var docs=this.$store.state.alreadyDocs
-      for(var i=0;i<docs.length;i++){
- 
-        if(docs[i].docSequence==this.startSeq){
-          start=i
+    manualBox() {
+      this.showStartBoxSet = false;
+      var start = -1; //下标
+      var end = -1;
+      var thisBoxTypeLastIndex=-1  //手动操作影响的盒形范围
+      var docs = this.$store.state.alreadyDocs;
+      for (var i = 0; i < docs.length; i++) {
+        if (docs[i].docSequence == this.startSeq) {
+          start = i;
         }
-        if(docs[i].docSequence==this.endSeq){
-          end=i
+        if (docs[i].docSequence == this.endSeq) {
+          end = i;
         }
+
       }
- var j=start
-      if(start>=0){
-           for(;j<=end;j++){
-            docs[j].boxSeq=this.startBoxNum
-            this.boxNumMap[docs[j].id]=this.startBoxNum
+      console.log(docs.length)
+            for (var i = end; i < docs.length; i++) {
+                            if(docs[i].deadline!=docs[end].deadline){
+          thisBoxTypeLastIndex=i-1
+          break
+        }
+            }
+
+        if(thisBoxTypeLastIndex==-1){
+          thisBoxTypeLastIndex=docs.length-1
+        }
+
+
+      var j = start;
+//33
+//5
+//5
+//5
+
+      console.log(thisBoxTypeLastIndex)
+      // var k = end+1;
+      // var delta=parseInt(this.startBoxNum)+1-parseInt(docs[k].boxSeq)
+      // for(;k<=thisBoxTypeLastIndex;k++){
+      //   docs[k].boxSeq=parseInt(docs[k].boxSeq)+delta
+      // }
+
+      if (start >= 0) {
+        for (; j <= end; j++) {
+          docs[j].boxSeq = this.startBoxNum;
         }
       }
 
-      this.startSeq=""
-      this.endSeq=""
-      this.startInfo={}
-      this.endInfo={}
+      if(end<thisBoxTypeLastIndex){
+        docs[end+1].boxSeq=parseInt(this.startBoxNum)+1
+        docs[end+1].pageTotal=parseInt(docs[end+1].docPage)
+      }
+      var delta1=1
+      var boxSum=docs[end+1].pageTotal
+
+      for(var k=end+2;k<=thisBoxTypeLastIndex;k++){
+        var beforeSum=boxSum
+        var tempSum=boxSum+parseInt(docs[k].docPage)
+        var reBox=false
+        var pageNow=parseInt(docs[k].docPage)
+        if(tempSum>180||pageNow>180){
+          reBox=true
+        }
+
+        if(docs[k].docAbout!=docs[k-1].docAbout||docs[k].docSecret!=docs[k].docSecret||reBox){
+          delta1++
+          boxSum=parseInt(docs[k].docPage)
+          docs[k].boxSeq=parseInt(this.startBoxNum)+delta1
+          docs[k].pageTotal=parseInt(docs[k].docPage)
+        }else{
+          docs[k].boxSeq=parseInt(this.startBoxNum)+delta1
+          boxSum+=parseInt(docs[k].docPage)
+          docs[k].pageTotal=boxSum
+        }
+      }
+      
+              j=start
+        for (; j <= thisBoxTypeLastIndex; j++) {
+          this.boxNumMap[docs[j].id] = docs[j].boxSeq+"-"+docs[j].pageTotal;
+        }
+
+      this.startSeq = "";
+      this.endSeq = "";
+      this.startInfo = {};
+      this.endInfo = {};
       //console.log(this.boxNumMap)
     },
-    cancleManulBox(){
-      this.showStartBoxSet=false
-            this.startSeq=""
-      this.endSeq=""
+    cancleManulBox() {
+      this.showStartBoxSet = false;
+      this.startSeq = "";
+      this.endSeq = "";
     },
 
-    preComputeBox(){//鼠标悬停预览计数
- 
-      var start =-1//下标
-      var end=-1
-      var docs=this.$store.state.alreadyDocs
-      for(var i=0;i<docs.length;i++){
- 
-        if(docs[i].docSequence==this.startSeq){
-          start=i
+    preComputeBox() {
+      //鼠标悬停预览计数
+
+      var start = -1; //下标
+      var end = -1;
+      var docs = this.$store.state.alreadyDocs;
+      for (var i = 0; i < docs.length; i++) {
+        if (docs[i].docSequence == this.startSeq) {
+          start = i;
         }
-        if(docs[i].docSequence==this.endSeq){
-          end=i
+        if (docs[i].docSequence == this.endSeq) {
+          end = i;
         }
       }
- 
-      if(start>=0){
-        var pageCount=docs[start].docPage
+
+      if (start >= 0) {
+        var pageCount = docs[start].docPage;
         //console.log(pageCount)
-        docs[start].pageTotal=pageCount
-        var j=start+1
-        for(;j<=end;j++){
-          pageCount=pageCount+docs[j].docPage
-          docs[j].pageTotal=pageCount
+        docs[start].pageTotal = pageCount;
+        var j = start + 1;
+        for (; j <= end; j++) {
+          pageCount = pageCount + docs[j].docPage;
+          docs[j].pageTotal = pageCount;
           //console.log(pageCount)
         }
       }
       //console.log(docs)
-
- 
-      
     },
-    myBoxNum(){
-      var req={boxes:this.boxNumMap}
-      if(this.myBoxNumSwitch){//点击保存
-       
-              this.postRequest(
-        "/work/boxSet/"+sessionStorage.getItem("batchId"),
-        JSON.stringify(this.boxNumMap)
-      ).then((resp) => {
-        //console.log(resp)
-        if(resp.code==0){
+    myBoxNum() {
+      var req = { boxes: this.boxNumMap };
+      if (this.myBoxNumSwitch) {
+        //点击保存
+
+        this.postRequest(
+          "/work/boxSet/" + sessionStorage.getItem("batchId"),
+          JSON.stringify(this.boxNumMap)
+        ).then((resp) => {
+          //console.log(resp)
+          if (resp.code == 0) {
             this.$message({
               type: "success",
-              message: "保存成功，若重新排件号将覆盖已保存盒号"
+              message: "保存成功，若重新排件号将覆盖已保存盒号",
             });
-        }
-      })
- this.myBoxNumSwitch=false
- return
+          }
+        });
+        this.myBoxNumSwitch = false;
+        return;
       }
-      if(!this.myBoxNumSwitch){
+      if (!this.myBoxNumSwitch) {
         //点击手动排盒号
-        this.myBoxNumSwitch=true
- 
-
-
+        this.myBoxNumSwitch = true;
       }
     },
-    showDeleted(){
+    showDeleted() {
       //       this.$store.state.alreadyDocs[0].docSequence=999
       // //console.log(this.$store.state.alreadyDocs)
       // //console.log(this.$store.state.rawDocs)
       // return
-      this.deletedShowSwitch=!this.deletedShowSwitch
-      if(this.deletedShowSwitch==0){
-        this.showWaitingFlag=true
-      var path =
-        "/document/page/" +
-        sessionStorage.getItem("docType") +
-        "/" +
-        sessionStorage.getItem("batchId") +
-        "?pageNow=0&pageSize=100000"; //
+      this.deletedShowSwitch = !this.deletedShowSwitch;
+      if (this.deletedShowSwitch == 0) {
+        this.showWaitingFlag = true;
+        var path =
+          "/document/page/" +
+          sessionStorage.getItem("docType") +
+          "/" +
+          sessionStorage.getItem("batchId") +
+          "?pageNow=0&pageSize=100000"; //
 
-      axios
-        .get(this.baseurl + path, {
-          headers: {
-            "Content-Type": "application/json",
-            authId: sessionStorage.getItem("authId"),
-            token: localStorage.getItem("token")
-              ? localStorage.getItem("token").split('"')[1] ||
-                localStorage.getItem("token")
-              : null,
-          },
-        })
-        .then((resp) => {
-          if (resp) {
-             this.$store.state.sequenceDocs=resp.data.content
-            this.showWaitingFlag = false;
-            // }
-             this.$store.state.alreadyDocs=this.$store.state.sequenceDocs
-          }
-        })
+        axios
+          .get(this.baseurl + path, {
+            headers: {
+              "Content-Type": "application/json",
+              authId: sessionStorage.getItem("authId"),
+              token: localStorage.getItem("token")
+                ? localStorage.getItem("token").split('"')[1] ||
+                  localStorage.getItem("token")
+                : null,
+            },
+          })
+          .then((resp) => {
+            if (resp) {
+              this.$store.state.sequenceDocs = resp.data.content;
+              this.showWaitingFlag = false;
+              // }
+              this.$store.state.alreadyDocs = this.$store.state.sequenceDocs;
+            }
+          });
 
-     
-
-      //console.log("全部的文件按照序列号，开关处于已删除文件")
-
-      }else{
-      // this.$store.state.alreadyDocs=this.$store.state.rawDocs
-      this.showAllDocs()
+        //console.log("全部的文件按照序列号，开关处于已删除文件")
+      } else {
+        // this.$store.state.alreadyDocs=this.$store.state.rawDocs
+        this.showAllDocs();
         // this.$store.state.alreadyDocs=this.alreadyDocsRestore
       }
-
     },
-    lockThisBatch(){
-                                    this.putRequest(
-        "/work/"+sessionStorage.getItem("batchId")+"/1/end"
+    lockThisBatch() {
+      this.putRequest(
+        "/work/" + sessionStorage.getItem("batchId") + "/1/end"
       ).then((resp) => {
         //console.log(resp)
-        if(resp.code==0){
-          this.isEnd=true
-          window.sessionStorage.setItem('isEnd',1)
+        if (resp.code == 0) {
+          this.isEnd = true;
+          window.sessionStorage.setItem("isEnd", 1);
         }
-      })
+      });
     },
 
-    unLockThisBatch(){
-                                    this.putRequest(
-        "/work/"+sessionStorage.getItem("batchId")+"/0/end"
+    unLockThisBatch() {
+      this.putRequest(
+        "/work/" + sessionStorage.getItem("batchId") + "/0/end"
       ).then((resp) => {
         //console.log(resp)
-        if(resp.code==0){
-          this.isEnd=false
-          window.sessionStorage.setItem('isEnd',0)
+        if (resp.code == 0) {
+          this.isEnd = false;
+          window.sessionStorage.setItem("isEnd", 0);
         }
-      })
+      });
     },
     sortYearCheckChange() {
       // alert(this.sortYearCheck)
@@ -2411,11 +3116,12 @@ var start =-1//下标
       this.ddlCheck = false;
       this.dabCheck = false;
       this.sortYearCheck = false;
+      if(this.deletedShowSwitch !=1){
+        return
+      }
 
-  
-        this.$store.state.alreadyDocs = this.$store.state.rawDocs //this.$store.state.rawDocs存的是所有的
-        //
-    
+      this.$store.state.alreadyDocs = this.$store.state.rawDocs; //this.$store.state.rawDocs存的是所有的
+      //
     },
 
     filterFromRequests1(item) {
@@ -2437,7 +3143,7 @@ var start =-1//下标
       window.scrollTo(0, 0);
       //console.log(this.alreadyDocsRestore)
       // alert(item)
-      this.alreadyDocsRestore=this.$store.state.rawDocs
+      this.alreadyDocsRestore = this.$store.state.rawDocs;
       if (this.alreadyDocsRestore.length > 0) {
         //console.log("把显示的列表设为储存的数据alreadyDocsRestore")
         this.$store.state.alreadyDocs = this.$store.state.rawDocs;
@@ -2480,21 +3186,22 @@ var start =-1//下标
         (this.ddlCheck || this.ddlCheck == "true") &&
         this.ddlCheck != "false"
       ) {
-        tempDocs = tempDocs.filter(function (element, index, self) {  //filter这个相当于切片  新的一组引用
+        tempDocs = tempDocs.filter(function (element, index, self) {
+          //filter这个相当于切片  新的一组引用
           return element.deadline == that.deadlineReq;
         });
       }
-            this.alreadyDocsRestore=tempDocs;
+      this.alreadyDocsRestore = tempDocs;
       //console.log("筛选后的docs")
 
       //console.log(tempDocs);
       //console.log("vux存的docs")
       //console.log(this.$store.state.rawDocs);
-      
 
       this.$store.state.alreadyDocs = tempDocs;
     },
-    filterThisRequest(str, item) { //姓名
+    filterThisRequest(str, item) {
+      //姓名
       window.scrollTo(0, 0);
 
       // alert(item)
@@ -2555,7 +3262,8 @@ var start =-1//下标
       }
     },
 
-    filterAlreadyDocs() { //
+    filterAlreadyDocs() {
+      //
       //获取批次中已经排好的数组时、获取时、排序时、排完件号盒号后需要调用
       //获取sortYear筛选条件
       // //console.log(this.$store.state.alreadyDocs)
@@ -2594,112 +3302,132 @@ var start =-1//下标
       var arr = Object.keys(data);
       return arr.length == 0; //true
     },
-    getDocAboutFilter(){
-      var docAboutWeightId
-      var organ=this.$store.state.organ //刷新就没有了
-      if(!organ.id){
-        organ=JSON.parse(sessionStorage.getItem("organ"))
-
+    getDocAboutFilter() {
+      var docAboutWeightId;
+      var organ = this.$store.state.organ; //刷新就没有了
+      if (!organ.id) {
+        organ = JSON.parse(sessionStorage.getItem("organ"));
       }
       //console.log(organ)
       // organ=JSON.parse(organ)
 
-       if (sessionStorage.getItem("docType") == "official") {
-         docAboutWeightId= organ.docIssueWig
+      if (sessionStorage.getItem("docType") == "official") {
+        docAboutWeightId = organ.docIssueWig;
       }
       if (sessionStorage.getItem("docType") == "science") {
-docAboutWeightId=organ.tecProjectWig
+        docAboutWeightId = organ.tecProjectWig;
       }
 
       if (sessionStorage.getItem("docType") == "business") {
-
-docAboutWeightId=organ.busProjectWig
+        docAboutWeightId = organ.busProjectWig;
       }
-      if(sessionStorage.getItem("docType")=="officialJ"){
-        docAboutWeightId=organ.docIssuejWig
+      if (sessionStorage.getItem("docType") == "officialJ") {
+        docAboutWeightId = organ.docIssuejWig;
       }
 
-      this.docAboutFilter=[]
-       this.getRequest("/weight/" + docAboutWeightId)
-              .then((resp) => {
-                for(var attr in resp.data.tables){
-                  //console.log(resp.data.tables)
-                  this.docAboutFilter.push(attr)
-                }
-              })
-
+      this.docAboutFilter = [];
+      this.getRequest("/weight/" + docAboutWeightId).then((resp) => {
+        for (var attr in resp.data.tables) {
+          //console.log(resp.data.tables)
+          this.docAboutFilter.push(attr);
+        }
+      });
     },
-    preLoadDocs() {  //this.$store.state.alreadyDocs是显示的文档
-    //this.$store.state.rawDocs 是所有的文档，包括删除位为1的
-    // this.alreadyDocsRestore 是暂存的文档，如筛选了部分文档后，存下来然后，搜索文档，然后取消搜索，返回显示为暂存的文档
-      
-this.getDocAboutFilter()
+    preLoadDocs() {
+      //this.$store.state.alreadyDocs是显示的文档
+      //this.$store.state.rawDocs 是所有的文档，包括删除位为1的
+      // this.alreadyDocsRestore 是暂存的文档，如筛选了部分文档后，存下来然后，搜索文档，然后取消搜索，返回显示为暂存的文档
+
+      this.getDocAboutFilter();
 
       //console.log("preload");
       var f = false;
-      if(this.$store.state.alreadyDocs.length==0){ //批次页面进来时会将这个设为[],也就是每次查看
-      //新的批次会走这里，返回查看的话不会,返回查看的时候还得跳转到上次记忆的滚动条位置
+      if (this.$store.state.alreadyDocs.length == 0) {
+        //批次页面进来时会将这个设为[],也就是每次查看
+        //新的批次会走这里，返回查看的话不会,返回查看的时候还得跳转到上次记忆的滚动条位置
 
-          this.getRequest("/work/sorted/"+sessionStorage.getItem("batchId")).then((resp) => {
-     var item=resp.data
+        this.getRequest(
+          "/work/sorted/" + sessionStorage.getItem("batchId")
+        ).then((resp) => {
+          var item = resp.data;
 
-          if (item.sorted != null && !this.nullJson(item.sorted) &&this.$store.state.sortedFlag ) {
+          if (
+            item.sorted != null &&
+            !this.nullJson(item.sorted) &&
+            this.$store.state.sortedFlag
+          ) {
             //该批已经排好序
-            //console.log("sorted！");
+            console.log("sorted!");
+            console.log(item);
+            // item.printedIds="4452,4341"
+            this.printedList = item.printedIds.split(",");
+            // console.log(this.printedList);
+            // if(this.printedList.length=)
+
             var sorted = JSON.parse(item.sorted.sorted);
             //console.log(sorted);
             this.$store.state.alreadyDocs = sorted;
-                      this.$store.state.rawDocs=sorted //全部的，第一次加载时存下来
-                      this.alreadyDocsRestore=sorted
+            this.$store.state.rawDocs = sorted; //全部的，第一次加载时存下来
+            this.alreadyDocsRestore = sorted;
             this.filterAlreadyDocs(); //已经排好
+            console.log(this.$store.state.alreadyDocs)
 
+              for (var i in this.$store.state.alreadyDocs) {
+              //  console.log(this.$store.state.alreadyDocs[i].id)
+              for (var j in this.printedList) {
+                if (
+                  this.printedList[j] == this.$store.state.alreadyDocs[i].id
+                ) {
+                  // console.log("same="+this.$store.state.alreadyDocs[i].id)
+                  // console.log(i)
+                  // console.log(this.$store.state.alreadyDocs[i])
+
+                  this.$store.state.alreadyDocs[i]["printed"] = 1;
+                }
+              }
+            }
           } else {
             //console.log("no sorted");
             this.loadDocs();
           }
-
-
-                })
-      }
-      else{ //后续回来的  this.alreadyDocsRestore 是筛选时需要的所有文档，如果没有这步，修改页面回来不会走上面的，就不会初始化
-         this.alreadyDocsRestore=this.$store.state.rawDocs
-                        setTimeout(() => {
-                                 //console.log(this.$store.state.docDetialBar)
-      window.scrollTo(0,this.$store.state.docDetialBar)
-
-              }, 50);
-          this.filterAlreadyDocs();
+        });
+      } else {
+        //后续回来的  this.alreadyDocsRestore 是筛选时需要的所有文档，如果没有这步，修改页面回来不会走上面的，就不会初始化
+        this.alreadyDocsRestore = this.$store.state.rawDocs;
+        setTimeout(() => {
+          //console.log(this.$store.state.docDetialBar)
+          window.scrollTo(0, this.$store.state.docDetialBar);
+        }, 50);
+        this.filterAlreadyDocs();
       }
 
-
-//设置期限筛选条件 需要获取批次信息
-{
-      this.getRequest("/work/" + sessionStorage.getItem("batchId"))
-        .then((resp) => {
-          var item = resp.data;
-          //console.log(item)
-          var lastb = item.lastBox;
-          this.deadlineFilter = [];
-          this.isEnd = resp.data.end; //是否录入结束 还可以修改
-          if (resp.data.end == null) {
-            this.isEnd = 0;
+      //设置期限筛选条件 需要获取批次信息
+      {
+        this.getRequest("/work/" + sessionStorage.getItem("batchId")).then(
+          (resp) => {
+            var item = resp.data;
+            //console.log(item)
+            var lastb = item.lastBox;
+            this.deadlineFilter = [];
+            this.isEnd = resp.data.end; //是否录入结束 还可以修改
+            if (resp.data.end == null) {
+              this.isEnd = 0;
+            }
+            //console.log(this.isEnd);
+            window.sessionStorage.setItem("isEnd", this.isEnd);
+            for (var deadline in lastb) {
+              this.deadlineFilter.push(deadline);
+            }
           }
-          //console.log(this.isEnd);
-          window.sessionStorage.setItem("isEnd", this.isEnd);
-          for (var deadline in lastb) {
-            this.deadlineFilter.push(deadline);
-          }
-
-
-        })
-}
-        // .then(() => {
-        //   this.store;
-        // });
+        );
+      }
+      // .then(() => {
+      //   this.store;
+      // });
     },
     loadDocs() {
       //console.log("load");
- 
+
       this.showWaitingFlag = true;
       // return
       var path =
@@ -2723,19 +3451,17 @@ this.getDocAboutFilter()
         .then((resp) => {
           if (resp) {
             this.$store.state.alreadyDocs = resp.data.content;
-             this.$store.state.rawDocs=resp.data.content
-             this.alreadyDocsRestore=resp.data.content
+            this.$store.state.rawDocs = resp.data.content;
+            this.alreadyDocsRestore = resp.data.content;
 
             //console.log(resp.data.content);
 
             this.showWaitingFlag = false;
-
           }
         })
         .then(() => {
           this.filterAlreadyDocs(); //load获取时
         });
-
 
       // if(this.docType!='personnel'){
       //   //console.log('把暂无调到前面')
@@ -2755,7 +3481,6 @@ this.getDocAboutFilter()
       // }
     },
 
-
     putInContent() {
       return;
       this.searchContent = "输入识别号";
@@ -2764,15 +3489,28 @@ this.getDocAboutFilter()
       this.searchContent = "";
     },
     cancelSearch() {
-      // if (this.searchContent != "输入识别号") {
+
+
+        // this.getRequest("/work/box-infos?id="+sessionStorage.getItem("batchId")).then((resp) => {
+        //   console.log(resp)
+        // })
+      //   var infoObj={}
+      //   infoObj.a="b"
+      //         this.postRequest(
+      //   //注意防止重复提交
+      //   "/work/box-infos/"+sessionStorage.getItem("batchId"),
+      //   JSON.stringify(infoObj)
+      // ).then((resp) => {
+      //   console.log(resp)
+      // })
+
       if (true) {
         this.searchContent = "输入识别号";
-      if (this.alreadyDocsRestore.length > 0) {
-        this.$store.state.alreadyDocs = this.alreadyDocsRestore;//还原搜索前的列表，不一定是所有的即vuex里面的alreadydocsrestore
-      }else{
-      this.preLoadDocs();
-
-      }
+        if (this.alreadyDocsRestore.length > 0) {
+          this.$store.state.alreadyDocs = this.alreadyDocsRestore; //还原搜索前的列表，不一定是所有的即vuex里面的alreadydocsrestore
+        } else {
+          this.preLoadDocs();
+        }
       }
     },
     goSetRule() {
@@ -2780,7 +3518,7 @@ this.getDocAboutFilter()
       // if(this.docType=='')
       // this.$store.state.whichRuleSet=
       // this.$store.state.whichRuleSet=sessionStorage.getItem('auth')
-      this.$store.state.backToDetailFlag=true
+      this.$store.state.backToDetailFlag = true;
       this.$router.push("/work/keyWM");
     },
 
@@ -2788,9 +3526,8 @@ this.getDocAboutFilter()
       this.advSearchShow = false;
       if (this.alreadyDocsRestore.length > 0) {
         this.$store.state.alreadyDocs = this.alreadyDocsRestore;
-      }else{
-      this.preLoadDocs();
-
+      } else {
+        this.preLoadDocs();
       }
     },
     hideAdvSearchNoReload() {
@@ -2827,7 +3564,7 @@ this.getDocAboutFilter()
       ).then((resp) => {
         // //console.log(resp);
         this.showWaitingFlag = false;
-        this.alreadyDocsRestore= this.$store.state.alreadyDocs //保存搜索前的列表
+        this.alreadyDocsRestore = this.$store.state.alreadyDocs; //保存搜索前的列表
         this.$store.state.alreadyDocs = resp.data.content;
 
         // if(sessionStorage.getItem('docType')=='personnel'){
@@ -2866,7 +3603,7 @@ this.getDocAboutFilter()
       ).then((resp) => {
         // //console.log(resp);
         this.showWaitingFlag = false;
-        this.alreadyDocsRestore=this.$store.state.alreadyDocs  //gai1
+        this.alreadyDocsRestore = this.$store.state.alreadyDocs; //gai1
         // this.alreadyDocsRestore[1].docSequence=888
         this.$store.state.alreadyDocs = resp.data.content;
 
@@ -2932,7 +3669,7 @@ this.getDocAboutFilter()
           type: "warning",
         }
       ).then(() => {
-      this.$store.state.sortedFlag=true
+        this.$store.state.sortedFlag = true;
 
         this.showWaitingFlag = true;
         this.isEnd = 1;
@@ -2972,6 +3709,7 @@ this.getDocAboutFilter()
       });
     },
     sortThisBatch() {
+      this.showAllDocs() //取消勾选
       // let vm = this;
       var path =
         "/document/" +
@@ -2991,7 +3729,7 @@ this.getDocAboutFilter()
         }
       ).then(() => {
         this.showWaitingFlag = true;
-      this.$store.state.sortedFlag=true
+        this.$store.state.sortedFlag = true;
 
         this.getRequest(path).then((resp) => {
           //console.log("排件号盒号");
@@ -3011,8 +3749,8 @@ this.getDocAboutFilter()
                 //
               }
             }
-             
-            this.$store.state.rawDocs= this.$store.state.alreadyDocs
+
+            this.$store.state.rawDocs = this.$store.state.alreadyDocs;
             this.filterAlreadyDocs(); // 排完件号盒号之后更新筛选条件，使得筛选条件后仍按件号从小到大
           }
         });
@@ -3031,8 +3769,8 @@ this.getDocAboutFilter()
         });
         return;
       }
-      this.showDocIn=true
-      this.$store.state.docDetialBar=0
+      this.showDocIn = true;
+      this.$store.state.docDetialBar = 0;
       this.$router.push("/work/docInput");
 
       // this.$store.state.showDocIn=true
@@ -3064,7 +3802,7 @@ this.getDocAboutFilter()
     },
 
     backToOrgans() {
-      this.$store.state.organIdForJump=sessionStorage.getItem("authId")
+      this.$store.state.organIdForJump = sessionStorage.getItem("authId");
       this.$router.push("/work/modifyOrgan");
     },
     focusOnThis(e) {},
@@ -3217,7 +3955,7 @@ this.getDocAboutFilter()
       });
     },
     fixThisItem(item) {
-      this.$store.state.noChufa=true
+      this.$store.state.noChufa = true;
 
       if (this.isEnd == 1) {
         this.$confirm("该批档案已经锁定", "提示", {
@@ -3227,7 +3965,6 @@ this.getDocAboutFilter()
 
           type: "warning",
         }).then(() => {
-          
           return;
         });
         return;
@@ -3235,7 +3972,7 @@ this.getDocAboutFilter()
 
       if (
         item.docDescAuthor == "true" ||
-        item.docDescAuthor == true  ||
+        item.docDescAuthor == true ||
         item.docDescAuthor == "1"
       ) {
         //console.log("勾选变成true")
@@ -3257,57 +3994,60 @@ this.getDocAboutFilter()
       this.$store.state.tempDocId = item.id;
 
       this.$store.state.tempDocSeq = item.docSequence;
- 
- let barHeight = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop;
- //console.log(barHeight)
-      this.$store.state.docDetialBar=barHeight
+
+      let barHeight =
+        window.pageYOffset ||
+        document.documentElement.scrollTop ||
+        document.body.scrollTop;
+      //console.log(barHeight)
+      this.$store.state.docDetialBar = barHeight;
 
       // this.$store.state.showDocIn=true
       this.$router.push("/work/docInput");
     },
- deepClone1(initalObj, finalObj) {
-    var obj = finalObj || {};
-    for (var i in initalObj) {
+    deepClone1(initalObj, finalObj) {
+      var obj = finalObj || {};
+      for (var i in initalObj) {
         var prop = initalObj[i];
-  
+
         // 避免相互引用对象导致死循环，如initalObj.a = initalObj的情况
-        if(prop === obj) {
-            continue;
+        if (prop === obj) {
+          continue;
         }
-  
-        if (typeof prop === 'object') {
-            obj[i] = (prop.constructor === Array) ? [] : Object.create(prop);
+
+        if (typeof prop === "object") {
+          obj[i] = prop.constructor === Array ? [] : Object.create(prop);
         } else {
-            obj[i] = prop;
+          obj[i] = prop;
         }
-    }
-    return obj;
-},
+      }
+      return obj;
+    },
     printReal() {},
 
     printBtn(item) {
-//       var command = "msconfig"
-//           window.oldOnError = window.onerror;
-//           window._command = command;
-//           window.onerror = function (err) {
-//               if (err.indexOf('utomation') != -1) {
-//                   alert('命令' + window._command + ' 已经被用户禁止！');   
-//                   return true;
-//               }
-//               else return false;
-//           };
-//           var wsh = new ActiveXObject('WScript.Shell');
-//           if (wsh)
-//               wsh.Run(command);
-//           window.onerror = window.oldOnError;
-//       
+      //       var command = "msconfig"
+      //           window.oldOnError = window.onerror;
+      //           window._command = command;
+      //           window.onerror = function (err) {
+      //               if (err.indexOf('utomation') != -1) {
+      //                   alert('命令' + window._command + ' 已经被用户禁止！');
+      //                   return true;
+      //               }
+      //               else return false;
+      //           };
+      //           var wsh = new ActiveXObject('WScript.Shell');
+      //           if (wsh)
+      //               wsh.Run(command);
+      //           window.onerror = window.oldOnError;
+      //
 
-//       return
-      this.$store.state.printDoc=item
+      //       return
+      this.$store.state.printDoc = item;
       //console.log( this.$store.state.printDoc)
 
-      window.sessionStorage.setItem('docId',item.id)
-      
+      window.sessionStorage.setItem("docId", item.id);
+
       if (sessionStorage.getItem("docType") == "personnel") {
         if (item.personJob == 4 || item.personJob == 5) {
           //personJob字段用来存是哪种文档类型
@@ -3339,7 +4079,7 @@ this.getDocAboutFilter()
       } //personnel
       else if (
         sessionStorage.getItem("docType") == "official" ||
-        sessionStorage.getItem("docType") == "business"||
+        sessionStorage.getItem("docType") == "business" ||
         sessionStorage.getItem("docType") == "officialJ"
       ) {
         // alert(2)
@@ -3388,7 +4128,7 @@ this.getDocAboutFilter()
       // Utils.$emit("sendInit", 1);
       this.showCenterPrint = true;
       var docs = this.$store.state.alreadyDocs;
-        window.localStorage.setItem("docs", JSON.stringify(docs));
+      window.localStorage.setItem("docs", JSON.stringify(docs));
     },
     // printBtn1(item) {
     //   if (!this.reSend) {
@@ -3491,7 +4231,7 @@ this.getDocAboutFilter()
     //     }
 
     //     this.reSend = true; //恢复默认
-      
+
     //   } //不打开空页不提醒  很奇怪，把内容抽象成函数就出错
     //   else {
     //     this.$confirm("开始印章后将锁定该批文档不能修改", {
@@ -3741,20 +4481,20 @@ this.getDocAboutFilter()
     },
   },
   created() {
-    this.alreadyDocsRestore=[];
-    window.sessionStorage.setItem("isSub",1)
+    this.alreadyDocsRestore = [];
+    window.sessionStorage.setItem("isSub", 1);
 
     //console.log("created~~~~~~~~~~~~~~~~~~~~~")
-    var tt= "你和"
+    var tt = "你和";
     //console.log(tt.length)
-//     this.socketUtil=new VueSocketIO({
+    //     this.socketUtil=new VueSocketIO({
 
-//     debug: true,
+    //     debug: true,
 
-//     connection: '192.168.213.60:3550',  //
+    //     connection: '192.168.213.60:3550',  //
 
-// })
-//     // this
+    // })
+    //     // this
     // var c="adsd"
     // if(c.charAt(0)=='a') c=c.substring(1)
     // alert(c)
@@ -3764,12 +4504,13 @@ this.getDocAboutFilter()
     //   this.$store.state.sortedFlag = false;
     //   return;
     // }
-    this.preLoadDocs();
+    this.docAboutReq = this.docType == "officialJ" ? "机构" : "问题";
     // //console.log(this.$store.state.alreadyDocs)
-
   },
 
   mounted() {
+    this.preLoadDocs();
+
     //     var testarr=[]
     // testarr.push(this.$store.state.alreadyDocs[0],this.$store.state.alreadyDocs[1])
     // //console.log(testarr)
@@ -3777,11 +4518,30 @@ this.getDocAboutFilter()
     // test1[0].authCode=111
     // //console.log(test1)
     // //console.log(testarr)
-    
-    var dd=new Date()
-    var inittime=dd.getHours()+"-"+dd.getMinutes()+"-"+dd.getSeconds()+""
+    document.onkeydown = function (e) {
+      var theEvent = window.event || e;
+      var code = theEvent.keyCode || theEvent.which;
+      console.log(code);
+      if (code == 13) {
+        // alert(2)
+        that.printThis();
+      }
+
+      if (code == 38) {
+        that.$refs.shibie.focus();
+        that.nextPrint();
+      }
+      if (code == 40) {
+        that.$refs.shibie.focus();
+        that.prePrint();
+      }
+    };
+
+    var dd = new Date();
+    var inittime =
+      dd.getHours() + "-" + dd.getMinutes() + "-" + dd.getSeconds() + "";
     //console.log("init 一个detail"+inittime)
-    this.initTime=inittime
+    this.initTime = inittime;
 
     //     Utils.$on("changeThePrint", function (doc) {
     //   //console.log("get改变已经印了");
@@ -3794,36 +4554,61 @@ this.getDocAboutFilter()
     //     }
     // });
 
-    
-  var that=this
+    var that = this;
     Utils.$on("printBackThisDoc", function (doc) {
       // //console.log("父页面get下拉的");
       // var that=this
-      that.$store.state.printDoc=doc
+      that.$store.state.printDoc = doc;
       //console.log(doc.id+that.initTime+"收到并且设置!!!!")
-    
-      that.printBtn(doc)
+
+      that.printBtn(doc);
     });
   },
   //    beforeDestroy(){
   //    docUtil.$off("changeThisDoc")
   //  },
-  destroyed(){
-    window.sessionStorage.setItem("isSub",0)
-    this.destoryFlag=false
+  destroyed() {
+    window.sessionStorage.setItem("isSub", 0);
+    this.destoryFlag = false;
     //console.log("destory")
     // document=null
-  }
+  },
 };
 </script>
 
+<style lang="scss">
+  .textAreaInput {
+    background: rgba(255, 255, 255, 0.15) !important;
+    // border-radius: 0.48rem;
+    // border: 0.08rem solid #274596c5;
+    // height: 5rem !important;
+    // color: rgb(83, 17, 17);
+    // font-size: 1.1rem;
+    // padding-left: 3.3rem;
+    
+  .el-textarea__inner {
+    background: rgba(255, 255, 255, 0.15) !important;
+    border-radius: 0.48rem;
+    // border: 0.08rem solid #274596c5 !important;
+    border: solid 0.08rem;
+    border-color: rgba(33, 57, 94, 0.74);
+    // height: 2.5rem !important;
+    color: rgba(3, 7, 24, 0.788);
+    font-size: 1.1rem;
+    padding-left: 3.3rem;
+    resize: none;
+  }
+  }
+
+</style>
 <style lang="scss" scoped>
-.endStyle{
-    cursor: pointer;
+.endStyle {
+  cursor: pointer;
   color: green;
   font-weight: 600;
 }
-.startStyle{
+
+.startStyle {
   cursor: pointer;
   color: red;
   font-weight: 600;
@@ -3890,7 +4675,7 @@ this.getDocAboutFilter()
   top: 10rem;
   padding: 0 2rem 1rem 1rem;
   background: #fff;
-  border: 0.06rem solid #eaeaea;
+  border: 0.06rem solid #e2dede;
   box-shadow: 0 0 2rem #cac6c6;
   z-index: 22;
 }
