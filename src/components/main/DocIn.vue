@@ -222,10 +222,11 @@
 
       <el-row :gutter="24">
         <el-col :span="4">
-          <el-form-item prop="batchName" label="有无文号:">
+          <el-form-item prop="batchName" label="序号信息:">
             <el-checkbox
               style="position: absolute; left: 2rem; top: 0.5rem"
               v-if="true"
+              :disabled="isLocked"
 
               @change="docDescChange"
               false-label="false"
@@ -249,6 +250,7 @@
               ref="docDesc"
           id="docDesc"
           @keydown.native="fastNext($event)"
+:disabled="isLocked"
 
               v-model="docForm.docDesc"
               auto-complete="off"
@@ -272,6 +274,7 @@
               ref="docDescNum"
           id="docDescNum"
           @keydown.native="fastNext($event)"
+:disabled="isLocked"
 
               placeholder="文号的序号"
               class="DescNumStyle"
@@ -291,6 +294,8 @@
                 filterable
                 v-model="docForm.keyword"
                 placeholder="选择或填写机构词"
+              :disabled="isLocked"
+
               >
                 <el-option
                   v-for="item in keywordTipArr"
@@ -305,6 +310,7 @@
           <el-col :span="12">
             <el-form-item prop="historyAuth" label="机构：">
               <el-select
+              :disabled="isLocked"
 
                 filterable
                 @blur="docAboutBlur"
@@ -327,6 +333,7 @@
           <el-col :span="12">
             <el-form-item prop="historyAuth" label="关键词：">
               <el-select
+              :disabled="isLocked"
 
                 @blur="keyword2Blur"
                 @change="keyword2Complete"
@@ -418,6 +425,7 @@
                   ref="docAbout"
                   id = "docAbout"
           @keydown.native="fastNext($event)"
+:disabled="isLocked"
 
                   filterable
                   @blur="docAboutBlur"
@@ -441,6 +449,7 @@
                   ref="keyword"
                   id="keyword"
           @keydown.native="fastNext($event)"
+:disabled="isLocked"
 
                   @blur="keywordBlur"
                   @change="keywordComplete"
@@ -471,6 +480,7 @@
           ref="docLevel"
           id="docLevel"
           @keydown.native="fastNext($event)"
+:disabled="isLocked"
 
           filterable
 
@@ -492,6 +502,7 @@
                           ref="deadline"
           id="deadline"
           @keydown.native="fastNext($event)"
+:disabled="isLocked"
           filterable
             placeholder="选择文件期限">
               <el-option
@@ -513,6 +524,7 @@
                             ref="dutyAuthor"
           id="dutyAuthor"
           @keydown.native="fastNext($event)"
+:disabled="isLocked"
 
               @blur="dutyAuthorBlur"
               @change="dutyAuthorComplete"
@@ -545,6 +557,7 @@
                             ref="docDate"
           id="docDate"
           @keydown.native="fastNext($event)"
+:disabled="isLocked"
 
             ></el-date-picker>
           </el-form-item>
@@ -598,6 +611,7 @@
                           ref="docSecret"
           id="docSecret"
           @keydown.native="fastNext($event)"
+:disabled="isLocked"
           filterable
            placeholder="选择文件密级">
               <el-option
@@ -622,6 +636,7 @@
                             ref="sortYear"
           id="sortYear"
           @keydown.native="fastNext($event)"
+:disabled="isLocked"
 
             ></el-date-picker>
           </el-form-item>
@@ -981,24 +996,23 @@ export default {
     } else {
       this.genId(6, 62); //1
     }
+
+        if(!sessionStorage.getItem("sortYearCache") && !this.fixDocFlag){
+      window.sessionStorage.setItem("sortYearCache",2018)
+    this.docForm.sortYear=sessionStorage.getItem("sortYearCache")+""
+
+    }
+        if(!sessionStorage.getItem("secretCache") && !this.fixDocFlag){
+      window.sessionStorage.setItem("secretCache","无")
+    this.docForm.docSecret=sessionStorage.getItem("secretCache")+""
+    }
+    
+    // this.docForm.docTitle="asd"
+    console.log(sessionStorage.getItem("secretCache"))
   },
+  
   watch: {
-    edocFormRSJS: {
-      handler: (v, o) => {
-        console.log(v.docAbout);
-        console.log(o);
-      },
-      deep: true,
-    },
-    docFormDescJS1: {
-      handler(v, o) {
-        var desc = v;
-        if (desc.indexOf("[") > 0) {
-          console.log(desc);
-        }
-      },
-      deep: true,
-    },
+
     docFormJS: {
       handler(v, o) {
         return;
@@ -1102,6 +1116,12 @@ export default {
       return sessionStorage.getItem("authName");
 
     },
+
+    isLocked(){
+      if(this.$store.state.isEnd==1) return true
+      else return false
+    },
+
     docType() {
       return sessionStorage.getItem("docType");
     },
@@ -1462,7 +1482,7 @@ export default {
       aiInput: true,
       pickerOptions: {
         disabledDate(time) {
-          return time.getTime() < new Date("1995/5/1");
+          return time.getTime() < new Date("1980/5/1");
         },
       },
     };
@@ -1675,6 +1695,7 @@ export default {
       for (var i in this.matchedDoc) {
         if (this.matchedDoc[i].id == itemId) {
           docToSet = this.matchedDoc[i];
+          break
         }
       }
 
@@ -1687,6 +1708,7 @@ export default {
       this.docForm.keyword = docToSet.keyword;
       this.docForm.docAbout = docToSet.docAbout;
       this.docForm.docTitle = docTitleTemp;
+
 
 
             this.docFormRS.docTitle = docTitleTemp1;
@@ -1818,7 +1840,6 @@ export default {
       }
       if (this.docForm.docDesc.length < 2) {
         console.log("asdsa")
-
         return;
       }
       if(this.fixDocFlag){
@@ -1870,7 +1891,7 @@ export default {
         var repeatArr = [];
         for (var i in resp.data.content) {
           var k=resp.data.content[i]
-          var repeatStr=k.docSequence+"题名："+k.docTitle+"\nabout："+k.docAbout+",文号："+k.docDesc+",日期："+k.docDate+
+          var repeatStr=k.docSequence+"题名："+k.docTitle+" -"+k.docAbout+"-文号："+k.docDesc+",日期："+k.docDate+
           ",责任者"+k.dutyAuthor+",页数："+k.docPage
           repeatArr.push(repeatStr);
         }
@@ -1883,10 +1904,14 @@ export default {
             {
               cancelButtonClass: "btn-custom-cancel",
               confirmButtonText: "没有重复，继续录入",
-              cancelButtonText: "好的",
+              cancelButtonText: "好的，清空",
               type: "warning",
             }
-          );
+          ).catch(() => {
+                this.resetDocIn()
+                this.showWaitingFlag = false;
+                return; //点击好的，然后不提交
+              });;
         }
       });
 
@@ -1894,6 +1919,16 @@ export default {
       if (b.indexOf("[") > 0) {
         descText = b.split("[")[0];
       }
+
+      var yeart;
+      var tempstr=b.split("[")[1];
+      yeart=tempstr.split("]")[0];
+      if(this.isNumber(yeart)){
+        this.docForm.docDate=yeart+"0101"
+      }
+
+
+
       if (this.descToAuthor[descText] != null) {
         this.$message({
           type: "success",
@@ -1940,6 +1975,7 @@ export default {
         this.docForm.dutyAuthor = sessionStorage.getItem("authName");
         this.docForm.deadline = "永久";
       }
+      this.dutyAuthorComplete()
     },
     authorAndKwToDeadline() {
       //根据责任者和关键词识别期限
@@ -1950,7 +1986,7 @@ export default {
         console.log(i)
         var arr = this.authorKwToDeadlineTable[i];
         arr=JSON.parse(arr)
-        for(var k in arr){
+        for(var k in arr){//k是数组下标
           var ar=arr[k]
             console.log(ar)
 
@@ -2127,7 +2163,7 @@ export default {
           ",责任者"+k.dutyAuthor+",页数："+k.docPage
           repeatArr.push(repeatStr);
         }
-        if (resp.data.content.length != 0 &&this.docDescRepeatNum==0) { //this.docDescRepeatNum==0 文号不重复才多个条件判断重复
+        if (resp.data.content.length != 0 ) { // &&this.docDescRepeatNum==0 this.docDescRepeatNum==0 文号不重复才多个条件判断重复
           this.$confirm(
             "请检查是否录入重复：" + repeatArr,
             "提示",
@@ -2137,7 +2173,9 @@ export default {
               cancelButtonText: "好的，暂不录入",
               type: "warning",
             }
-          );
+          ).catch(r=>{
+            this.resetDocIn();
+          });
         }
       });
     },
@@ -2146,8 +2184,14 @@ export default {
       this.docFormRS = Object.assign({}, this.docFormRSKong);
     },
     resetDocIn() {
+      var docSecret1=this.docForm.docSecret
+      var docSort=this.docForm.sortYear
+
       this.docFormKong.docSequence = this.docForm.docSequence;
       this.docForm = Object.assign({}, this.docFormKong);
+
+      this.docForm.docSecret=docSecret1
+      this.docForm.sortYear=docSort
       // console.log(this.docFormKong);
     },
     isNumber(value) {
@@ -2194,6 +2238,9 @@ export default {
       console.log(this.keyword_docAboutJson);
       console.log(bindedDocAbout);
 
+      if(this.docForm.keyword2==null){
+        this.docForm.keyword2=""
+      }
       if (
         !this.isNumber(this.docForm.docPage) ||
         this.docForm.docTitle == "" ||
@@ -2213,10 +2260,10 @@ export default {
         });
 
         return false;
-      } else if (this.docForm.docDescAuthor && this.docForm.docDesc == "") {
+      } else if (this.docForm.docDescAuthor && this.docForm.docDesc == "" && this.docForm.docDescNum=="") {
         this.$message({
           type: "error",
-          message: "填写文号",
+          message: "填写文号序号信息",
         });
         return false;
       } else if (bindedDocAbout && bindedDocAbout != this.docForm.docAbout) {
@@ -2515,27 +2562,37 @@ export default {
             if (resp.code == 0) {
               var length = this.$store.state.alreadyDocs.length || 0;
               var _arr = this.$store.state.alreadyDocs;
-              for (var i = 0; i < length; i++) {
+              var i
+              for ( i = 0; i < length; i++) {
                 if (_arr[i].docSequence == this.$store.state.tempDocSeq) {
                   _arr.splice(i, 1); //删除下标为i的元素
+                  // _arr.splice(i,0, Object.assign({}, this.docForm))
                   break;
                 }
               }
-              this.docForm.docNum = "暂无";
-              this.docForm.boxSeq = "暂无";
-              this.$store.state.alreadyDocs.unshift(
+
+              if(this.$store.state.isEnd){
+              this.$store.state.alreadyDocs.splice(i,0,
                 Object.assign({}, this.docForm)
               );
+              }else{
+                              this.docForm.docNum = "暂无";
+              this.docForm.boxSeq = "暂无";
+              this.$store.state.alreadyDocs.splice(0,0,
+                Object.assign({}, this.docForm)
+              );
+              }
+
 
               this.fixDocFlag = false;
               this.showWaitingFlag = false;
 
-              this.keywordTemp = this.docForm.keyword;
-              this.keyword2Temp = this.docForm.keyword2;
+              this.keywordTemp = this.docForm.keyword.trim();
+              this.keyword2Temp = this.docForm.keyword2.trim();
 
               this.dutyAuthorTemp = this.docForm.dutyAuthor;
               this.levelTemp = this.docForm.docLevel;
-              this.docAboutTemp = this.docForm.docAbout;
+              this.docAboutTemp = this.docForm.docAbout.trim();
 
               this.optThreeWeightTable(); //里面三个异步提交
             }
@@ -2592,6 +2649,8 @@ export default {
       this.docFormRS.keyword = "";
       this.docFormRS.personName = "";
       this.genId(6, 62);
+      this.docForm.remark=""
+
       this.docFormRS.docDate.replace("-", "");
       // console.log(this.docForm);
       this.docFormRS.docTitle = "";
@@ -2619,6 +2678,7 @@ export default {
       this.docForm.keword2 = "";
 
       this.genId(6, 62);
+      this.docForm.remark=""
       this.docForm.docDate.replace("-", "");
       console.log(this.docForm);
       this.docForm.docTitle = "";
@@ -2857,6 +2917,7 @@ export default {
                 this.optSubmitRS();
               })
               .catch(() => {
+                this.resetDocIn()
                 this.showWaitingFlag = false;
                 return; //点击好的，然后不提交
               });
@@ -2874,6 +2935,7 @@ export default {
     },
     addDoc() {
       window.sessionStorage.setItem("sortYearCache",this.docForm.sortYear)
+      window.sessionStorage.setItem("secretCache",this.docForm.docSecret)
       //  if(!this.docForm.docDescNum){
       //    alert(0)
       //  }
@@ -2914,6 +2976,9 @@ export default {
           }
         } else {
           docDescNumTemp = 99999; //没有文号
+        }
+        if(this.docForm.keyword2==null){
+          this.docForm.keyword2=""
         }
         var docObj = {
           deleted: 0,
@@ -2990,7 +3055,7 @@ export default {
           }
           repeatArr.push(repeatStr);
         }
-          if (resp.data.content.length != 0 &&this.docDescRepeatNum==0) {//this.docDescRepeatNum==0文号不重复才多重条件判断
+          if (resp.data.content.length != 0 ) {//&&this.docDescRepeatNum==0 this.docDescRepeatNum==0文号不重复才多重条件判断
             this.$confirm(
               "请检查是否录入重复：" + repeatArr, //
               "提示",
@@ -3021,12 +3086,12 @@ export default {
                   .then((r) => {
                     // if(r)
                     //保证提交完返回id后再执行后续操作
-                    this.keywordTemp = this.docForm.keyword;
-                    this.keyword2Temp = this.docForm.keyword2;
+                    this.keywordTemp = this.docForm.keyword.trim();
+                    this.keyword2Temp = this.docForm.keyword2.trim();
                     console.log(this.keyword2Temp);
-                    this.dutyAuthorTemp = this.docForm.dutyAuthor;
+                    this.dutyAuthorTemp = this.docForm.dutyAuthor.trim();
                     this.levelTemp = this.docForm.docLevel;
-                    this.docAboutTemp = this.docForm.docAbout;
+                    this.docAboutTemp = this.docForm.docAbout.trim();
 
                     this.optThreeWeightTable();
 
@@ -3046,6 +3111,8 @@ export default {
                     this.docForm.dutyAuthor = "";
                     this.docForm.docDate = "";
                     this.genId(6, 62); //提交文件成功后产生新的识别号  有两处提交成功
+      this.docForm.remark=""
+
                     this.docForm.docDate.replace("-", "");
                     this.docForm.docSecrets="无"
                     console.log(this.docForm);
@@ -3056,6 +3123,7 @@ export default {
                   });
               })
               .catch(() => {
+                this.resetDocIn()
                 this.showWaitingFlag = false;
                 return; //点击好的，然后不提交
               });
@@ -3081,11 +3149,11 @@ export default {
               .then((r) => {
                 // if(r)
                 //保证提交完返回id后再执行后续操作
-                this.keywordTemp = this.docForm.keyword;
-                this.keyword2Temp = this.docForm.keyword2;
+                this.keywordTemp = this.docForm.keyword.trim();
+                this.keyword2Temp = this.docForm.keyword2.trim();
                 this.dutyAuthorTemp = this.docForm.dutyAuthor;
                 this.levelTemp = this.docForm.docLevel;
-                this.docAboutTemp = this.docForm.docAbout;
+                this.docAboutTemp = this.docForm.docAbout.trim();
                 this.optThreeWeightTable();
 
                 this.$store.state.alreadyDocs.unshift(
@@ -3107,6 +3175,8 @@ export default {
                 this.docForm.docDesc = "";
 
                 this.genId(6, 62); //提交文件成功后gen
+      this.docForm.remark=""
+
                 this.docForm.docDate.replace("-", "");
                     this.docForm.docSecrets="无"
 
@@ -4180,9 +4250,7 @@ export default {
     // }
     // console.log(jsonk)
     // return
-    if(!sessionStorage.getItem("sortYearCache")){
-      window.sessionStorage.setItem("sortYearCache",2018)
-    }
+
 
     window.scrollTo(0, 0);
 

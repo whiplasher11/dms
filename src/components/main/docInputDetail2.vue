@@ -285,81 +285,74 @@
 
             <h3 style="text-align: center; color: #505458">备考表详细信息</h3>
 
+            <div>所有盒：</div>
+
             <div>
-              所有盒：
+              <el-row :gutter="24">
+                <el-col :span="12">
+                  <el-form-item label="立卷人">
+                    <el-input
+                      size="normal"
+                      type="text"
+                      v-model="publisher"
+                      auto-complete="off"
+                      placeholder="立卷人"
+                    ></el-input>
+                  </el-form-item>
+                </el-col>
+
+                <el-col :span="12">
+                  <el-form-item label="检查人">
+                    <el-input
+                      size="normal"
+                      type="text"
+                      v-model="checker"
+                      auto-complete="off"
+                      placeholder="检查人"
+                    ></el-input>
+                  </el-form-item>
+                </el-col>
+              </el-row>
+
+              <el-row :gutter="24" style="border-bottom: 1px dashed">
+                <el-col :span="12">
+                  <el-form-item label="立卷时间">
+                    <el-input
+                      size="normal"
+                      type="text"
+                      v-model="publishTime"
+                      auto-complete="off"
+                      placeholder="立卷时间"
+                    ></el-input>
+                  </el-form-item>
+                </el-col>
+
+                <el-col :span="12">
+                  <el-form-item label="检查时间">
+                    <el-input
+                      size="normal"
+                      type="text"
+                      v-model="checkTime"
+                      auto-complete="off"
+                      placeholder="检查时间"
+                    ></el-input>
+                  </el-form-item>
+                </el-col>
+              </el-row>
             </div>
 
-            <div >
-            <el-row :gutter="24" >
-              <el-col :span="12">
-                <el-form-item label="立卷人">
-                  <el-input
-                    size="normal"
-                    type="text"
-                    v-model="publisher"
-                    auto-complete="off"
-                    placeholder="立卷人"
-                  ></el-input>
-                </el-form-item>
-              </el-col>
+            <div style="height: 2rem">
+              <div style="height: 2rem; width: 5rem; float: left">设置盒:</div>
 
-                            <el-col :span="12">
-                <el-form-item label="检查人">
-                  <el-input
-                    size="normal"
-                    type="text"
-                    v-model="checker"
-                    auto-complete="off"
-                    placeholder="检查人"
-                  ></el-input>
-                </el-form-item>
-              </el-col>
+              <div style="float: left; margin-left: 2rem" v-if="!boxInfoNow">
+                选择盒子
+              </div>
 
-              
-            </el-row>
-
-                        <el-row :gutter="24" style="border-bottom:1px dashed">
-              <el-col :span="12">
-                <el-form-item label="立卷时间">
-                  <el-input
-                    size="normal"
-                    type="text"
-                    v-model="publishTime"
-                    auto-complete="off"
-                    placeholder="立卷时间"
-                  ></el-input>
-                </el-form-item>
-              </el-col>
-
-                            <el-col :span="12">
-                <el-form-item label="检查时间">
-                  <el-input
-                    size="normal"
-                    type="text"
-                    v-model="checkTime"
-                    auto-complete="off"
-                    placeholder="检查时间"
-                  ></el-input>
-                </el-form-item>
-              </el-col>
-
-              
-            </el-row>
-                          </div>
-
-            <div style="height:2rem">
-                          <div style="height:2rem;width:5rem;float:left">
-                            设置盒: 
-
-                          </div>
-
-                          <div style="float:left;margin-left:2rem" v-if="!boxInfoNow">
-                              选择盒子
-                          </div>
-
-                      <div style="float:left;margin-left:2rem" v-if="boxInfoNow">
-                              本盒共{{boxInfoNow.docCount}}件,{{boxInfoNow.from}}~{{boxInfoNow.to}},共{{boxInfoNow.totalPage}}页
-                          </div>
+              <div style="float: left; margin-left: 2rem" v-if="boxInfoNow">
+                本盒共{{ boxInfoNow.docCount }}件,{{ boxInfoNow.from }}~{{
+                  boxInfoNow.to
+                }},共{{ boxInfoNow.totalPage }}页
+              </div>
             </div>
 
             <el-form-item prop="historyAuth" label="选择盒子" v-if="true">
@@ -380,25 +373,19 @@
               </el-select>
             </el-form-item>
 
-
-
-        
-
             <div v-show="!processShow">
               <el-form-item label="其他需要说明的情况" class="textArea">
                 <el-input
                   size="normal"
-            type="textarea"
-            
-            class="textAreaInput"
+                  type="textarea"
+                  class="textAreaInput"
                   v-model="boxInfoNow.remark"
                   auto-complete="off"
-          :rows="3"
+                  :rows="3"
                   placeholder="其他需要说明的情况"
                 ></el-input>
               </el-form-item>
             </div>
-
 
             <div
               class="topTextButtonBlue"
@@ -407,7 +394,6 @@
             >
               保存备考表信息
             </div>
-
 
             <!-- <div class="topTextButtonBlue" v-if="processShow" style="width:15%;float:left;margin-left:5%" @click="printThis"> 
             打印
@@ -427,18 +413,14 @@
               下载所有盒备考表
             </div>
 
-  
-
             <div></div>
-          </el-form>         
-
-
+          </el-form>
 
           <el-form
             class="specialELContainer"
             label-width="6rem"
             v-if="PrintControllshow"
-            style="width: 40rem; margin-left: -20rem"
+            style="width: 40rem; margin-left: -20rem; top: 20rem"
           >
             <div
               style="
@@ -453,7 +435,7 @@
               <i class="el-icon-remove"></i>
             </div>
 
-            <h3 style="text-align: center; color: #505458">设置打印机</h3>
+            <h3 style="text-align: center; color: #505458">打印归档印章</h3>
             <el-row :gutter="24">
               <el-col :span="20">
                 <el-form-item label="IP">
@@ -577,17 +559,26 @@
                 text-align: center;
               "
             >
-              本次打印{{ this.printType }}:{{ this.processInfo }}
+              本次打印{{ this.printType }}:{{ this.printInfo }}
             </div>
-            <div style="margin-left: 10%">
+
+            <div style="margin-left: 10%; height: 4rem">
+              {{ this.printInfo1 }}
+
+              <div>
+                {{ this.printInfo }}
+              </div>
+            </div>
+
+            <!-- <div style="margin-left: 10%">
               提示：按上下键可快速切换识别号，按回车键发送打印信息
-            </div>
+            </div> -->
             <div style="height: 1rem"></div>
             <div
               class="topTextButtonBlue"
               v-if="!processShow"
               style="width: 15%; margin-left: 5%; float: left"
-              @click="printThis"
+              @click="printThis1"
             >
               发送打印
             </div>
@@ -847,11 +838,13 @@
 
           <div
             style="
-         float:left
-         width:5rem
-         text-align:center
-         margin-left:1rem
-          "
+              float: left;
+              background-color: rgb(155, 120, 153);
+
+              width: 5rem;
+              text-align: center;
+              margin-left: 1rem;
+            "
             class="hoverStyle topTextButton"
             @click="goDocIn"
           >
@@ -860,11 +853,11 @@
 
           <div
             style="
-         float:left
-         width:5rem
-         text-align:center
-         margin-left:1rem
-          "
+              float: left;
+              background-color: rgb(128, 128, 183);
+
+              text-align: center;
+            "
             v-if="docType != 'personnel'"
             class="hoverStyle topTextButton"
             @click="sortThisBatch"
@@ -900,11 +893,13 @@
 
           <div
             style="
-         float:left
-         width:5rem
-         text-align:center
-         margin-left:1rem !important
-          "
+              float: left;
+              background-color: rgb(128, 160, 153);
+
+              width: 5rem;
+              text-align: center;
+              margin-left: 1rem;
+            "
             class="hoverStyle topTextButton"
             @click="getExcel"
           >
@@ -923,11 +918,13 @@
           </div>
           <div
             style="
-         float:left
-         width:5rem
-         text-align:center
-         margin-left:1rem
-          "
+              float: left;
+              background-color: rgb(122, 122, 122);
+
+              width: 5rem;
+              text-align: center;
+              margin-left: 1rem;
+            "
             v-if="docType != 'personnel'"
             class="hoverStyle topTextButton"
             @click="myBoxNum"
@@ -937,11 +934,14 @@
 
           <div
             style="
-         float:left
-         width:5rem
-         text-align:center
-         margin-left:1rem !important
-          "
+              float: left;
+              background-color: rgb(188, 130, 153);
+
+              width: 5rem;
+              text-align: center;
+
+              margin-left: 1rem !important;
+            "
             class="hoverStyle topTextButton"
             @click="lockThisBatch"
             v-if="!isEnd"
@@ -951,10 +951,13 @@
 
           <div
             style="
-         float:left
-         width:5rem
+         float:left;
+         background-color: rgb(128, 155, 153);
+         
+         width:5rem;
          text-align:center
          margin-left:1rem !important
+         
           "
             class="hoverStyle topTextButton"
             @click="unLockThisBatch"
@@ -966,6 +969,7 @@
           <div
             style="         float:left
          width:5rem;
+         
          text-align:center;
          margin-left:1rem;
 
@@ -976,19 +980,21 @@
             设置规则
           </div>
           <div
-            style="         float:left
-         width:5rem;
-         text-align:center;
-         margin-left:1rem;
+            style="
+              float: left;
+              background-color: rgb(22, 44, 100);
 
-         "
+              width: 5rem;
+              text-align: center;
+              margin-left: 1rem;
+            "
             class="topTextButton"
             @click="PrintSocket"
           >
             批量打印
           </div>
 
-                    <div
+          <div
             style="         float:left
          width:5rem;
          text-align:center;
@@ -1398,7 +1404,7 @@
                     v-if="item.printed != 1"
                     style="float: left"
                     class="optionDiv"
-                    @click="PrintSocket()"
+                    @click="printOne(item)"
                   >
                     印章
                   </div>
@@ -1414,9 +1420,9 @@
 
                 <div
                   v-if="item.printed == 1"
-                  style="float: left; color: #ccc"
+                  style="float: left; color: #c00"
                   class="optionDiv"
-                  @click="printBtn(item)"
+                  @click="printOne(item)"
                 >
                   已印
                 </div>
@@ -1620,6 +1626,17 @@ export default {
     KeyWordManage: KeyWordManage,
   },
   watch: {
+    printSeqAtJS: {
+      handler(v, o) {
+        for (var i in this.$store.state.rawDocs) {
+          if (this.$store.state.rawDocs[i].docSequence == v) {
+            var d = this.$store.state.rawDocs[i];
+            this.printInfo = d.docTitle;
+            this.printInfo1 = d.docDesc;
+          }
+        }
+      },
+    },
     // getDocInShow:{
     //          handler(val, oldVal) {
     //            //console.log(val)
@@ -1636,6 +1653,13 @@ export default {
     // }
   },
   computed: {
+    // isEnd(){
+    //   if(this.$store.state.isEnd==1) return true
+    //   else return false
+    // },
+    printSeqAtJS() {
+      return this.printSeqAt;
+    },
     docType() {
       return sessionStorage.getItem("docType");
     },
@@ -1654,22 +1678,22 @@ export default {
   },
   data() {
     return {
-
       //备考表相关变量
-      publisher:"",
-      checker:"",
-      publishTime:"",
-      checkTime:"",
+      publisher: "",
+      checker: "",
+      publishTime: "",
+      checkTime: "",
 
-      boxInfoShowFlag:false,
-      boxInfoList:[],
-      boxInfoNow:{},
-      boxInfoTableNumList:[],
-      
+      boxInfoShowFlag: false,
+      boxInfoList: [],
+      boxInfoNow: {},
+      boxInfoTableNumList: [],
+
+
+      isEnd:false,
       //备考表相关变量
       //print相关
-      firstTimePrint:1,//第一次发送打印信号，会超时
-
+      firstTimePrint: 1, //第一次发送打印信号，会超时
 
       printIndex: 1,
       printedList: [],
@@ -1678,7 +1702,8 @@ export default {
       lastPrint: -1,
       printType: "识别号",
       connectTip: "未连接",
-      processInfo: "",
+      printInfo: "",
+      printInfo1: "",
       processShow: false,
       printSeqAt: 0,
       printArr: [],
@@ -1727,7 +1752,6 @@ export default {
       reSend: true, //打印页面发过来文档，然后再从本页面printBtn(文档)，
       //改变setSessionStorage的一些值，但是这个变量false就不打开新的页面了，为了重用里面的一些设置值的代码
 
-      isEnd: null,
       onceFlag: false, //只执行一次的改变批次锁定状态 printBtn
 
       alreadyDocsRestore: [],
@@ -1891,184 +1915,213 @@ export default {
     };
   },
   methods: {
-    saveInfo(){
-      var infoObj={}
-      for(var i in this.boxInfoList){
-        this.boxInfoList[i].publisher=this.publisher
-        this.boxInfoList[i].checker=this.checker
-        this.boxInfoList[i].publishTime=this.publishTime
-        this.boxInfoList[i].checkTime=this.checkTime
-        this.boxInfoList[i].authName=sessionStorage.getItem("authName")
+    saveInfo() {
+      var infoObj = {};
+      for (var i in this.boxInfoList) {
+        this.boxInfoList[i].publisher = this.publisher;
+        this.boxInfoList[i].checker = this.checker;
+        this.boxInfoList[i].publishTime = this.publishTime;
+        this.boxInfoList[i].checkTime = this.checkTime;
+        this.boxInfoList[i].authName = sessionStorage.getItem("authName");
       }
-      infoObj.infos=JSON.stringify(this.boxInfoList)
+      infoObj.infos = JSON.stringify(this.boxInfoList);
 
-            this.putRequest(
+      this.putRequest(
         "/work/box-infos/" + sessionStorage.getItem("batchId"),
-          JSON.stringify(infoObj)
+        JSON.stringify(infoObj)
       ).then((resp) => {
-        
         //console.log(resp)
         if (resp.code == 0) {
-          console.log(resp)
-                              this.$message({
-          type: "success",
-          message: "保存成功",
-        });
+          console.log(resp);
+          this.$message({
+            type: "success",
+            message: "保存成功",
+          });
         }
       });
-
     },
-    getOneInfo(){
-      if(this.boxInfoNow.id==null||this.boxInfoNow.tableNumber.length==0){
-                                      this.$message({
+    getOneInfo() {
+      if (
+        this.boxInfoNow.id == null ||
+        this.boxInfoNow.tableNumber.length == 0
+      ) {
+        this.$message({
           type: "warning",
           message: "请选择",
         });
-        return
-
+        return;
       }
-        //       this.getRequest("/work/downloadOne/"+this.boxInfoNow.id+"/"+sessionStorage.getItem("batchId")).then((resp) => {
-        //   console.log(resp)
-          
-        // })
+      //       this.getRequest("/work/downloadOne/"+this.boxInfoNow.id+"/"+sessionStorage.getItem("batchId")).then((resp) => {
+      //   console.log(resp)
 
-        axios({
-            method: "get",
-            url: this.baseurl+"/work/downloadOne/"+this.boxInfoNow.id+"/"+sessionStorage.getItem("batchId"),
-            responseType: "arraybuffer",
-                        headers: {
-              "Content-Type": "application/json",
-              authId: sessionStorage.getItem("authId"),
-              token: window.localStorage.getItem("token")
-                ? window.localStorage.getItem("token").split('"')[1] ||
-                  window.localStorage.getItem("token")
-                : null,
-            },
-          }).then((res) => {
-            // //console.log("DASDASDASDASD")
+      // })
 
-            //console.log(res);
-            const blob = new Blob([res]); //new Blob([res])中不加data就会返回下图中[objece objece]内容（少取一层）
+      axios({
+        method: "get",
+        url:
+          this.baseurl +
+          "/work/downloadOne/" +
+          this.boxInfoNow.id +
+          "/" +
+          sessionStorage.getItem("batchId"),
+        responseType: "arraybuffer",
+        headers: {
+          "Content-Type": "application/json",
+          authId: sessionStorage.getItem("authId"),
+          token: window.localStorage.getItem("token")
+            ? window.localStorage.getItem("token").split('"')[1] ||
+              window.localStorage.getItem("token")
+            : null,
+        },
+      }).then((res) => {
+        // //console.log("DASDASDASDASD")
 
-            const fileName = this.boxInfoNow.tableNumber+".doc"; //这里可以自定义名称，发现设置xlsx文件类型下载后打开会提示下面图-1的无效报错,所以我用了xls格式
+        //console.log(res);
+        const blob = new Blob([res]); //new Blob([res])中不加data就会返回下图中[objece objece]内容（少取一层）
 
-            const elink = document.createElement("a");
+        const fileName = this.boxInfoNow.tableNumber + ".doc"; //这里可以自定义名称，发现设置xlsx文件类型下载后打开会提示下面图-1的无效报错,所以我用了xls格式
 
-            elink.download = fileName;
+        const elink = document.createElement("a");
 
-            elink.style.display = "none";
+        elink.download = fileName;
 
-            elink.href = URL.createObjectURL(blob);
+        elink.style.display = "none";
 
-            document.body.appendChild(elink);
+        elink.href = URL.createObjectURL(blob);
 
-            elink.click();
+        document.body.appendChild(elink);
 
-            URL.revokeObjectURL(elink.href); // 释放URL 对象
-            document.body.removeChild(elink);
-            this.showWaitingFlag = false;
-          });
+        elink.click();
+
+        URL.revokeObjectURL(elink.href); // 释放URL 对象
+        document.body.removeChild(elink);
+        this.showWaitingFlag = false;
+      });
     },
-    getAllInfo(){
-      this.showWaitingFlag=true
-    axios({
-            method: "get",
-            url: this.baseurl+"/work/downloadAll/"+sessionStorage.getItem("batchId"),
-            responseType: "arraybuffer",
-                        headers: {
-              "Content-Type": "application/json",
-              authId: sessionStorage.getItem("authId"),
-              token: window.localStorage.getItem("token")
-                ? window.localStorage.getItem("token").split('"')[1] ||
-                  window.localStorage.getItem("token")
-                : null,
-            },
-          }).then((res) => {
-            // //console.log("DASDASDASDASD")
+    getAllInfo() {
+      this.showWaitingFlag = true;
+      axios({
+        method: "get",
+        url:
+          this.baseurl +
+          "/work/downloadAll/" +
+          sessionStorage.getItem("batchId"),
+        responseType: "arraybuffer",
+        headers: {
+          "Content-Type": "application/json",
+          authId: sessionStorage.getItem("authId"),
+          token: window.localStorage.getItem("token")
+            ? window.localStorage.getItem("token").split('"')[1] ||
+              window.localStorage.getItem("token")
+            : null,
+        },
+      })
+        .then((res) => {
+          // //console.log("DASDASDASDASD")
 
-            //console.log(res);
-            const blob = new Blob([res]); //new Blob([res])中不加data就会返回下图中[objece objece]内容（少取一层）
+          //console.log(res);
+          const blob = new Blob([res]); //new Blob([res])中不加data就会返回下图中[objece objece]内容（少取一层）
 
-            const fileName = sessionStorage.getItem("authName")+".zip"; //这里可以自定义名称，发现设置xlsx文件类型下载后打开会提示下面图-1的无效报错,所以我用了xls格式
+          const fileName = sessionStorage.getItem("authName") + ".zip"; //这里可以自定义名称，发现设置xlsx文件类型下载后打开会提示下面图-1的无效报错,所以我用了xls格式
 
-            const elink = document.createElement("a");
+          const elink = document.createElement("a");
 
-            elink.download = fileName;
+          elink.download = fileName;
 
-            elink.style.display = "none";
+          elink.style.display = "none";
 
-            elink.href = URL.createObjectURL(blob);
+          elink.href = URL.createObjectURL(blob);
 
-            document.body.appendChild(elink);
+          document.body.appendChild(elink);
 
-            elink.click();
+          elink.click();
 
-            URL.revokeObjectURL(elink.href); // 释放URL 对象
-            document.body.removeChild(elink);
-            this.showWaitingFlag = false;
-          }).then(r=>{
-            this.showWaitingFlag=false
-          });
+          URL.revokeObjectURL(elink.href); // 释放URL 对象
+          document.body.removeChild(elink);
+          this.showWaitingFlag = false;
+        })
+        .then((r) => {
+          this.showWaitingFlag = false;
+        });
     },
-    boxInfoBlur(e){
-            var inputBoxTableNum = e.target.value;
-      console.log(inputBoxTableNum)
+    boxInfoBlur(e) {
+      var inputBoxTableNum = e.target.value;
+      console.log(inputBoxTableNum);
     },
-    boxInfoSelectDone(e){
-      console.log(e)
-      this.boxInfoNow=e
+    boxInfoSelectDone(e) {
+      console.log(e);
+      this.boxInfoNow = e;
       // for(var i in this.boxInfoList){
       //   if(this.boxInfoList[i].tableNumber==e){
       //     this.boxInfoNow
       //   }
       // }
     },
-    genBoxInfo(){
-      if(!this.isEnd){
- this.$confirm(
-        "请确定盒号件号不再修改,锁定本批次后再操作备考表",
-        "提示",
-        {
-          confirmButtonText: "好的",
-          type: "warning",
-        }
-      )
+    genBoxInfo() {
+      if (!this.$store.state.isEnd) {
+        this.$confirm(
+          "请确定盒号件号不再修改,锁定本批次后再操作备考表",
+          "提示",
+          {
+            confirmButtonText: "好的",
+            type: "warning",
+          }
+        );
       }
-      if(this.isEnd){
-        this.boxInfoShowFlag=true
+      if (this.$store.state.isEnd) {
+        this.boxInfoShowFlag = true;
 
-        this.getRequest("/work/box-infos?id="+sessionStorage.getItem("batchId")).then((resp) => {
-          console.log(resp)
-          this.boxInfoList=resp.data
-          if(this.boxInfoList.length==0){
-                    this.$message({
-          type: "warning",
-          message: "请先排件号盒号并锁定本批",
-        });
-        return
+        this.getRequest(
+          "/work/box-infos?id=" + sessionStorage.getItem("batchId")
+        ).then((resp) => {
+          console.log(resp);
+          this.boxInfoList = resp.data;
+          if (this.boxInfoList.length == 0) {
+            this.$message({
+              type: "warning",
+              message: "请先排件号盒号并锁定本批",
+            });
+            return;
           }
 
-          this.publishTime=this.boxInfoList[0].publishTime
-          this.publisher=this.boxInfoList[0].publisher
-          this.checkTime=this.boxInfoList[0].checkTime
-          this.checker=this.boxInfoList[0].checker
-          this.boxInfoTableNumList=[]
-
-        })
-      //   var infoObj={}
-      //   infoObj.a="b"
-      //         this.postRequest(
-      //   //注意防止重复提交
-      //   "/work/box-infos/"+sessionStorage.getItem("batchId"),
-      //   JSON.stringify(infoObj)
-      // ).then((resp) => {
-      //   console.log(resp)
-      // })
+          this.publishTime = this.boxInfoList[0].publishTime;
+          this.publisher = this.boxInfoList[0].publisher;
+          this.checkTime = this.boxInfoList[0].checkTime;
+          this.checker = this.boxInfoList[0].checker;
+          this.boxInfoTableNumList = [];
+        });
+        //   var infoObj={}
+        //   infoObj.a="b"
+        //         this.postRequest(
+        //   //注意防止重复提交
+        //   "/work/box-infos/"+sessionStorage.getItem("batchId"),
+        //   JSON.stringify(infoObj)
+        // ).then((resp) => {
+        //   console.log(resp)
+        // })
       }
     },
-    printThis() {
+    printThis1() {
       // var arr=this.printArr[this.printSeqAt]
       // this.connectStatus=true
+      //     axios({
+      //       method: "post",
+      //       url: "http://localhost:8999/api/send",
+      //       data: {
+      //         message:
+      //           "000B|0000|100|/mnt/sdcard/MSG/" + 1 + "/|0|0000|0|0000|0D0A",
+      //       },
+      //       timeout: 6000,
+      //     })
+      //       .then((resstart) => {
+      //                 this.$message({
+      //   type: "warning",
+      //   message: JSON.stringify(resstart),
+      // });
+      // return;
+      //       })
+      //       return
+
       if (!this.connectStatus) {
         this.$message({
           type: "warning",
@@ -2080,43 +2133,301 @@ export default {
       var arr = [];
       var docs = this.$store.state.rawDocs;
       var docOne;
-          console.log(docs.length)
-
+      console.log(docs.length);
 
       for (var k in docs) {
-
         if (docs[k].docSequence == this.printSeqAt) {
-          console.log(docs[k])
-          if(docs[k].deleted==1){
-                    this.$message({
-          type: "warning",
-          message: "该份已删除",
-        });
-        return
+          console.log(docs[k]);
+          if (docs[k].deleted == 1) {
+            this.$message({
+              type: "warning",
+              message: "该份已删除",
+            });
+            return;
           }
           docOne = docs[k];
-          if(docOne.printed!=1){
-          docs[k].printed = 1;
+          if (docOne.printed != 1) {
+            docs[k].printed = 1;
             this.printedList.push(docs[k].id);
-                      var str = "";
-          for (var i in this.printedList) {
-            str = str + this.printedList[i] + ",";
-          }
-          if (str.charAt(str.length - 1) == ",") {
-            str = str.substring(0, str.length - 1);
-          }
-          ///setPrint/{type}/{id}
-          console.log(str);
-          this.postRequest(
-            "/work/printedList/" + sessionStorage.getItem("batchId"),
-            str
-          ).then((resp) => {
-            //console.log(resp)
-            if (resp.code == 0) {
+            var str = "";
+            for (var i in this.printedList) {
+              str = str + this.printedList[i] + ",";
             }
-          });
+            if (str.charAt(str.length - 1) == ",") {
+              str = str.substring(0, str.length - 1);
+            }
+            ///setPrint/{type}/{id}
+            console.log(str);
+            this.postRequest(
+              "/work/printedList/" + sessionStorage.getItem("batchId"),
+              str
+            ).then((resp) => {
+              //console.log(resp)
+              if (resp.code == 0) {
+              }
+            });
           }
+          break;
+        }
+      }
+      if (!docOne) {
+        this.$message({
+          type: "warning",
+          message: "该份不存在或已删除",
+        });
+        return;
+      }
 
+      var pjson = {};
+      pjson.code = sessionStorage.getItem("authCode") + "";
+      pjson.year = docOne.sortYear + "";
+
+      pjson.about = docOne.docAbout + "";
+      pjson.page = docOne.docPage + "" + "";
+      pjson.num = docOne.docNum + "" + "";
+      if (this.isNumber(docOne.deadline)) {
+        pjson.deadline = docOne.deadline + "年";
+      } else {
+        pjson.deadline = docOne.deadline;
+      }
+
+      var p = {};
+      p.params = pjson;
+      axios({
+        method: "post",
+        url: "http://localhost:8999/api/writeBmp",
+        data: {
+          params: JSON.stringify(pjson),
+        },
+        timeout: 6000,
+      }).then((r) => {
+        console.log(r);
+
+        axios({
+          method: "post",
+          url: "http://localhost:8999/api/send",
+          data: {
+            message: "000B|0000|500|0|0|0000|0|0000|0D0A",
+          },
+          timeout: 1000,
+        })
+          .then((res) => {
+            console.log("stop signal-" + JSON.stringify(res));
+            // this.$message({
+            //   type: "success",
+            //   message: JSON.stringify(res),
+            // });
+            function sleep1(ms, callback) {
+              setTimeout(callback, ms);
+            }
+            //sleep 1s
+
+            if (res.code == 0) {
+              //好像stop信号不响应但是发过去了，再发start信号使其生效
+              console.log("1s" + new Date().getSeconds());
+              sleep1(1000, () => {
+                console.log("1s 后" + new Date().getSeconds());
+
+                axios({
+                  method: "post",
+                  url: "http://localhost:8999/api/send",
+                  data: {
+                    message:
+                      "000B|0000|100|/mnt/sdcard/MSG/" +
+                      1 +
+                      "/|0|0000|0|0000|0D0A",
+                  },
+                  timeout: 6000,
+                })
+                  .then((resstart) => {
+                    console.log(
+                      JSON.stringify(
+                        "开始打印返回的：" + JSON.stringify(resstart)
+                      )
+                    );
+                    if (resstart.code == 0) {
+                      this.$message({
+                        type: "success",
+                        message: "打印信号已发送",
+                      })
+                      console.log(this.firstTimePrint)
+
+                        if (this.firstTimePrint == 1) {
+                            this.firstTimePrint = 0;
+                            console.log("diyici 连接而不上");  //应该只会走这里， 下面那个 从启动状态开始的不行的，手动启动 然后发信号停止会出问题
+                            sleep1(4000, () => {
+                              axios({
+                                method: "post",
+                                url: "http://localhost:8999/api/send",
+                                data: {
+                                  message:
+                                    "000B|0000|100|/mnt/sdcard/MSG/" +
+                                    1 +
+                                    "/|0|0000|0|0000|0D0A",
+                                },
+                                timeout: 6000,
+                              });
+                            });
+                          }
+
+
+                    } else {
+                                            
+                          if (this.firstTimePrint == 1) {
+                            this.firstTimePrint = 0;
+
+                            console.log("diyici 连接而不上2222222");
+                            console.log(resFirstTime);
+                            sleep1(4400, () => {
+                              axios({
+                                method: "post",
+                                url: "http://localhost:8999/api/send",
+                                data: {
+                                  message:
+                                    "000B|0000|100|/mnt/sdcard/MSG/" +
+                                    1 +
+                                    "/|0|0000|0|0000|0D0A",
+                                },
+                                timeout: 6000,
+                              });
+                            });
+                          }
+              
+                      this.$message({
+                        type: "success",
+                        message: "发送失败请检查机器，尝试重连",
+                      });
+                    }
+                  })
+                  .catch((err) => {
+                    console.log("start err" + err);
+                  });
+              });
+            } else { //停止状态会直接走这里
+              // this.$message({
+              //   type: "success",
+              //   message: "不在打印中，直接启动打印",
+              // });
+                            console.log("1s 22" + new Date().getSeconds());
+              sleep1(1000, () => {
+                console.log("1s 后2" + new Date().getSeconds());
+                
+                              axios({
+                method: "post",
+                url: "http://localhost:8999/api/send",
+                data: {
+                  message:
+                    "000B|0000|100|/mnt/sdcard/MSG/" +
+                    1 +
+                    "/|0|0000|0|0000|0D0A",
+                },
+                timeout: 6000,
+              })
+                .then((resstart) => {
+                  console.log(
+                    JSON.stringify(
+                      "开始打印返回的2：" + JSON.stringify(resstart)
+                    )
+                  );
+                  if (r.code == 0) {
+                    this.$message({
+                      type: "success",
+                      message: "打印信号已发送",
+                    });
+
+                    
+                        if (this.firstTimePrint == 1) {
+                            this.firstTimePrint = 0;
+                            console.log("diyici 连接而不上 2");
+                            sleep1(4000, () => {
+                              axios({
+                                method: "post",
+                                url: "http://localhost:8999/api/send",
+                                data: {
+                                  message:
+                                    "000B|0000|100|/mnt/sdcard/MSG/" +
+                                    1 +
+                                    "/|0|0000|0|0000|0D0A",
+                                },
+                                timeout: 6000,
+                              });
+                            });
+                          }
+
+                  } else {
+                  }
+                })
+                .catch((err) => {
+                  console.log("start err" + err);
+                  this.$message({
+                    type: "warning",
+                    message: "启动失败，请检查喷码机",
+                  });
+                });
+
+                })
+
+
+            }
+          })
+          .catch((err) => {
+            console.log("stop err" + err);
+            this.$message({
+              type: "warning",
+              message: "请在打印机操作界面检查打印机",
+            });
+          });
+      });
+    },
+    printThis() {
+      // var arr=this.printArr[this.printSeqAt]
+      this.connectStatus = true;
+
+      if (!this.connectStatus) {
+        this.$message({
+          type: "warning",
+          message: "请先连接打印机",
+        });
+        return;
+      }
+
+      var arr = [];
+      var docs = this.$store.state.rawDocs;
+      var docOne;
+      console.log(docs.length);
+
+      for (var k in docs) {
+        if (docs[k].docSequence == this.printSeqAt) {
+          console.log(docs[k]);
+          if (docs[k].deleted == 1) {
+            this.$message({
+              type: "warning",
+              message: "该份已删除",
+            });
+            return;
+          }
+          docOne = docs[k];
+          if (docOne.printed != 1) {
+            docs[k].printed = 1;
+            this.printedList.push(docs[k].id);
+            var str = "";
+            for (var i in this.printedList) {
+              str = str + this.printedList[i] + ",";
+            }
+            if (str.charAt(str.length - 1) == ",") {
+              str = str.substring(0, str.length - 1);
+            }
+            ///setPrint/{type}/{id}
+            console.log(str);
+            this.postRequest(
+              "/work/printedList/" + sessionStorage.getItem("batchId"),
+              str
+            ).then((resp) => {
+              //console.log(resp)
+              if (resp.code == 0) {
+              }
+            });
+          }
         }
       }
 
@@ -2135,7 +2446,7 @@ export default {
           that.sendMessage();
         } else {
           that.connectStatus = false;
-          this.firstTimePrint=1
+          this.firstTimePrint = 1;
           that.connectTip = "已断开";
           that.$message({
             type: "success",
@@ -2148,7 +2459,6 @@ export default {
     },
 
     sendMessage() {
-
       var td;
       for (var i in this.printArr) {
         if (this.printArr[i].docSequence == this.printSeqAt) {
@@ -2173,7 +2483,7 @@ export default {
         data: {
           message: "000B|0000|500|0|0|0000|0|0000|0D0A",
         },
-        timeout: 600,
+        timeout: 4000,
       })
         .then((r) => {
           console.log("stop signal" + JSON.stringify(r));
@@ -2182,7 +2492,8 @@ export default {
             message: "已停止打印机，并启动新的一组打印",
           });
 
-          if (r) { //好像stop信号不响应但是发过去了，再发start信号使其生效
+          if (r) {
+            //好像stop信号不响应但是发过去了，再发start信号使其生效
             axios({
               method: "post",
               url: "http://localhost:8999/api/send",
@@ -2200,18 +2511,17 @@ export default {
                     message: "打印信号已发送",
                   });
                 } else {
-                  if(this.firstTimePrint==1){
-                    this.firstTimePrint=0  //第一次发送会收不到 ? 也不是第一次发的问题
-                    console.log("第一次发送会收不到")
-                  }else{
-                //  this.connectStatus = false;
-                //  this.firstTimePrint=1
-                //   this.$message({
-                //     type: "warning",
-                //     message: "请在打印机操作界面检查打印机，并尝试重新连接",
-                //   });
+                  if (this.firstTimePrint == 1) {
+                    this.firstTimePrint = 0; //第一次发送会收不到 ? 也不是第一次发的问题
+                    console.log("第一次发送会收不到");
+                  } else {
+                    //  this.connectStatus = false;
+                    //  this.firstTimePrint=1
+                    //   this.$message({
+                    //     type: "warning",
+                    //     message: "请在打印机操作界面检查打印机，并尝试重新连接",
+                    //   });
                   }
-
                 }
               })
               .catch((err) => {
@@ -2281,6 +2591,7 @@ export default {
                 type: "success",
                 message: "连接打印机成功",
               });
+              this.firstTimePrint = 1;
 
               this.connectStatus = true;
             } else {
@@ -2295,10 +2606,27 @@ export default {
       }
     },
     resetPrint() {
+      //     axios({
+      //       method: "post",
+      //       url: "http://localhost:8999/api/send",
+      //       data: {
+      //         message:
+      //           "000B|0000|100|/mnt/sdcard/MSG/" + 1 + "/|0|0000|0|0000|0D0A",
+      //       },
+      //       timeout: 6000,
+      //     })
+      //       .then((resstart) => {
+      //                 this.$message({
+      //   type: "warning",
+      //   message: JSON.stringify(resstart),
+      // });
+      //       })
+      //       return
+
       this.nowPrintSeq = "";
       // this.SelectedPrintOrder=""
       this.connectStatus = false;
-      this.firstTimePrint=1
+      this.firstTimePrint = 1;
       this.cidrs = "";
       this.processShow = false;
     },
@@ -2343,14 +2671,13 @@ export default {
 
       // }
 
-      // this.processInfo=tstring+",共"+arrt.length+"件"
+      // this.printInfo=tstring+",共"+arrt.length+"件"
 
       // this.sendQR(this.printArr[0]);
     },
 
     nextPrint() {
       if (this.printSeqAt < this.maxSeq) {
-        
         this.printSeqAt = parseInt(this.printSeqAt) + 1;
       }
 
@@ -2380,7 +2707,7 @@ export default {
             : arrt[0].docSequence + "~" + arrt[arrt.length - 1].docSequence;
       }
 
-      this.processInfo = tstring + ",共" + arrt.length + "件";
+      this.printInfo = tstring + ",共" + arrt.length + "件";
     },
     prePrint() {
       //  this.connectStatus=true
@@ -2418,7 +2745,7 @@ export default {
             : arrt[0].docSequence + "~" + arrt[arrt.length - 1].docSequence;
       }
 
-      this.processInfo = tstring + ",共" + arrt.length + "件";
+      this.printInfo = tstring + ",共" + arrt.length + "件";
     },
 
     printOrderBlur() {},
@@ -2498,7 +2825,7 @@ export default {
       var txtString = "";
       var tipString = "";
       for (var i in arr) {
-        var order = parseInt(i);
+        var order = parseInt(i + 1);
         order = order + ",";
         txtString =
           txtString +
@@ -2519,14 +2846,14 @@ export default {
           "\n";
         if (i == arr.length - 1) {
           //最后一个数据多写一份
-          var c = parseInt(order + 1);
+          var c = parseInt(i + 2);
           txtString =
             txtString +
             c +
             "," +
             sessionStorage.getItem("authCode") +
             "," +
-            arr[0].sortYear +
+            arr[i].sortYear +
             "," +
             arr[i].docNum +
             "," +
@@ -2662,9 +2989,7 @@ export default {
     sortR() {
       //大到小
       var rArray = [];
-
       rArray = this.deepClone(this.$store.state.rawDocs);
-
       function sortData(a, b) {
         return parseInt(b.docSequence) - parseInt(a.docSequence);
       }
@@ -2677,7 +3002,6 @@ export default {
       for (var k in t) {
         if (t[k].deleted == 1) {
           t.splice(k, 1);
-
           k = k - 1;
         }
       }
@@ -2731,6 +3055,20 @@ export default {
       }
       return t;
     },
+    printOne(item) {
+      this.printArr = this.getPrints();
+      this.maxSeq = 1;
+      for (var i in this.printArr) {
+        if (this.maxSeq < parseInt(this.printArr[i].docSequence)) {
+          this.maxSeq = parseInt(this.printArr[i].docSequence);
+          this.printIndex = i;
+        }
+      }
+
+      this.printSeqAt = item.docSequence;
+      this.PrintControllshow = true;
+    },
+
     PrintSocket() {
       this.printArr = this.getPrints();
       console.log(this.printArr);
@@ -2742,7 +3080,9 @@ export default {
           this.printIndex = i;
         }
       }
-      this.printSeqAt = this.maxSeq;
+      if (!this.printSeqAt) {
+        this.printSeqAt = this.maxSeq;
+      }
       //this.nowPrintSeq=th
       this.PrintControllshow = true;
     },
@@ -2811,37 +3151,37 @@ export default {
         //指定了开始的文档，该指定结束的文档
         this.endSeq = item.docSequence;
 
-        var ddl1
-        var ddl2
-        var index1
-        var index2
-        for(var i  in this.$store.state.alreadyDocs){
-          if(this.$store.state.alreadyDocs[i].docSequence==this.startSeq){
-            ddl1=this.$store.state.alreadyDocs[i].deadline
-            index1=i
+        var ddl1;
+        var ddl2;
+        var index1;
+        var index2;
+        for (var i in this.$store.state.alreadyDocs) {
+          if (this.$store.state.alreadyDocs[i].docSequence == this.startSeq) {
+            ddl1 = this.$store.state.alreadyDocs[i].deadline;
+            index1 = i;
           }
-          if(this.$store.state.alreadyDocs[i].docSequence==this.endSeq){
-            ddl2=this.$store.state.alreadyDocs[i].deadline
-            index2=i
+          if (this.$store.state.alreadyDocs[i].docSequence == this.endSeq) {
+            ddl2 = this.$store.state.alreadyDocs[i].deadline;
+            index2 = i;
           }
         }
-        if(ddl2!=ddl1){
-          this.endSeq=""
-                    this.$message({
+        if (ddl2 != ddl1) {
+          this.endSeq = "";
+          this.$message({
             type: "warning",
             message: "不是同一盒型",
           });
-        return
+          return;
         }
-        if(index1>index2){
-                    this.endSeq=""
-                    this.$message({
+        if (index1 > index2) {
+          this.endSeq = "";
+          this.$message({
             type: "warning",
             message: "操作错误",
           });
-        return
+          return;
         }
-        if (this.startSeq && this.endSeq ) {
+        if (this.startSeq && this.endSeq) {
           // alert("kaishi:"+this.startSeq+"..jieshu:"+this.endSeq)
           // this.preComputeBox()
           //点击后清除  hover不清除
@@ -2854,7 +3194,7 @@ export default {
           // }
 
           this.showStartBoxSet = true;
-          
+
           this.$message({
             type: "success",
             message: "修改完成后请点击“保存盒号”",
@@ -2867,7 +3207,7 @@ export default {
       this.showStartBoxSet = false;
       var start = -1; //下标
       var end = -1;
-      var thisBoxTypeLastIndex=-1  //手动操作影响的盒形范围
+      var thisBoxTypeLastIndex = -1; //手动操作影响的盒形范围
       var docs = this.$store.state.alreadyDocs;
       for (var i = 0; i < docs.length; i++) {
         if (docs[i].docSequence == this.startSeq) {
@@ -2876,28 +3216,26 @@ export default {
         if (docs[i].docSequence == this.endSeq) {
           end = i;
         }
-
       }
-      console.log(docs.length)
-            for (var i = end; i < docs.length; i++) {
-                            if(docs[i].deadline!=docs[end].deadline){
-          thisBoxTypeLastIndex=i-1
-          break
+      console.log(docs.length);
+      for (var i = end; i < docs.length; i++) {
+        if (docs[i].deadline != docs[end].deadline) {
+          thisBoxTypeLastIndex = i - 1;
+          break;
         }
-            }
+      }
 
-        if(thisBoxTypeLastIndex==-1){
-          thisBoxTypeLastIndex=docs.length-1
-        }
-
+      if (thisBoxTypeLastIndex == -1) {
+        thisBoxTypeLastIndex = docs.length - 1;
+      }
 
       var j = start;
-//33
-//5
-//5
-//5
+      //33
+      //5
+      //5
+      //5
 
-      console.log(thisBoxTypeLastIndex)
+      console.log(thisBoxTypeLastIndex);
       // var k = end+1;
       // var delta=parseInt(this.startBoxNum)+1-parseInt(docs[k].boxSeq)
       // for(;k<=thisBoxTypeLastIndex;k++){
@@ -2910,38 +3248,42 @@ export default {
         }
       }
 
-      if(end<thisBoxTypeLastIndex){
-        docs[end+1].boxSeq=parseInt(this.startBoxNum)+1
-        docs[end+1].pageTotal=parseInt(docs[end+1].docPage)
+      if (end < thisBoxTypeLastIndex) {
+        docs[end + 1].boxSeq = parseInt(this.startBoxNum) + 1;
+        docs[end + 1].pageTotal = parseInt(docs[end + 1].docPage);
       }
-      var delta1=1
-      var boxSum=docs[end+1].pageTotal
+      var delta1 = 1;
+      var boxSum = docs[end + 1].pageTotal;
 
-      for(var k=end+2;k<=thisBoxTypeLastIndex;k++){
-        var beforeSum=boxSum
-        var tempSum=boxSum+parseInt(docs[k].docPage)
-        var reBox=false
-        var pageNow=parseInt(docs[k].docPage)
-        if(tempSum>180||pageNow>180){
-          reBox=true
+      for (var k = end + 2; k <= thisBoxTypeLastIndex; k++) {
+        var beforeSum = boxSum;
+        var tempSum = boxSum + parseInt(docs[k].docPage);
+        var reBox = false;
+        var pageNow = parseInt(docs[k].docPage);
+        if (tempSum > 180 || pageNow > 180) {
+          reBox = true;
         }
 
-        if(docs[k].docAbout!=docs[k-1].docAbout||docs[k].docSecret!=docs[k].docSecret||reBox){
-          delta1++
-          boxSum=parseInt(docs[k].docPage)
-          docs[k].boxSeq=parseInt(this.startBoxNum)+delta1
-          docs[k].pageTotal=parseInt(docs[k].docPage)
-        }else{
-          docs[k].boxSeq=parseInt(this.startBoxNum)+delta1
-          boxSum+=parseInt(docs[k].docPage)
-          docs[k].pageTotal=boxSum
+        if (
+          docs[k].docAbout != docs[k - 1].docAbout ||
+          docs[k].docSecret != docs[k].docSecret ||
+          reBox
+        ) {
+          delta1++;
+          boxSum = parseInt(docs[k].docPage);
+          docs[k].boxSeq = parseInt(this.startBoxNum) + delta1;
+          docs[k].pageTotal = parseInt(docs[k].docPage);
+        } else {
+          docs[k].boxSeq = parseInt(this.startBoxNum) + delta1;
+          boxSum += parseInt(docs[k].docPage);
+          docs[k].pageTotal = boxSum;
         }
       }
-      
-              j=start
-        for (; j <= thisBoxTypeLastIndex; j++) {
-          this.boxNumMap[docs[j].id] = docs[j].boxSeq+"-"+docs[j].pageTotal;
-        }
+
+      j = start;
+      for (; j <= thisBoxTypeLastIndex; j++) {
+        this.boxNumMap[docs[j].id] = docs[j].boxSeq + "-" + docs[j].pageTotal;
+      }
 
       this.startSeq = "";
       this.endSeq = "";
@@ -3056,7 +3398,9 @@ export default {
       ).then((resp) => {
         //console.log(resp)
         if (resp.code == 0) {
-          this.isEnd = true;
+          this.$store.state.isEnd = true;
+          this.isEnd=true;
+          console.log("end=1")
           window.sessionStorage.setItem("isEnd", 1);
         }
       });
@@ -3068,7 +3412,8 @@ export default {
       ).then((resp) => {
         //console.log(resp)
         if (resp.code == 0) {
-          this.isEnd = false;
+          this.$store.state.isEnd = false;
+          this.isEnd=false;
           window.sessionStorage.setItem("isEnd", 0);
         }
       });
@@ -3116,8 +3461,8 @@ export default {
       this.ddlCheck = false;
       this.dabCheck = false;
       this.sortYearCheck = false;
-      if(this.deletedShowSwitch !=1){
-        return
+      if (this.deletedShowSwitch != 1) {
+        return;
       }
 
       this.$store.state.alreadyDocs = this.$store.state.rawDocs; //this.$store.state.rawDocs存的是所有的
@@ -3357,10 +3702,12 @@ export default {
             this.$store.state.sortedFlag
           ) {
             //该批已经排好序
-            console.log("sorted!");
+            console.log("sorted!!!!!!!!!!!!!!");
             console.log(item);
             // item.printedIds="4452,4341"
-            this.printedList = item.printedIds.split(",");
+            if (item.printedIds != null) {
+              this.printedList = item.printedIds.split(",");
+            }
             // console.log(this.printedList);
             // if(this.printedList.length=)
 
@@ -3370,9 +3717,9 @@ export default {
             this.$store.state.rawDocs = sorted; //全部的，第一次加载时存下来
             this.alreadyDocsRestore = sorted;
             this.filterAlreadyDocs(); //已经排好
-            console.log(this.$store.state.alreadyDocs)
+            console.log(this.$store.state.alreadyDocs);
 
-              for (var i in this.$store.state.alreadyDocs) {
+            for (var i in this.$store.state.alreadyDocs) {
               //  console.log(this.$store.state.alreadyDocs[i].id)
               for (var j in this.printedList) {
                 if (
@@ -3409,12 +3756,16 @@ export default {
             //console.log(item)
             var lastb = item.lastBox;
             this.deadlineFilter = [];
-            this.isEnd = resp.data.end; //是否录入结束 还可以修改
-            if (resp.data.end == null) {
-              this.isEnd = 0;
+            this.$store.state.isEnd = resp.data.end; //是否录入结束 还可以修改
+            if (resp.data.end != 1) {
+              this.isEnd=false
+              this.$store.state.isEnd = false;
+            }else{
+              this.isEnd=true
+              this.$store.state.isEnd = true;
             }
-            //console.log(this.isEnd);
-            window.sessionStorage.setItem("isEnd", this.isEnd);
+            //console.log(this.$store.state.isEnd);
+            window.sessionStorage.setItem("isEnd", this.$store.state.isEnd);
             for (var deadline in lastb) {
               this.deadlineFilter.push(deadline);
             }
@@ -3489,11 +3840,9 @@ export default {
       this.searchContent = "";
     },
     cancelSearch() {
-
-
-        // this.getRequest("/work/box-infos?id="+sessionStorage.getItem("batchId")).then((resp) => {
-        //   console.log(resp)
-        // })
+      // this.getRequest("/work/box-infos?id="+sessionStorage.getItem("batchId")).then((resp) => {
+      //   console.log(resp)
+      // })
       //   var infoObj={}
       //   infoObj.a="b"
       //         this.postRequest(
@@ -3672,7 +4021,7 @@ export default {
         this.$store.state.sortedFlag = true;
 
         this.showWaitingFlag = true;
-        this.isEnd = 1;
+        this.$store.state.isEnd = 1;
         this.getRequest(path).then((resp) => {
           //console.log("排件号盒号人事");
           //console.log(resp);
@@ -3709,7 +4058,7 @@ export default {
       });
     },
     sortThisBatch() {
-      this.showAllDocs() //取消勾选
+      this.showAllDocs(); //取消勾选
       // let vm = this;
       var path =
         "/document/" +
@@ -3757,17 +4106,17 @@ export default {
       });
     },
     goDocIn() {
-      if (this.isEnd == 1) {
-        this.$confirm("该批档案已经锁定", "提示", {
+      if (this.$store.state.isEnd) {
+        this.$confirm("该批档案已经锁定，不允许添加文件", "提示", {
           cancelButtonClass: "btn-custom-cancel",
 
           confirmButtonText: "是",
 
           type: "warning",
         }).then(() => {
-          return;
+          return
         });
-        return;
+        return
       }
       this.showDocIn = true;
       this.$store.state.docDetialBar = 0;
@@ -3957,17 +4306,15 @@ export default {
     fixThisItem(item) {
       this.$store.state.noChufa = true;
 
-      if (this.isEnd == 1) {
-        this.$confirm("该批档案已经锁定", "提示", {
+      if (this.$store.state.isEnd == 1) {
+        this.$confirm("该批档案已经锁定,您的修改有限制", "提示", {
           cancelButtonClass: "btn-custom-cancel",
 
           confirmButtonText: "是",
 
           type: "warning",
         }).then(() => {
-          return;
         });
-        return;
       }
 
       if (
@@ -3983,7 +4330,7 @@ export default {
         item.docDescAuthor = false;
       }
 
-      this.$message.warning("修改后请重新排件号盒号");
+      // this.$message.warning("修改后请重新排件号盒号");
       //console.log(item);
       this.$store.state.tempDoc = Object.assign({}, item);
       // docUtil.$emit("changeThisDoc",item)
@@ -4135,15 +4482,15 @@ export default {
     //     var docs = this.$store.state.alreadyDocs;
     //     window.localStorage.setItem("docs", JSON.stringify(docs));
 
-    //     if (this.isEnd != 1 && !this.onceFlag) {
-    //       // alert(this.isEnd)
+    //     if (this.$store.state.isEnd != 1 && !this.onceFlag) {
+    //       // alert(this.$store.state.isEnd)
     //       this.onceFlag = true;
     //       this.putRequest(
     //         "/work/" + sessionStorage.getItem("batchId") + "/1/end"
     //       ).then((resp) => {
     //         //console.log(resp);
     //         if (resp.code == 0) {
-    //           this.isEnd = 1;
+    //           this.$store.state.isEnd = 1;
     //         }
     //       });
     //     }
@@ -4245,9 +4592,9 @@ export default {
     //           var docs = this.$store.state.alreadyDocs;
     //           window.localStorage.setItem("docs", JSON.stringify(docs));
 
-    //           if (this.isEnd != 1) {
-    //             // alert(this.isEnd)
-    //             this.isEnd = 1;
+    //           if (this.$store.state.isEnd != 1) {
+    //             // alert(this.$store.state.isEnd)
+    //             this.$store.state.isEnd = 1;
     //             this.onceFlag = true;
     //             this.putRequest(
     //               "/work/" + sessionStorage.getItem("batchId") + "/1/end"
@@ -4402,7 +4749,7 @@ export default {
     },
 
     deleteThisItem(item) {
-      if (this.isEnd == 1) {
+      if (this.$store.state.isEnd == 1) {
         this.$confirm("该批档案已经锁定", "提示", {
           cancelButtonClass: "btn-custom-cancel",
 
@@ -4524,7 +4871,7 @@ export default {
       console.log(code);
       if (code == 13) {
         // alert(2)
-        that.printThis();
+        that.printThis1();
       }
 
       if (code == 38) {
@@ -4577,15 +4924,15 @@ export default {
 </script>
 
 <style lang="scss">
-  .textAreaInput {
-    background: rgba(255, 255, 255, 0.15) !important;
-    // border-radius: 0.48rem;
-    // border: 0.08rem solid #274596c5;
-    // height: 5rem !important;
-    // color: rgb(83, 17, 17);
-    // font-size: 1.1rem;
-    // padding-left: 3.3rem;
-    
+.textAreaInput {
+  background: rgba(255, 255, 255, 0.15) !important;
+  // border-radius: 0.48rem;
+  // border: 0.08rem solid #274596c5;
+  // height: 5rem !important;
+  // color: rgb(83, 17, 17);
+  // font-size: 1.1rem;
+  // padding-left: 3.3rem;
+
   .el-textarea__inner {
     background: rgba(255, 255, 255, 0.15) !important;
     border-radius: 0.48rem;
@@ -4598,8 +4945,7 @@ export default {
     padding-left: 3.3rem;
     resize: none;
   }
-  }
-
+}
 </style>
 <style lang="scss" scoped>
 .endStyle {
@@ -4672,7 +5018,7 @@ export default {
   width: 30rem;
   left: 50%;
   margin-left: -15rem;
-  top: 10rem;
+  top: 15rem;
   padding: 0 2rem 1rem 1rem;
   background: #fff;
   border: 0.06rem solid #e2dede;

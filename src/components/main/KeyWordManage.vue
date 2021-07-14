@@ -29,7 +29,7 @@
   <!-- 顶部的两个跨页面返回按钮 -->
       <div
         class="topTextButtonBlue"
-        style="position: absolute; top: 7.5rem; right: 20rem; z-index: 123"
+        style="position: absolute; top: 8.3rem; right: 20rem; z-index: 123"
         v-if="selectShow && !backCompute"
         @click="backToOrgans"
       >
@@ -37,7 +37,7 @@
       </div>
       <div
         class="topTextButtonBlue"
-        style="position: absolute; top: 7.5rem; right: 20rem; z-index: 123"
+        style="position: absolute; top: 8.3rem; right: 20rem; z-index: 123"
         v-if="selectShow && backCompute"
         @click="backToDetail"
       >
@@ -46,16 +46,27 @@
 </div>
       <div
         class="topTextButton"
-        style="position: absolute; top: 7.5rem; right: 20rem; z-index: 123"
+        style="position: absolute; top: 8.3rem; right: 20rem; z-index: 123"
         v-if="backToDocAboutShow"
         @click="backToDocAbout"
       >
         返回
       </div>
 
+      
+
       <div
         class="topTextButton"
-        style="position: absolute; top: 7.5rem; right: 20rem; z-index: 123"
+        style="position: absolute; top: 8.3rem; right: 14rem; z-index: 123"
+        v-if="!selectShow&&computeTypeNumIsAuthor"
+        @click="batchModifyShow=true"
+      >
+        批量修改
+      </div>
+
+      <div
+        class="topTextButton"
+        style="position: absolute; top: 8.3rem; right: 20rem; z-index: 123"
         v-if="!selectShow && !backToDocAboutShow"
         @click="backToSelect"
       >
@@ -64,7 +75,7 @@
 
             <div
         class="topTextButton"
-        style="position: absolute; top: 7.5rem; right: 20rem; z-index: 123"
+        style="position: absolute; top: 8.3rem; right: 20rem; z-index: 123"
         v-if="false&&!selectShow &&  backToKeyWordShow"
         @click="backToKeyWord"
       >
@@ -83,8 +94,13 @@
           text-align: center;
         "
       >
-        {{ getAuthName }}的对照表规则
+        {{ getAuthName }}-{{tableTopTip}}
       </div>
+<!-- 
+      <div style="border-top:solid 2px;width:100%;          position: absolute;
+          top: 8rem;">
+
+      </div> -->
 
       <div
         v-if="selectShow"
@@ -124,6 +140,161 @@
       >
         {{ this.deepInThisKeyWord }}-文号优先级规则设置
       </div>
+
+      <el-form
+            v-if="batchModifyShow"
+            ref="searchForm"
+
+            label-width="6rem"
+            class="specialELContainer"
+          >
+
+
+            <h3 style="text-align: center; color: #505458">
+              批量修改
+            </h3>
+            <div
+              style="
+                position: absolute;
+                right: 0.5rem;
+                top: 0.1rem;
+                font-size: 1.5rem;
+                cursor: pointer;
+              "
+              @click="batchModifyShow=false"
+            >
+              <i class="el-icon-remove"></i>
+            </div>
+
+            <el-row :gutter="24">
+
+              <el-col :span="12">
+                
+                            <el-form-item  label="查询1">
+              <el-input
+                size="normal"
+                type="text"
+                v-model="query1"
+                auto-complete="off"
+                placeholder="查询条件1"
+              ></el-input>
+            </el-form-item>
+
+                 </el-col>
+              
+                            <el-col :span="12">
+                
+                            <el-form-item  label="查询2">
+              <el-input
+                size="normal"
+                type="text"
+                v-model="query2"
+
+                auto-complete="off"
+                placeholder="查询条件2"
+              ></el-input>
+            </el-form-item>
+
+                 </el-col>
+
+
+            </el-row>
+
+            <div>
+
+            </div>
+<!-- 搜索列名 start -->
+            <div>
+              <div class="authorLevelItem" style="width:100%;height:2rem" 
+          :key="index"
+              >
+                <div  
+            
+
+                style="float:left;width:40%;text-align:center">
+                  责任者
+                </div>
+           <div style="float:left;margin-left:1%">
+              &nbsp;
+           </div>
+                <div 
+                style="margin-left:2%;width:12%;float:left;text-align:center" >
+               优先级
+
+                </div>
+
+                <div style="margin-left:5%;width:22%;float:left;text-align:center">级别</div>
+              </div>
+              <div style="clear:both"></div>
+            </div>
+<!-- 搜索列名 end -->
+
+            <div>
+              <div class="authorLevelItem" style="width:100%;height:2rem" v-for="(item,index) in jsonTable"
+          :key="index"
+              >
+                <div  
+                v-html="item[0]"
+                style="float:left;width:40%;text-align:center">
+                  
+                </div>
+           <div style="float:left;margin-left:1%">
+              :
+           </div>
+                <div 
+                v-html="item[1]"
+                contenteditable="true"
+  @input="changeText1($event,item)"
+                style="margin-left:2%;width:12%;float:left;text-align:center" >
+                </div>
+
+                <select
+                class="selectCss"
+          v-model="item[2]"
+          name=""
+          id=""
+          style="margin-left:5%;width:22%;float:left;text-align:center;
+    background: rgba(255, 255, 255, 0.15) !important;
+          "
+        >
+          <option value="乡级">乡级</option>
+          <option value="本级">本级</option>
+          <option value="县级">县级</option>
+          <option value="市级">市级</option>
+          <option value="省级">省级</option>
+          <option value="部级">部级</option>
+
+        </select>
+
+              </div>
+              <div style="clear:both"></div>
+            </div>
+
+
+         
+            <!-- <el-form-item prop="code">
+                <el-input size="normal" type="text" v-model="loginForm.code" auto-complete="off"
+                          placeholder="点击图片更换验证码" @keydown.enter.native="submitLogin" style="width: 250px"></el-input>
+                <img :src="vcUrl" @click="updateVerifyCode" alt="" style="cursor: pointer">
+      </el-form-item>-->
+            <!-- <el-checkbox size="normal" class="loginRemember" v-model="checked"></el-checkbox> -->
+            <!-- <div class="goRegister" @click="goRegister">尚未注册？前往注册</div> -->
+            <div
+              style="margin-left: 35%; float: left"
+              class="topTextButtonBlue"
+              @click="authorSearch"
+            >
+              查找
+            </div>
+            <div
+              style="position: absolute; left: 60%"
+              class="topTextButtonBlue"
+              @click="clearAuthorSearch"
+            >
+              清空
+            </div>
+          </el-form>
+      
 <!-- 修改的card   责任者按级别 -->
       <div
         v-if="showKVFix&&computeTypeNumIsAuthor"
@@ -147,7 +318,7 @@
         <div
           style="
             font-size: 1rem;
-            width: 20rem;
+            width: 27rem;
             text-align: center;
             margin-left: 10rem;
             color: #333;
@@ -159,16 +330,16 @@
           type="text"
           style="
             height: 1.5rem;
-            margin-left: 6rem;
+            margin-left: 3rem;
             margin-top: 2rem;
-            width: 7rem;
+            width: 17rem;
           "
           disabled="true"
           v-model="keyToFix"
         />&nbsp;&nbsp;&nbsp;:
         <input
           type="text"
-          style="height: 1.5rem; margin-left: 1rem; width: 7rem"
+          style="height: 1.5rem; margin-left: 1rem; width: 5rem"
           v-model="valueToFix"
         />
 
@@ -176,7 +347,7 @@
           v-model="levelToSet"
           name=""
           id=""
-          style="height: 2rem; margin-left: 2rem; width: 9rem"
+          style="height: 2rem; margin-left: 2rem; width: 5rem"
         >
           <option value="乡级">乡级</option>
 
@@ -1121,7 +1292,18 @@
 <script>
 
 export default {
+  watch:{
+        authorResultJS: {
+      handler(v, o) {
+        console.log(v)
+
+      },
+    },
+  },
   computed: {
+    authorResultJS(){
+      return this.authorSearchResult
+    },
     adjFilter(){
       return function(item){
               if(this.adjItemId==item[0]){
@@ -1273,6 +1455,19 @@ export default {
     // console.log(this.jsonTable);
   },
   methods: {
+    changeText0(e,item){
+
+      item[0]=e.target.innerHTML
+
+    },
+        changeText1(e,item){
+
+      console.log(item[0])
+
+
+    },
+    authorSearch(){},
+    clearAuthorSearch(){},
     clearKeyToSet(){
       if(!this.selectShow && this.dicShowType==2){
         this.keyToSet=""
@@ -1368,22 +1563,22 @@ export default {
 
       var temArr=[]
       var levelArr=['乡级','本级','县级','市级','省级','部级']
-      for (var level in levelArr){
+      for (var level in levelArr){//7
         console.log(level)
               temArr = this.jsonTable.filter(function (element, index, self) {
           return element[2] == levelArr[level];
         });
-        console.log(temArr)
+        console.log(temArr)  //循环，乡级数组，县级数组……
           for(var i in temArr){
       var n=temArr.length-i
     //  temArr[i][1]=n
-     var aJson=JSON.parse(this.authorJson[temArr[i][0]])
+     var aJson=JSON.parse(this.authorJson[temArr[i][0]])  //[i][0]表示责任者 1权重 2级别  取到这个责任者的 {"{\"value\":\"1\",\"level\":\"本级\"}"}
      console.log(aJson)
    aJson.value=n
    var aJsonString=JSON.stringify(aJson)
    this.authorJson[temArr[i][0]]=aJsonString
     }
-      }
+      }//7
 
 console.log(this.authorJson)
 this.jsonTable=[]
@@ -1411,10 +1606,15 @@ this.jsonTable=[]
 
     },
 
-    filterLevelFromAuthor(item){
+    filterLevelFromAuthor(item,noRedirect){
       console.log(this.jsonTable)
       this.selectedLevel = item;
+      if(noRedirect==1){
+        // alert(1)
+      }else{
       window.scrollTo(0, 0);
+
+      }
         this.jsonTable = this.tempTable;
 
         this.jsonTable = this.jsonTable.filter(function (element, index, self) {
@@ -1478,13 +1678,17 @@ this.jsonTable=[]
 
         if (this.selectedTableType == "问题优先级表") {
           this.checkFromThisType(11);
+          this.tableTopTip="问题优先级对照表"
         }     
         if (this.selectedTableType == "责任者优先级表") {
           this.checkFromThisType(12);
+          this.tableTopTip="责任者优先级对照表"
+
         }    
 
         if (this.selectedTableType == "文号责任者对照表") {
           this.selectedTableTypeName = "officialDescAuthor";
+          this.tableTopTip="文号责任者对照表"
 
           this.checkFromThisType(15);
         }
@@ -1492,12 +1696,24 @@ this.jsonTable=[]
           this.selectedTableTypeName = "officialAuthorKeywordDeadline";
 
           this.checkFromThisType(16);
+          this.tableTopTip="特殊期限对照表"
+
 
         }
         if (this.selectedTableType == "机构优先级表") {
           this.checkFromThisType(51);
+          this.tableTopTip="机构优先级对照表"
+
         }
       }
+      else{
+                          this.$message({
+              type: "warning",
+              message: "暂时还不支持，敬请期待",
+            });
+      return
+      }
+
       if (this.selectedDoctype == "业务类") {
          this.authorKeywordDeadlineJson=this.weightForm.busAuthorKeywordDeadline
  this.keywordDeadlineColumn="busAuthorKeywordDeadline"
@@ -2241,7 +2457,7 @@ this.jsonTable=[]
         }
       }
 
-      if (!this.isNumber(this.valueToSet)) {
+      if (!this.isNumber(this.valueToSet)||this.valueToSet.length==0) {
         this.$message({
           type: "warning",
           message: "优先级只能是数字",
@@ -2402,7 +2618,7 @@ this.jsonTable=[]
             }
             this.tempTable=this.jsonTable
 
-            this.filterLevelFromAuthor(this.selectedLevel)
+            this.filterLevelFromAuthor(this.selectedLevel,0)
             // this.selectedLevel="本级"
             
             // for(var i in this.jsonTable){
@@ -2585,14 +2801,14 @@ this.jsonTable=[]
             //查询对应的权重表得到json
             table = resp.data.tables;
             this.issueTable = resp.data.tables;
-            this.issueKeywordTable = resp.data.issueKeyword;
+            // this.issueKeywordTable = resp.data.issueKeyword;//??
             let attr;
             this.authorJson=table
             this.jsonTable = [];
 
             this.levelAuthorInit()  //初始化jsontable 并且变成有序 temptable存了所有级别的
 
-            this.filterLevelFromAuthor(this.selectedLevel)
+            this.filterLevelFromAuthor(this.selectedLevel,0)
             // this.selectedLevel="本级"
             
             // for(var i in this.jsonTable){
@@ -2826,7 +3042,7 @@ this.jsonTable=[]
         return;
       }
       //确定修改
-      if (!this.isNumber(this.valueToFix)) {
+      if (!this.isNumber(this.valueToFix)||this.valueToFix.length==0) {
         this.$message({
           type: "warning",
           message: "优先级只能是数字",
@@ -2843,7 +3059,7 @@ this.jsonTable=[]
         });
           return
         }
-        else{
+        else if(true){//旧的责任者修改
           var table=this.authorJson
           var key=this.keyToFix
           console.log(this.authorJson)
@@ -2869,9 +3085,29 @@ this.jsonTable=[]
                 type: "success",
                 message: "操作成功",
               });
+              
+                      var table;
+        this.getRequest("/weight/authorSort/" + this.requestWigId)  //不赋权sort(不会强制54321)
+          .then((resp) => {
+            //查询对应的权重表得到json
+            table = resp.data.tables;
+            this.issueTable = resp.data.tables;
+            // this.issueKeywordTable = resp.data.issueKeyword;//??
+            let attr;
+            this.authorJson=table
+            this.jsonTable = [];
+            this.levelAuthorInit()  //初始化jsontable 并且变成有序 temptable存了所有级别的
+            this.filterLevelFromAuthor(this.selectedLevel,1)
+          })
+          .then(() => {
+            this.showWaitingFlag = false;
+          });
                   }
                   // this.issueTable = resp.data.tables;
-                  this.renewTable();
+                  // this.renewTable();
+
+
+            
                 this.showKVFix = false;
 
                   
@@ -2879,6 +3115,8 @@ this.jsonTable=[]
               );
               
        return
+        }else{
+
         }
       }
 
@@ -3485,6 +3723,24 @@ this.jsonTable=[]
   data() {
     //jsonTable 是用来显示的kv数组
     return {
+      batchModifyShow:true,
+query1:"",
+query2:"",
+
+authorSearchResult:
+  // {
+  //   "author1":"{\"value\":\"value1\",\"level\":\"2\"}",
+  //   "author2":"{\"value\":\"value2\",\"level\":\"2\"}",
+
+  // },
+[
+  ["author1","12","xiang"],
+  ["author2","12","xiang"],
+
+],
+
+
+      tableTopTip:"显示某种对照表",
       adjItemId:0,//上调下调颜色显示
 
       keywordToSet:"",
@@ -3579,6 +3835,24 @@ authorJson:{},
  
 
 <style lang="scss" scoped>
+
+.specialELContainer {
+  background-color: rgb(222, 222, 222) !important;
+  position: fixed;
+  border-radius: 1rem;
+  background-clip: padding-box;
+  margin: 0 auto;
+  width: 50rem;
+  left: 50%;
+  margin-left: -25rem;
+  top: 10rem;
+  padding: 0 2rem 1rem 1rem;
+  background: #fff;
+  border: 0.06rem solid #e2dede;
+  box-shadow: 0 0 2rem #cac6c6;
+  z-index: 22;
+}
+
 .upDownHighlight{
   color:red;
   font-size: 1.1rem;

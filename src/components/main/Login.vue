@@ -427,6 +427,15 @@ return
     width: 100%;
   }
 
+  select{
+    background: rgba(255, 255, 255, 0.15) !important;
+  }
+
+  .selectCss{
+    background: rgba(255, 255, 255, 0.15) !important;
+
+  }
+
   &::-webkit-input-placeholder {
     /* WebKit browsers 适配谷歌 */
  color: rgb(155,155,155) !important;

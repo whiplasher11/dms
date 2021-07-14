@@ -417,18 +417,18 @@ export default {
           typeId: 1,
           typeName: "文书类",
         },
-        {
-          typeId: 2,
-          typeName: "科技类",
-        },
-        {
-          typeId: 3,
-          typeName: "人事类",
-        },
-        {
-          typeId: 4,
-          typeName: "业务类",
-        },
+        // {
+        //   typeId: 2,
+        //   typeName: "科技类",
+        // },
+        // {
+        //   typeId: 3,
+        //   typeName: "人事类",
+        // },
+        // {
+        //   typeId: 4,
+        //   typeName: "业务类",
+        // },
       ],
       jsonArray:[],
     };
