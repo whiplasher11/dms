@@ -737,6 +737,7 @@ for(  var i=0;i<this.jsonArray.length;i++){
         docTypeCode: this.BatchForm.docTypeCode,
         rule: this.BatchForm.rule,
         // lastBox:JSON.stringify(this.BatchForm.lastBox)
+        end:0,
         doc_number:1,
         lastBox: this.BatchForm.lastBox,
       };

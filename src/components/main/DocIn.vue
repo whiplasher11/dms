@@ -553,6 +553,7 @@
               v-model="docForm.docDate"
               value-format="yyyyMMdd"
               :picker-options="pickerOptions"
+              :default-value="defaultSelectYear"
               @change="selectDateChange"
                             ref="docDate"
           id="docDate"
@@ -935,6 +936,7 @@ export default {
   },
   mounted() {
     this.$refs['docTitle'].focus();
+    
     var dd = new Date();
     var inittime =
       dd.getHours() + "-" + dd.getMinutes() + "-" + dd.getSeconds() + "";
@@ -948,6 +950,7 @@ export default {
       console.log(that);
       var obj = Object.assign({}, doc);
       that.docForm = Object.assign({}, doc);
+      that.$store.state.tempDoc=obj
       that.docFormRS = Object.assign({}, doc);
       that.docForm.docDescAuthor = doc.docDescAuthor;
       if (doc.keword2 != "") {
@@ -1000,6 +1003,7 @@ export default {
         if(!sessionStorage.getItem("sortYearCache") && !this.fixDocFlag){
       window.sessionStorage.setItem("sortYearCache",2018)
     this.docForm.sortYear=sessionStorage.getItem("sortYearCache")+""
+    this.defaultSelectYear=this.docForm.sortYear+"-01-01"
 
     }
         if(!sessionStorage.getItem("secretCache") && !this.fixDocFlag){
@@ -1172,6 +1176,7 @@ export default {
 
   data() {
     return {
+      defaultSelectYear:"2019-01-01",
       nowId:1,//焦点id
 
       docDescRepeatNum:0, //文号输入完后检测有无重复 没有的话 后面还需要多重条件判断重复
@@ -1924,7 +1929,11 @@ export default {
       var tempstr=b.split("[")[1];
       yeart=tempstr.split("]")[0];
       if(this.isNumber(yeart)){
-        this.docForm.docDate=yeart+"0101"
+        // this.docForm.docDate=yeart
+        this.defaultSelectYear=yeart+"-01-01"
+        // this.docForm.docDate=y
+      }else{
+        this.defaultSelectYear=this.docForm.sortYear+"-01-01"
       }
 
 
@@ -1968,6 +1977,8 @@ export default {
         });
       }
         this.docForm.docAbout = this.keyword_docAboutJson[this.docForm.keyword];
+
+        this.dutyAuthorComplete()
 
     },
     levelCompelete() {
@@ -2510,8 +2521,8 @@ export default {
           authId: sessionStorage.getItem("authId"),
           batchId: sessionStorage.getItem("batchId"),
           docDate: this.docForm.docDate,
-          docNum: "", //件号
-          boxSeq: "",
+          docNum: this.docForm.docNum, //件号
+          boxSeq:this.docForm.boxSeq,
           docPage: this.docForm.docPage,
           docSequence: this.docForm.docSequence,
           docTitle: this.docForm.docTitle,
@@ -2521,7 +2532,8 @@ export default {
           deadline: this.docForm.deadline,
           docAbout: this.docForm.docAbout,
           docDesc: this.docForm.docDesc,
-          pageTotal: "",
+          pageTotal: this.docForm.pageTotal,
+          printed:this.docForm.printed,
           // docDesc:
           //   this.docForm.docDescNum +
           //   "[" +
@@ -2539,6 +2551,7 @@ export default {
           sortYear: this.docForm.sortYear,
         };
 
+        // console.log( this.$store.state.tempDoc)
         if (this.docForm.docDescAuthor != true) {
           docObj.docDesc = "";
           docObj.docDescNum = 99999;
@@ -2547,7 +2560,7 @@ export default {
           "/document/" +
           sessionStorage.getItem("docType") +
           "/" +
-          this.$store.state.tempDocId;
+          this.docForm.id;
         this.putRequest(
 
           pathToDoc,
@@ -2564,7 +2577,7 @@ export default {
               var _arr = this.$store.state.alreadyDocs;
               var i
               for ( i = 0; i < length; i++) {
-                if (_arr[i].docSequence == this.$store.state.tempDocSeq) {
+                if (_arr[i].docSequence == this.docForm.docSequence) {
                   _arr.splice(i, 1); //删除下标为i的元素
                   // _arr.splice(i,0, Object.assign({}, this.docForm))
                   break;
@@ -2573,8 +2586,18 @@ export default {
 
               if(this.$store.state.isEnd){
               this.$store.state.alreadyDocs.splice(i,0,
-                Object.assign({}, this.docForm)
+                Object.assign({}, docObj)
               );
+              var j
+              for(j=i;j<length;j++){
+                if(_arr[j].boxSeq==(_arr[j+1].boxSeq||0)){
+                  _arr[j].pageTotal=""
+                }else{
+                  _arr[j].pageTotal=""
+                  break
+                }
+              }
+              
               }else{
                               this.docForm.docNum = "暂无";
               this.docForm.boxSeq = "暂无";
@@ -3112,7 +3135,7 @@ export default {
                     this.docForm.docDate = "";
                     this.genId(6, 62); //提交文件成功后产生新的识别号  有两处提交成功
       this.docForm.remark=""
-
+                    this.docDescNum=""
                     this.docForm.docDate.replace("-", "");
                     this.docForm.docSecrets="无"
                     console.log(this.docForm);
@@ -4133,6 +4156,7 @@ export default {
       this.tipShowFlag = false;
     },
     titleComplete() {
+        this.defaultSelectYear=this.docForm.sortYear+"-01-01"
       this.matchedDoc = [];
       if (this.fixDocFlag) {
         //修改文档焦点离开不要发请求

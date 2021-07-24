@@ -1923,6 +1923,9 @@ export default {
         this.boxInfoList[i].publishTime = this.publishTime;
         this.boxInfoList[i].checkTime = this.checkTime;
         this.boxInfoList[i].authName = sessionStorage.getItem("authName");
+        // if(this.boxInfoNow.tableNumber==boxInfoList[i].tableNumber){
+        //   boxInfoList[i].remark
+        // }
       }
       infoObj.infos = JSON.stringify(this.boxInfoList);
 
@@ -2058,7 +2061,7 @@ export default {
       // }
     },
     genBoxInfo() {
-      if (!this.$store.state.isEnd) {
+      if (!this.isEnd) {
         this.$confirm(
           "请确定盒号件号不再修改,锁定本批次后再操作备考表",
           "提示",
@@ -2068,7 +2071,7 @@ export default {
           }
         );
       }
-      if (this.$store.state.isEnd) {
+      if (this.isEnd) {
         this.boxInfoShowFlag = true;
 
         this.getRequest(
@@ -3393,6 +3396,12 @@ export default {
       }
     },
     lockThisBatch() {
+      // for(var i in this.$store.state.alreadyDocs){
+      //   if(!this.isNumber(this.$store.state.alreadyDocs[i].docNum)){
+          
+      //     break
+      //   }
+      // }
       this.putRequest(
         "/work/" + sessionStorage.getItem("batchId") + "/1/end"
       ).then((resp) => {
@@ -3671,7 +3680,7 @@ export default {
       }
 
       this.docAboutFilter = [];
-      this.getRequest("/weight/" + docAboutWeightId).then((resp) => {
+      this.getRequest("/weight/sort/" + docAboutWeightId).then((resp) => {
         for (var attr in resp.data.tables) {
           //console.log(resp.data.tables)
           this.docAboutFilter.push(attr);
@@ -4331,7 +4340,7 @@ export default {
       }
 
       // this.$message.warning("修改后请重新排件号盒号");
-      //console.log(item);
+      console.log(item);
       this.$store.state.tempDoc = Object.assign({}, item);
       // docUtil.$emit("changeThisDoc",item)
       //   alert(item.id)
@@ -4339,6 +4348,7 @@ export default {
       // item.sortYear=JSON.stringify(item.sortYear)
       //   this.$store.state.tempDoc.sortYear=JSON.stringify(item.sortYear)
       this.$store.state.tempDocId = item.id;
+      console.log(this.$store.state.tempDocId);
 
       this.$store.state.tempDocSeq = item.docSequence;
 
