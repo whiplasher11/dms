@@ -198,6 +198,7 @@
       <el-checkbox
         style="position: absolute; right: 1rem; top: 1rem"
         v-if="true"
+
         @change="inputChange"
         false-label="false"
         true-label="true"
@@ -285,27 +286,7 @@
       <div v-if="docType == 'officialJ'">
         <!-- 机构分卷法 -->
         <el-row :gutter="24">
-          <el-col :span="12" v-if="docType == 'officialJ'">
-            <el-form-item prop="historyAuth" label="机构词：">
-              <el-select
 
-                @blur="keywordBlur"
-                @change="keywordComplete"
-                filterable
-                v-model="docForm.keyword"
-                placeholder="选择或填写机构词"
-              :disabled="isLocked"
-
-              >
-                <el-option
-                  v-for="item in keywordTipArr"
-                  :key="item"
-                  :label="item"
-                  :value="item"
-                ></el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
 
           <el-col :span="12">
             <el-form-item prop="historyAuth" label="机构：">
@@ -327,6 +308,29 @@
               </el-select>
             </el-form-item>
           </el-col>
+
+                    <el-col :span="12" v-if="docType == 'officialJ'">
+            <el-form-item prop="historyAuth" label="机构词：">
+              <el-select
+
+                @blur="keywordBlur"
+                @change="keywordComplete"
+                filterable
+                v-model="docForm.keyword"
+                placeholder="选择或填写机构词"
+              :disabled="isLocked"
+
+              >
+                <el-option
+                  v-for="item in keywordTipArr"
+                  :key="item"
+                  :label="item"
+                  :value="item"
+                ></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          
         </el-row>
 
         <el-row :gutter="24">
@@ -933,14 +937,25 @@ export default {
   },
   destroyed() {
     console.log(this);
+    // document.key
   },
   mounted() {
-    this.$refs['docTitle'].focus();
+
+    this.keyCodeForEvent()
+    // this.$refs['seqCheckBox'].focus=true
+
+    //         for(var key in this.$refs){
+    // console.log(key)
+              
+    //         }
+
+    // console.log(this.$refs)
+    // this.$refs['docTitle'].focus();
     
     var dd = new Date();
     var inittime =
       dd.getHours() + "-" + dd.getMinutes() + "-" + dd.getSeconds() + "";
-    console.log("init 一个detail" + inittime);
+    console.log("init 一个 docin" + inittime);
     this.initTime = inittime;
 
     var that = this;
@@ -950,7 +965,7 @@ export default {
       console.log(that);
       var obj = Object.assign({}, doc);
       that.docForm = Object.assign({}, doc);
-      that.$store.state.tempDoc=obj
+      // that.$store.state.tempDoc=obj
       that.docFormRS = Object.assign({}, doc);
       that.docForm.docDescAuthor = doc.docDescAuthor;
       if (doc.keword2 != "") {
@@ -1000,16 +1015,25 @@ export default {
       this.genId(6, 62); //1
     }
 
-        if(!sessionStorage.getItem("sortYearCache") && !this.fixDocFlag){
-      window.sessionStorage.setItem("sortYearCache",2018)
-    this.docForm.sortYear=sessionStorage.getItem("sortYearCache")+""
-    this.defaultSelectYear=this.docForm.sortYear+"-01-01"
+    //     if(!sessionStorage.getItem("sortYearCache") && !this.fixDocFlag){
+    //   window.sessionStorage.setItem("sortYearCache",2018)
+    // // this.docForm.sortYear=sessionStorage.getItem("sortYearCache")+""
+    // // this.defaultSelectYear=this.docForm.sortYear+"-01-01"
 
-    }
+    // }
         if(!sessionStorage.getItem("secretCache") && !this.fixDocFlag){
       window.sessionStorage.setItem("secretCache","无")
-    this.docForm.docSecret=sessionStorage.getItem("secretCache")+""
+    // this.docForm.docSecret=sessionStorage.getItem("secretCache")+""
     }
+
+    if(!this.fixDocFlag){
+        this.docForm.sortYear=sessionStorage.getItem("sortYearCache")+""||""
+    this.defaultSelectYear=this.docForm.sortYear+"-01-01"||""
+    this.docForm.docSecret=sessionStorage.getItem("secretCache")+""||""
+    }
+
+
+
     
     // this.docForm.docTitle="asd"
     console.log(sessionStorage.getItem("secretCache"))
@@ -1493,14 +1517,68 @@ export default {
     };
   },
   methods: {
+        keyCodeForEvent(){
+  let self = this;
+  let code = 0;
+  let code2 = 0;
+  document.onkeydown = function(e){
+    let evn = e || event ;
+    let key = evn.keyCode || evn.which || evn.charCode ;
+    if(key === 17){
+      code = 1 ;
+      console.log("ctl")
+    }
+    if(key === 13){
+      code2 = 1;
+    }
+    if(code === 1 && code2 === 1){
+      // alert('Ctrl+Enter');
+      self.addDoc()
+      //do something
+      code = 0;
+      code2 = 0;
+    }
+  }
+  document.onkeyup = function(e){
+    if (e.keyCode === 17) {
+      code = 0;
+    }
+    if (e.keyCode === 13) {
+      code2 = 0;
+    }
+  }
+},
     fastNext(e){
       console.log(e)
+      if(e.srcElement.id=="docDate"||e.srcElement.id=="sortYear"){
+        if(e.key=="Enter"){
+                  for(var key in this.$refs){
+
+          console.log(key)
+          if(key==e.srcElement.id){
+            next=true
+            pre = key
+          }
+          if(next){
+            if(this.$refs[key]&&key!=e.srcElement.id){
+              console.log("聚焦于下一个有效的")
+              this.$refs[key].focus()
+              this.$refs[pre].blur()
+              break;
+            }
+ 
+          }
+        }
+        }
+
+return //datepicker的时候上下键不起作用，回车直接下一个
+      }
+
       if(e.key=="ArrowRight"){
-        console.log("down")
+        console.log(e)
         var next=false;
         var pre=""
         for(var key in this.$refs){
-          
 
           console.log(key)
           if(key==e.srcElement.id){
@@ -1564,7 +1642,6 @@ export default {
         this.docForm.keyword2 = "";
       } else if (e == "true" || e) {
         keyword2Check = true;
-        // this.docForm.docDesc = "";
         // this.docForm.docDescNum = "";
       }
     },
@@ -1893,20 +1970,26 @@ export default {
       ).then((resp) => {
         console.log("输完文号后检查是否重复1111111");
         console.log(resp);
-        var repeatArr = [];
+        var repeatArr = ["检查是否重复"];
         for (var i in resp.data.content) {
           var k=resp.data.content[i]
-          var repeatStr=k.docSequence+"题名："+k.docTitle+" -"+k.docAbout+"-文号："+k.docDesc+",日期："+k.docDate+
-          ",责任者"+k.dutyAuthor+",页数："+k.docPage
+          var repeatStr=k.docSequence+"-"+k.docTitle+" -"+k.docAbout+"-"+k.docDesc+"-"+k.docDate+
+          "-"+k.dutyAuthor+"-"+k.docPage+"页"
           repeatArr.push(repeatStr);
+        }
+                const h = this.$createElement
+                var newDatas=[]
+        for (const i in repeatArr) {
+          newDatas.push(h('p', null, repeatArr[i]))
         }
 
         if (resp.data.content.length != 0) {
           this.docDescRepeatNum=resp.data.content.length //文号不重复 就不要在addDOc时判断多个条件了
           this.$confirm(
-            "请检查是否录入重复:" + repeatArr,
+            // "请检查是否录入重复:" + repeatArr,
             "提示",
             {
+             message: h('div', null, newDatas),
               cancelButtonClass: "btn-custom-cancel",
               confirmButtonText: "没有重复，继续录入",
               cancelButtonText: "好的，清空",
@@ -1923,9 +2006,8 @@ export default {
       var descText;
       if (b.indexOf("[") > 0) {
         descText = b.split("[")[0];
-      }
 
-      var yeart;
+              var yeart;
       var tempstr=b.split("[")[1];
       yeart=tempstr.split("]")[0];
       if(this.isNumber(yeart)){
@@ -1935,6 +2017,10 @@ export default {
       }else{
         this.defaultSelectYear=this.docForm.sortYear+"-01-01"
       }
+
+      }
+
+
 
 
 
@@ -1989,8 +2075,15 @@ export default {
       this.dutyAuthorComplete()
     },
     authorAndKwToDeadline() {
-      //根据责任者和关键词识别期限
+      //根据责任者和关键词识别期限, 根据责任者识别级别
       //var key = this.docForm.dutyAuthor + "~" + this.docForm.keyword;
+
+      // start 识别级别
+
+      
+
+
+      // end 识别级别
       console.log(11111111111)
       var ddl=""
       for(var i in this.authorKwToDeadlineTable){
@@ -2100,6 +2193,12 @@ export default {
       this.tipShowFlag = false;
     },
     selectDateChange(id) {
+
+      if(this.docForm.sortYear){
+              window.sessionStorage.setItem("sortYearCache",this.docForm.sortYear)
+      }
+
+
       var docDateYear = this.docForm.docDate.substring(0, 4);
       console.log(docDateYear);
       console.log(this.docForm.sortYear);
@@ -2167,18 +2266,26 @@ export default {
       ).then((resp) => {
         console.log("添加前检查是否重复");
         console.log(resp);
-        var repeatArr = [];
-        for (var i in resp.data.content) {
+        var repeatArr = ["检查重复"];
+
+         for (var i in resp.data.content) {
           var k=resp.data.content[i]
-          var repeatStr=k.docSequence+"题名："+k.docTitle+"\nabout："+k.docAbout+",文号："+k.docDesc+",日期："+k.docDate+
-          ",责任者"+k.dutyAuthor+",页数："+k.docPage
+          var repeatStr=k.docSequence+"-"+k.docTitle+" -"+k.docAbout+"-"+k.docDesc+"-"+k.docDate+
+          "-"+k.dutyAuthor+"-"+k.docPage+"页"
           repeatArr.push(repeatStr);
         }
+                const h = this.$createElement
+                var newDatas=[]
+        for (const i in repeatArr) {
+          newDatas.push(h('p', null, repeatArr[i]))
+        }
+
         if (resp.data.content.length != 0 ) { // &&this.docDescRepeatNum==0 this.docDescRepeatNum==0 文号不重复才多个条件判断重复
           this.$confirm(
-            "请检查是否录入重复：" + repeatArr,
+
             "提示",
             {
+message: h('div', null, newDatas),
               cancelButtonClass: "btn-custom-cancel",
               confirmButtonText: "没有重复，继续",
               cancelButtonText: "好的，暂不录入",
@@ -2254,6 +2361,7 @@ export default {
       }
       if (
         !this.isNumber(this.docForm.docPage) ||
+        !this.isNumber(this.docForm.docDescNum) ||
         this.docForm.docTitle == "" ||
         this.docForm.keyword == "" ||
         this.docForm.sortYear == "" ||
@@ -2511,6 +2619,12 @@ export default {
           docDescNumTemp = 99999; //没有文号
         }
 
+        if(!this.isNumber(this.docForm.docNum)){
+          this.docForm.docNum=0
+        }
+        if(!this.isNumber(this.docForm.boxSeq)){
+          this.docForm.boxSeq=0
+        }
         var docObj = {
           deleted: 0,
           keyword2: this.docForm.keyword2,
@@ -2638,6 +2752,7 @@ export default {
             this.docForm.keword2 = "";
             this.docForm.docDescNum = "";
             this.docForm.docDesc = "";
+            this.docForm.docDescNum=""
 
             this.docForm.docPage = "";
           });
@@ -2691,22 +2806,25 @@ export default {
 
       this.fixDocFlag = false;
 
-      this.keyWordEdit = false;
-      this.docForm.keyword = "";
-      this.docForm.docDescNum = "";
-      this.docForm.docDesc = "";
-      this.docForm.docDescAuthor = true;
-
-      this.keyword2Check = false;
-      this.docForm.keword2 = "";
-
       this.genId(6, 62);
-      this.docForm.remark=""
-      this.docForm.docDate.replace("-", "");
-      console.log(this.docForm);
-      this.docForm.docTitle = "";
-      this.docForm.docPage = "";
-      this.fixDocFlag = false;
+
+      this.keyWordEdit = false;
+      this.resetDocIn()
+      // this.docForm.keyword = "";
+      // this.docForm.docDescNum = "";
+      // this.docForm.docDesc = "";
+      // this.docForm.docDescAuthor = true;
+
+      // this.keyword2Check = false;
+      // this.docForm.keword2 = "";
+
+      // this.genId(6, 62);
+      // this.docForm.remark=""
+      // this.docForm.docDate.replace("-", "");
+      // console.log(this.docForm);
+      // this.docForm.docTitle = "";
+      // this.docForm.docPage = "";
+      // this.fixDocFlag = false;
     },
     addRS() {},
     /**
@@ -2901,6 +3019,7 @@ export default {
         this.searchForm.docDate = this.docFormRS.docDate;
         this.searchForm.dutyAuthor = "";
         this.searchForm.docDesc = "";
+            this.docForm.docDescNum=""
 
         var searchObj = Object.assign({}, this.searchForm);
         for (var key in searchObj) {
@@ -3066,23 +3185,31 @@ export default {
         ).then((resp) => {
           console.log("添加前检查是否重复");
           console.log(resp);
-          var repeatArr = [];
-        for (var i in resp.data.content) {
-          
-          var k=resp.data.content[i]
+  var repeatArr = ["检查重复"];
 
-          var repeatStr=k.docSequence+"-题名："+k.docTitle+",名："+k.docAbout+",文号："+k.docDesc+",日期："+k.docDate+
-          ",责任者"+k.dutyAuthor+",页数："+k.docPage
-                    if(k.authId!=sessionStorage.getItem("authId")){
-                      repeatStr=repeatStr+"（上批次文件，特别检查）"
+         for (var i in resp.data.content) {
+          var k=resp.data.content[i]
+          var repeatStr=k.docSequence+"-"+k.docTitle+" -"+k.docAbout+"-"+k.docDesc+"-"+k.docDate+
+          "-"+k.dutyAuthor+"-"+k.docPage+"页"
+
+           if(k.authId!=sessionStorage.getItem("authId")){
+                      repeatStr=repeatStr+"（--上批次文件，特别检查）"
           }
+
           repeatArr.push(repeatStr);
         }
+                const h = this.$createElement
+                var newDatas=[]
+        for (const i in repeatArr) {
+          newDatas.push(h('p', null, repeatArr[i]))
+        }
+
+
           if (resp.data.content.length != 0 ) {//&&this.docDescRepeatNum==0 this.docDescRepeatNum==0文号不重复才多重条件判断
             this.$confirm(
-              "请检查是否录入重复：" + repeatArr, //
               "提示",
               {
+                  message: h('div', null, newDatas),
                 cancelButtonClass: "btn-custom-cancel",
                 confirmButtonText: "没有重复，录入此条",
                 cancelButtonText: "好的，暂不录入",
@@ -3134,7 +3261,7 @@ export default {
                     this.docForm.dutyAuthor = "";
                     this.docForm.docDate = "";
                     this.genId(6, 62); //提交文件成功后产生新的识别号  有两处提交成功
-      this.docForm.remark=""
+                    this.docForm.remark=""
                     this.docDescNum=""
                     this.docForm.docDate.replace("-", "");
                     this.docForm.docSecrets="无"
@@ -3142,6 +3269,8 @@ export default {
                     this.docForm.docTitle = "";
                     this.docForm.docPage = "";
                     this.docForm.docDesc = "";
+            this.docForm.docDescNum=""
+
                     this.docForm.keyword2 = "";
                   });
               })
@@ -3196,6 +3325,7 @@ export default {
                 this.docForm.docDate = "";
 
                 this.docForm.docDesc = "";
+            this.docForm.docDescNum=""
 
                 this.genId(6, 62); //提交文件成功后gen
       this.docForm.remark=""
@@ -3471,8 +3601,9 @@ export default {
                 "/weight/" + this.weightForm.docAuthorjWig,
                 dutyAuthorObj
               ).then((resp) => {
-                console.log("更新文书责任者权重表");
+                console.log("更新文书jigoufa责任者权重表");
                 console.log(resp);
+                //2nd
               });
             });
 
@@ -3652,6 +3783,7 @@ export default {
               ).then((resp) => {
                 console.log("更新文书责任者权重表");
                 console.log(resp);
+                //1st 责任者对应的级别
               });
             });
 

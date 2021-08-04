@@ -158,7 +158,7 @@ export default {
     top: 0.5rem;
     text-align: center;
     line-height: 2rem;
-    background-color: rgba(180, 84, 116, 0.041);
+    background-color: rgba(180, 84, 116, 0);
 }
 
 .leftMask:hover{

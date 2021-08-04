@@ -1526,7 +1526,7 @@ export default {
                     this.authorJson = table;
                     this.jsonTable = [];
                     this.levelAuthorInit(); //初始化jsontable 并且变成有序 temptable存了所有级别的
-                    this.filterLevelFromAuthor(this.selectedLevel, 1);
+                    this.filterLevelFromAuthor(this.selectedLevel, 2);
                   })
                   .then(() => {
                     this.showWaitingFlag = false;
@@ -1535,7 +1535,7 @@ export default {
               // this.issueTable = resp.data.tables;
               // this.renewTable();
 
-              this.batchModifyShow = false;
+              // this.batchModifyShow = false;
             }
           );
           
@@ -1752,9 +1752,15 @@ export default {
 
     filterLevelFromAuthor(item, noRedirect) {
 
+
+
+      if(noRedirect==2){//批量修改完。点保存后
+        
+      }else{
       this.pageAt=0
       this.authorSearchResultTotal=[]
       this.authorSearchResult=[]
+      }
 
       console.log(this.jsonTable);
       this.selectedLevel = item;
@@ -1768,6 +1774,11 @@ export default {
       this.jsonTable = this.jsonTable.filter(function (element, index, self) {
         return element[2] == item;
       });
+
+
+      if(noRedirect==2){
+        this.authorSearch()
+      }
     },
     filterThisRequest(str, item) {
       window.scrollTo(0, 0);

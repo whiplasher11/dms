@@ -891,20 +891,7 @@
           查看本单位
         </div> -->
 
-          <div
-            style="
-              float: left;
-              background-color: rgb(128, 160, 153);
 
-              width: 5rem;
-              text-align: center;
-              margin-left: 1rem;
-            "
-            class="hoverStyle topTextButton"
-            @click="getExcel"
-          >
-            下载表格
-          </div>
           <div
             style="
          float:left
@@ -1007,8 +994,60 @@
             备考表
           </div>
 
+                    <div
+            style="
+              float: left;
+              background-color: rgb(128, 160, 153);
+              width: 5rem;
+              text-align: center;
+              margin-left: 1rem;
+            "
+            class="hoverStyle topTextButton"
+                          v-on:mouseover="excelSelectFlag=true"
+              @mouseleave="excelSelectFlag=false"
+            
+          >
+            下载报表
+
+            <div               v-on:mouseover="excelSelectFlag=true"
+              @mouseleave="excelSelectFlag=false">
+
+               <div style="postion:absolute;width:5rem;height:1.8rem;padding-top:0.4rem;" v-if="excelSelectFlag" 
+            @click="getExcel(2)"
+
+
+           >
+              按识别号
+            </div>
+           <div style="postion:absolute;width:5rem;height:1.7rem;padding-top:0.rem;" v-if="excelSelectFlag"
+            @click="getExcel(1)"
+
+           >
+              按件号
+            </div>           
+  
+            </div>
+
+        
+          </div>
+
+
+
+
           <div style="clear: both"></div>
+
+        </div>
+
+<div style="              position: fixed;
+            left: 0.5rem;
+            top: 8.5rem;
+            z-index: 5;
+            font-size: 1.1rem;
+          ">
+  
           <div style="margin-top: 0.4rem">
+
+
             <div style="float: left">筛选：</div>
 
             <!-- niandu -->
@@ -1257,6 +1296,8 @@
               {{ $store.state.alreadyDocs.length }}份
             </div>
           </div>
+
+
         </div>
         <!-- <div
           style="
@@ -1632,7 +1673,7 @@ export default {
           if (this.$store.state.rawDocs[i].docSequence == v) {
             var d = this.$store.state.rawDocs[i];
             this.printInfo = d.docTitle;
-            this.printInfo1 = d.docDesc;
+            this.printInfo1 = d.docDesc+"-件号："+d.docNum+"-页数："+d.docPage;
           }
         }
       },
@@ -1678,6 +1719,8 @@ export default {
   },
   data() {
     return {
+      excelSelectFlag:false,
+
       //备考表相关变量
       publisher: "",
       checker: "",
@@ -3495,6 +3538,8 @@ export default {
     },
     filterFromRequests() {
       window.scrollTo(0, 0);
+      this.startSeq=""
+      this.endSeq=""
       //console.log(this.alreadyDocsRestore)
       // alert(item)
       this.alreadyDocsRestore = this.$store.state.rawDocs;
@@ -4165,7 +4210,10 @@ export default {
     },
     focusOnThis(e) {},
 
-    getExcel() {
+    getExcelOnOrder(){},
+
+    getExcel(type) {
+    
       this.$confirm("下载前请确保已排序", "提示", {
         cancelButtonClass: "btn-custom-cancel",
         cancelButtonText: "否",
@@ -4174,11 +4222,28 @@ export default {
         type: "warning",
       }).then(() => {
         //  var path ='/excel'
-        var path =
+        // var path =
+        //   "/document/excel/" +
+        //   sessionStorage.getItem("docType") +
+        //   "/" +
+        //   sessionStorage.getItem("batchId");
+        var path
+          if(type==1){
+          path =
           "/document/excel/" +
           sessionStorage.getItem("docType") +
           "/" +
-          sessionStorage.getItem("batchId");
+          sessionStorage.getItem("batchId")+"/1";
+      }else if(type==2){
+          path =
+          "/document/excel/" +
+          sessionStorage.getItem("docType") +
+             "/" +
+          sessionStorage.getItem("batchId") +"/2";
+      }
+
+        console.log(path)
+
 
         if (sessionStorage.getItem("docType") == "personnel") {
           this.showWaitingFlag = true;
@@ -4927,6 +4992,8 @@ export default {
   destroyed() {
     window.sessionStorage.setItem("isSub", 0);
     this.destoryFlag = false;
+
+    document.onkeydown=null
     //console.log("destory")
     // document=null
   },
