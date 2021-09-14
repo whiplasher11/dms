@@ -41,6 +41,12 @@ const store = new Vuex.Store({
         stomp: null,
         isDot: {},
         user:JSON.parse(window.sessionStorage.getItem("user")),
+        docAboutDic:{
+            official:"问题",
+            officialJ:"机构",
+            business:"项目",
+            science:"科技"
+        }
     },
     mutations: {
         INIT_CURRENTHR(state, hr) {

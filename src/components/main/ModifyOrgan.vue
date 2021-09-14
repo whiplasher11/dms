@@ -791,6 +791,11 @@ this.presetNameShowFlag=false
   background-color: rgba(210, 216, 228, 0.733);
 }
 
+.infoItemSelect{
+  background-color: rgba(209, 169, 183, 0.733);
+
+}
+
  .topTextButton{
              
           cursor: pointer;

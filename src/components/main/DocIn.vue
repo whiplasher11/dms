@@ -149,6 +149,7 @@
           "
           class="matchedItem"
         >
+         <font v-html="index+1"> </font>-
           <font v-html="item.docTitle"> </font> -
           <font style="font-size: 1.1rem; color: #abc">
             {{ item.docAbout }} </font
@@ -202,7 +203,7 @@
         @change="inputChange"
         false-label="false"
         true-label="true"
-        :checked="true"
+        :checked="aiInput"
         >智能录入</el-checkbox
       >
 
@@ -940,6 +941,7 @@ export default {
     // document.key
   },
   mounted() {
+            this.$refs['docTitle'].focus()
 
     this.keyCodeForEvent()
     // this.$refs['seqCheckBox'].focus=true
@@ -1518,12 +1520,88 @@ export default {
   },
   methods: {
         keyCodeForEvent(){
+ 
+
   let self = this;
   let code = 0;
   let code2 = 0;
+  let code3 =0;
+
   document.onkeydown = function(e){
-    let evn = e || event ;
+
+                 let evn = e || event ;
     let key = evn.keyCode || evn.which || evn.charCode ;
+
+
+
+
+      //kv tip
+      //横排1 ： 49 小键盘1：97tipShowFlag
+
+    if(self.tipShowFlag){
+      if(key==27){
+      self.tipShowFlag = false;
+      }
+      if(key===49||key===97){
+        self.selectThisTip(self.matchedKV[0])
+      }
+            if(key==50||key==98){
+        self.selectThisTip(self.matchedKV[1])
+
+      }
+            if(key==51||key==99){
+        self.selectThisTip(self.matchedKV[2])
+
+      }
+            if(key==52||key==100){
+        self.selectThisTip(self.matchedKV[3])
+
+      }
+            if(key==53||key==101){
+        self.selectThisTip(self.matchedKV[4])
+      }
+            if(key==54||key==102){
+        self.selectThisTip(self.matchedKV[5])
+      }
+    }
+
+    //kvtip 快捷选择
+//历史文件
+else if(self.likelyTipShowFlag){
+            if(key==27){
+        self.closeDocTip()
+      }
+
+    if(key===49||key===97){
+        self.selectThisDoc(self.matchedDoc[0])
+      }
+            if(key==50||key==98){
+        self.selectThisDoc(self.matchedDoc[1])
+      }
+            if(key==51||key==99){
+        self.selectThisDoc(self.matchedDoc[2])
+      }
+            if(key==52||key==100){
+        self.selectThisDoc(self.matchedDoc[3])
+      }
+            if(key==53||key==101){
+        self.selectThisDoc(self.matchedDoc[4])
+      }
+            if(key==54||key==102){
+        self.selectThisDoc(self.matchedDoc[5])
+      }
+  }else{
+    if(key==27){
+      self.docForm.docDescAuthor=!self.docForm.docDescAuthor
+    }
+  }
+
+
+    console.log(key)
+
+
+
+
     if(key === 17){
       code = 1 ;
       console.log("ctl")
@@ -1531,6 +1609,11 @@ export default {
     if(key === 13){
       code2 = 1;
     }
+        if(key == 18){
+          code3=1;
+    }
+
+    // if(key===)
     if(code === 1 && code2 === 1){
       // alert('Ctrl+Enter');
       self.addDoc()
@@ -1538,6 +1621,17 @@ export default {
       code = 0;
       code2 = 0;
     }
+
+    // if(code === 1 && code3 === 1){
+    //   // alert('Ctrl+Enter');
+    //   self.docForm.docDescAuthor=!self.docForm.docDescAuthor
+    //   //do something
+    //   code = 0;
+    //   code3 = 0;
+    // }
+
+
+
   }
   document.onkeyup = function(e){
     if (e.keyCode === 17) {
@@ -1548,6 +1642,9 @@ export default {
     }
   }
 },
+
+
+
     fastNext(e){
       console.log(e)
       if(e.srcElement.id=="docDate"||e.srcElement.id=="sortYear"){
@@ -1786,7 +1883,7 @@ return //datepicker的时候上下键不起作用，回车直接下一个
       var docTitleTemp1 = this.docFormRS.docTitle;
 
       this.likelyTipShowFlag = false;
-      this.docForm.deadline = docToSet.deadline; //替换  "依照选取文件的机构问题名，保管期限，关键词"
+      // this.docForm.deadline = docToSet.deadline; //替换  "依照选取文件的机构问题名，保管期限，关键词"
       this.docForm.keyword = docToSet.keyword;
       this.docForm.docAbout = docToSet.docAbout;
       this.docForm.docTitle = docTitleTemp;
@@ -1973,7 +2070,9 @@ return //datepicker的时候上下键不起作用，回车直接下一个
         var repeatArr = ["检查是否重复"];
         for (var i in resp.data.content) {
           var k=resp.data.content[i]
-          var repeatStr=k.docSequence+"-"+k.docTitle+" -"+k.docAbout+"-"+k.docDesc+"-"+k.docDate+
+         var t=Number(i)
+t=t+1
+ var repeatStr=t+":"+k.docSequence+"-"+k.docTitle+" -"+k.docAbout+"-"+k.docDesc+"-"+k.docDate+
           "-"+k.dutyAuthor+"-"+k.docPage+"页"
           repeatArr.push(repeatStr);
         }
@@ -2034,19 +2133,29 @@ return //datepicker的时候上下键不起作用，回车直接下一个
 
       console.log(this.docForm.docDesc);
 
-      var index = this.docForm.docDesc.indexOf("号") - 1;
-      var numStr;
-      var numStrl;
-      if (index > 0) {
-        numStr = this.docForm.docDesc.charAt(index);
+      // var index = this.docForm.docDesc.indexOf("号") - 1;
+      // var numStr;
+      // var numStrl;
+      // if (index > 0) {
+      //   numStr = this.docForm.docDesc.charAt(index);
 
-        while (index > 0 && this.isNumber(numStr)) {
-          numStrl = numStr;
-          index--;
-          numStr = this.docForm.docDesc.charAt(index) + numStr;
-        }
-        this.docForm.docDescNum = numStrl;
-      }
+      //   while (index > 0 && this.isNumber(numStr)) {
+      //     numStrl = numStr;
+      //     index--;
+      //     numStr = this.docForm.docDesc.charAt(index) + numStr;
+      //   }
+      //   this.docForm.docDescNum = numStrl;
+      // }
+                var re1 = /(\d{1,3})+(?:\.\d+)?/g
+
+var re2 = /[\u4e00-\u9fa5]{2,}/g
+var arr1 = this.docForm.docDesc.match(re1);
+var l = arr1.length-1
+if(arr1&&arr1.length>0){
+  this.docForm.docDescNum=arr1[l]
+}else{
+
+}
     },
     keyword2Complete() {},
     keywordComplete() {
@@ -2270,7 +2379,9 @@ return //datepicker的时候上下键不起作用，回车直接下一个
 
          for (var i in resp.data.content) {
           var k=resp.data.content[i]
-          var repeatStr=k.docSequence+"-"+k.docTitle+" -"+k.docAbout+"-"+k.docDesc+"-"+k.docDate+
+         var t=Number(i)
+t=t+1
+ var repeatStr=t+":"+k.docSequence+"-"+k.docTitle+" -"+k.docAbout+"-"+k.docDesc+"-"+k.docDate+
           "-"+k.dutyAuthor+"-"+k.docPage+"页"
           repeatArr.push(repeatStr);
         }
@@ -3038,8 +3149,9 @@ message: h('div', null, newDatas),
           var repeatArr = [];
         for (var i in resp.data.content) {
           var k=resp.data.content[i]
-          var repeatStr=k.docSequence+"题名："+k.docTitle+"\nabout："+k.docAbout+",文号："+k.docDesc+",日期："+k.docDate+
-          ",责任者"+k.dutyAuthor+",页数："+k.docPage
+         var t=Number(i)
+ var repeatStr=t+":"+k.docSequence+"题名："+k.docTitle+"\nabout："+k.docAbout+",文号："+k.docDesc+",日期："+k.docDate+
+          ",责任者"+k.dutyAuthor+",页数："+k.docPage //renshi
           repeatArr.push(repeatStr);
         }
 
@@ -3095,6 +3207,9 @@ message: h('div', null, newDatas),
       }
       this.addDocTimer();
 
+      if(this.showWaitingFlag){
+        return
+      }
       // var
       // this.optThreeWeightTable()
       // return
@@ -3189,7 +3304,9 @@ message: h('div', null, newDatas),
 
          for (var i in resp.data.content) {
           var k=resp.data.content[i]
-          var repeatStr=k.docSequence+"-"+k.docTitle+" -"+k.docAbout+"-"+k.docDesc+"-"+k.docDate+
+         var t=Number(i)
+t=t+1
+ var repeatStr=t+":"+k.docSequence+"-"+k.docTitle+" -"+k.docAbout+"-"+k.docDesc+"-"+k.docDate+
           "-"+k.dutyAuthor+"-"+k.docPage+"页"
 
            if(k.authId!=sessionStorage.getItem("authId")){
@@ -3234,6 +3351,8 @@ message: h('div', null, newDatas),
                     // alert( this.docForm.id)
                   })
                   .then((r) => {
+            this.$refs['docTitle'].focus()
+
                     // if(r)
                     //保证提交完返回id后再执行后续操作
                     this.keywordTemp = this.docForm.keyword.trim();
@@ -3277,11 +3396,15 @@ message: h('div', null, newDatas),
               .catch(() => {
                 this.resetDocIn()
                 this.showWaitingFlag = false;
+            this.$refs['docTitle'].focus()
+
                 return; //点击好的，然后不提交
               });
           } // 重复，不提交(cathc) 和 仍要提交(then)
           else {
             //不重复
+
+            this.$refs['docTitle'].focus()
 
             var pathToDoc = "/document/" + sessionStorage.getItem("docType");
             this.postRequest(
@@ -3375,11 +3498,21 @@ message: h('div', null, newDatas),
           this.docForm.docDescAuthor == true ||
           this.docForm.docDescAuthor == "true"
         ) {
-          console.log("文号有！");
-          // console.log(this.docForm.docDesc)
-          // console.log(this.docForm.docDesc.split("["))
-          // console.log(this.docForm.docDesc.split("[").length)
-          if (this.docForm.docDesc.split("[").length > 1) {
+
+
+//           var re1 = /(\d{1,3})+(?:\.\d+)?/g
+
+// var re2 = /[\u4e00-\u9fa5]{2,}/g
+// var arr1 = this.docForm.docDesc.match(re1);
+// var desc
+// if(arr1&&arr1.length>0){
+//   desc=this.docForm.docDesc.split(arr1[0])
+// }else{
+//   desc
+// }  //这个可以提取中文 数字
+
+          
+          if (this.docForm.docDesc.split("[").length > 0) {
             console.log("分割[得到两段");
             docDescText = this.docForm.docDesc.split("[")[0];
           }
@@ -3404,7 +3537,6 @@ message: h('div', null, newDatas),
 
       if (fixFlag) {
         this.putRequest(
-          //注意防止重复提交
           "/organ/" + sessionStorage.getItem("authId"),
           JSON.stringify(this.weightForm)
         ).then((resp) => {
@@ -3428,7 +3560,7 @@ message: h('div', null, newDatas),
         // console.log(this.docForm.docDesc)
         // console.log(this.docForm.docDesc.split("["))
         // console.log(this.docForm.docDesc.split("[").length)
-        if (this.docForm.docDesc.split("[").length > 1) {
+        if (this.docForm.docDesc.split("[").length > 0) {
           console.log("分割[得到两段");
           docDescText = this.docForm.docDesc.split("[")[0];
         }
@@ -4203,23 +4335,26 @@ message: h('div', null, newDatas),
         );
       }*/
       // var titttt=sessionStorage.getItem('docType')=='personnel'?this.docFormRs.docTitle:this.docForm.docTitle
-      axios
-        .get(this.baseurl + "/weight/map/" + this.weightFormKeywordCode(), {
-          headers: {
-            "Content-Type": "application/json",
-            authId: sessionStorage.getItem("authId"),
-            token: window.localStorage.getItem("token")
-              ? window.localStorage.getItem("token").split('"')[1] ||
-                window.localStorage.getItem("token")
-              : null,
-          },
-          params: {
-            title:
-              sessionStorage.getItem("docType") == "personnel"
-                ? this.docFormRS.docTitle
-                : this.docForm.docTitle,
-          },
-        })
+      // axios
+      //   .get(this.baseurl + "/weight/map/" + this.weightFormKeywordCode(), {
+      //     headers: {
+      //       "Content-Type": "application/json",
+      //       authId: sessionStorage.getItem("authId"),
+      //       token: window.localStorage.getItem("token")
+      //         ? window.localStorage.getItem("token").split('"')[1] ||
+      //           window.localStorage.getItem("token")
+      //         : null,
+      //     },
+      //     params: {
+      //       title:
+      //         sessionStorage.getItem("docType") == "personnel"
+      //           ? this.docFormRS.docTitle
+      //           : this.docForm.docTitle,
+      //     },
+      //   })
+      var path= "/weight/map/" + this.weightFormKeywordCode()
+ var title=sessionStorage.getItem("docType") == "personnel"? this.docFormRS.docTitle: this.docForm.docTitle
+      this.postRequest(path,title)
         .then((resp) => {
           this.matchedKV = [];
           if (resp.data == null) {

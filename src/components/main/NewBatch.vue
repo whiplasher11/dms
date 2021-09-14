@@ -64,6 +64,18 @@
           ></el-input>
         </el-form-item>
 
+                <el-form-item prop="workType" label="选择单位级别：">
+          <el-select filterable v-model="BatchForm.authLevel" placeholder="单位级别">
+            <el-option
+              v-for="item in authLevels"
+              :key="item"
+              :label="item"
+              :value="item"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+
+
         <el-form-item prop="workType" label="选择整档类型：">
           <el-select filterable v-model="BatchForm.docType" placeholder="选择整档类型">
             <el-option
@@ -77,6 +89,8 @@
 
 
 
+
+
         <el-form-item prop="batchName" label="档案类型代码：">
           <el-input
             size="normal"
@@ -87,6 +101,7 @@
             placeholder="如文书类填WS，没有填无"
           ></el-input>
         </el-form-item>
+
 
         <el-form-item prop="batchName" label="批次名：">
           <el-input
@@ -318,10 +333,19 @@ export default {
       showPriority: false,
       officialDocTypeSub:1,
 
+      authLevels:[
+        "部级",
+        "省级",
+        "市级",
+        "县级",
+        "乡级"
+      ],
+
       BatchForm: {
         batchName: "",
         authCode: "",
         authName: "",
+        authLevel:"",
         docType: "",
         docTypeCode: "",
         lastBox: {
@@ -340,10 +364,6 @@ export default {
         {
           authCode: 22,
           authName: "尚无历史记录，请输入",
-        },
-        {
-          authCode: 23,
-          authName: "如输入慈利县档案局",
         },
       ],
       uploadpriority: {
@@ -474,10 +494,7 @@ export default {
             authCode: 22222,
             authName: "尚无历史记录，请输入",
           },
-          {
-            authCode: 33333,
-            authName: "如输入慈利县档案局",
-          },
+
         ];
       } else {
         // organs=organs.rev?
@@ -740,6 +757,7 @@ for(  var i=0;i<this.jsonArray.length;i++){
         end:0,
         doc_number:1,
         lastBox: this.BatchForm.lastBox,
+        info:{},
       };
       console.log("提交了organ后提交的批次信息");
       console.log(batchobj);
@@ -1014,6 +1032,7 @@ var key91 = '工资情况材料';
         docTypeCode: this.BatchForm.docTypeCode,
         rule: this.BatchForm.rule,
         doc_number:1,
+        info:{},
 
         // lastBox:JSON.stringify(this.BatchForm.lastBox)
         // lastBox: this.BatchForm.lastBox,
@@ -1072,6 +1091,7 @@ checkp()
       var organObj = {
         authName: this.BatchForm.authName,
         authCode: this.BatchForm.authCode,
+        authLevel:this.BatchForm.authLevel
       };
  
 var that=this
@@ -1338,16 +1358,17 @@ test()
     },
 
     selectAuthChange(id) {
-      var name = {};
-      name = this.historyAuths.find((item) => {
+      var his = {};
+      his = this.historyAuths.find((item) => {
         //在历史记录里有这项选中的话就返回obj
         return item.authCode == id;
       });
-      window.sessionStorage.setItem("authId", name.id);
-      console.log(name);
+      window.sessionStorage.setItem("authId", his.id);
+      console.log(his);
 
-      name = name.authName; //obj的lable
+      var name = his.authName; //obj的lable
       this.BatchForm.authName = name;
+      this.BatchForm.authLevel=his.authLevel;
       var tempId = JSON.stringify(id);
       while (tempId.length < 5) {
         tempId = "0" + tempId;

@@ -24,6 +24,110 @@
         请求中，请稍候...
       </div>
 
+
+
+    <el-form v-if="showChangeAboutFlag"
+    label-width="20%"
+          class="specialELContainer"
+          style="z-index:1335"
+          >
+
+          <el-row style="text-align:center">修改</el-row>
+
+          <div style="height:2rem"></div>
+              <el-row :gutter="24">
+           <el-col :span="12">
+           <el-form-item  label="原:">
+        <el-input
+          type="text"
+           :disabled="true"
+          v-model="oldAbout"
+          auto-complete="off"
+          placeholder="原机构/问题"
+        ></el-input>
+      </el-form-item>
+       </el-col>
+
+                         <el-col :span="12">
+<el-form-item  label="新:">
+                     <el-select
+                filterable
+                @change="newAboutChange"
+                v-model="newAbout"
+                placeholder="选择"
+              >
+                <el-option
+                  v-for="item in level1JsonTable"
+                  :key="item[1]"
+                  :label="item[0]"
+                  :value="item[0]"
+                ></el-option>
+              </el-select>
+</el-form-item>
+       </el-col>
+
+         </el-row>
+
+     <el-row :gutter="24" v-if="false">
+        <el-col :span="12">
+          <el-form-item prop="batchName" label="扫描:">
+            <el-checkbox
+              style="position: absolute; left: 2rem; top: 0.5rem"
+              v-if="true"
+              @change="scanChange"
+              false-label="false"
+              true-label="true"
+              :checked="scanFlag"
+            >扫描修改原文件</el-checkbox>
+          </el-form-item>
+        </el-col>
+
+                                 <el-col :span="12">
+<el-form-item  label="批次:" v-if="scanFlag">
+                     <el-select
+                filterable
+
+                v-model="scanBatch"
+                placeholder="选择"
+              >
+                <el-option
+                  v-for="item in batches"
+                  :key="item.id"
+                  :label="item.batchName"
+                  :value="item"
+                ></el-option>
+              </el-select>
+</el-form-item>
+       </el-col>
+     </el-row>
+
+      <el-row style="margin-top:3rem">
+
+                       <div
+              style="margin-left: 35%; width:4rem;float: left"
+              class="topTextButtonBlue"
+              @click="saveNewAbout"
+            >
+              保存
+            </div>
+                                                      <div
+              style="margin-left: 5%; width:4rem;float: left"
+              class="topTextButtonBlue"
+              @click="showChangeAboutFlag=false"
+            >
+              取消
+            </div>
+
+      </el-row>
+                                    
+
+
+            
+
+
+          </el-form>
+
+
       <div v-if="!isSubPage">
         <!-- 顶部的两个跨页面返回按钮 -->
         <div
@@ -506,7 +610,7 @@
             color: #333;
           "
         >
-          请按提示输入
+          请按提示修改
         </div>
         <input
           type="text"
@@ -798,7 +902,6 @@
           @change="docTypeChange"
           class="tableSelectStyle"
           ref="authSelectref"
-          id="selectAuth"
           filterable
           v-model="selectedDoctype"
           placeholder="选择档案类型"
@@ -1258,6 +1361,16 @@
             修改值
           </div>
 
+                    <div
+            class="topTextButtonBlueNoWidth"
+            style="float: left"
+            type="primary"
+            @click="changeAbout($event, item)"
+            v-if="!saveBtnShow&&backToDocAboutShow &&!backToKeyWordShow"
+          >
+            修改类
+          </div>
+
           <div
             class="topTextButtonBlueNoWidth"
             style="float: left"
@@ -1307,6 +1420,8 @@
 </template>
 
 <script>
+import axios from "axios";
+
 export default {
   watch: {
     authorResultJS: {
@@ -1382,6 +1497,22 @@ export default {
   },
 
   created() {
+//               var re1 = /(\d{1,3})+(?:\.\d+)?/g
+
+// var re2 = /[\u4e00-\u9fa5]{2,}/g
+// var str="工作通报[22";
+// var arr1 = str.match(re1);
+// var arr2 = str.match(re2);
+
+// console.log(arr1)
+// console.log(arr2)
+
+// if(arr1.length>0)
+// str=str.split(arr1[0])
+// str=str[0]
+// console.log(str)
+
+
     /**
      * 1、关键词大小从大到小按整数递减，只能是非赋权sort，因为查看关键词是问题下的关键词 ，入股后端sort的时候按大到小赋权的话，可能出现
      * 从大到小 5 3 1不连续
@@ -1472,6 +1603,31 @@ export default {
     // console.log(this.jsonTable);
   },
   methods: {
+    scanChange(){
+      this.scanFlag=!this.scanFlag
+    },
+    newAboutChange(){},
+    saveNewAbout(){
+      if(this.scanFlag){
+        
+      }
+      this.keywordToChange
+      this.newAbout
+       this.getRequest("/weight/change/"+this.keywordWigId+"/" + this.requestWigId,{
+         "keyword":this.keywordToChange,
+         "docAbout":this.newAbout,
+         "oldDocAbout":this.deepInThisDocAbout
+       }) 
+                  .then((resp) => {
+console.log(resp)
+// this.thisDocAbout(1,this.deepInThisDocAbout);
+this.backToDocAbout()
+this.showChangeAboutFlag=false
+
+                  })
+
+    },
+
     saveBatchAuthor(){
       var json={}
       for(var i in this.authorSearchResultTotal){
@@ -3494,6 +3650,35 @@ export default {
           }
         });
     },
+    changeAbout(e, item) {
+      console.log(item)
+      this.showChangeAboutFlag=true
+      var about=this.keywordIssueTable[item[0]]
+      this.oldAbout=about
+      this.keywordToChange=item[0]
+      axios
+        .get(this.baseurl + "/work/list", {
+          headers: {
+            "Content-Type": "application/json",
+            authId: sessionStorage.getItem("authId"),
+            token: localStorage.getItem("token")
+              ? localStorage.getItem("token").split('"')[1] ||
+                localStorage.getItem("token")
+              : null,
+          },
+        }).then(r=>{
+          this.batches = r.data;
+          console.log(this.batches)
+          for(var item in this.batches){
+            if(item.id == sessionStorage.getItem("batchId")){
+              this.scanBatch=item.batchName
+              break
+            }
+          }
+        })
+      
+
+    },
 
     deleteKV(e, item) {
       // console
@@ -3833,6 +4018,14 @@ export default {
   data() {
     //jsonTable 是用来显示的kv数组
     return {
+      scanBatch:'',
+      batches:[],
+      scanFlag:true,
+      keywordToChange:'',
+      oldAbout:'',
+      showChangeAboutFlag:false,
+      newAbout:'',
+
       index: 1,
       batchModifyShow: false,
       query1: "",

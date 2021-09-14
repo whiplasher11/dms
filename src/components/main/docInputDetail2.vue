@@ -612,6 +612,51 @@
             <div></div>
           </el-form>
 
+          <el-form v-if="extraInfoShowFlag"
+          class="specialELContainer"
+          >
+          <div style="width:100%;height:3rem;text-align:center;">{{extraInfoTitle}}</div>
+           <el-form-item class="textArea" prop="batchName" >
+        <el-input
+          type="textarea"
+          ref="docTitle"
+          style=" "
+          id="docTitle"
+          :rows="10"
+          class="textAreaInput extraInfoTextArea"
+          v-model="extraToSet"
+          auto-complete="off"
+          placeholder="请输入"
+        ></el-input>
+      </el-form-item>
+      
+                  <div
+              style="margin-left: 20%;width:4rem; float: left"
+              class="topTextButtonBlue"
+              @click="saveExtraInfo"
+            >
+              保存
+            </div>
+
+
+
+                                          <div
+              style="margin-left: 5%; width:4rem;float: left"
+              class="topTextButtonBlue"
+              @click="downloadInfo"
+            >
+              下载
+            </div>
+                                          <div
+              style="margin-left: 5%; width:4rem;float: left"
+              class="topTextButtonBlue"
+              @click="cancelExtraInfo"
+            >
+              取消
+            </div>
+
+          </el-form>
+
           <el-form
             v-if="advSearchShow && docType != 'personnel'"
             ref="searchForm"
@@ -819,7 +864,7 @@
             position: fixed;
             left: 0.5rem;
             top: 6.5rem;
-            z-index: 5;
+            z-index: 6;
             font-size: 1.1rem;
           "
         >
@@ -862,8 +907,64 @@
             class="hoverStyle topTextButton"
             @click="sortThisBatch"
           >
-            排件号盒号
+            自动排序
           </div>
+
+                    <div
+            style="
+            
+              float: left;
+              background-color: rgb(122, 122, 122);
+
+              width: 5rem;
+              text-align: center;
+              margin-left: 1rem;
+            "
+            v-if="false&&docType != 'personnel'"
+            class="hoverStyle topTextButton"
+            @click="myBoxNum"
+          >
+            {{ myBoxNumSwitch ? "保存盒号" : "手动盒号" }}
+          </div>
+
+                              <div
+            style="
+              float: left;
+              background-color: rgb(18, 130, 153);
+
+              width: 5rem;
+              text-align: center;
+
+              margin-left: 1rem !important;
+            "
+            class="hoverStyle topTextButton"
+                      v-on:mouseover="manSelectShow=true"
+              @mouseleave="manSelectShow=false"
+          >
+            人工排序
+
+                    <div               v-on:mouseover="manSelectShow=true"
+              @mouseleave="manSelectShow=false">
+
+               <div style="width:5rem;font-size:0.9rem;height:1.8rem;padding-top:0.6rem;" v-if="manSelectShow" 
+            @click="myBoxNum"
+
+
+           >
+              排盒号
+            </div>
+           <div style="width:5rem;height:1.7rem;padding-top:0.3rem;;font-size:0.9rem;" v-if="manSelectShow"
+            @click="myManualNum"
+
+           >
+              排件号
+            </div> 
+ 
+
+            </div>
+
+          </div>
+
           <div
             style="
          float:left
@@ -903,21 +1004,9 @@
           >
             其他批次
           </div>
-          <div
-            style="
-              float: left;
-              background-color: rgb(122, 122, 122);
 
-              width: 5rem;
-              text-align: center;
-              margin-left: 1rem;
-            "
-            v-if="docType != 'personnel'"
-            class="hoverStyle topTextButton"
-            @click="myBoxNum"
-          >
-            {{ myBoxNumSwitch ? "保存盒号" : "手动盒号" }}
-          </div>
+
+
 
           <div
             style="
@@ -980,21 +1069,7 @@
           >
             批量打印
           </div>
-
-          <div
-            style="         float:left
-         width:5rem;
-         text-align:center;
-         margin-left:1rem;
-
-         "
-            class="topTextButton"
-            @click="genBoxInfo"
-          >
-            备考表
-          </div>
-
-                    <div
+<div
             style="
               float: left;
               background-color: rgb(128, 160, 153);
@@ -1012,25 +1087,73 @@
             <div               v-on:mouseover="excelSelectFlag=true"
               @mouseleave="excelSelectFlag=false">
 
-               <div style="postion:absolute;width:5rem;height:1.8rem;padding-top:0.4rem;" v-if="excelSelectFlag" 
+               <div style="width:5rem;font-size:0.9rem;height:1.8rem;padding-top:0.3rem;" v-if="excelSelectFlag" 
             @click="getExcel(2)"
 
 
            >
               按识别号
             </div>
-           <div style="postion:absolute;width:5rem;height:1.7rem;padding-top:0.rem;" v-if="excelSelectFlag"
+           <div style="width:5rem;height:1.7rem;padding-top:0.3rem;;font-size:0.9rem;" v-if="excelSelectFlag"
             @click="getExcel(1)"
 
            >
               按件号
-            </div>           
-  
+            </div> 
+                       <div style="width:5rem;height:1.7rem;padding-top:0.3rem;;font-size:0.9rem;" v-if="excelSelectFlag"
+            @click="getBoxCheckTable()"
+
+           >
+              盒号对照表
+            </div>   
+
+                         <div style="width:5rem;height:1.7rem;padding-top:0.3rem;;font-size:0.9rem;" v-if="excelSelectFlag"
+            @click="genBoxInfo()"
+
+           >
+              备考表
+            </div>   
+
             </div>
 
         
           </div>
 
+          <div 
+            style="         float:left
+         width:5rem;
+         text-align:center;
+         margin-left:1rem;
+         "
+           v-on:mouseover="extraSelectFlag=true"
+              @mouseleave="extraSelectFlag=false"
+            class="topTextButton hoverStyle"
+          >
+            附加信息
+
+                        <div               v-on:mouseover="extraSelectFlag=true"
+              @mouseleave="extraSelectFlag=false">
+<!-- 大事记 -->
+               <div style="position:relative;width:5rem;font-size:1rem;height:1.8rem;padding-top:0.3rem;" v-if="extraSelectFlag" 
+            @click="resetDSJ()"
+
+           >
+              大事记
+            </div>
+
+            <!-- 立卷说明 -->
+           <div style="width:5rem;font-size:1rem;height:1.7rem;padding-top:0.3rem;" v-if="extraSelectFlag"
+            @click="resetLJSM()"
+
+           >
+              立卷说明
+            </div> 
+
+            </div>
+
+          </div>
+
+                    
 
 
 
@@ -1347,8 +1470,11 @@
               <div class="itemInfo" style="width: 2%">页数</div>
               <div class="itemInfo" style="width: 2%">计</div>
 
-              <div class="itemInfo" style="width: 4%">件号</div>
-              <div class="itemInfo" style="width: 4%">盒号</div>
+              <div class="itemInfo" style="width: 4%" v-if="!manualNumSwitch">件号</div>
+              <div class="itemInfo" style="color:red;width: 4%;cursor:pointer" @click="saveDocNum" v-if="manualNumSwitch">保存</div>
+
+              <div class="itemInfo" style="color:red;width: 4%;cursor:pointer" v-if="myBoxNumSwitch" @click="myBoxNum">{{ "保存" }}</div>
+              <div class="itemInfo" style="width: 4%;" v-if="!myBoxNumSwitch" >{{"盒号" }}</div>
 
               <div style="clear: both"></div>
 
@@ -1361,6 +1487,10 @@
                 (obj) => obj.deleted != deletedShowSwitch
               )"
               :key="index"
+              @click="exchangeThisItem(item)"
+                v-bind:class="[
+                  { infoItemSelect: item.docSequence == ANum.docSequence || item.docSequence ==startInfo.docSequence },
+                ]"
             >
               <div class="itemInfo" style="width: 3%">
                 {{ item.docSequence }}
@@ -1409,7 +1539,13 @@
                 {{ item.pageTotal | pageTotalformat }}
               </div>
 
-              <div class="itemInfo" style="width: 4%">
+              <div class="itemInfo" style="width: 4%"
+                                            v-bind:class="[
+                  { startStyle: item.docSequence == ANum.docSequence },
+                  { endStyle: item.docSequence == BNum.docSequence },
+                ]"
+                
+              >
                 {{ item.docNum ? item.docNum : "暂无" }}
               </div>
               <div
@@ -1719,7 +1855,21 @@ export default {
   },
   data() {
     return {
+
+      manualNumSwitch:false,
+      ANum:0,
+      BNum:0,
+      changedIds:[],
+
+      manSelectShow:false,
+
+
       excelSelectFlag:false,
+      extraSelectFlag:false,
+      extraInfoShowFlag:false,
+      extraToSet:'',
+      extraInfoTitle:'',
+      extraInfos:{},
 
       //备考表相关变量
       publisher: "",
@@ -1958,6 +2108,208 @@ export default {
     };
   },
   methods: {
+    myManualNum(){
+
+            if(this.isEnd){
+                            this.$message({
+              type: "warning",
+              message: "已锁定",
+            });
+            return
+      }
+
+            if(this.myBoxNumSwitch){
+                  this.$message({
+            type: "warning",
+            message: "请先保存盒号",
+          });return
+
+      }
+      
+      this.manualNumSwitch=true
+    },
+    saveDocNum(){
+
+      console.log(this.changedIds)
+                  this.putRequest("/work/exchange/"+sessionStorage.getItem("batchId"),
+                  (this.changedIds)).then((resp) => {
+        console.log(resp)
+
+      })
+
+
+
+
+
+
+
+      this.changedIds=[]
+      this.ANum=0
+      this.BNum=0
+
+    },
+    exchangeThisItem(item){
+      
+      if(!this.manualNumSwitch){
+        return
+      }
+      console.log(item)
+      if(this.ANum==0){
+        this.ANum=item
+        return
+      }
+      if(this.BNum==0){
+        this.BNum=item
+        if(this.Bum==this.ANum){
+        this.ANum=0
+        this.BNum=0
+        return
+        }
+      }
+      if(this.ANum!=0 && this.BNum!=0){
+        var aseq=this.ANum.docSequence
+        var bseq=this.BNum.docSequence
+
+
+        this.changedIds.push(aseq+"-"+bseq)
+        var k=this.BNum.docNum
+        this.BNum.docNum=this.ANum.docNum
+        this.ANum.docNum=k
+        var index1=-1,index2=-1
+        for(var i in this.$store.state.alreadyDocs){
+          if(this.$store.state.alreadyDocs[i].docSequence==this.ANum.docSequence){
+            index1=i
+            console.log(index1+"sssss")
+          }
+          if(this.$store.state.alreadyDocs[i].docSequence==this.BNum.docSequence){
+            index2=i
+            console.log(index2)
+          }
+          if(index1!=-1 && index2!=-1){
+            this.$store.state.alreadyDocs.splice(index1,1,this.BNum)
+            this.$store.state.alreadyDocs.splice(index2,1,this.ANum)
+            this.ANum=0
+            this.BNum=0
+            break
+          }
+        }
+      
+
+      }
+    },
+    downloadInfo(){
+      var path
+       if(this.extraInfoTitle=="大事记"){
+        path="/document/excel/"+sessionStorage.getItem("batchId")+"/dsj/info"
+      }else{
+        path="/document/excel/"+sessionStorage.getItem("batchId")+"/ljsm/info"
+      }
+         axios({
+        method: "get",
+        url:this.baseurl+path,
+        responseType: "arraybuffer",
+        headers: {
+          "Content-Type": "application/json",
+          authId: sessionStorage.getItem("authId"),
+          token: window.localStorage.getItem("token")
+            ? window.localStorage.getItem("token").split('"')[1] ||
+              window.localStorage.getItem("token")
+            : null,
+        },
+      }).then((res) => {
+        // //console.log("DASDASDASDASD")
+
+        //console.log(res);
+        const blob = new Blob([res]); //new Blob([res])中不加data就会返回下图中[objece objece]内容（少取一层）
+
+        const fileName = sessionStorage.getItem("authName") + ".doc"; //这里可以自定义名称，发现设置xlsx文件类型下载后打开会提示下面图-1的无效报错,所以我用了xls格式
+
+        const elink = document.createElement("a");
+
+        elink.download = fileName;
+
+        elink.style.display = "none";
+
+        elink.href = URL.createObjectURL(blob);
+
+        document.body.appendChild(elink);
+
+        elink.click();
+
+        URL.revokeObjectURL(elink.href); // 释放URL 对象
+        document.body.removeChild(elink);
+        this.showWaitingFlag = false;
+      });
+    },
+    saveExtraInfo(){
+      if(this.extraInfoTitle=="大事记"){
+        this.extraInfos.dsj=this.extraToSet
+      }else{
+        this.extraInfos.ljsm=this.extraToSet
+      }
+      this.bindKey();
+           this.putRequest(
+        "/work/" + sessionStorage.getItem("batchId") + "/infos",
+        JSON.stringify(this.extraInfos)
+      ).then((resp) => {
+        //console.log(resp)
+        if (resp.code == 0) {
+          console.log(resp)
+        }
+      });
+
+    },
+    cancelExtraInfo(){
+      this.bindKey();
+      this.extraInfoShowFlag=false
+    },
+
+    bindKey(){
+      var that=this
+    document.onkeydown = function (e) {
+      var theEvent = window.event || e;
+      var code = theEvent.keyCode || theEvent.which;
+      console.log(code);
+      if (code == 13) {
+        // alert(2)
+        that.printThis1();
+      }
+
+      if (code == 38) {
+        that.$refs.shibie.focus();
+        that.nextPrint();
+      }
+      if (code == 40) {
+        that.$refs.shibie.focus();
+        that.prePrint();
+      }
+    };
+    },
+
+    resetDSJ(){
+
+      this.extraInfoTitle="大事记"
+      this.extraInfoShowFlag=true
+    document.onkeydown=null
+
+    this.extraToSet=this.extraInfos.dsj;
+    
+      
+    },
+    resetLJSM(){
+      this.extraInfoTitle="立卷说明"
+      this.extraInfoShowFlag=true
+    document.onkeydown=null
+    this.extraToSet=this.extraInfos.ljsm;
+
+
+
+    },
+
+    showExtra(){
+      this.extraInfoShowFlag=true
+    },
+
     saveInfo() {
       var infoObj = {};
       for (var i in this.boxInfoList) {
@@ -2043,6 +2395,64 @@ export default {
         document.body.removeChild(elink);
         this.showWaitingFlag = false;
       });
+    },
+
+    getBoxCheckTable(){
+      if(!this.isEnd){
+                    this.$message({
+              type: "warning",
+              message: "请先排件号盒号并锁定本批",
+            });
+            return
+      }
+       this.showWaitingFlag = true;
+       var  path =
+          "/document/excel/" +
+          sessionStorage.getItem("docType") +
+          "/" +
+          sessionStorage.getItem("batchId")+"/box-table";
+
+      axios({
+        method: "get",
+        url:
+          this.baseurl +path,
+        responseType: "arraybuffer",
+        headers: {
+          "Content-Type": "application/json",
+          authId: sessionStorage.getItem("authId"),
+          token: window.localStorage.getItem("token")
+            ? window.localStorage.getItem("token").split('"')[1] ||
+              window.localStorage.getItem("token")
+            : null,
+        },
+      })
+        .then((res) => {
+          // //console.log("DASDASDASDASD")
+
+          //console.log(res);
+          const blob = new Blob([res]); //new Blob([res])中不加data就会返回下图中[objece objece]内容（少取一层）
+
+          const fileName = sessionStorage.getItem("authName") + ".zip"; //这里可以自定义名称，发现设置xlsx文件类型下载后打开会提示下面图-1的无效报错,所以我用了xls格式
+
+          const elink = document.createElement("a");
+
+          elink.download = fileName;
+
+          elink.style.display = "none";
+
+          elink.href = URL.createObjectURL(blob);
+
+          document.body.appendChild(elink);
+
+          elink.click();
+
+          URL.revokeObjectURL(elink.href); // 释放URL 对象
+          document.body.removeChild(elink);
+          this.showWaitingFlag = false;
+        })
+        .then((r) => {
+          this.showWaitingFlag = false;
+        });
     },
     getAllInfo() {
       this.showWaitingFlag = true;
@@ -3372,6 +3782,20 @@ export default {
       //console.log(docs)
     },
     myBoxNum() {
+      if(this.isEnd){
+                            this.$message({
+              type: "warning",
+              message: "已锁定",
+            });
+            return
+      }
+      if(this.manualNumSwitch){
+                    this.$message({
+              type: "warning",
+              message: "请先保存件号",
+            });
+            return
+      }
       var req = { boxes: this.boxNumMap };
       if (this.myBoxNumSwitch) {
         //点击保存
@@ -3389,9 +3813,18 @@ export default {
           }
         });
         this.myBoxNumSwitch = false;
+        this.startInfo={}
         return;
+        
       }
       if (!this.myBoxNumSwitch) {
+        var info = "请勾选:年度、期限、"+this.$store.state.docAboutDic[sessionStorage.getItem("docType")||"official"]+"后再排盒号"
+        if(!this.sortYearCheck||!this.dabCheck||!this.ddlCheck){
+              this.$message.warning(info);
+        return
+
+        }
+        
         //点击手动排盒号
         this.myBoxNumSwitch = true;
       }
@@ -3817,6 +4250,15 @@ export default {
             }else{
               this.isEnd=true
               this.$store.state.isEnd = true;
+            }
+
+            if(resp.data.info!=null){
+              this.extraInfos=resp.data.info
+            }else{
+              this.extraInfos={
+                dsj:"",
+                ljsm:""
+              }
             }
             //console.log(this.$store.state.isEnd);
             window.sessionStorage.setItem("isEnd", this.$store.state.isEnd);
@@ -4908,6 +5350,8 @@ export default {
 
     //console.log("created~~~~~~~~~~~~~~~~~~~~~")
     var tt = "你和";
+    var s=tt.split("[")[0]
+    console.log(tt)
     //console.log(tt.length)
     //     this.socketUtil=new VueSocketIO({
 
@@ -4932,6 +5376,7 @@ export default {
 
   mounted() {
     this.preLoadDocs();
+    this.bindKey();
 
     //     var testarr=[]
     // testarr.push(this.$store.state.alreadyDocs[0],this.$store.state.alreadyDocs[1])
@@ -4940,24 +5385,7 @@ export default {
     // test1[0].authCode=111
     // //console.log(test1)
     // //console.log(testarr)
-    document.onkeydown = function (e) {
-      var theEvent = window.event || e;
-      var code = theEvent.keyCode || theEvent.which;
-      console.log(code);
-      if (code == 13) {
-        // alert(2)
-        that.printThis1();
-      }
 
-      if (code == 38) {
-        that.$refs.shibie.focus();
-        that.nextPrint();
-      }
-      if (code == 40) {
-        that.$refs.shibie.focus();
-        that.prePrint();
-      }
-    };
 
     var dd = new Date();
     var inittime =
@@ -5022,9 +5450,23 @@ export default {
     padding-left: 3.3rem;
     resize: none;
   }
+
+  
+}
+
+.extraInfoTextArea{
+  .el-textarea__inner {
+    padding-left: 0.4rem !important;
+
+  }
 }
 </style>
 <style lang="scss" scoped>
+.extraInfoTextArea{
+  .el-textarea__inner {
+    padding-left: 0.4rem !important;
+  }
+}
 .endStyle {
   cursor: pointer;
   color: green;
